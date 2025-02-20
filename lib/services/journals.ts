@@ -1,5 +1,5 @@
 import { collection, addDoc, getDocs, where, query } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/services/firebase";
 
 // Add a new journal
 export const addJournal = async (

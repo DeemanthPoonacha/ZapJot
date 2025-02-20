@@ -1,5 +1,5 @@
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/services/firebase";
 
 // Add a character
 export const addCharacter = async (
