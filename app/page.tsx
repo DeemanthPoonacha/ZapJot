@@ -1,4 +1,5 @@
 "use client";
+import ChapterForm from "@/components/ChapterForm";
 import JournalForm from "@/components/JournalForm";
 import { useChapters } from "@/lib/hooks/useChapters";
 import { useJournals } from "@/lib/hooks/useJournals";
@@ -20,6 +21,7 @@ export default function Home() {
         </div>
       ))}
       <JournalForm />
+      <ChapterForm />
     </main>
   );
 }

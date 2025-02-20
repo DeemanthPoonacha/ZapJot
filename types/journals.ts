@@ -1,4 +1,4 @@
-import { formatDateTitle } from "@/lib/utils/general";
+import { formatDateTitle } from "@/lib/utils";
 import { z } from "zod";
 
 // Base schema for creating a journal
@@ -43,3 +43,4 @@ export const chapterSchema = createChapterSchema.extend({
 export type Journal = z.infer<typeof journalSchema>;
 export type JournalCreate = z.infer<typeof createJournalSchema>;
 export type Chapter = z.infer<typeof chapterSchema>;
+export type ChapterCreate = z.infer<typeof createChapterSchema>;

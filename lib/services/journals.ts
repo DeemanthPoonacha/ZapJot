@@ -25,15 +25,15 @@ import {
 export const addChapter = async (
   userId: string,
   title: string,
-  journals?: JournalCreate[]
+  journals?: Journal[]
 ) => {
   const chapterData = createChapterSchema.parse({
     userId,
     title,
-    journals,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
+  journals && (chapterData.journals = journals);
   console.log("🚀 ~ addChapter ~ chapterData:", chapterData);
 
   const docRef = await addDoc(collection(db, "chapters"), chapterData);
