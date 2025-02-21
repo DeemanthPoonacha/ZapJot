@@ -17,3 +17,7 @@ export const formatDateTitle = (
     year: "numeric",
   }); // Example: "Fri, 3rd Nov 2025"
 };
+
+export function GetDateTime() {
+  return new Date().toString().split(" GMT", 1);
+}

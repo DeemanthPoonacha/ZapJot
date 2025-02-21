@@ -1,160 +1,132 @@
+import { db } from "@/lib/services/firebase";
+import {
+  Chapter,
+  ChapterCreate,
+  Journal,
+  JournalCreate,
+} from "@/types/journals";
 import {
   collection,
-  addDoc,
-  getDocs,
-  where,
-  query,
   doc,
+  getDocs,
+  addDoc,
   updateDoc,
   deleteDoc,
   getDoc,
-  setDoc,
 } from "firebase/firestore";
-import { db } from "@/lib/services/firebase";
-import {
-  Journal,
-  Chapter,
-  createJournalSchema,
-  updateJournalSchema,
-  createChapterSchema,
-  updateChapterSchema,
-  JournalCreate,
-} from "@/types/journals";
-
-// Add a new chapter
-export const addChapter = async (
-  userId: string,
-  title: string,
-  journals?: Journal[]
-) => {
-  const chapterData = createChapterSchema.parse({
-    userId,
-    title,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
-  journals && (chapterData.journals = journals);
-  console.log("🚀 ~ addChapter ~ chapterData:", chapterData);
-
-  const docRef = await addDoc(collection(db, "chapters"), chapterData);
-  return { id: docRef.id, ...chapterData };
-};
 
 // Get all chapters for a user
 export const getChapters = async (userId: string): Promise<Chapter[]> => {
-  const q = query(collection(db, "chapters"), where("userId", "==", userId));
-  const querySnapshot = await getDocs(q);
-  console.log("🚀 ~ getChapters ~ querySnapshot:", querySnapshot.docs);
-
-  return querySnapshot.docs.map((doc) => ({
+  const chaptersRef = collection(db, `users/${userId}/chapters`);
+  const snapshot = await getDocs(chaptersRef);
+  return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Chapter[];
 };
 
-// Update a chapter
+// Get a single chapter by ID
+export const getChapterById = async (
+  userId: string,
+  chapterId: string
+): Promise<Chapter | null> => {
+  const docRef = doc(db, `users/${userId}/chapters/${chapterId}`);
+  const snapshot = await getDoc(docRef);
+  return snapshot.exists()
+    ? ({ id: snapshot.id, ...snapshot.data() } as Chapter)
+    : null;
+};
+
+// Add a new chapter
+export const addChapter = async (userId: string, data: ChapterCreate) => {
+  const chaptersRef = collection(db, `users/${userId}/chapters`);
+  await addDoc(chaptersRef, { ...data, updatedAt: new Date().toISOString() });
+};
+
+// Update an existing chapter
 export const updateChapter = async (
-  chapterId: string,
-  updatedData: Partial<Chapter>
-) => {
-  const validData = updateChapterSchema.parse({
-    ...updatedData,
-    updatedAt: new Date().toISOString(),
-  });
-
-  const chapterRef = doc(db, "chapters", chapterId);
-  await updateDoc(chapterRef, validData);
-};
-
-// Delete a chapter and its journals
-export const deleteChapter = async (chapterId: string) => {
-  const chapterRef = doc(db, "chapters", chapterId);
-  await deleteDoc(chapterRef);
-};
-// Add a new journal inside a chapter
-export const addJournal = async (
   userId: string,
   chapterId: string,
-  title?: string,
-  description?: string
+  data: ChapterCreate
 ) => {
-  const formattedTitle =
-    title ||
-    new Date().toLocaleDateString("en-GB", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-
-  const journalData = createJournalSchema.parse({
-    chapterId,
-    title: formattedTitle,
-    description,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
-
-  // Add journal to the chapter
-  const journalRef = await addDoc(
-    collection(db, "chapters", chapterId, "journals"),
-    journalData
-  );
-
-  return { chapterId, journalId: journalRef.id };
+  const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
+  await updateDoc(chapterRef, { ...data, updatedAt: new Date().toISOString() });
 };
-// Get all journals for a given chapter
-export const getJournals = async (chapterId: string): Promise<Journal[]> => {
-  const q = query(collection(db, "chapters", chapterId, "journals"));
-  const querySnapshot = await getDocs(q);
 
-  return querySnapshot.docs.map((doc) => ({
+// Delete a chapter
+export const deleteChapter = async (userId: string, chapterId: string) => {
+  const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
+  await deleteDoc(chapterRef);
+};
+
+// Get all journals for a chapter
+export const getJournals = async (userId: string, chapterId: string) => {
+  const journalsRef = collection(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals`
+  );
+  const snapshot = await getDocs(journalsRef);
+  return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Journal[];
 };
 
-// Update a journal inside a chapter
-export const updateJournal = async (
+// Get a single journal by ID
+export const getJournalById = async (
+  userId: string,
   chapterId: string,
-  journalId: string,
-  updatedData: Partial<Journal>
+  journalId: string
+): Promise<Journal | null> => {
+  const docRef = doc(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals/${journalId}`
+  );
+  const snapshot = await getDoc(docRef);
+  return snapshot.exists()
+    ? ({ id: snapshot.id, ...snapshot.data() } as Journal)
+    : null;
+};
+
+// Add a new journal
+export const addJournal = async (
+  userId: string,
+  chapterId: string,
+  data: JournalCreate
 ) => {
-  const validData = updateJournalSchema.parse({
-    ...updatedData,
+  const journalsRef = collection(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals`
+  );
+  await addDoc(journalsRef, {
+    ...data,
     updatedAt: new Date().toISOString(),
   });
-
-  const journalRef = doc(db, "chapters", chapterId, "journals", journalId);
-  await updateDoc(journalRef, validData);
 };
 
-// Delete a journal from a chapter
-export const deleteJournal = async (chapterId: string, journalId: string) => {
-  const journalRef = doc(db, "chapters", chapterId, "journals", journalId);
+// Update an existing journal
+export const updateJournal = async (
+  userId: string,
+  chapterId: string,
+  journalId: string,
+  data: JournalCreate
+) => {
+  const journalRef = doc(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals/${journalId}`
+  );
+  await updateDoc(journalRef, { ...data, updatedAt: new Date().toISOString() });
+};
+
+// Delete a journal
+export const deleteJournal = async (
+  userId: string,
+  chapterId: string,
+  journalId: string
+) => {
+  const journalRef = doc(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals/${journalId}`
+  );
   await deleteDoc(journalRef);
 };
-
-const addOthersChapter = async (userId: string) => {
-  // Define chapter ID
-  const chapterId = `${userId}_others`;
-
-  // Reference the document directly
-  const chapterRef = doc(db, "chapters", chapterId);
-  const chapterSnap = await getDoc(chapterRef);
-
-  if (!chapterSnap.exists()) {
-    // Create the "Others" chapter if it doesn't exist
-    const newChapter = createChapterSchema.parse({
-      userId,
-      title: "Others",
-    });
-
-    await setDoc(chapterRef, newChapter); // ✅ Use setDoc to create the document
-    console.log("Created 'Others' chapter:", chapterId);
-  } else {
-    console.log("'Others' chapter already exists.");
-  }
-};
-
-addOthersChapter("testUser123");

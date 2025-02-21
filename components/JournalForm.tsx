@@ -1,73 +1,59 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { addJournal, updateJournal } from "@/lib/services/journals";
-import { useUser } from "@/lib/hooks/useUser";
-import { useChapters } from "@/lib/hooks/useChapters";
 import { createJournalSchema, Journal, JournalCreate } from "@/types/journals";
-import { Button } from "@/components/ui/button";
+import { useUser } from "@/lib/hooks/useUser";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { formatDateTitle } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useJournalMutations } from "@/lib/hooks/useJournals";
+import { GetDateTime } from "@/lib/utils";
 
 interface JournalFormProps {
+  chapterId: string;
   journal?: Journal;
   onSuccess?: () => void;
 }
 
-const JournalForm: React.FC<JournalFormProps> = ({ journal, onSuccess }) => {
+const JournalForm: React.FC<JournalFormProps> = ({
+  chapterId,
+  journal,
+  onSuccess,
+}) => {
   const { user } = useUser();
-  const { data: chapters, isLoading: chaptersLoading } = useChapters();
+  const { addMutation, updateMutation } = useJournalMutations(
+    chapterId,
+    onSuccess
+  );
 
+  const defaultValues = {
+    title: journal?.title || `New Journal - ${GetDateTime()}`,
+    description: journal?.description || "",
+    chapterId,
+  };
   const {
     register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<JournalCreate>({
+    formState: { errors, isSubmitting },
+  } = useForm({
     resolver: zodResolver(createJournalSchema),
     defaultValues: {
-      title: journal?.title || formatDateTitle(),
-      description: journal?.description || "",
-      chapterId: journal?.chapterId || `${user?.uid}_others`,
-    },
-  });
-
-  const mutation = useMutation({
-    mutationFn: async (data: JournalCreate) =>
-      journal
-        ? updateJournal(journal.chapterId, journal.id, {
-            ...data,
-            updatedAt: new Date().toISOString(),
-          })
-        : addJournal(
-            user!.uid,
-            data.chapterId,
-            data.title || new Date().toDateString(),
-            data.description
-          ),
-    onSuccess: () => {
-      reset();
-      onSuccess?.();
+      ...defaultValues,
     },
   });
 
   const onSubmit = async (data: JournalCreate) => {
-    mutation.mutate(data);
+    journal
+      ? await updateMutation.mutateAsync({ journalId: journal.id, data })
+      : await addMutation.mutateAsync(data);
+    reset(defaultValues);
   };
+
+  if (!user) return <div>Loading...</div>;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input {...register("title")} placeholder="Title (optional)" />
+      <Input {...register("title")} placeholder="Title (Optional)" />
       <Textarea
         {...register("description")}
         placeholder="Write your journal..."
@@ -76,34 +62,8 @@ const JournalForm: React.FC<JournalFormProps> = ({ journal, onSuccess }) => {
         <p className="text-red-500">{errors.description.message}</p>
       )}
 
-      <Select
-        onValueChange={(value) => setValue("chapterId", value)}
-        defaultValue={watch("chapterId")}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select a chapter" />
-        </SelectTrigger>
-        <SelectContent>
-          {chaptersLoading ? (
-            <SelectItem value="loading" disabled>
-              Loading chapters...
-            </SelectItem>
-          ) : (
-            chapters?.map((ch) => (
-              <SelectItem key={ch.id} value={ch.id}>
-                {ch.title}
-              </SelectItem>
-            ))
-          )}
-        </SelectContent>
-      </Select>
-
-      <Button type="submit" disabled={mutation.isPending}>
-        {mutation.isPending
-          ? "Saving..."
-          : journal
-          ? "Update Journal"
-          : "Add Journal"}
+      <Button type="submit" disabled={isSubmitting}>
+        {journal ? "Update Journal" : "Add Journal"}
       </Button>
     </form>
   );
