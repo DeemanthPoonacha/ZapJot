@@ -1,5 +1,5 @@
 "use client";
-import TasksList from "@/components/TasksList";
+import TasksList from "@/components/tasks/TasksList";
 import PageLayout from "@/components/PageLayout";
 import React from "react";
 import EventsList from "@/components/events/EventsList";
