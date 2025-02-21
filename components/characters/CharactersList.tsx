@@ -1,8 +1,8 @@
 import { useCharacters } from "@/lib/hooks/useCharacters";
-import CharacterForm from "./CharacterForm";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 const CharactersList = () => {
   const { data: characters, isLoading } = useCharacters();
@@ -11,22 +11,29 @@ const CharactersList = () => {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {characters?.map((character) => (
-          <Card
-            key={character.id}
-            onClick={() => router.push(`/characters/${character.id}`)}
-          >
-            <CardContent className="p-4 cursor-pointer">
-              <h3 className="font-bold">{character.name}</h3>
-              <p className="text-sm text-gray-600">{character.title}</p>
-            </CardContent>
+    <div className="grid gap-4 p-4">
+      {characters?.map((character) => (
+        <Link href={`/characters/${character.id}`} key={character.id}>
+          <Card className="flex items-center gap-4 p-4 hover:bg-accent transition-colors">
+            <div className="relative h-16 w-16 rounded-full overflow-hidden">
+              <Image
+                src={character.image || "/placeholder.svg"}
+                alt={character.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <h3 className="font-semibold">{character.name}</h3>
+              {character.title && (
+                <p className="text-sm text-muted-foreground">
+                  {character.title}
+                </p>
+              )}
+            </div>
           </Card>
-        ))}
-      </div>
-      <Button>Add Character</Button>
-      <CharacterForm />
+        </Link>
+      ))}
     </div>
   );
 };

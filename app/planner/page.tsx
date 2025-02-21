@@ -1,28 +1,14 @@
 "use client";
-import TasksList from "@/components/tasks/TasksList";
 import PageLayout from "@/components/PageLayout";
 import React from "react";
-import EventsList from "@/components/events/EventsList";
-import EventForm from "@/components/events/EventForm";
-import GoalsList from "@/components/goals/GoalsList";
-import GoalForm from "@/components/goals/GoalForm";
-import ItineraryList from "@/components/itineraries/ItinerariesList";
-import ItineraryForm from "@/components/itineraries/ItineraryForm";
+import PlannerPage from "@/components/characters/Planner";
+import { PageHeader } from "@/components/page-header";
 
 const Tasks = () => {
   return (
     <PageLayout>
-      Tasks:
-      <TasksList />
-      Events:
-      <EventsList />
-      <EventForm />
-      Goals:
-      <GoalsList />
-      <GoalForm />
-      Itineraries:
-      <ItineraryList />
-      <ItineraryForm />
+      <PageHeader title="Planner" />
+      <PlannerPage />
     </PageLayout>
   );
 };

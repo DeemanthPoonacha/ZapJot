@@ -5,7 +5,9 @@ export const createGoalSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   deadline: z.string().optional(),
-  completed: z.boolean().default(false),
+  priority: z.enum(["low", "medium", "high"]).default("medium"),
+  progress: z.number().default(0),
+  objective: z.number().default(100),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });

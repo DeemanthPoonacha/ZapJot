@@ -1,4 +1,6 @@
 import { useEvents } from "@/lib/hooks/useEvents";
+import { Card } from "../ui/card";
+import { Calendar } from "../ui/calendar";
 
 const EventsList = () => {
   const { data: events, isLoading } = useEvents();
@@ -7,17 +9,22 @@ const EventsList = () => {
   if (!events || events.length === 0) return <div>No events found.</div>;
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Events</h2>
-      <ul className="grid gap-4">
+    <div className="space-y-4 p-4">
+      <Card className="p-4">
+        <Calendar mode="single" className="rounded-md border" />
+      </Card>
+      <div className="space-y-3">
         {events.map((event) => (
-          <li key={event.id} className="p-4 border rounded-lg">
-            <h3 className="text-lg font-semibold">{event.title}</h3>
-            <p className="text-sm text-gray-600">{event.date}</p>
-            <p className="text-gray-800">{event.description}</p>
-          </li>
+          <Card key={event.id} className="p-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold">{event.title}</h3>
+              <span className="text-sm text-muted-foreground">
+                {event.date}
+              </span>
+            </div>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

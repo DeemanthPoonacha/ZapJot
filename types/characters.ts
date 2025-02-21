@@ -13,6 +13,7 @@ const reminderSchema = z.object({
 // Character Schema
 export const createCharacterSchema = z.object({
   userId: z.string(),
+  image: z.string().optional(),
   name: z.string().min(1, "Name is required"),
   title: z.string().optional(), // Relationship or nickname
   reminders: z.array(reminderSchema).default([]), // Special dates like birthdays

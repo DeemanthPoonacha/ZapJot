@@ -1,6 +1,8 @@
 import { useTasks, useTaskMutations } from "@/lib/hooks/useTasks";
-import TaskForm from "@/components/tasks/TaskForm";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Plus } from "lucide-react";
 
 const TasksList = () => {
   const { data: tasks, isLoading } = useTasks();
@@ -9,31 +11,41 @@ const TasksList = () => {
   if (isLoading) return <p>Loading tasks...</p>;
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Tasks</h2>
-      <ul className="space-y-2">
-        {tasks?.map((task) => (
-          <li
-            key={task.id}
-            className="flex items-center justify-between p-3 border rounded-lg"
-          >
-            <div>
-              <h3 className="font-medium">{task.title}</h3>
-              {task.description && (
-                <p className="text-sm text-gray-600">{task.description}</p>
-              )}
-            </div>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => deleteMutation.mutate(task.id)}
+    <div className="space-y-3">
+      {tasks?.map((task) => (
+        <Card key={task.id} className="p-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox checked={task.status === "completed"} />
+            <span
+              className={
+                task.status === "completed"
+                  ? "line-through text-muted-foreground"
+                  : ""
+              }
             >
-              Delete
-            </Button>
-          </li>
-        ))}
-      </ul>
-      <TaskForm />
+              {task.title}
+            </span>
+          </div>
+          {task.subtasks && (
+            <div className="ml-6 mt-2 space-y-2">
+              {task.subtasks.map((subtask) => (
+                <div key={subtask.id} className="flex items-center space-x-2">
+                  <Checkbox checked={subtask.status === "completed"} />
+                  <span
+                    className={
+                      subtask.status === "completed"
+                        ? "line-through text-muted-foreground"
+                        : ""
+                    }
+                  >
+                    {subtask.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      ))}
     </div>
   );
 };

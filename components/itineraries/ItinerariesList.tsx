@@ -1,23 +1,22 @@
 import { useItineraries } from "@/lib/hooks/useItineraries";
+import { Card } from "../ui/card";
 
 const ItineraryList = () => {
   const { data: itineraries, isLoading } = useItineraries();
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Goals</h2>
-      <ul className="grid gap-4">
-        {itineraries?.map((itinerary) => (
-          <li key={itinerary.id}>
-            <h3 className="text-lg font-semibold">{itinerary.title}</h3>
-            <p className="text-sm text-gray-600">
-              {itinerary.startDate} - {itinerary.endDate}
-            </p>
-            <p className="text-gray-800">{itinerary.budget}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="space-y-3">
+      {itineraries?.map((itinerary) => (
+        <Card key={itinerary.id} className="p-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-semibold">{itinerary.title}</h3>
+            <span className="text-sm text-muted-foreground">
+              {itinerary.startDate}
+            </span>
+          </div>
+        </Card>
+      ))}
     </div>
   );
 };

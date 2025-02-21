@@ -5,7 +5,10 @@ import { journalSchema } from "./journals";
 
 export const createChapterSchema = z.object({
   userId: z.string(),
+  image: z.string().optional(),
   title: z.string(),
+  subtitle: z.string().optional(),
+  description: z.string().optional(),
   journals: z.array(journalSchema).optional(), // Array of journal posts
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
