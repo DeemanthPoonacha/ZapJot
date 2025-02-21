@@ -1,17 +1,16 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useUser } from "@/lib/hooks/useUser";
-import { useCharacter } from "@/lib/hooks/useCharacters";
-import { addCharacter, updateCharacter } from "@/lib/services/characters";
 import {
   Character,
   CharacterCreate,
+  characterSchema,
   createCharacterSchema,
 } from "@/types/characters";
+import { useCharacterMutations } from "@/lib/hooks/useCharacters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useUser } from "@/lib/hooks/useUser";
 
 interface CharacterFormProps {
   character?: Character;
@@ -23,6 +22,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
   onSuccess,
 }) => {
   const { user } = useUser();
+  const userId = user?.uid;
 
   const {
     register,
@@ -32,27 +32,25 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
   } = useForm<CharacterCreate>({
     resolver: zodResolver(createCharacterSchema),
     defaultValues: {
+      userId,
       name: character?.name || "",
       title: character?.title || "",
-      // reminders: character?.reminders || [],
+      reminders: character?.reminders || [],
       notes: character?.notes || "",
-      userId: character?.userId || user?.uid || "",
     },
   });
-  console.log("Errors:", errors);
+  console.log("🚀 ~ errors:", errors);
 
-  // useEffect(() => {
-  //   if (character) reset(character);
-  // }, [character, reset]);
+  const { addMutation, updateMutation } = useCharacterMutations();
 
   const onSubmit = async (data: CharacterCreate) => {
-    console.log("🚀 ~ onSubmit ~ user:", user);
-    console.log("🚀 ~ onSubmit ~ Character:", data);
-    if (!user) return;
     try {
-      character?.id
-        ? await updateCharacter(character?.id, data)
-        : await addCharacter(data);
+      if (character?.id) {
+        await updateMutation.mutateAsync({ id: character.id, data });
+      } else {
+        await addMutation.mutateAsync(data);
+      }
+      reset();
       onSuccess?.();
     } catch (error) {
       console.error("Error saving character", error);

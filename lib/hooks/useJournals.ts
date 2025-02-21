@@ -46,11 +46,9 @@ export const useJournalMutations = (
   const addMutation = useMutation({
     mutationFn: (data: any) => addJournal(userId!, chapterId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        JOURNAL_QUERY_KEY,
-        userId,
-        chapterId,
-      ] as any);
+      queryClient.invalidateQueries({
+        queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
+      });
       onSuccess?.();
     },
   });
@@ -59,11 +57,9 @@ export const useJournalMutations = (
     mutationFn: ({ journalId, data }: { journalId: string; data: any }) =>
       updateJournal(userId!, chapterId, journalId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        JOURNAL_QUERY_KEY,
-        userId,
-        chapterId,
-      ] as any);
+      queryClient.invalidateQueries({
+        queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
+      });
       onSuccess?.();
     },
   });
@@ -72,11 +68,9 @@ export const useJournalMutations = (
     mutationFn: (journalId: string) =>
       deleteJournal(userId!, chapterId, journalId),
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        JOURNAL_QUERY_KEY,
-        userId,
-        chapterId,
-      ] as any);
+      queryClient.invalidateQueries({
+        queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
+      });
       onSuccess?.();
     },
   });

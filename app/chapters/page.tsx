@@ -1,13 +1,14 @@
 "use client";
 import ChaptersList from "@/components/ChaptersList";
+import PageLayout from "@/components/PageLayout";
 import React from "react";
 
 const Chapters = () => {
   return (
-    <div className="h-full flex flex-col    ">
+    <PageLayout>
       Chapters:
       <ChaptersList />
-    </div>
+    </PageLayout>
   );
 };
 

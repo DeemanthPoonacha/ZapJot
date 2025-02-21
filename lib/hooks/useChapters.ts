@@ -50,7 +50,7 @@ export const useChapterMutations = (onSuccess?: () => void) => {
   const addMutation = useMutation({
     mutationFn: (data: any) => addChapter(userId!, data),
     onSuccess: () => {
-      queryClient.invalidateQueries([CHAPTER_QUERY_KEY, userId] as any);
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
       onSuccess?.();
     },
   });
@@ -59,7 +59,7 @@ export const useChapterMutations = (onSuccess?: () => void) => {
     mutationFn: ({ chapterId, data }: { chapterId: string; data: any }) =>
       updateChapter(userId!, chapterId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries([CHAPTER_QUERY_KEY, userId] as any);
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
       onSuccess?.();
     },
   });
@@ -67,7 +67,7 @@ export const useChapterMutations = (onSuccess?: () => void) => {
   const deleteMutation = useMutation({
     mutationFn: (chapterId: string) => deleteChapter(userId!, chapterId),
     onSuccess: () => {
-      queryClient.invalidateQueries([CHAPTER_QUERY_KEY, userId] as any);
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
       onSuccess?.();
     },
   });
