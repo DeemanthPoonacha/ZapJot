@@ -1,5 +1,5 @@
 import { useTasks, useTaskMutations } from "@/lib/hooks/useTasks";
-import TaskForm from "./TaskForm";
+import TaskForm from "@/components/tasks/TaskForm";
 import { Button } from "@/components/ui/button";
 
 const TasksList = () => {

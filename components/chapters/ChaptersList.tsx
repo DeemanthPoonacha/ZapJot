@@ -1,8 +1,7 @@
 import { useChapters } from "@/lib/hooks/useChapters";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import ChapterForm from "@/components/ChapterForm";
+import ChapterForm from "@/components/chapters/ChapterForm";
 
 const ChaptersList = () => {
   const { data: chapters, isLoading } = useChapters();

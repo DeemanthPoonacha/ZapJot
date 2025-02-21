@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Character,
   CharacterCreate,
-  characterSchema,
   createCharacterSchema,
 } from "@/types/characters";
 import { useCharacterMutations } from "@/lib/hooks/useCharacters";

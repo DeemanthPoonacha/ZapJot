@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useCharacters } from "@/lib/hooks/useCharacters";
 import CharacterForm from "./CharacterForm";
 import { Button } from "@/components/ui/button";

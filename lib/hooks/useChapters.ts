@@ -5,7 +5,7 @@ import {
   addChapter,
   updateChapter,
   deleteChapter,
-} from "@/lib/services/journals";
+} from "@/lib/services/chapters";
 import { useUser } from "@/lib/hooks/useUser";
 
 export const CHAPTER_QUERY_KEY = "chapters";

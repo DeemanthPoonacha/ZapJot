@@ -1,5 +1,5 @@
 "use client";
-import ChaptersList from "@/components/ChaptersList";
+import ChaptersList from "@/components/chapters/ChaptersList";
 import PageLayout from "@/components/PageLayout";
 import React from "react";
 

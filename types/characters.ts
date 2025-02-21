@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 // Reminder Schema
 const reminderSchema = z.object({

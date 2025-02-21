@@ -1,6 +1,4 @@
 import { useEvents } from "@/lib/hooks/useEvents";
-import EventForm from "./EventForm";
-import { Button } from "@/components/ui/button";
 
 const EventsList = () => {
   const { data: events, isLoading } = useEvents();

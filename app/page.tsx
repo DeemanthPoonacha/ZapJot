@@ -1,7 +1,7 @@
 "use client";
-import ChapterForm from "@/components/ChapterForm";
-import CharacterForm from "@/components/CharacterForm";
-import JournalForm from "@/components/JournalForm";
+import ChapterForm from "@/components/chapters/ChapterForm";
+import CharacterForm from "@/components/characters/CharacterForm";
+import JournalForm from "@/components/journals/JournalForm";
 import { useChapters } from "@/lib/hooks/useChapters";
 import { useCharacters } from "@/lib/hooks/useCharacters";
 import { useJournals } from "@/lib/hooks/useJournals";

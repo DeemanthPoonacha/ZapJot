@@ -1,6 +1,6 @@
 import { useJournals } from "@/lib/hooks/useJournals";
 import { useRouter } from "next/navigation";
-import JournalForm from "@/components/JournalForm";
+import JournalForm from "@/components/journals/JournalForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";

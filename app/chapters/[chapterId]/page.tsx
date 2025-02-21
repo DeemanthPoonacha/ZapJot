@@ -1,5 +1,5 @@
 "use client";
-import JournalsList from "@/components/JournalsList";
+import JournalsList from "@/components/journals/JournalsList";
 import PageLayout from "@/components/PageLayout";
 import { useChapter } from "@/lib/hooks/useChapters";
 import { useParams } from "next/navigation";

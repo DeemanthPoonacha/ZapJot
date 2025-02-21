@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createChapterSchema, Chapter, ChapterCreate } from "@/types/journals";
+import { Chapter, ChapterCreate } from "@/types/chapters";
+import { createChapterSchema } from "@/types/chapters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@/lib/hooks/useUser";
