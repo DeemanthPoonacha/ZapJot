@@ -1,4 +1,5 @@
 "use client";
+import CharacterForm from "@/components/characters/CharFormDum";
 import PageLayout from "@/components/PageLayout";
 import { useChapter } from "@/lib/hooks/useChapters";
 import { useCharacter } from "@/lib/hooks/useCharacters";
@@ -12,6 +13,7 @@ const Chapter = () => {
   return (
     <PageLayout>
       <h2 className="text-xl font-bold">{character?.name}</h2>
+      <CharacterForm />
     </PageLayout>
   );
 };

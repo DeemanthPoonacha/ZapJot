@@ -3,20 +3,13 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import {
-  Home,
-  LayoutTemplateIcon as LayoutPlanePerson,
-  Grid3X3,
-  Users,
-  Settings,
-  Plus,
-} from "lucide-react";
+import { Home, Grid3X3, Users, Settings, Plus, ListTodo } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FloatingButton from "./ui/floating-button";
 
 const routes = [
   { label: "Home", icon: Home, href: "/" },
-  { label: "Planner", icon: LayoutPlanePerson, href: "/planner" },
+  { label: "Planner", icon: ListTodo, href: "/planner" },
   { label: "Chapters", icon: Grid3X3, href: "/chapters" },
   { label: "Characters", icon: Users, href: "/characters" },
   { label: "Settings", icon: Settings, href: "/settings" },
