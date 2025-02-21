@@ -1,12 +1,16 @@
 "use client";
 import ChapterForm from "@/components/ChapterForm";
+import CharacterForm from "@/components/CharacterForm";
 import JournalForm from "@/components/JournalForm";
 import { useChapters } from "@/lib/hooks/useChapters";
+import { useCharacters } from "@/lib/hooks/useCharacters";
 import { useJournals } from "@/lib/hooks/useJournals";
 
 export default function Home() {
   const { data: chapters, isLoading, error } = useChapters();
-  console.log("🚀 ~ Home ~ chapters:", chapters);
+  const { data: characters } = useCharacters();
+
+  console.log("🚀 ~ Home ~ chapters:", chapters, characters);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading journals</p>;
@@ -22,6 +26,15 @@ export default function Home() {
       ))}
       <JournalForm />
       <ChapterForm />
+      <div className="m-12">
+        {characters?.map((character) => (
+          <div key={character.id}>
+            <h2>{character.name}</h2>
+            <p>{character.title}</p>
+          </div>
+        ))}
+      </div>
+      <CharacterForm />
     </main>
   );
 }
