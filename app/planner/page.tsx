@@ -6,6 +6,8 @@ import EventsList from "@/components/EventsList";
 import EventForm from "@/components/EventForm";
 import GoalsList from "@/components/GoalsList";
 import GoalForm from "@/components/GoalForm";
+import ItineraryList from "@/components/ItinerariesList";
+import ItineraryForm from "@/components/ItineraryForm";
 
 const Tasks = () => {
   return (
@@ -18,6 +20,9 @@ const Tasks = () => {
       Goals:
       <GoalsList />
       <GoalForm />
+      Itineraries:
+      <ItineraryList />
+      <ItineraryForm />
     </PageLayout>
   );
 };
