@@ -1,0 +1,61 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getEvents,
+  getEventById,
+  addEvent,
+  updateEvent,
+  deleteEvent,
+} from "@/lib/services/events";
+import { useUser } from "@/lib/hooks/useUser";
+import { EventCreate } from "@/types/events";
+
+const EVENT_QUERY_KEY = "events";
+
+export const useEvents = () => {
+  const { user } = useUser();
+  const userId = user?.uid;
+
+  return useQuery({
+    queryKey: [EVENT_QUERY_KEY, userId],
+    queryFn: () => (userId ? getEvents(userId) : Promise.resolve([])),
+    enabled: !!userId,
+  });
+};
+
+export const useEvent = (id?: string) => {
+  const { user } = useUser();
+  const userId = user?.uid;
+  return useQuery({
+    queryKey: [EVENT_QUERY_KEY, id],
+    queryFn: () =>
+      userId && id ? getEventById(userId, id) : Promise.resolve(null),
+    enabled: !!id,
+  });
+};
+
+export const useEventMutations = () => {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
+  const userId = user?.uid;
+
+  const addMutation = useMutation({
+    mutationFn: (data: EventCreate) => addEvent(userId!, data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: EventCreate }) =>
+      updateEvent(userId!, id, data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteEvent(userId!, id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
+  });
+
+  return { addMutation, updateMutation, deleteMutation };
+};
