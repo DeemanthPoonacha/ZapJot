@@ -4,6 +4,8 @@ import PageLayout from "@/components/PageLayout";
 import React from "react";
 import EventsList from "@/components/EventsList";
 import EventForm from "@/components/EventForm";
+import GoalsList from "@/components/GoalsList";
+import GoalForm from "@/components/GoalForm";
 
 const Tasks = () => {
   return (
@@ -13,6 +15,9 @@ const Tasks = () => {
       Events:
       <EventsList />
       <EventForm />
+      Goals:
+      <GoalsList />
+      <GoalForm />
     </PageLayout>
   );
 };
