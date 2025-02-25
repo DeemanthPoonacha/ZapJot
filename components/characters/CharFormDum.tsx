@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Calendar } from "lucide-react";
 import Image from "next/image";
 
-export default function CharacterForm() {
+export default function CharacterFormd() {
   const [reminders, setReminders] = useState([
     { id: "1", title: "Birthday: 12th, July (12:00AM, repeats every year)" },
   ]);

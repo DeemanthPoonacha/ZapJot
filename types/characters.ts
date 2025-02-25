@@ -28,7 +28,6 @@ export const updateCharacterSchema = createCharacterSchema.partial().extend({
 
 export const characterSchema = createCharacterSchema.extend({
   id: z.string(),
-  // reminders: z.array(string()).optional(),
 });
 
 // Type Inference

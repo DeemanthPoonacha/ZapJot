@@ -107,88 +107,84 @@ export default function ItineraryDetailPage() {
   };
 
   return (
-    <main className="container pb-20 pt-4 max-w-md mx-auto">
-      <div className="p-4 space-y-4">
-        <Card className="p-4 bg-gradient-to-br from-primary/20 to-primary/10">
-          <h2 className="text-xl font-bold">{itineraryData.title}</h2>
-          <p className="text-sm text-muted-foreground">
-            {itineraryData.duration}
-          </p>
-          <div className="mt-2 flex justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Budget</p>
-              <p className="text-lg font-semibold">
-                ₹{itineraryData.budget.total}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Spent</p>
-              <p className="text-lg font-semibold">
-                ₹{itineraryData.budget.spent}
-              </p>
-            </div>
+    <div className="space-y-4">
+      <Card className="p-4 bg-gradient-to-br from-primary/20 to-primary/10">
+        <h2 className="text-xl font-bold">{itineraryData.title}</h2>
+        <p className="text-sm text-muted-foreground">
+          {itineraryData.duration}
+        </p>
+        <div className="mt-2 flex justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">Budget</p>
+            <p className="text-lg font-semibold">
+              ₹{itineraryData.budget.total}
+            </p>
           </div>
-        </Card>
+          <div>
+            <p className="text-sm text-muted-foreground">Spent</p>
+            <p className="text-lg font-semibold">
+              ₹{itineraryData.budget.spent}
+            </p>
+          </div>
+        </div>
+      </Card>
 
-        {days.map((day) => (
-          <Card key={day.id} className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold">Day {day.number}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Budget: ₹{day.budget}
-                </p>
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>Edit Day</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">
-                    Delete Day
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+      {days.map((day) => (
+        <Card key={day.id} className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold">Day {day.number}</h3>
+              <p className="text-sm text-muted-foreground">
+                Budget: ₹{day.budget}
+              </p>
             </div>
-            <div className="space-y-3">
-              {day.activities.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={activity.completed}
-                      onCheckedChange={() =>
-                        toggleActivity(day.id, activity.id)
-                      }
-                    />
-                    <span
-                      className={
-                        activity.completed
-                          ? "line-through text-muted-foreground"
-                          : ""
-                      }
-                    >
-                      {activity.title}
-                    </span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {activity.time}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>Edit Day</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  Delete Day
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="space-y-3">
+            {day.activities.map((activity) => (
+              <div
+                key={activity.id}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={activity.completed}
+                    onCheckedChange={() => toggleActivity(day.id, activity.id)}
+                  />
+                  <span
+                    className={
+                      activity.completed
+                        ? "line-through text-muted-foreground"
+                        : ""
+                    }
+                  >
+                    {activity.title}
                   </span>
                 </div>
-              ))}
-            </div>
-          </Card>
-        ))}
+                <span className="text-sm text-muted-foreground">
+                  {activity.time}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      ))}
 
-        <Button className="w-full bg-gradient-to-r from-primary to-primary/90">
-          <Plus className="mr-2 h-4 w-4" /> Add Day
-        </Button>
-      </div>
-    </main>
+      <Button className="w-full bg-gradient-to-r from-primary to-primary/90">
+        <Plus className="mr-2 h-4 w-4" /> Add Day
+      </Button>
+    </div>
   );
 }

@@ -1,12 +1,10 @@
 import { useCharacters } from "@/lib/hooks/useCharacters";
 import { Card } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 const CharactersList = () => {
   const { data: characters, isLoading } = useCharacters();
-  const router = useRouter();
 
   if (isLoading) return <p>Loading...</p>;
 

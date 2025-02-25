@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 const floatingActions: Record<string, { label: string; href: string }> = {
   "/characters": { label: "New Character", href: "/characters/new" },
   "/chapters": { label: "New Chapter", href: "/chapters/new" },
-  "/planner": { label: "New Plan", href: "/planner/new" },
+  // "/planner": { label: "New Plan", href: "/planner/new" },
 };
 
 export default function FloatingButton() {

@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -20,4 +21,12 @@ export const formatDateTitle = (
 
 export function GetDateTime() {
   return new Date().toString().split(" GMT", 1);
+}
+
+export function getDates(month: number = 0, year: number = 2020) {
+  const daysInMonth = dayjs()
+    .set("month", month)
+    .set("year", year)
+    .daysInMonth();
+  return Array.from({ length: daysInMonth }, (_, i) => i + 1);
 }

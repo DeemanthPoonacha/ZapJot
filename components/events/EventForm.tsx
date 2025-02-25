@@ -1,43 +1,375 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createEventSchema, EventCreate } from "@/types/events";
-import { useEventMutations } from "@/lib/hooks/useEvents";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+  SelectContent,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { useEffect, useState } from "react";
+import { getDates } from "@/lib/utils";
+import { useEventMutations } from "@/lib/hooks/useEvents";
+import {
+  createEventSchema,
+  Event,
+  EventCreate,
+  RepeatType,
+} from "@/types/events";
+import dayjs from "dayjs";
+import { Label } from "../ui/label";
 
-const EventForm = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm({
+const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTH_DAYS = getDates();
+const ALL_MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+type EventFormProps = {
+  eventData?: Event;
+  footer?: React.ReactNode;
+  onSuccess?: () => void;
+};
+
+export default function EventForm({
+  eventData,
+  footer,
+  onSuccess,
+}: EventFormProps) {
+  const [repeatType, setRepeatType] = useState(eventData?.repeat || "none");
+
+  const defaultValues = {
+    title: eventData?.title || "",
+    notes: eventData?.notes || "",
+    date: eventData?.date || dayjs().format("YYYY-MM-DD"),
+    time: eventData?.time || dayjs().format("HH:mm"),
+    location: eventData?.location || "",
+    repeat: eventData?.repeat || "none",
+    repeatDays: eventData?.repeatDays || [],
+    participants: eventData?.participants || "",
+  };
+
+  const form = useForm<EventCreate>({
     resolver: zodResolver(createEventSchema),
-    defaultValues: { title: "", date: "", description: "" },
+    defaultValues: defaultValues,
   });
 
-  const { addMutation } = useEventMutations();
+  const { addMutation, updateMutation } = useEventMutations();
 
   const onSubmit = async (data: EventCreate) => {
-    await addMutation.mutateAsync(data);
-    reset();
+    try {
+      if (repeatType !== "none") {
+        delete data.date;
+      }
+      if (eventData?.id) {
+        const res = await updateMutation.mutateAsync({
+          id: eventData?.id,
+          data,
+        });
+        console.log("🚀 ~ onSubmit ~ eventData:", res);
+      } else {
+        await addMutation.mutateAsync(data);
+      }
+      console.log("🚀 ~ onSubmit ~ data:", data, onSuccess);
+      form.reset(defaultValues);
+      onSuccess?.();
+    } catch (error) {
+      console.error("Error saving event", error);
+    }
+  };
+
+  const renderWeeklySelector = (field: any) => (
+    <FormItem>
+      <FormLabel>Select Days</FormLabel>
+      <div className="grid grid-cols-7 gap-2">
+        {WEEK_DAYS.map((day, index) => (
+          <div
+            key={index}
+            className={`flex items-center justify-center w-10 p-1 rounded-md cursor-pointer border ${
+              field.value.includes(index.toString())
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-background hover:bg-muted border-input"
+            }`}
+            onClick={() => {
+              const checked = !field.value.includes(index.toString());
+              const newDays = checked
+                ? [...field.value, index.toString()]
+                : field.value.filter((d: string) => d !== index.toString());
+              field.onChange(newDays);
+            }}
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+    </FormItem>
+  );
+
+  const renderMonthlySelector = (field: any) => (
+    <FormItem>
+      <FormLabel>Day</FormLabel>
+      <div className="flex gap-2">
+        <Select
+          onValueChange={(value) => {
+            const newDays = field.value.includes(value)
+              ? field.value.filter((d: string) => d !== value)
+              : [...field.value, value];
+            field.onChange(newDays);
+          }}
+          defaultValue={field.value[0]}
+        >
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Day" />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {MONTH_DAYS.map((day, index) => (
+              <SelectItem key={index} value={(index + 1).toString()}>
+                {day}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </FormItem>
+  );
+  // Replace your renderYearlySelector function with this:
+  const renderYearlySelector = (field: any) => {
+    // Parse values outside of render to avoid re-renders
+    const monthValue = field.value[0]?.split("-")[0] || "";
+    const dayValue = field.value[0]?.split("-")[1] || "";
+
+    const handleMonthChange = (value: string) => {
+      field.onChange([`${value}-${dayValue || "1"}`]);
+    };
+
+    const handleDayChange = (value: string) => {
+      field.onChange([`${monthValue}-${value}`]);
+    };
+
+    return (
+      <FormItem className="grid-cols-2">
+        <span className="grid gap-2">
+          <Label>Month</Label>
+          <Select onValueChange={handleMonthChange} value={monthValue}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Month" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {ALL_MONTHS.map((month, index) => (
+                <SelectItem key={index} value={(index + 1).toString()}>
+                  {month}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </span>
+        <span className="grid gap-2">
+          <Label>Day</Label>
+          <Select
+            disabled={!monthValue}
+            onValueChange={handleDayChange}
+            value={dayValue}
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Day" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {getDates(parseInt(monthValue) || 1).map((day, index) => (
+                <SelectItem key={index} value={(index + 1).toString()}>
+                  {day}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </span>
+      </FormItem>
+    );
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <h2 className="text-lg font-bold">Add Event</h2>
-      <Input {...register("title")} placeholder="Event Title" />
-      {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Event title" />
+              </FormControl>
+              <FormMessage className="text-xs text-red-500" />
+            </FormItem>
+          )}
+        />
 
-      <Input type="date" {...register("date")} placeholder="Event Date" />
-      {errors.date && <p className="text-red-500">{errors.date.message}</p>}
+        <FormField
+          control={form.control}
+          name="repeat"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Repeat</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  setRepeatType(value as RepeatType);
+                  field.onChange(value);
+                  const repeat =
+                    value === "weekly"
+                      ? [`${dayjs().day()}`]
+                      : value === "monthly"
+                      ? [`${dayjs().date()}`]
+                      : value === "yearly"
+                      ? [`${dayjs().month() + 1}-${dayjs().date()}`]
+                      : [];
+                  form.setValue("repeatDays", repeat);
+                }}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select recurrence" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none">Does not repeat</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="yearly">Yearly</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
 
-      <Input {...register("description")} placeholder="Event Description" />
-      <Button type="submit" disabled={isSubmitting}>
-        Create Event
-      </Button>
-    </form>
+        <div className="flex gap-2 items-end">
+          {repeatType === "weekly" && (
+            <FormField
+              control={form.control}
+              name="repeatDays"
+              render={({ field }) => renderWeeklySelector(field)}
+            />
+          )}
+
+          {repeatType === "monthly" && (
+            <FormField
+              control={form.control}
+              name="repeatDays"
+              render={({ field }) => renderMonthlySelector(field)}
+            />
+          )}
+
+          {repeatType === "yearly" && (
+            <FormField
+              control={form.control}
+              name="repeatDays"
+              render={({ field }) => renderYearlySelector(field)}
+            />
+          )}
+
+          {repeatType === "none" && (
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <FormField
+            control={form.control}
+            name="time"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Time</FormLabel>
+                <FormControl>
+                  <Input type="time" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea {...field} placeholder="Notes" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="participants"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Participants</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Add emails or names" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Enter location" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        {footer || (
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button type="submit">Save</Button>
+          </div>
+        )}
+      </form>
+    </Form>
   );
-};
-
-export default EventForm;
+}
