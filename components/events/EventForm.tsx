@@ -32,23 +32,7 @@ import { Label } from "../ui/label";
 import { CustomAlertDialog } from "../ui/custom-alert";
 import { Trash2 } from "lucide-react";
 import { toast } from "../ui/sonner";
-
-const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH_DAYS = getDates();
-const ALL_MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
 
 type EventFormProps = {
   eventData?: Event;

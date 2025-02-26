@@ -14,6 +14,7 @@ import { Card } from "../ui/card";
 import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as necessary
 import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";
+import { ALL_MONTHS, WEEK_DAYS } from "@/lib/constants";
 
 export function EventCard({
   event,
@@ -113,38 +114,17 @@ const formatRepeatText = (repeat: RepeatType, repeatDays: string[]) => {
     case "daily":
       return "Every day";
     case "weekly":
-      const days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-      return `Every ${repeatDays.map((d) => days[parseInt(d)]).join(", ")}`;
+      return `Every ${repeatDays
+        .map((d) => WEEK_DAYS[parseInt(d)])
+        .join(", ")}`;
     case "monthly":
       const day = repeatDays[0];
       return `Every month on the ${day}${getDaySuffix(day)}`;
     case "yearly":
       if (repeatDays[0]) {
         const [month, day] = repeatDays[0].split("-");
-        const months = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ];
         return `Every year on ${
-          months[parseInt(month) - 1]
+          ALL_MONTHS[parseInt(month) - 1]
         } ${day}${getDaySuffix(day)}`;
       }
       return "Yearly";
