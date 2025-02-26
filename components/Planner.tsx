@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EventsList from "../events/EventsList";
-import GoalsList from "../goals/GoalsList";
-import ItinerariesList from "../itineraries/ItinerariesList";
-import TasksList from "../tasks/TasksList";
-import { Calendar } from "../ui/calendar";
-import FloatingButton from "../ui/floating-button-planner";
+import EventsList from "./events/EventsList";
+import GoalsList from "./goals/GoalsList";
+import ItinerariesList from "./itineraries/ItinerariesList";
+import TasksList from "./tasks/TasksList";
+import { Calendar } from "./ui/calendar";
 
 export default function PlannerPage() {
   const [activeTab, setActiveTab] = useState("tasks");

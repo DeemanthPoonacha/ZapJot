@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import EventForm from "./EventForm";
 import { EventCard } from "./EventCard";
-import FloatingButton from "../ui/floating-button-planner";
+import FloatingButton from "../ui/floating-button";
 import { Event } from "@/types/events";
 import { useState } from "react";
+
 const EventsList = () => {
   const { data: events, isLoading } = useEvents();
   const [openDialogId, setOpenDialogId] = useState<string | null>(null); // null when no dialog is open

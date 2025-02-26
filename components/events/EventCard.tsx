@@ -33,7 +33,7 @@ export function EventCard({
     }
   );
   return (
-    <Card onClick={onClick} className="p-4 gap-2">
+    <Card onClick={onClick} className="p-4 gap-2 cursor-pointer">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold text-primary truncate">
           {event.title}

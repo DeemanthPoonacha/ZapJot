@@ -4,8 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, Grid3X3, Users, Settings, Plus, ListTodo } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import FloatingButton from "./ui/floating-button";
+import FloatingButton from "./ui/floating-button-link";
 
 const routes = [
   { label: "Home", icon: Home, href: "/" },
