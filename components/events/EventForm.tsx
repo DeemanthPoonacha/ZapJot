@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectTrigger,
@@ -19,8 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
-import { getDates } from "@/lib/utils";
+import { useState } from "react";
+import { cn, getDates } from "@/lib/utils";
 import { useEventMutations } from "@/lib/hooks/useEvents";
 import {
   createEventSchema,
@@ -31,6 +30,8 @@ import {
 import dayjs from "dayjs";
 import { Label } from "../ui/label";
 import { CustomAlertDialog } from "../ui/custom-alert";
+import { Trash2 } from "lucide-react";
+import { toast } from "../ui/sonner";
 
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_DAYS = getDates();
@@ -77,8 +78,13 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
 
   const handleDelete = async () => {
     if (eventData?.id) {
-      await deleteMutation.mutateAsync(eventData.id);
-      onClose?.();
+      try {
+        await deleteMutation.mutateAsync(eventData.id);
+        toast.success("Event deleted successfully");
+        onClose?.();
+      } catch (error) {
+        toast.error("Error deleting event");
+      }
     }
   };
 
@@ -92,14 +98,18 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
           id: eventData?.id,
           data,
         });
+        toast.success("Event updated successfully");
       } else {
         await addMutation.mutateAsync(data);
+        toast.success("Event created successfully");
       }
       onClose?.();
     } catch (error) {
+      toast.error("Error saving event");
       console.error("Error saving event", error);
     }
   };
+
   const renderWeeklySelector = (field: any) => (
     <FormItem>
       <FormLabel>Select Days</FormLabel>
@@ -159,9 +169,8 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
       </div>
     </FormItem>
   );
-  // Replace your renderYearlySelector function with this:
+
   const renderYearlySelector = (field: any) => {
-    // Parse values outside of render to avoid re-renders
     const monthValue = field.value[0]?.split("-")[0] || "";
     const dayValue = field.value[0]?.split("-")[1] || "";
 
@@ -366,24 +375,32 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
             </FormItem>
           )}
         />
-        <div className="flex w-full justify-between">
-          <CustomAlertDialog
-            trigger={
-              <Button variant="destructive" type="button">
-                Delete
-              </Button>
-            }
-            dialogAction={[
-              { title: "Cancel", variant: "outline", onClick: () => {} },
-              {
-                title: "Delete",
-                variant: "destructive",
-                onClick: handleDelete,
-              },
-            ]}
-            dialogTitle="Delete Event"
-            dialogDescription="Are you sure you want to delete this event?"
-          />
+        <div
+          className={cn(
+            "flex w-full",
+            eventData?.id ? "justify-between" : "justify-end"
+          )}
+        >
+          {eventData?.id && (
+            <CustomAlertDialog
+              trigger={
+                <Button variant="outline" type="button">
+                  <Trash2 size={16} />
+                  Delete
+                </Button>
+              }
+              dialogAction={[
+                { title: "Cancel", variant: "outline", onClick: () => {} },
+                {
+                  title: "Delete",
+                  variant: "destructive",
+                  onClick: handleDelete,
+                },
+              ]}
+              dialogTitle="Delete Event"
+              dialogDescription="Are you sure you want to delete this event?"
+            />
+          )}
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button variant="ghost" type="button" onClick={onClose}>
               Cancel

@@ -13,6 +13,7 @@ import {
 import { Card } from "../ui/card";
 import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as necessary
 import { Event, RepeatType } from "@/types/events";
+import dayjs from "dayjs";
 
 export function EventCard({
   event,
@@ -21,7 +22,8 @@ export function EventCard({
   event: Event;
   onClick: () => void;
 }) {
-  const nextOccurance = getNextOccurrence(event)?.format("ddd, MMM D, YYYY");
+  const nextOccurance = getNextOccurrence(event);
+  console.log("🚀 ~ nextOccurance:", event.title, nextOccurance);
 
   const time = new Date(`${"2020-01-01"}T${event.time}:00`).toLocaleString(
     "en-IN",
@@ -33,11 +35,20 @@ export function EventCard({
   return (
     <Card onClick={onClick} className="p-4 gap-2">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-800">{event.title}</h3>
+        <h3 className="text-lg font-semibold text-primary truncate">
+          {event.title}
+        </h3>
         {nextOccurance && (
           <p className="text-sm text-Bold flex gap-1 items-center">
             <Calendar1 className="h-4 w-4" />
-            <span className="truncate max-w- line-through">{nextOccurance}</span>
+            <span
+              className={cn(
+                "truncate max-w-32",
+                dayjs(nextOccurance).isBefore(dayjs()) ? "line-through" : ""
+              )}
+            >
+              {nextOccurance?.format("ddd, MMM D, YYYY")}
+            </span>
           </p>
         )}
       </div>
@@ -58,7 +69,7 @@ export function EventCard({
         </div>
 
         {event.time && (
-          <p className="text-sm text-Bold flex gap-1 items-center">
+          <p className="text-sm text-muted-foreground font-medium flex gap-1 items-center">
             <Clock className="h-4 w-4" />
             <span className="truncate max-w-32">{time}</span>
           </p>
@@ -90,7 +101,6 @@ export function EventCard({
 
       {event.notes && (
         <p className="text-sm text-muted-foreground flex gap-1 items-center">
-          {/* <Notebook className="h-4 w-4" /> */}
           <span className="truncate text-sm italic">{event.notes}</span>
         </p>
       )}
