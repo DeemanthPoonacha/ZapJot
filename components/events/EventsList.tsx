@@ -17,69 +17,65 @@ import { EventCard } from "./EventCard";
 import FloatingButton from "../ui/floating-button-planner";
 import { Event } from "@/types/events";
 import { useState } from "react";
-
 const EventsList = () => {
   const { data: events, isLoading } = useEvents();
-  const [open, setOpen] = useState(false);
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null); // null when no dialog is open
 
   if (isLoading) return <div>Loading...</div>;
 
+  // Helper to determine if a specific dialog is open
+  const isDialogOpen = (dialogId: string) => openDialogId === dialogId;
+
+  // Helper to open/close a specific dialog
+  const toggleDialog = (dialogId: string | null) => {
+    setOpenDialogId(openDialogId === dialogId ? null : dialogId);
+  };
+
   return (
     <div className="space-y-4">
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <FloatingButton label="Add Event" />
-        </DialogTrigger>
-        <EventDialogContent setOpen={setOpen} />
-      </Dialog>
-      {events?.map((event) => (
-        <Dialog key={event.id}>
-          <div className="space-y-3">
-            <DialogTrigger className="" asChild>
-              <span key={event.id}>
-                <EventCard event={event} />
-              </span>
-            </DialogTrigger>
-          </div>
+      {/* Add Event Dialog */}
+      <Dialog
+        open={openDialogId !== null}
+        onOpenChange={(open) => toggleDialog(open ? openDialogId : null)}
+      >
+        <FloatingButton
+          label="Add Event"
+          onClick={() => toggleDialog("add-event")}
+        />
+        {isDialogOpen("add-event") && (
+          <EventDialogContent handleClose={() => setOpenDialogId(null)} />
+        )}
 
-          <EventDialogContent setOpen={setOpen} event={event} />
-        </Dialog>
-      ))}
+        {/* Event-specific Dialogs */}
+        {events?.map((event) => (
+          <div key={event.id}>
+            <EventCard onClick={() => toggleDialog(event.id)} event={event} />
+            {isDialogOpen(event.id) && (
+              <EventDialogContent
+                handleClose={() => setOpenDialogId(null)}
+                event={event}
+              />
+            )}
+          </div>
+        ))}
+      </Dialog>
     </div>
   );
 };
 
 function EventDialogContent({
   event,
-  setOpen,
+  handleClose,
 }: {
   event?: Event;
-  setOpen: (open: boolean) => void;
+  handleClose: () => void;
 }) {
   return (
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{event?.title || "New Event"}</DialogTitle>
-        {event && (
-          <DialogDescription>
-            {`Event on ${event.date} at ${event.time}, ${event.location} with ${event.participants} participants`}
-          </DialogDescription>
-        )}
       </DialogHeader>
-      <EventForm
-        onSuccess={() => setOpen(false)}
-        eventData={event}
-        footer={
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="ghost" type="button">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Save</Button>
-          </DialogFooter>
-        }
-      />
+      <EventForm onClose={handleClose} eventData={event} />
     </DialogContent>
   );
 }

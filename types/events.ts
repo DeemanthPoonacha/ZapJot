@@ -16,7 +16,7 @@ export const createEventSchema = z.object({
   date: z.string().optional(),
   time: z.string(),
   repeat: z.enum(RepeatTypes as any).default("none"),
-  repeatDays: z.array(z.string()).optional(),
+  repeatDays: z.array(z.string()).default([]),
   location: z.string().optional(),
   participants: z.string().optional(),
   createdAt: z.string().default(() => new Date().toISOString()),

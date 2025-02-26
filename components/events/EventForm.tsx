@@ -30,6 +30,7 @@ import {
 } from "@/types/events";
 import dayjs from "dayjs";
 import { Label } from "../ui/label";
+import { CustomAlertDialog } from "../ui/custom-alert";
 
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_DAYS = getDates();
@@ -50,15 +51,10 @@ const ALL_MONTHS = [
 
 type EventFormProps = {
   eventData?: Event;
-  footer?: React.ReactNode;
-  onSuccess?: () => void;
+  onClose?: () => void;
 };
 
-export default function EventForm({
-  eventData,
-  footer,
-  onSuccess,
-}: EventFormProps) {
+export default function EventForm({ eventData, onClose }: EventFormProps) {
   const [repeatType, setRepeatType] = useState(eventData?.repeat || "none");
 
   const defaultValues = {
@@ -77,7 +73,14 @@ export default function EventForm({
     defaultValues: defaultValues,
   });
 
-  const { addMutation, updateMutation } = useEventMutations();
+  const { addMutation, updateMutation, deleteMutation } = useEventMutations();
+
+  const handleDelete = async () => {
+    if (eventData?.id) {
+      await deleteMutation.mutateAsync(eventData.id);
+      onClose?.();
+    }
+  };
 
   const onSubmit = async (data: EventCreate) => {
     try {
@@ -85,22 +88,18 @@ export default function EventForm({
         delete data.date;
       }
       if (eventData?.id) {
-        const res = await updateMutation.mutateAsync({
+        await updateMutation.mutateAsync({
           id: eventData?.id,
           data,
         });
-        console.log("🚀 ~ onSubmit ~ eventData:", res);
       } else {
         await addMutation.mutateAsync(data);
       }
-      console.log("🚀 ~ onSubmit ~ data:", data, onSuccess);
-      form.reset(defaultValues);
-      onSuccess?.();
+      onClose?.();
     } catch (error) {
       console.error("Error saving event", error);
     }
   };
-
   const renderWeeklySelector = (field: any) => (
     <FormItem>
       <FormLabel>Select Days</FormLabel>
@@ -115,9 +114,12 @@ export default function EventForm({
             }`}
             onClick={() => {
               const checked = !field.value.includes(index.toString());
-              const newDays = checked
+              let newDays = checked
                 ? [...field.value, index.toString()]
                 : field.value.filter((d: string) => d !== index.toString());
+              if (newDays.length === 0) {
+                newDays = [index.toString()]; // Ensure at least one day is selected
+              }
               field.onChange(newDays);
             }}
           >
@@ -239,6 +241,7 @@ export default function EventForm({
             <FormItem>
               <FormLabel>Repeat</FormLabel>
               <Select
+                value={repeatType}
                 onValueChange={(value) => {
                   setRepeatType(value as RepeatType);
                   field.onChange(value);
@@ -363,12 +366,31 @@ export default function EventForm({
             </FormItem>
           )}
         />
-
-        {footer || (
+        <div className="flex w-full justify-between">
+          <CustomAlertDialog
+            trigger={
+              <Button variant="destructive" type="button">
+                Delete
+              </Button>
+            }
+            dialogAction={[
+              { title: "Cancel", variant: "outline", onClick: () => {} },
+              {
+                title: "Delete",
+                variant: "destructive",
+                onClick: handleDelete,
+              },
+            ]}
+            dialogTitle="Delete Event"
+            dialogDescription="Are you sure you want to delete this event?"
+          />
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button variant="ghost" type="button" onClick={onClose}>
+              Cancel
+            </Button>
             <Button type="submit">Save</Button>
           </div>
-        )}
+        </div>
       </form>
     </Form>
   );
