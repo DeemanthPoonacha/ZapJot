@@ -8,6 +8,7 @@ import {
 } from "@/lib/services/events";
 import { useUser } from "@/lib/hooks/useUser";
 import { EventCreate, EventsFilter } from "@/types/events";
+import { useCharacters } from "./useCharacters";
 
 const EVENT_QUERY_KEY = "events";
 
@@ -15,11 +16,30 @@ export const useEvents = (query?: EventsFilter) => {
   const { user } = useUser();
   const userId = user?.uid;
 
-  return useQuery({
+  const { data: characters } = useCharacters();
+
+  const eventsQuery = useQuery({
     queryKey: [EVENT_QUERY_KEY, userId, query],
     queryFn: () => (userId ? getEvents(userId, query) : Promise.resolve([])),
     enabled: !!userId,
   });
+
+  const eventsWithParticipants = eventsQuery.data?.map((event) => ({
+    ...event,
+    participants: event.participants?.map((participant) => {
+      const character = characters?.find(
+        (char) => char.id === participant.value
+      );
+      return character
+        ? { ...participant, label: character.name }
+        : participant;
+    }),
+  }));
+
+  return {
+    ...eventsQuery,
+    data: eventsWithParticipants,
+  };
 };
 
 export const useEvent = (id?: string) => {
@@ -52,7 +72,13 @@ export const useEventMutations = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteEvent(userId!, id),
+    mutationFn: ({
+      id,
+      participants,
+    }: {
+      id: string;
+      participants?: string[];
+    }) => deleteEvent(userId!, id, participants),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
   });

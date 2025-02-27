@@ -41,6 +41,8 @@ export const eventSchema = createEventSchema.extend({
 export type Event = z.infer<typeof eventSchema>;
 export type EventCreate = z.infer<typeof createEventSchema>;
 
+export type EventParticipant = z.infer<typeof participants>;
+
 export interface EventsFilter {
   eventIds?: string[];
   participants?: string[];

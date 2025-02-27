@@ -10,6 +10,7 @@ import {
   query,
   where,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import {
   Character,
@@ -97,6 +98,14 @@ export const updateCharacter = async (
 };
 
 /**
+ * Delete a character.
+ */
+export const deleteCharacter = async (userId: string, characterId: string) => {
+  const docRef = doc(db, `users/${userId}/characters/${characterId}`);
+  await deleteDoc(docRef);
+};
+
+/**
  * Add a reminder to a character's reminders array.
  */
 export const addReminder = async (
@@ -112,9 +121,16 @@ export const addReminder = async (
 };
 
 /**
- * Delete a character.
+ * Remove a reminder from a character's reminders array.
  */
-export const deleteCharacter = async (userId: string, characterId: string) => {
+export const removeReminder = async (
+  userId: string,
+  characterId: string,
+  reminderId: string
+) => {
+  console.log("🚀 Removing reminder:", characterId, reminderId);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  await deleteDoc(docRef);
+  await updateDoc(docRef, {
+    reminders: arrayRemove(reminderId),
+  });
 };

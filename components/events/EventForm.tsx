@@ -36,7 +36,6 @@ import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
 import MultipleSelector from "../ui/multi-select";
 import { searchByName } from "@/lib/services/characters";
 import { useUser } from "@/lib/hooks/useUser";
-import { Participant } from "./EventCard";
 
 type EventFormProps = {
   eventData?: Event;
@@ -72,7 +71,10 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
   const handleDelete = async () => {
     if (eventData?.id) {
       try {
-        await deleteMutation.mutateAsync(eventData.id);
+        await deleteMutation.mutateAsync({
+          id: eventData.id,
+          participants: eventData.participants?.map((p) => p.value),
+        });
         toast.success("Event deleted successfully");
         onClose?.();
       } catch (error) {
@@ -352,10 +354,6 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
               <FormControl>
                 <MultipleSelector
                   {...field}
-                  value={field.value?.map((participant) => ({
-                    ...participant,
-                    label: (<Participant participant={participant} />) as any,
-                  }))}
                   onSearch={async (value) => {
                     const res = await searchByName(userId!, value);
                     return res.map((option) => ({

@@ -11,7 +11,7 @@ import {
   query,
 } from "firebase/firestore";
 import { EventCreate, Event, EventsFilter } from "@/types/events";
-import { addReminder, updateCharacter } from "./characters";
+import { addReminder, removeReminder } from "./characters";
 
 export const getEvents = async (userId: string, filter?: EventsFilter) => {
   let q = query(collection(db, `users/${userId}/events`));
@@ -49,22 +49,61 @@ export const addEvent = async (userId: string, data: EventCreate) => {
   });
   await setDoc(eventRef, { ...data, id: eventRef.id });
 };
-
 export const updateEvent = async (
   userId: string,
   eventId: string,
   data: EventCreate
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
-  data.participants?.map(async (participant: { value: string }) => {
+  const existingEvent = await getEventById(userId, eventId);
+
+  if (!existingEvent) {
+    throw new Error("Event not found");
+  }
+
+  const existingParticipants = existingEvent.participants || [];
+  const newParticipants = data.participants || [];
+
+  const participantsToAdd = newParticipants.filter(
+    (newParticipant) =>
+      !existingParticipants.some(
+        (existingParticipant) =>
+          existingParticipant.value === newParticipant.value
+      )
+  );
+
+  const participantsToRemove = existingParticipants.filter(
+    (existingParticipant) =>
+      !newParticipants.some(
+        (newParticipant) => newParticipant.value === existingParticipant.value
+      )
+  );
+
+  participantsToAdd.map(async (participant: { value: string }) => {
     if (participant && eventRef.id) {
       await addReminder(userId, participant.value, eventRef.id);
     }
   });
+
+  participantsToRemove.map(async (participant: { value: string }) => {
+    if (participant && eventRef.id) {
+      await removeReminder(userId, participant.value, eventRef.id);
+    }
+  });
+
   await updateDoc(eventRef, data);
 };
 
-export const deleteEvent = async (userId: string, eventId: string) => {
+export const deleteEvent = async (
+  userId: string,
+  eventId: string,
+  participants?: string[]
+) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
+  console.log("🚀 ~ eventRef:", eventRef, participants);
+  eventRef.id &&
+    participants?.map(async (participant) => {
+      await removeReminder(userId, participant, eventRef.id);
+    });
   await deleteDoc(eventRef);
 };

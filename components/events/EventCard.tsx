@@ -94,12 +94,7 @@ export function EventCard({
             <p className="text-sm text-muted-foreground flex gap-1 items-center">
               <Users className="h-4 w-4" />
               <span className="truncate max-w-32">
-                {event.participants.map((participant, index, array) => (
-                  <span key={participant.value}>
-                    <Participant participant={participant} />
-                    {index < array.length - 1 && ", "}
-                  </span>
-                ))}
+                {event.participants.map((p) => p.label).join(", ")}
               </span>
             </p>
           )}
@@ -114,18 +109,6 @@ export function EventCard({
     </Card>
   );
 }
-
-export const Participant = ({
-  participant,
-}: {
-  participant: {
-    label: string;
-    value: string;
-  };
-}) => {
-  const { data: character } = useCharacter(participant.value);
-  return character?.name || participant.label;
-};
 
 const formatRepeatText = (repeat: RepeatType, repeatDays: string[]) => {
   switch (repeat) {
