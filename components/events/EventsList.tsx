@@ -15,11 +15,20 @@ import {
 import EventForm from "./EventForm";
 import { EventCard } from "./EventCard";
 import FloatingButton from "../ui/floating-button";
-import { Event } from "@/types/events";
+import { Event, EventsFilter } from "@/types/events";
 import { useState } from "react";
 
-const EventsList = () => {
-  const { data: events, isLoading } = useEvents();
+const EventsList = ({
+  query,
+  addNewButton,
+  defaultNewEvent,
+}: {
+  query?: EventsFilter;
+  addNewButton?: React.ReactNode;
+  defaultNewEvent?: Partial<Event>;
+}) => {
+  console.log("🚀 ~ EventsList ~ query:", query);
+  const { data: events, isLoading } = useEvents(query);
   const [openDialogId, setOpenDialogId] = useState<string | null>(null); // null when no dialog is open
 
   if (isLoading) return <div>Loading...</div>;
@@ -39,12 +48,25 @@ const EventsList = () => {
         open={openDialogId !== null}
         onOpenChange={(open) => toggleDialog(open ? openDialogId : null)}
       >
-        <FloatingButton
-          label="Add Event"
-          onClick={() => toggleDialog("add-event")}
-        />
+        {addNewButton ? (
+          <Button
+            type="button"
+            className="w-full"
+            onClick={() => toggleDialog("add-event")}
+          >
+            {addNewButton}
+          </Button>
+        ) : (
+          <FloatingButton
+            label="Add Event"
+            onClick={() => toggleDialog("add-event")}
+          />
+        )}
         {isDialogOpen("add-event") && (
-          <EventDialogContent handleClose={() => setOpenDialogId(null)} />
+          <EventDialogContent
+            handleClose={() => setOpenDialogId(null)}
+            event={defaultNewEvent as Event}
+          />
         )}
 
         {/* Event-specific Dialogs */}

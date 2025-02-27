@@ -33,6 +33,10 @@ import { CustomAlertDialog } from "../ui/custom-alert";
 import { Trash2 } from "lucide-react";
 import { toast } from "../ui/sonner";
 import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
+import MultipleSelector from "../ui/multi-select";
+import { searchByName } from "@/lib/services/characters";
+import { useUser } from "@/lib/hooks/useUser";
+import { Participant } from "./EventCard";
 
 type EventFormProps = {
   eventData?: Event;
@@ -42,6 +46,9 @@ type EventFormProps = {
 export default function EventForm({ eventData, onClose }: EventFormProps) {
   const [repeatType, setRepeatType] = useState(eventData?.repeat || "none");
 
+  const { user } = useUser();
+  const userId = user?.uid;
+
   const defaultValues = {
     title: eventData?.title || "",
     notes: eventData?.notes || "",
@@ -50,13 +57,15 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     location: eventData?.location || "",
     repeat: eventData?.repeat || "none",
     repeatDays: eventData?.repeatDays || [],
-    participants: eventData?.participants || "",
+    participants: eventData?.participants || [],
   };
 
   const form = useForm<EventCreate>({
     resolver: zodResolver(createEventSchema),
     defaultValues: defaultValues,
   });
+
+  console.log("part", form.watch("participants"));
 
   const { addMutation, updateMutation, deleteMutation } = useEventMutations();
 
@@ -341,7 +350,33 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
             <FormItem>
               <FormLabel>Participants</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Add emails or names" />
+                <MultipleSelector
+                  {...field}
+                  value={field.value?.map((participant) => ({
+                    ...participant,
+                    label: (<Participant participant={participant} />) as any,
+                  }))}
+                  onSearch={async (value) => {
+                    const res = await searchByName(userId!, value);
+                    return res.map((option) => ({
+                      label: option.name,
+                      value: option.id,
+                    }));
+                  }}
+                  creatable
+                  groupBy="group"
+                  placeholder="trying to search 'a' to get more options..."
+                  loadingIndicator={
+                    <p className="py-2 text-center text-lg leading-10 text-muted-foreground">
+                      loading...
+                    </p>
+                  }
+                  emptyIndicator={
+                    <p className="w-full text-center text-lg leading-10 text-muted-foreground">
+                      no results found.
+                    </p>
+                  }
+                />
               </FormControl>
             </FormItem>
           )}

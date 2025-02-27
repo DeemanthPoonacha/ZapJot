@@ -15,6 +15,7 @@ import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as ne
 import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";
 import { ALL_MONTHS, WEEK_DAYS } from "@/lib/constants";
+import { useCharacter } from "@/lib/hooks/useCharacters";
 
 export function EventCard({
   event,
@@ -24,8 +25,6 @@ export function EventCard({
   onClick: () => void;
 }) {
   const nextOccurance = getNextOccurrence(event);
-  console.log("🚀 ~ nextOccurance:", event.title, nextOccurance);
-
   const time = new Date(`${"2020-01-01"}T${event.time}:00`).toLocaleString(
     "en-IN",
     {
@@ -76,7 +75,7 @@ export function EventCard({
           </p>
         )}
       </div>
-      {(event.location || event.participants) && (
+      {(event.location || !!event.participants?.length) && (
         <div
           className={cn(
             "flex justify-between items-center"
@@ -91,10 +90,17 @@ export function EventCard({
               </span>
             </p>
           }
-          {event.participants && (
+          {!!event.participants?.length && (
             <p className="text-sm text-muted-foreground flex gap-1 items-center">
               <Users className="h-4 w-4" />
-              <span className="truncate max-w-32">{event.participants}</span>
+              <span className="truncate max-w-32">
+                {event.participants.map((participant, index, array) => (
+                  <span key={participant.value}>
+                    <Participant participant={participant} />
+                    {index < array.length - 1 && ", "}
+                  </span>
+                ))}
+              </span>
             </p>
           )}
         </div>
@@ -108,6 +114,18 @@ export function EventCard({
     </Card>
   );
 }
+
+export const Participant = ({
+  participant,
+}: {
+  participant: {
+    label: string;
+    value: string;
+  };
+}) => {
+  const { data: character } = useCharacter(participant.value);
+  return character?.name || participant.label;
+};
 
 const formatRepeatText = (repeat: RepeatType, repeatDays: string[]) => {
   switch (repeat) {

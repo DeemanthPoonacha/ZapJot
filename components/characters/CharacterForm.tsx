@@ -15,20 +15,20 @@ import Image from "next/image";
 import { Label } from "@radix-ui/react-label";
 import { Plus, Calendar } from "lucide-react";
 import { Card } from "../ui/card";
+import { useEvent } from "@/lib/hooks/useEvents";
+import EventsList from "../events/EventsList";
 
 interface CharacterFormProps {
-  characterId?: string;
+  character?: Character | null;
   onSuccess?: () => void;
 }
 
 const CharacterForm: React.FC<CharacterFormProps> = ({
-  characterId,
+  character,
   onSuccess,
 }) => {
   const { user } = useUser();
   const userId = user?.uid;
-  const { data: character } = useCharacter(characterId! as string);
-  console.log("🚀 ~ character:", character);
 
   const defaultValues = {
     userId,
@@ -54,23 +54,22 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
 
   const { addMutation, updateMutation } = useCharacterMutations();
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "reminders",
-  });
-
-  const addReminder = () => {
-    append({ title: "", date: "", time: "", repeat: "none" });
-  };
-
   const onSubmit = async (data: CharacterCreate) => {
     try {
       if (character?.id) {
-        await updateMutation.mutateAsync({ id: character.id, data });
+        await updateMutation.mutateAsync({
+          id: character.id,
+          data: { ...data, lowercaseName: data.name.toLowerCase() },
+        });
       } else {
-        await addMutation.mutateAsync(data);
+        await addMutation.mutateAsync({
+          ...data,
+          lowercaseName: data.name.toLowerCase(),
+        });
       }
       reset(defaultValues);
+      console.log("🚀 ~ onSubmit ~ data:", data);
+
       onSuccess?.();
     } catch (error) {
       console.error("Error saving character", error);
@@ -120,53 +119,28 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             <p className="text-red-500">{errors.title.message}</p>
           )}
         </div>
-
-        <div className="space-y-2">
-          <Label>Special Dates/Reminders</Label>
-          {fields.map((reminder, index) => (
-            <Card key={reminder.id} className="p-3 space-y-2">
-              <Input
-                {...register(`reminders.${index}.title`)}
-                placeholder="Title"
-              />
-              <Input
-                {...register(`reminders.${index}.date`)}
-                placeholder="Date (DD-MM)"
-              />
-              <Input
-                {...register(`reminders.${index}.time`)}
-                placeholder="Time (HH:MM)"
-              />
-              <select {...register(`reminders.${index}.repeat`)}>
-                <option value="none">None</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => remove(index)}
-              >
-                Remove
-              </Button>
-            </Card>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={addReminder}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add Special Date/Reminder
-          </Button>
-        </div>
-
         <div className="space-y-2">
           <Label htmlFor="notes">Notes</Label>
           <Textarea {...register("notes")} placeholder="Notes" />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Events/Reminders</Label>
+
+        {!!character && (
+          <EventsList
+            query={{ eventIds: character?.reminders || [] }}
+            addNewButton={
+              <>
+                <Plus className="mr-2 h-4 w-4" /> Add Event/Reminder
+              </>
+            }
+            defaultNewEvent={{
+              participants: [{ label: character.name, value: character.id }],
+            }}
+          />
+        )}
       </div>
 
       <div className="flex gap-2">

@@ -7,17 +7,17 @@ import {
   deleteEvent,
 } from "@/lib/services/events";
 import { useUser } from "@/lib/hooks/useUser";
-import { EventCreate } from "@/types/events";
+import { EventCreate, EventsFilter } from "@/types/events";
 
 const EVENT_QUERY_KEY = "events";
 
-export const useEvents = () => {
+export const useEvents = (query?: EventsFilter) => {
   const { user } = useUser();
   const userId = user?.uid;
 
   return useQuery({
-    queryKey: [EVENT_QUERY_KEY, userId],
-    queryFn: () => (userId ? getEvents(userId) : Promise.resolve([])),
+    queryKey: [EVENT_QUERY_KEY, userId, query],
+    queryFn: () => (userId ? getEvents(userId, query) : Promise.resolve([])),
     enabled: !!userId,
   });
 };
