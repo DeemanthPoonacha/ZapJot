@@ -14,9 +14,8 @@ const Chapter = () => {
   const router = useRouter();
 
   const { data: character, isLoading } = useCharacter(characterId! as string);
-  console.log("🚀 ~ character:", character);
-  const { deleteMutation } = useCharacterMutations();
 
+  const { deleteMutation } = useCharacterMutations();
   const handleDelete = async () => {
     if (character?.id) {
       await deleteMutation.mutateAsync(character.id);
@@ -29,6 +28,7 @@ const Chapter = () => {
   return (
     <PageLayout>
       <PageHeader
+        backLink="/characters"
         title={character?.name || "Character"}
         extra={
           character?.id && (

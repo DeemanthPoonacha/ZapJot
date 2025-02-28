@@ -29,8 +29,6 @@ import {
 } from "@/types/events";
 import dayjs from "dayjs";
 import { Label } from "../ui/label";
-import { CustomAlertDialog } from "../ui/custom-alert";
-import { Trash2 } from "lucide-react";
 import { toast } from "../ui/sonner";
 import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
 import MultipleSelector from "../ui/multi-select";

@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn, formatDateTitle } from "@/lib/utils";
+import Image from "next/image";
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -93,6 +94,57 @@ function ListCard({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+function GridCardWithOverlay({
+  className,
+  date,
+  image,
+  title,
+  subtitle,
+  extra,
+  ...props
+}: React.ComponentProps<"div"> & {
+  image?: string;
+  title: string;
+  subtitle?: string;
+  date?: string;
+  extra?: React.ReactNode;
+}) {
+  return (
+    <Card
+      {...props}
+      className={cn(
+        "group relative h-32 overflow-hidden rounded-2xl shadow-lg",
+        className
+      )}
+    >
+      {image && (
+        <Image
+          src={image || "/placeholder.svg"}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+      )}
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300" />
+
+      {/* Text content */}
+      <div className="absolute inset-0 p-4 flex flex-col justify-end z-10">
+        <h3 className="text-lg font-semibold text-white drop-shadow-md truncate">
+          {title}
+        </h3>
+        {subtitle && (
+          <p className="text-sm text-white/80 drop-shadow-md">{subtitle}</p>
+        )}
+        <p className="text-xs text-white/60 mt-1">{formatDateTitle(date)}</p>
+      </div>
+
+      {/* Extra content */}
+      <div className="absolute right-0 p-4 z-10">{extra}</div>
+    </Card>
+  );
+}
+
 export {
   Card,
   CardHeader,
@@ -102,4 +154,5 @@ export {
   CardContent,
   ListCard,
   ListCardFooter,
+  GridCardWithOverlay,
 };

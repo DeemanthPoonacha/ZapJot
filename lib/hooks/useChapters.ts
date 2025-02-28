@@ -42,34 +42,28 @@ export const useChapter = (chapterId?: string) => {
 /**
  * Mutations for adding, updating, and deleting chapters
  */
-export const useChapterMutations = (onSuccess?: () => void) => {
+export const useChapterMutations = () => {
   const { user } = useUser();
   const userId = user?.uid;
   const queryClient = useQueryClient();
 
   const addMutation = useMutation({
     mutationFn: (data: any) => addChapter(userId!, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
-      onSuccess?.();
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ chapterId, data }: { chapterId: string; data: any }) =>
       updateChapter(userId!, chapterId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
-      onSuccess?.();
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (chapterId: string) => deleteChapter(userId!, chapterId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
-      onSuccess?.();
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
   });
 
   return { addMutation, updateMutation, deleteMutation };

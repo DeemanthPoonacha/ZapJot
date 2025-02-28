@@ -49,10 +49,11 @@ export const addJournal = async (
     db,
     `users/${userId}/chapters/${chapterId}/journals`
   );
-  await addDoc(journalsRef, {
+  const docRef = await addDoc(journalsRef, {
     ...data,
     updatedAt: new Date().toISOString(),
   });
+  return { id: docRef.id, ...data };
 };
 
 // Update an existing journal

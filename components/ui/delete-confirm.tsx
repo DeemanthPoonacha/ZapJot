@@ -15,7 +15,7 @@ const DeleteConfirm = ({
       trigger={
         <Button variant="outline" type="button">
           <Trash2 size={16} />
-          Delete {itemName}
+          <span className="hidden">Delete {itemName}</span>
         </Button>
       }
       dialogAction={[

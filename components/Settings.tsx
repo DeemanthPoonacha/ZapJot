@@ -20,7 +20,7 @@ export default function SettingsPage() {
   return (
     <main className="container pb-20 pt-4 max-w-md mx-auto">
       <PageHeader title="Settings" />
-      <div className="space-y-6 p-4">
+      <div className="space-y-6">
         <Card className="p-4">
           <h2 className="text-lg font-semibold mb-4">Theme</h2>
           <RadioGroup

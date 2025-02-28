@@ -35,7 +35,11 @@ export const getChapterById = async (
 // Add a new chapter
 export const addChapter = async (userId: string, data: ChapterCreate) => {
   const chaptersRef = collection(db, `users/${userId}/chapters`);
-  await addDoc(chaptersRef, { ...data, updatedAt: new Date().toISOString() });
+  const docRef = await addDoc(chaptersRef, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+  return { id: docRef.id, ...data };
 };
 
 // Update an existing chapter

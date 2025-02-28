@@ -1,5 +1,10 @@
 import { useCharacters } from "@/lib/hooks/useCharacters";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  ListCard,
+  ListCardFooter,
+} from "@/components/ui/card";
 import { UserCircle, Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -12,20 +17,29 @@ const CharactersList = () => {
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 p-4 sm:grid-cols-1 md:garid-cols-2 lg:garid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-1 md:garid-cols-2 lg:garid-cols-3">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <Card key={i} className="overflow-hidden">
+          <ListCard key={i} className="overflow-hidden">
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <Skeleton className="h-16 w-16 rounded-full flex-shrink-0" />
                 <div className="space-y-2 w-full">
-                  <Skeleton className="h-5 w-1/3" />
+                  <div className="flex items-center justify-between w-full">
+                    <Skeleton className="h-5 w-1/3" />
+                    <Skeleton className="h-5 w-10" />
+                  </div>
                   <Skeleton className="h-4 w-1/2" />
                   <Skeleton className="h-3 w-2/3" />
                 </div>
               </div>
             </CardContent>
-          </Card>
+            <ListCardFooter>
+              <div className="flex items-center justify-between w-full">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-5 w-24" />
+              </div>
+            </ListCardFooter>
+          </ListCard>
         ))}
       </div>
     );
@@ -48,7 +62,7 @@ const CharactersList = () => {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-1 md:garid-cols-2 lg:garid-cols-3">
         {characters.map((character) => (
           <CharacterCard key={character.id} character={character} />

@@ -106,7 +106,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <Card className="overflow-hidden">
           <CardContent className="p-6 text-center flex flex-col items-center">
             <div className="relative mb-6 mt-2">

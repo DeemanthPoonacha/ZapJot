@@ -33,7 +33,7 @@ export default function PlannerPage() {
         setActiveTab(tab);
         router.push(pathname + "?" + createQueryString("tab", tab));
       }}
-      className="w-full p-4"
+      className="w-full"
     >
       <TabsList className="grid w-full grid-cols-4 bg-muted/50">
         <TabsTrigger value="tasks">Tasks</TabsTrigger>

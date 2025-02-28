@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <PageLayout>
       <PageHeader title="DIGJOURN" />
-      <div className="space-y-6 p-4">
+      <div className="space-y-6">
         <HomeHeader />
         <QuickActions />
         <UpcomingEvents />

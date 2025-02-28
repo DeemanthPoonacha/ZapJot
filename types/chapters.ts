@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 import { journalSchema } from "./journals";
 
 // Chapter Schema
@@ -7,6 +7,7 @@ export const createChapterSchema = z.object({
   userId: z.string(),
   image: z.string().optional(),
   title: z.string(),
+  date: z.string().optional(),
   subtitle: z.string().optional(),
   description: z.string().optional(),
   journals: z.array(journalSchema).optional(), // Array of journal posts
