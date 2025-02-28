@@ -1,16 +1,10 @@
 import { useEvents } from "@/lib/hooks/useEvents";
-import { Card } from "../ui/card";
-import { Calendar } from "../ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import EventForm from "./EventForm";
 import { EventCard } from "./EventCard";

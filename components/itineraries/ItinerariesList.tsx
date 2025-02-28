@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Itinerary } from "@/types/itineraries";
 import ItineraryDetailPage from "./ItineraryDetail";
 
-const ItineraryList = () => {
+const ItineraryList = ({ selectedId }: { selectedId?: string }) => {
   const { data: itineraries, isLoading } = useItineraries();
   const [selectedItinerary, setSelectedItinerary] = useState<Itinerary | null>(
     null

@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
 
-const TasksList = () => {
+const TasksList = ({ selectedId }: { selectedId?: string }) => {
   const { data: tasks, isLoading } = useTasks();
   const { deleteMutation } = useTaskMutations();
 

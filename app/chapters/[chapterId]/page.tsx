@@ -25,7 +25,8 @@ const ChapterPage = () => {
     }
   };
 
-  const [isEditing, setIsEditing] = useState(chapterId === "new");
+  const isNewChapter = chapterId === "new";
+  const [isEditing, setIsEditing] = useState(isNewChapter);
 
   if (isLoading) return <p>Loading...</p>;
   return (
@@ -37,6 +38,14 @@ const ChapterPage = () => {
           <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
         ),
       }}
+      {...(!isNewChapter && {
+        floatingButtonProps: {
+          label: "New Journal",
+          onClick: () => {
+            router.push(`/chapters/${chapterId}/journals/new`);
+          },
+        },
+      })}
     >
       {!isEditing ? (
         chapter && (
