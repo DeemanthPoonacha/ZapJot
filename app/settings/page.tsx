@@ -4,7 +4,7 @@ import React from "react";
 
 const Settings = () => {
   return (
-    <PageLayout>
+    <PageLayout headerProps={{ title: "Settings" }}>
       <SettingsPage />
     </PageLayout>
   );

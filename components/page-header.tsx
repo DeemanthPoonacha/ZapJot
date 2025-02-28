@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-interface PageHeaderProps {
+export interface PageHeaderProps {
   icon?: React.ReactNode;
-  title: string;
+  title?: string;
   subtitle?: string;
   extra?: React.ReactNode;
   backLink?: string;
@@ -16,12 +16,12 @@ interface PageHeaderProps {
 
 export function PageHeader({
   backLink,
-  title,
+  title = "Welcome",
   subtitle,
   extra,
   icon,
   className,
-  showSearch = true,
+  showSearch = false,
   onSearchClick,
 }: PageHeaderProps) {
   return (
@@ -33,7 +33,7 @@ export function PageHeader({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full"
+                className="h-8 w-8 rounded-full cursor-pointer"
               >
                 <ChevronLeft className="h-5 w-5" />
                 <span className="sr-only">Back</span>

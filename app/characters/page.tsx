@@ -5,8 +5,7 @@ import PageLayout from "@/components/PageLayout";
 
 const characters = () => {
   return (
-    <PageLayout>
-      <PageHeader title="Characters" />
+    <PageLayout headerProps={{ title: "Characters" }}>
       <CharactersList />
     </PageLayout>
   );

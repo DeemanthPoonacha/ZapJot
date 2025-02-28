@@ -25,20 +25,19 @@ const ChapterPage = () => {
     }
   };
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(chapterId === "new");
 
   if (isLoading) return <p>Loading...</p>;
   return (
-    <PageLayout>
-      <PageHeader
-        backLink="/chapters"
-        title={chapter?.title || "New Chapter"}
-        extra={
-          chapter?.id && (
-            <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
-          )
-        }
-      />
+    <PageLayout
+      headerProps={{
+        title: chapter?.title || "New Chapter",
+        backLink: "/chapters",
+        extra: chapter?.id && (
+          <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
+        ),
+      }}
+    >
       {!isEditing ? (
         chapter && (
           <ChapterCard

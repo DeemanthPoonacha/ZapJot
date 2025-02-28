@@ -6,8 +6,7 @@ import { PageHeader } from "@/components/page-header";
 
 const Tasks = () => {
   return (
-    <PageLayout>
-      <PageHeader title="Planner" />
+    <PageLayout headerProps={{ title: "Planner" }}>
       <PlannerPage />
     </PageLayout>
   );

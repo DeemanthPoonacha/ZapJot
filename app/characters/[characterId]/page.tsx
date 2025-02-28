@@ -26,16 +26,15 @@ const Chapter = () => {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <PageLayout>
-      <PageHeader
-        backLink="/characters"
-        title={character?.name || "Character"}
-        extra={
-          character?.id && (
-            <DeleteConfirm itemName="Character" handleDelete={handleDelete} />
-          )
-        }
-      />
+    <PageLayout
+      headerProps={{
+        title: character?.name || "Character",
+        backLink: "/characters",
+        extra: character?.id && (
+          <DeleteConfirm itemName="Character" handleDelete={handleDelete} />
+        ),
+      }}
+    >
       <CharacterForm
         character={character}
         onUpdate={() => router.push(`/characters`)}

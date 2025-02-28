@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Home, Grid3X3, Users, Settings, Plus, ListTodo } from "lucide-react";
 import FloatingButton from "./ui/floating-button-link";
 
-const routes = [
+export const allRoutes = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Planner", icon: ListTodo, href: "/planner" },
   { label: "Chapters", icon: Grid3X3, href: "/chapters" },
@@ -23,7 +23,7 @@ export function NavigationBar() {
 
       <nav className="fixed bottom-0 w-full border-t bg-background p-2 z-50">
         <div className="mx-auto flex max-w-md justify-between px-4">
-          {routes.map((route) => (
+          {allRoutes.map((route) => (
             <Link
               key={route.href}
               href={route.href}

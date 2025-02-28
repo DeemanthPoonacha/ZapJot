@@ -6,8 +6,7 @@ import React from "react";
 
 const Chapters = () => {
   return (
-    <PageLayout>
-      <PageHeader title="Chapters" />
+    <PageLayout headerProps={{ title: "Chapters" }}>
       <ChaptersList />
     </PageLayout>
   );

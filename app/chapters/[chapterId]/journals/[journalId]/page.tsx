@@ -1,6 +1,5 @@
 "use client";
 import JournalForm from "@/components/journals/JournalForm";
-import { PageHeader } from "@/components/page-header";
 import PageLayout from "@/components/PageLayout";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { useJournal, useJournalMutations } from "@/lib/hooks/useJournals";
@@ -8,14 +7,14 @@ import { Journal } from "@/types/journals";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const Chapter = () => {
+const JournalPage = () => {
   const { chapterId, journalId } = useParams();
   const { data: journal } = useJournal(
     chapterId! as string,
     journalId! as string
   );
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(journalId === "new");
 
   const { deleteMutation } = useJournalMutations(chapterId! as string);
   const router = useRouter();
@@ -27,16 +26,15 @@ const Chapter = () => {
     }
   };
   return (
-    <PageLayout>
-      <PageHeader
-        title={journal?.title || "New Journal"}
-        backLink={`/chapters/${chapterId}`}
-        extra={
-          journal?.id && (
-            <DeleteConfirm itemName="Journal" handleDelete={handleDelete} />
-          )
-        }
-      />
+    <PageLayout
+      headerProps={{
+        title: journal?.title || "New Journal",
+        backLink: `/chapters/${chapterId}`,
+        extra: journal?.id && (
+          <DeleteConfirm itemName="Journal" handleDelete={handleDelete} />
+        ),
+      }}
+    >
       {!isEditing ? (
         <div className="flex items-center justify-center h-full">
           {journal?.title}
@@ -59,4 +57,4 @@ const Chapter = () => {
   );
 };
 
-export default Chapter;
+export default JournalPage;
