@@ -1,14 +1,11 @@
 import { useChapters } from "@/lib/hooks/useChapters";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import ChapterForm from "@/components/chapters/ChapterForm";
+import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 
 const ChaptersList = () => {
   const { data: chapters, isLoading } = useChapters();
   console.log("🚀 ~ ChaptersList ~ chapters:", chapters);
-  const router = useRouter();
 
   if (isLoading) return <p>Loading...</p>;
 

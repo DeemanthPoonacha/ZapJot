@@ -24,6 +24,7 @@ export function CustomAlertDialog({
   dialogTitle?: string;
   dialogDescription?: string;
   dialogAction?: {
+    icon?: React.ReactNode;
     title: string;
     variant:
       | "link"
@@ -52,6 +53,7 @@ export function CustomAlertDialog({
               key={index}
               onClick={action.onClick}
             >
+              {action.icon}
               {action.title}
             </AlertDialogAction>
           ))}

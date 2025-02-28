@@ -36,6 +36,7 @@ import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
 import MultipleSelector from "../ui/multi-select";
 import { searchByName } from "@/lib/services/characters";
 import { useUser } from "@/lib/hooks/useUser";
+import DeleteConfirm from "../ui/delete-confirm";
 
 type EventFormProps = {
   eventData?: Event;
@@ -399,24 +400,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
           )}
         >
           {eventData?.id && (
-            <CustomAlertDialog
-              trigger={
-                <Button variant="outline" type="button">
-                  <Trash2 size={16} />
-                  Delete
-                </Button>
-              }
-              dialogAction={[
-                { title: "Cancel", variant: "outline", onClick: () => {} },
-                {
-                  title: "Delete",
-                  variant: "destructive",
-                  onClick: handleDelete,
-                },
-              ]}
-              dialogTitle="Delete Event"
-              dialogDescription="Are you sure you want to delete this event?"
-            />
+            <DeleteConfirm itemName="Event" handleDelete={handleDelete} />
           )}
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button variant="ghost" type="button" onClick={onClose}>

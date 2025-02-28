@@ -1,58 +1,64 @@
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Character,
   CharacterCreate,
   createCharacterSchema,
 } from "@/types/characters";
-import { useCharacter, useCharacterMutations } from "@/lib/hooks/useCharacters";
+import { useCharacterMutations } from "@/lib/hooks/useCharacters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/lib/hooks/useUser";
 import { useState } from "react";
 import Image from "next/image";
-import { Label } from "@radix-ui/react-label";
-import { Plus, Calendar } from "lucide-react";
-import { Card } from "../ui/card";
-import { useEvent } from "@/lib/hooks/useEvents";
+import { Plus, Upload, User } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import EventsList from "../events/EventsList";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "sonner";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface CharacterFormProps {
   character?: Character | null;
-  onSuccess?: () => void;
+  onUpdate?: () => void;
+  onAdd?: (id: string) => void;
 }
 
 const CharacterForm: React.FC<CharacterFormProps> = ({
   character,
-  onSuccess,
+  onUpdate,
+  onAdd,
 }) => {
   const { user } = useUser();
   const userId = user?.uid;
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
-  const defaultValues = {
-    userId,
-    image: character?.image || "",
-    name: character?.name || "",
-    title: character?.title || "",
-    reminders: character?.reminders || [],
-    notes: character?.notes || "",
-  };
-  const {
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<CharacterCreate>({
+  const form = useForm<CharacterCreate>({
     resolver: zodResolver(createCharacterSchema),
-    defaultValues,
+    defaultValues: {
+      userId,
+      image: character?.image || "",
+      name: character?.name || "",
+      title: character?.title || "",
+      reminders: character?.reminders || [],
+      notes: character?.notes || "",
+    },
   });
-  console.log("🚀 ~ register:", watch("image"));
-  console.log("🚀 ~ errors:", errors);
 
   const { addMutation, updateMutation } = useCharacterMutations();
+  const isSubmitting =
+    form.formState.isSubmitting ||
+    addMutation.isPending ||
+    updateMutation.isPending;
 
   const onSubmit = async (data: CharacterCreate) => {
     try {
@@ -61,103 +67,189 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           id: character.id,
           data: { ...data, lowercaseName: data.name.toLowerCase() },
         });
+        toast.success("Character updated successfully");
+        onUpdate?.();
       } else {
-        await addMutation.mutateAsync({
+        const result = await addMutation.mutateAsync({
           ...data,
           lowercaseName: data.name.toLowerCase(),
         });
+        toast.success("Character created successfully");
+        onAdd?.(result.id);
       }
-      reset(defaultValues);
-      console.log("🚀 ~ onSubmit ~ data:", data);
-
-      onSuccess?.();
     } catch (error) {
       console.error("Error saving character", error);
+      toast.error("Failed to save character");
     }
   };
 
-  const onReset = () => {
-    console.log("🚀 ~ onReset ~ defaultValues:", defaultValues);
-    reset(defaultValues);
+  // Mock function for image upload - replace with your actual implementation
+  const handleImageUpload = () => {
+    setIsImageUploading(true);
+    // Simulate upload delay
+    setTimeout(() => {
+      form.setValue(
+        "image",
+        "https://api.dicebear.com/7.x/personas/svg?seed=" + Math.random()
+      );
+      setIsImageUploading(false);
+      toast.success("Image uploaded successfully");
+    }, 1000);
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!user)
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-6">
-      <Card className="p-4 text-center">
-        <div className="relative mx-auto h-32 w-32 mb-4">
-          <div className="relative h-full w-full overflow-hidden rounded-full">
-            <Image
-              src={watch("image") || "/placeholder.svg"}
-              alt="Profile picture"
-              fill
-              className="object-cover"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-6">
+        <Card className="overflow-hidden">
+          <CardContent className="p-6 text-center flex flex-col items-center">
+            <div className="relative mb-6 mt-2">
+              <Avatar className="h-32 w-32">
+                <AvatarImage
+                  src={form.watch("image") || "/placeholder.svg"}
+                  alt="Profile picture"
+                />
+                <AvatarFallback className="bg-muted">
+                  <User className="h-12 w-12 text-muted-foreground" />
+                </AvatarFallback>
+              </Avatar>
+
+              <Button
+                type="button"
+                size="icon"
+                onClick={handleImageUpload}
+                disabled={isImageUploading}
+                className="absolute bottom-0 right-0 rounded-full bg-primary hover:bg-primary/90 h-10 w-10 shadow-md"
+              >
+                {isImageUploading ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Image URL"
+                      className="text-sm text-center"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <Button
-            type="button"
-            size="icon"
-            className="absolute bottom-0 right-0 rounded-full bg-primary hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <Input {...register("name")} placeholder="Name" />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter character name" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div className="space-y-2">
-          <Label htmlFor="relationship">Title/Relationship</Label>
-          <Input {...register("title")} placeholder="Title/Relationship" />
-          {errors.title && (
-            <p className="text-red-500">{errors.title.message}</p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="notes">Notes</Label>
-          <Textarea {...register("notes")} placeholder="Notes" />
-        </div>
-      </div>
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title/Relationship</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="e.g. Friend, Colleague, Family member"
+                  />
+                </FormControl>
+                <FormDescription>
+                  Define your relationship with this character
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <div className="space-y-2">
-        <Label>Events/Reminders</Label>
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notes</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder="Add any personal notes about this character"
+                    className="min-h-32 resize-none"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         {!!character && (
-          <EventsList
-            query={{ eventIds: character?.reminders || [] }}
-            addNewButton={
-              <>
-                <Plus className="mr-2 h-4 w-4" /> Add Event/Reminder
-              </>
-            }
-            defaultNewEvent={{
-              participants: [{ label: character.name, value: character.id }],
-            }}
-          />
+          <div className="space-y-2">
+            <FormLabel className="block mb-2">Events/Reminders</FormLabel>
+            <EventsList
+              query={{ eventIds: character?.reminders || [] }}
+              addNewButton={
+                <>
+                  <Plus className="mr-2 h-4 w-4" /> Add Event/Reminder
+                </>
+              }
+              defaultNewEvent={{
+                participants: [{ label: character.name, value: character.id }],
+              }}
+            />
+          </div>
         )}
-      </div>
 
-      <div className="flex gap-2">
-        <Button
-          type="reset"
-          onClick={onReset}
-          variant="outline"
-          disabled={isSubmitting}
-          className="w-full"
-        >
-          Reset
-        </Button>
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          Save
-        </Button>
-      </div>
-    </form>
+        <div className="flex gap-4 pt-4">
+          <Button
+            type="button"
+            onClick={() => form.reset()}
+            variant="outline"
+            disabled={isSubmitting}
+            className="flex-1"
+          >
+            Reset
+          </Button>
+          <Button type="submit" disabled={isSubmitting} className="flex-1">
+            {isSubmitting ? (
+              <>
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                {character ? "Updating..." : "Creating..."}
+              </>
+            ) : character ? (
+              "Update Character"
+            ) : (
+              "Create Character"
+            )}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

@@ -10,7 +10,7 @@ import {
   RepeatIcon,
   Users,
 } from "lucide-react";
-import { Card } from "../ui/card";
+import { Card, CardContent, ListCard, ListCardFooter } from "../ui/card";
 import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as necessary
 import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";
@@ -33,80 +33,83 @@ export function EventCard({
     }
   );
   return (
-    <Card onClick={onClick} className="p-4 gap-2 cursor-pointer">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-primary truncate">
-          {event.title}
-        </h3>
-        {nextOccurance && (
-          <p className="text-sm text-Bold flex gap-1 items-center">
-            <Calendar1 className="h-4 w-4" />
-            <span
-              className={cn(
-                "truncate max-w-32",
-                dayjs(nextOccurance).isBefore(dayjs()) ? "line-through" : ""
-              )}
-            >
-              {nextOccurance?.format("ddd, MMM D, YYYY")}
-            </span>
-          </p>
-        )}
-      </div>
-
-      <div
-        className={cn(
-          "flex justify-between items-center"
-          //   !event.notes ? "justify-end" : ""
-        )}
-      >
-        <div className="flex items-center text-sm font-medium justify-end text-muted-foreground">
-          <RepeatIcon size={18} />
-          <span className={`ml-1 max-w-64 truncate`}>
-            {event.repeat === "none"
-              ? "One-time"
-              : formatRepeatText(event.repeat, event.repeatDays as string[])}
-          </span>
+    <ListCard onClick={onClick}>
+      <CardContent className="p-4 gap-1">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-primary truncate">
+            {event.title}
+          </h3>
+          {nextOccurance && (
+            <p className="text-sm text-Bold flex gap-1 items-center">
+              <Calendar1 className="h-4 w-4" />
+              <span
+                className={cn(
+                  "truncate max-w-32",
+                  dayjs(nextOccurance).isBefore(dayjs()) ? "line-through" : ""
+                )}
+              >
+                {nextOccurance?.format("ddd, MMM D, YYYY")}
+              </span>
+            </p>
+          )}
         </div>
 
-        {event.time && (
-          <p className="text-sm text-muted-foreground font-medium flex gap-1 items-center">
-            <Clock className="h-4 w-4" />
-            <span className="truncate max-w-32">{time}</span>
-          </p>
-        )}
-      </div>
-      {(event.location || !!event.participants?.length) && (
         <div
           className={cn(
             "flex justify-between items-center"
-            // !event.location ? "justify-end" : ""
+            //   !event.notes ? "justify-end" : ""
           )}
         >
-          {
-            <p className="text-sm text-muted-foreground flex gap-1 items-center">
-              <MapPin className="h-4 w-4" />
-              <span className="truncate max-w-32">
-                {event.location || "N/A"}
-              </span>
-            </p>
-          }
-          {!!event.participants?.length && (
-            <p className="text-sm text-muted-foreground flex gap-1 items-center">
-              <Users className="h-4 w-4" />
-              <span className="truncate max-w-32">
-                {event.participants.map((p) => p.label).join(", ")}
-              </span>
+          <div className="flex items-center text-sm font-medium justify-end text-muted-foreground">
+            <RepeatIcon size={18} />
+            <span className={`ml-1 max-w-64 truncate`}>
+              {event.repeat === "none"
+                ? "One-time"
+                : formatRepeatText(event.repeat, event.repeatDays as string[])}
+            </span>
+          </div>
+
+          {event.time && (
+            <p className="text-sm text-muted-foreground font-medium flex gap-1 items-center">
+              <Clock className="h-4 w-4" />
+              <span className="truncate max-w-32">{time}</span>
             </p>
           )}
         </div>
+        {event.notes && (
+          <p className="text-sm text-muted-foreground flex gap-1 items-center">
+            <span className="truncate text-sm italic">{event.notes}</span>
+          </p>
+        )}
+      </CardContent>
+      {(event.location || !!event.participants?.length) && (
+        <ListCardFooter className="flex-col w-full">
+          <div
+            className={cn(
+              "flex justify-between items-center w-full",
+              !event.location ? "justify-end" : ""
+            )}
+          >
+            {event.location && (
+              <p className="text-sm text-muted-foreground flex gap-1 items-center">
+                <MapPin className="h-4 w-4" />
+                <span className="truncate max-w-32">
+                  {event.location || "N/A"}
+                </span>
+              </p>
+            )}
+            {!!event.participants?.length && (
+              <p className="text-sm text-muted-foreground flex gap-1 items-center">
+                <Users className="h-4 w-4" />
+                <span className="truncate max-w-32">
+                  {event.participants.map((p) => p.label).join(", ")}
+                </span>
+              </p>
+            )}
+          </div>
+        </ListCardFooter>
       )}
-
-      {event.notes && (
-        <p className="text-sm text-muted-foreground flex gap-1 items-center">
-          <span className="truncate text-sm italic">{event.notes}</span>
-        </p>
-      )}
-    </Card>
+    </ListCard>
   );
 }
 
