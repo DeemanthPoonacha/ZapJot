@@ -1,21 +1,10 @@
 import { cn } from "@/lib/utils";
-import {
-  Calendar,
-  Calendar1,
-  CalendarDays,
-  CalendarIcon,
-  Clock,
-  MapPin,
-  Notebook,
-  RepeatIcon,
-  Users,
-} from "lucide-react";
-import { Card, CardContent, ListCard, ListCardFooter } from "../ui/card";
+import { Calendar1, Clock, MapPin, RepeatIcon, Users } from "lucide-react";
+import { CardContent, ListCard, ListCardFooter } from "../ui/card";
 import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as necessary
 import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";
 import { ALL_MONTHS, WEEK_DAYS } from "@/lib/constants";
-import { useCharacter } from "@/lib/hooks/useCharacters";
 
 export function EventCard({
   event,
@@ -33,7 +22,7 @@ export function EventCard({
     }
   );
   return (
-    <ListCard onClick={onClick}>
+    <ListCard onClick={onClick} className="cursor-pointer">
       <CardContent className="p-4 gap-1">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-primary truncate">

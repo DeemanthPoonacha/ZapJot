@@ -84,7 +84,9 @@ const itineraryData = {
   ],
 };
 
-export default function ItineraryDetailPage() {
+export default function ItineraryDetailPage({ id }: { id: string }) {
+  const [isEditing, setIsEditing] = useState(false);
+
   const [days, setDays] = useState<Day[]>(itineraryData.days);
 
   const toggleActivity = (dayId: string, activityId: string) => {

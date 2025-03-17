@@ -1,24 +1,22 @@
 import { useItineraries } from "@/lib/hooks/useItineraries";
 import { Card } from "../ui/card";
-import { useState } from "react";
-import { Itinerary } from "@/types/itineraries";
 import ItineraryDetailPage from "./ItineraryDetail";
+import usePlanner from "@/lib/hooks/usePlanner";
 
-const ItineraryList = ({ selectedId }: { selectedId?: string }) => {
+const ItineraryList = () => {
   const { data: itineraries, isLoading } = useItineraries();
-  const [selectedItinerary, setSelectedItinerary] = useState<Itinerary | null>(
-    null
-  );
+  const { selectedItineraryId, setSelectedItineraryId } = usePlanner();
+
   if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="space-y-3">
-      {!selectedItinerary ? (
+      {!selectedItineraryId ? (
         itineraries?.map((itinerary) => (
           <Card
             key={itinerary.id}
             className="p-4"
-            onClick={() => setSelectedItinerary(itinerary)}
+            onClick={() => setSelectedItineraryId(itinerary.id)}
           >
             <div className="flex justify-between items-center">
               <h3 className="font-semibold">{itinerary.title}</h3>
@@ -29,7 +27,7 @@ const ItineraryList = ({ selectedId }: { selectedId?: string }) => {
           </Card>
         ))
       ) : (
-        <ItineraryDetailPage />
+        <ItineraryDetailPage id={selectedItineraryId} />
       )}
     </div>
   );

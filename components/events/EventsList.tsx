@@ -11,6 +11,7 @@ import { EventCard } from "./EventCard";
 import FloatingButton from "../ui/floating-button";
 import { Event, EventsFilter } from "@/types/events";
 import { useState } from "react";
+import usePlanner from "@/lib/hooks/usePlanner";
 
 const EventsList = ({
   query,
@@ -23,42 +24,37 @@ const EventsList = ({
 }) => {
   console.log("🚀 ~ EventsList ~ query:", query);
   const { data: events, isLoading } = useEvents(query);
-  const [openDialogId, setOpenDialogId] = useState<string | null>(null); // null when no dialog is open
+  const { selectedEventId, setSelectedEventId } = usePlanner();
 
   if (isLoading) return <div>Loading...</div>;
 
   // Helper to determine if a specific dialog is open
-  const isDialogOpen = (dialogId: string) => openDialogId === dialogId;
+  const isDialogOpen = (dialogId: string) => selectedEventId === dialogId;
 
   // Helper to open/close a specific dialog
   const toggleDialog = (dialogId: string | null) => {
-    setOpenDialogId(openDialogId === dialogId ? null : dialogId);
+    setSelectedEventId(selectedEventId === dialogId ? null : dialogId);
   };
 
   return (
     <div className="space-y-4">
+      {!!addNewButton && (
+        <Button
+          type="button"
+          className="w-full"
+          onClick={() => toggleDialog("new")}
+        >
+          {addNewButton}
+        </Button>
+      )}
       {/* Add Event Dialog */}
       <Dialog
-        open={openDialogId !== null}
-        onOpenChange={(open) => toggleDialog(open ? openDialogId : null)}
+        open={selectedEventId !== null}
+        onOpenChange={(open) => toggleDialog(open ? selectedEventId : null)}
       >
-        {addNewButton ? (
-          <Button
-            type="button"
-            className="w-full"
-            onClick={() => toggleDialog("add-event")}
-          >
-            {addNewButton}
-          </Button>
-        ) : (
-          <FloatingButton
-            label="Add Event"
-            onClick={() => toggleDialog("add-event")}
-          />
-        )}
-        {isDialogOpen("add-event") && (
+        {isDialogOpen("new") && (
           <EventDialogContent
-            handleClose={() => setOpenDialogId(null)}
+            handleClose={() => setSelectedEventId(null)}
             event={defaultNewEvent as Event}
           />
         )}
@@ -69,7 +65,7 @@ const EventsList = ({
             <EventCard onClick={() => toggleDialog(event.id)} event={event} />
             {isDialogOpen(event.id) && (
               <EventDialogContent
-                handleClose={() => setOpenDialogId(null)}
+                handleClose={() => setSelectedEventId(null)}
                 event={event}
               />
             )}

@@ -8,16 +8,10 @@ import ItinerariesList from "./itineraries/ItinerariesList";
 import TasksList from "./tasks/TasksList";
 import { Calendar } from "./ui/calendar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import usePlanner from "@/lib/hooks/usePlanner";
 
-export default function PlannerPage({
-  activeTab,
-  onTabChange,
-  selectedId,
-}: {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  selectedId?: string;
-}) {
+export default function PlannerPage({}: {}) {
+  const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
       <TabsList className="grid w-full grid-cols-4 bg-muted/50">
@@ -27,7 +21,7 @@ export default function PlannerPage({
         <TabsTrigger value="itineraries">Itineraries</TabsTrigger>
       </TabsList>
       <TabsContent value="tasks">
-        <TasksList selectedId={selectedId} />
+        <TasksList />
       </TabsContent>
       <TabsContent value="events" className="flex flex-col gap-4">
         <Calendar
@@ -37,10 +31,10 @@ export default function PlannerPage({
         <EventsList />
       </TabsContent>
       <TabsContent value="goals">
-        <GoalsList selectedId={selectedId} />
+        <GoalsList />
       </TabsContent>
       <TabsContent value="itineraries">
-        <ItinerariesList selectedId={selectedId} />
+        <ItinerariesList />
       </TabsContent>
     </Tabs>
   );

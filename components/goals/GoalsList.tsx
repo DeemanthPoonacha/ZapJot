@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "../ui/card";
 import { Progress } from "../ui/progress";
 
-const GoalsList = ({ selectedId }: { selectedId?: string }) => {
+const GoalsList = () => {
   const { data: goals, isLoading } = useGoals();
 
   if (isLoading) return <div>Loading...</div>;
