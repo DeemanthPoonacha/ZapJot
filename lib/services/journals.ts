@@ -92,7 +92,11 @@ export const moveJournal = async (
   }
 
   const journalData = snapshot.data();
-  await setDoc(newRef, { ...journalData, updatedAt: new Date() });
+  await setDoc(newRef, {
+    ...journalData,
+    chapterId: newChapterId,
+    updatedAt: new Date(),
+  });
   await deleteDoc(oldRef);
   return newChapterId;
 };

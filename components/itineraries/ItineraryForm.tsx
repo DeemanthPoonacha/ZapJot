@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@/lib/hooks/useUser";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
+import { toast } from "../ui/sonner";
 
 interface ItineraryFormProps {
   itinerary?: Itinerary;
@@ -20,7 +21,6 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   onSuccess,
 }) => {
   const { user } = useUser();
-  const userId = itinerary?.userId || user?.uid || "";
 
   const {
     register,
@@ -36,9 +36,16 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   const { addMutation } = useItineraryMutations();
 
   const onSubmit = async (data: ItineraryCreate) => {
-    await addMutation.mutateAsync(data);
-    reset();
+    try {
+      await addMutation.mutateAsync(data);
+      reset();
+      toast.success("Itinerary created successfully");
+    } catch (error) {
+      console.error("Error saving itinerary", error);
+      toast.error("Failed to save itinerary");
+    }
   };
+
   if (!user) return <div>Loading...</div>;
 
   return (

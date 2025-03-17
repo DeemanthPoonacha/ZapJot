@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
-import { taskSchema, TaskCreate, createTaskSchema } from "@/types/tasks";
+import { TaskCreate, createTaskSchema } from "@/types/tasks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "../ui/sonner";
 
 const TaskForm = () => {
   const {
@@ -23,8 +24,14 @@ const TaskForm = () => {
   const { addMutation } = useTaskMutations();
 
   const onSubmit = async (data: TaskCreate) => {
-    await addMutation.mutateAsync(data);
-    reset();
+    try {
+      await addMutation.mutateAsync(data);
+      reset();
+      toast.success("Task created successfully");
+    } catch (error) {
+      console.error("Error saving task", error);
+      toast.error("Failed to save task");
+    }
   };
 
   return (

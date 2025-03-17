@@ -5,6 +5,7 @@ import JournalsList from "@/components/journals/JournalsList";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import DeleteConfirm from "@/components/ui/delete-confirm";
+import { toast } from "@/components/ui/sonner";
 import { useChapter, useChapterMutations } from "@/lib/hooks/useChapters";
 import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
@@ -27,9 +28,28 @@ const ChapterPage = () => {
   const { moveJournalMutation } = useOperations();
 
   const handleDelete = async () => {
-    if (chapter?.id) {
-      await deleteMutation.mutateAsync(chapter.id);
-      router.push(`/chapters`);
+    try {
+      if (chapter?.id) {
+        await deleteMutation.mutateAsync(chapter.id);
+        router.push(`/chapters`);
+        toast.success("Chapter deleted successfully");
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleDelete ~ error:", error);
+      toast.error("Error deleting chapter");
+    }
+  };
+
+  const handleMoveChapter = async () => {
+    try {
+      if (chapter?.id) {
+        await moveJournalMutation.mutateAsync(chapter.id);
+        router.push(`/chapters/${chapter.id}`);
+        toast.success("Journal moved successfully");
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleMoveChapter ~ error:", error);
+      toast.error("Error moving journal");
     }
   };
 
@@ -37,6 +57,7 @@ const ChapterPage = () => {
   const [isEditing, setIsEditing] = useState(isNewChapter);
 
   if (isLoading) return <p>Loading...</p>;
+
   return (
     <PageLayout
       headerProps={{
@@ -45,14 +66,7 @@ const ChapterPage = () => {
         extra:
           chapter?.id &&
           (isMoving ? (
-            <Button
-              onClick={() => {
-                moveJournalMutation.mutate(chapter.id);
-                router.push(`/chapters/${chapter.id}`);
-              }}
-            >
-              Move Here
-            </Button>
+            <Button onClick={handleMoveChapter}>Move Here</Button>
           ) : (
             <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
           )),

@@ -4,6 +4,7 @@ import { createGoalSchema, GoalCreate } from "@/types/goals";
 import { useGoalMutations } from "@/lib/hooks/useGoals";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "../ui/sonner";
 
 const GoalForm = () => {
   const {
@@ -19,8 +20,14 @@ const GoalForm = () => {
   const { addMutation } = useGoalMutations();
 
   const onSubmit = async (data: GoalCreate) => {
-    await addMutation.mutateAsync(data);
-    reset();
+    try {
+      await addMutation.mutateAsync(data);
+      reset();
+      toast.success("Goal created successfully");
+    } catch (error) {
+      console.error("Error saving goal", error);
+      toast.error("Failed to save goal");
+    }
   };
 
   return (

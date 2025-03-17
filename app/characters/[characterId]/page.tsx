@@ -1,11 +1,9 @@
 "use client";
 import CharacterForm from "@/components/characters/CharacterForm";
-import { PageHeader } from "@/components/page-header";
 import PageLayout from "@/components/PageLayout";
 import DeleteConfirm from "@/components/ui/delete-confirm";
-import { useChapter } from "@/lib/hooks/useChapters";
+import { toast } from "@/components/ui/sonner";
 import { useCharacter, useCharacterMutations } from "@/lib/hooks/useCharacters";
-import { useJournal } from "@/lib/hooks/useJournals";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
@@ -17,9 +15,15 @@ const Chapter = () => {
 
   const { deleteMutation } = useCharacterMutations();
   const handleDelete = async () => {
-    if (character?.id) {
-      await deleteMutation.mutateAsync(character.id);
-      router.push(`/characters`);
+    try {
+      if (character?.id) {
+        await deleteMutation.mutateAsync(character.id);
+        router.push(`/characters`);
+        toast.success("Character deleted successfully");
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleDelete ~ error:", error);
+      toast.error("Error deleting character");
     }
   };
 

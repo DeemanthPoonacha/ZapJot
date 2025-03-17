@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import { EllipsisVertical, MoveRight, SquarePen, Trash2 } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
 import useOperations from "@/lib/hooks/useOperations";
+import { toast } from "@/components/ui/sonner";
 
 const JournalPage = () => {
   const { chapterId, journalId } = useParams();
@@ -32,9 +33,15 @@ const JournalPage = () => {
   const { setSelectedId, setSelectedParentId } = useOperations();
 
   const handleDelete = async () => {
-    if (journal?.id) {
-      await deleteMutation.mutateAsync(journal.id);
-      router.push(`/chapters/${chapterId}`);
+    try {
+      if (journal?.id) {
+        await deleteMutation.mutateAsync(journal.id);
+        router.push(`/chapters/${chapterId}`);
+        toast.success("Journal deleted successfully");
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleDelete ~ error:", error);
+      toast.error("Error deleting journal");
     }
   };
 

@@ -1,6 +1,5 @@
 "use client";
 import ChaptersList from "@/components/chapters/ChaptersList";
-import { PageHeader } from "@/components/page-header";
 import PageLayout from "@/components/PageLayout";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
