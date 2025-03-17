@@ -9,11 +9,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { EllipsisVertical, SquarePen, Trash2 } from "lucide-react";
+import { EllipsisVertical, MoveRight, SquarePen, Trash2 } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
+import useOperations from "@/lib/hooks/useOperations";
 
 const JournalPage = () => {
   const { chapterId, journalId } = useParams();
@@ -27,12 +29,15 @@ const JournalPage = () => {
   const { deleteMutation } = useJournalMutations(chapterId! as string);
   const router = useRouter();
 
+  const { setSelectedId, setSelectedParentId } = useOperations();
+
   const handleDelete = async () => {
     if (journal?.id) {
       await deleteMutation.mutateAsync(journal.id);
       router.push(`/chapters/${chapterId}`);
     }
   };
+
   return (
     <PageLayout
       headerProps={{
@@ -65,6 +70,19 @@ const JournalPage = () => {
                   }
                 />
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {journal?.id && (
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    setSelectedId(journal.id);
+                    setSelectedParentId(chapterId! as string);
+                    router.push(`/chapters?operation=move`);
+                  }}
+                >
+                  <MoveRight size={16} />
+                  Move to chapter
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         ),

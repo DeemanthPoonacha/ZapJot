@@ -8,6 +8,7 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
 
 // Get all journals for a chapter
@@ -68,6 +69,32 @@ export const updateJournal = async (
     `users/${userId}/chapters/${chapterId}/journals/${journalId}`
   );
   await updateDoc(journalRef, { ...data, updatedAt: new Date().toISOString() });
+};
+
+export const moveJournal = async (
+  userId: string,
+  journalId: string,
+  oldChapterId: string,
+  newChapterId: string
+) => {
+  const oldRef = doc(
+    db,
+    `users/${userId}/chapters/${oldChapterId}/journals/${journalId}`
+  );
+  const newRef = doc(
+    db,
+    `users/${userId}/chapters/${newChapterId}/journals/${journalId}`
+  );
+
+  const snapshot = await getDoc(oldRef);
+  if (!snapshot.exists()) {
+    throw new Error("Journal not found");
+  }
+
+  const journalData = snapshot.data();
+  await setDoc(newRef, { ...journalData, updatedAt: new Date() });
+  await deleteDoc(oldRef);
+  return newChapterId;
 };
 
 // Delete a journal

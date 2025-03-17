@@ -2,22 +2,30 @@
 import ChapterCard from "@/components/chapters/ChapterCard";
 import ChapterForm from "@/components/chapters/ChapterForm";
 import JournalsList from "@/components/journals/JournalsList";
-import { PageHeader } from "@/components/page-header";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { useChapter, useChapterMutations } from "@/lib/hooks/useChapters";
+import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
 import { PenLine } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 const ChapterPage = () => {
   const { chapterId } = useParams();
+
+  const searchParams = useSearchParams();
+  const operation = searchParams.get("operation");
+  const isMoving = operation === "move";
+
   const router = useRouter();
+  console.log("🚀 ~ ChapterPage ~ searchParams:", searchParams, chapterId);
   const { data: chapter, isLoading } = useChapter(chapterId! as string);
 
   const { deleteMutation } = useChapterMutations();
+  const { moveJournalMutation } = useOperations();
+
   const handleDelete = async () => {
     if (chapter?.id) {
       await deleteMutation.mutateAsync(chapter.id);
@@ -32,11 +40,22 @@ const ChapterPage = () => {
   return (
     <PageLayout
       headerProps={{
-        title: chapter?.title || "New Chapter",
+        title: isMoving ? "Move Journal" : chapter?.title || "New Chapter",
         backLink: "/chapters",
-        extra: chapter?.id && (
-          <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
-        ),
+        extra:
+          chapter?.id &&
+          (isMoving ? (
+            <Button
+              onClick={() => {
+                moveJournalMutation.mutate(chapter.id);
+                router.push(`/chapters/${chapter.id}`);
+              }}
+            >
+              Move Here
+            </Button>
+          ) : (
+            <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
+          )),
       }}
       {...(!isNewChapter && {
         floatingButtonProps: {
@@ -68,7 +87,9 @@ const ChapterPage = () => {
           chapter={chapter as Chapter}
           onCancel={() => setIsEditing(false)}
           onUpdate={() => {
-            router.push(`/chapters/${chapter?.id}`);
+            isMoving
+              ? router.push(`/chapters/${chapter?.id}?operation=move`)
+              : router.push(`/chapters/${chapter?.id}`);
             setIsEditing(false);
           }}
           onAdd={(id: string) => {

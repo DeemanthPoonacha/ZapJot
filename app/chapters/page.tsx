@@ -2,11 +2,16 @@
 import ChaptersList from "@/components/chapters/ChaptersList";
 import { PageHeader } from "@/components/page-header";
 import PageLayout from "@/components/PageLayout";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const Chapters = () => {
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const operation = searchParams.get("operation");
+  const isMoving = operation === "move";
+
   return (
     <PageLayout
       headerProps={{ title: "Chapters" }}
@@ -17,7 +22,7 @@ const Chapters = () => {
         },
       }}
     >
-      <ChaptersList />
+      <ChaptersList isMoving={isMoving} />
     </PageLayout>
   );
 };
