@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "../ui/sonner";
+import DatePicker from "../ui/date-picker";
 
 interface JournalFormProps {
   chapterId: string;
@@ -41,6 +42,8 @@ const JournalForm: React.FC<JournalFormProps> = ({
     content: journal?.content || "",
     chapterId,
     coverImage: journal?.coverImage || "",
+    date: journal?.date || new Date().toISOString(), // Add default value for date
+    location: journal?.location || "",
   };
   const form = useForm({
     resolver: zodResolver(createJournalSchema),
@@ -101,6 +104,42 @@ const JournalForm: React.FC<JournalFormProps> = ({
                   imageUrl={field.value}
                   onImageUpload={(url) => field.onChange(url)}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  mode="single"
+                  selected={new Date(field.value ?? "")}
+                  onSelect={(date) => field.onChange(date?.toISOString())}
+                  disabled={(date) =>
+                    date > new Date() || date < new Date("1900-01-01")
+                  }
+                  initialFocus
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Journal location" />
               </FormControl>
               <FormMessage />
             </FormItem>

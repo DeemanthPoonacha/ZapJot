@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { cn, formatDateTitle } from "@/lib/utils";
 import Image from "next/image";
+import { Calendar1, MapPin } from "lucide-react";
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -101,12 +102,14 @@ function GridCardWithOverlay({
   title,
   subtitle,
   extra,
+  location,
   ...props
 }: React.ComponentProps<"div"> & {
   image?: string;
   title: string;
   subtitle?: string;
   date?: string;
+  location?: string;
   extra?: React.ReactNode;
 }) {
   return (
@@ -136,7 +139,16 @@ function GridCardWithOverlay({
         {subtitle && (
           <p className="text-sm text-white/80 drop-shadow-md">{subtitle}</p>
         )}
-        <p className="text-xs text-white/60 mt-1">{formatDateTitle(date)}</p>
+        <div className="flex justify-between">
+          <p className="text-xs text-white/60 mt-1 flex gap-1 items-center">
+            <Calendar1 size={16} /> {formatDateTitle(date)}
+          </p>
+          {location && (
+            <p className="text-xs text-white/60 mt-1 flex gap-1 items-center">
+              <MapPin size={16} /> {location}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Extra content */}

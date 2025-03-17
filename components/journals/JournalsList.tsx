@@ -27,7 +27,7 @@ const JournalsList = ({
             key={id}
             title={title}
             image={coverImage}
-            subtitle={location}
+            location={location}
           />
         ))}
       </div>

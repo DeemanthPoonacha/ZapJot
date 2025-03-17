@@ -1,6 +1,4 @@
-import { Card, GridCardWithOverlay } from "@/components/ui/card";
-import Image from "next/image";
-import { formatDateTitle } from "@/lib/utils";
+import { GridCardWithOverlay } from "@/components/ui/card";
 import { Journal } from "@/types/journals";
 
 function JournalCard({
@@ -16,6 +14,7 @@ function JournalCard({
       date={Journal.date}
       image={Journal.coverImage}
       // subtitle={Journal.content}
+      location={Journal.location}
       extra={extra}
     />
   );
