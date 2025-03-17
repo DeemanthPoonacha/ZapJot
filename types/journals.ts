@@ -4,11 +4,12 @@ import { z } from "zod";
 // Base schema for creating a journal
 export const createJournalSchema = z.object({
   title: z.string().default(formatDateTitle),
-  description: z.string().optional(),
+  content: z.string().optional(),
   coverImage: z.string().optional(),
   location: z.string().optional(),
   gallery: z.array(z.string()).optional(), // List of image URLs (videos in future)
   chapterId: z.string(),
+  date: z.string().optional(),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });

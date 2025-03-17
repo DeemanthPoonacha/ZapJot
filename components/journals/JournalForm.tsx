@@ -23,6 +23,7 @@ interface JournalFormProps {
   journal?: Journal;
   onAdd?: (id: string) => void;
   onUpdate?: () => void;
+  onCancel?: () => void;
 }
 
 const JournalForm: React.FC<JournalFormProps> = ({
@@ -30,13 +31,14 @@ const JournalForm: React.FC<JournalFormProps> = ({
   journal,
   onUpdate,
   onAdd,
+  onCancel,
 }) => {
   const { user } = useUser();
   const { addMutation, updateMutation } = useJournalMutations(chapterId);
 
   const defaultValues = {
     title: journal?.title || `New Journal - ${GetDateTime()}`,
-    description: journal?.description || "",
+    content: journal?.content || "",
     chapterId,
     coverImage: journal?.coverImage || "",
   };
@@ -51,6 +53,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
     form.formState.isSubmitting ||
     addMutation.isPending ||
     updateMutation.isPending;
+
   const onSubmit = async (data: JournalCreate) => {
     try {
       if (journal?.id) {
@@ -89,20 +92,6 @@ const JournalForm: React.FC<JournalFormProps> = ({
 
         <FormField
           control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} placeholder="Journal description" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="coverImage"
           render={({ field }) => (
             <FormItem>
@@ -118,15 +107,32 @@ const JournalForm: React.FC<JournalFormProps> = ({
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Content</FormLabel>
+              <FormControl>
+                <Textarea {...field} placeholder="Journal content" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="flex gap-4 pt-4">
           <Button
             type="button"
-            onClick={() => form.reset(defaultValues)}
+            onClick={() => {
+              form.reset(defaultValues);
+              onCancel?.();
+            }}
             variant="outline"
             disabled={isSubmitting}
             className="flex-1"
           >
-            Reset
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting ? (

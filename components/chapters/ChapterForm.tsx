@@ -22,12 +22,14 @@ interface ChapterFormProps {
   chapter?: Chapter;
   onAdd?: (id: string) => void;
   onUpdate?: () => void;
+  onCancel?: () => void;
 }
 
 const ChapterForm: React.FC<ChapterFormProps> = ({
   chapter,
   onAdd,
   onUpdate,
+  onCancel,
 }) => {
   const { user } = useUser();
   const userId = user?.uid;
@@ -169,12 +171,15 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
         <div className="flex gap-4 pt-4">
           <Button
             type="button"
-            onClick={() => form.reset(defaultValues)}
+            onClick={() => {
+              form.reset(defaultValues);
+              onCancel?.();
+            }}
             variant="outline"
             disabled={isSubmitting}
             className="flex-1"
           >
-            Reset
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting ? (

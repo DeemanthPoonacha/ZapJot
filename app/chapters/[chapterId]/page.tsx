@@ -66,6 +66,7 @@ const ChapterPage = () => {
         <ChapterForm
           key={chapter?.id || "new"}
           chapter={chapter as Chapter}
+          onCancel={() => setIsEditing(false)}
           onUpdate={() => {
             router.push(`/chapters/${chapter?.id}`);
             setIsEditing(false);

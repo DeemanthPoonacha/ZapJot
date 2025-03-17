@@ -6,17 +6,21 @@ import { Button } from "./button";
 const DeleteConfirm = ({
   itemName,
   handleDelete,
+  trigger,
 }: {
   itemName?: string;
   handleDelete: () => void;
+  trigger?: React.ReactNode;
 }) => {
   return (
     <CustomAlertDialog
       trigger={
-        <Button variant="outline" type="button">
-          <Trash2 size={16} />
-          <span className="hidden">Delete {itemName}</span>
-        </Button>
+        trigger || (
+          <Button variant="outline" type="button">
+            <Trash2 size={16} />
+            <span className="hidden">Delete {itemName}</span>
+          </Button>
+        )
       }
       dialogAction={[
         { title: "Cancel", variant: "outline", onClick: () => {} },
