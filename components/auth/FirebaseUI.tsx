@@ -1,4 +1,3 @@
-"use client";
 import { GoogleAuthProvider, EmailAuthProvider } from "firebase/auth";
 import { auth } from "@/lib/services/firebase";
 import StyledFirebaseAuth from "./StyledAuthUI";
@@ -32,7 +31,7 @@ export default function FirebaseAuthUI() {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <h1>Sign In</h1>
+      <h1>Sign in to ZapJot</h1>
       <StyledFirebaseAuth
         className="w-full"
         uiConfig={uiConfig}

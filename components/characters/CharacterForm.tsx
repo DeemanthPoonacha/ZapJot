@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Plus, Upload, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import EventsList from "../events/EventsList";
