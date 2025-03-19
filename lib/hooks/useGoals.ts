@@ -6,7 +6,8 @@ import {
   updateGoal,
   deleteGoal,
 } from "@/lib/services/goals";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { GoalCreate, GoalUpdate } from "@/types/goals";
 
 // Query Key
@@ -14,7 +15,7 @@ const GOAL_QUERY_KEY = "goals";
 
 /** Fetch all goals for the logged-in user */
 export const useGoals = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   return useQuery({
@@ -26,7 +27,7 @@ export const useGoals = () => {
 
 /** Fetch a single goal by ID */
 export const useGoal = (goalId?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   return useQuery({
@@ -40,7 +41,7 @@ export const useGoal = (goalId?: string) => {
 /** Mutations */
 export const useGoalMutations = () => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const addMutation = useMutation({

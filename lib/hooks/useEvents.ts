@@ -6,14 +6,15 @@ import {
   updateEvent,
   deleteEvent,
 } from "@/lib/services/events";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { EventCreate, EventsFilter } from "@/types/events";
 import { useCharacters } from "./useCharacters";
 
 const EVENT_QUERY_KEY = "events";
 
 export const useEvents = (query?: EventsFilter) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const { data: characters } = useCharacters();
@@ -43,7 +44,7 @@ export const useEvents = (query?: EventsFilter) => {
 };
 
 export const useEvent = (id?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [EVENT_QUERY_KEY, id],
@@ -55,7 +56,7 @@ export const useEvent = (id?: string) => {
 
 export const useEventMutations = () => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const addMutation = useMutation({

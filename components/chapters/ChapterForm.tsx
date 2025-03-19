@@ -5,7 +5,8 @@ import { useChapterMutations } from "@/lib/hooks/useChapters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { toast } from "sonner";
 import {
   Form,
@@ -31,7 +32,7 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
   onUpdate,
   onCancel,
 }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const defaultValues = {

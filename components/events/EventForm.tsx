@@ -33,7 +33,8 @@ import { toast } from "../ui/sonner";
 import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
 import MultipleSelector from "../ui/multi-select";
 import { searchByName } from "@/lib/services/characters";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import DeleteConfirm from "../ui/delete-confirm";
 
 type EventFormProps = {
@@ -44,7 +45,7 @@ type EventFormProps = {
 export default function EventForm({ eventData, onClose }: EventFormProps) {
   const [repeatType, setRepeatType] = useState(eventData?.repeat || "none");
 
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const defaultValues = {

@@ -6,7 +6,7 @@ import {
   updateChapter,
   deleteChapter,
 } from "@/lib/services/chapters";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
 
 export const CHAPTER_QUERY_KEY = "chapters";
 
@@ -14,7 +14,7 @@ export const CHAPTER_QUERY_KEY = "chapters";
  * Fetch all chapters for the logged-in user
  */
 export const useChapters = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   return useQuery({
@@ -28,7 +28,7 @@ export const useChapters = () => {
  * Fetch a single chapter by ID
  */
 export const useChapter = (chapterId?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   return useQuery({
@@ -43,7 +43,7 @@ export const useChapter = (chapterId?: string) => {
  * Mutations for adding, updating, and deleting chapters
  */
 export const useChapterMutations = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   const queryClient = useQueryClient();
 

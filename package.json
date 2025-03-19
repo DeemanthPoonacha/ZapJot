@@ -34,6 +34,7 @@
     "dayjs": "^1.11.13",
     "firebase": "^11.3.1",
     "firebase-admin": "^13.1.0",
+    "firebaseui": "^6.1.0",
     "lucide-react": "^0.475.0",
     "next": "15.2.0-canary.65",
     "next-themes": "^0.4.4",

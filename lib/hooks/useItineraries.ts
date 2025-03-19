@@ -6,7 +6,8 @@ import {
   updateItinerary,
   deleteItinerary,
 } from "@/lib/services/itineraries";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { Itinerary, ItineraryCreate } from "@/types/itineraries";
 
 // Query Key
@@ -14,7 +15,7 @@ const ITINERARY_QUERY_KEY = "itineraries";
 
 /** Fetch all itineraries for the logged-in user */
 export const useItineraries = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [ITINERARY_QUERY_KEY, userId],
@@ -25,7 +26,7 @@ export const useItineraries = () => {
 
 /** Fetch a single itinerary by ID */
 export const useItinerary = (id?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [ITINERARY_QUERY_KEY, id],
@@ -38,7 +39,7 @@ export const useItinerary = (id?: string) => {
 /** Mutations */
 export const useItineraryMutations = () => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const addMutation = useMutation({

@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createJournalSchema, Journal, JournalCreate } from "@/types/journals";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
   onAdd,
   onCancel,
 }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { addMutation, updateMutation } = useJournalMutations(chapterId);
 
   const defaultValues = {

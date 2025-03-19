@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useGlobalState } from "./global-state";
-import { useUser } from "./useUser";
+import { useAuth } from "./useUser";
 import { moveJournal } from "../services/journals";
 import { CHAPTER_QUERY_KEY } from "./useChapters";
 import { JOURNAL_QUERY_KEY } from "./useJournals";
 
 const useOperations = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   const queryClient = useQueryClient();
 

@@ -2,8 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { ThemeProvider } from "./ThemeProvider";
+import { AuthProvider } from "./AuthProvider";
 
 export default function AppProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -16,8 +17,10 @@ export default function AppProvider({ children }: { children: ReactNode }) {
       // disableTransitionOnChange
     >
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        {children}
+        <AuthProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+          {children}
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

@@ -6,7 +6,8 @@ import {
   updateCharacter,
   deleteCharacter,
 } from "@/lib/services/characters";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { Character, CharacterCreate } from "@/types/characters";
 
 // Query Key
@@ -14,7 +15,7 @@ const CHARACTER_QUERY_KEY = "characters";
 
 /** Fetch all characters for the logged-in user */
 export const useCharacters = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [CHARACTER_QUERY_KEY, userId],
@@ -25,7 +26,7 @@ export const useCharacters = () => {
 
 /** Fetch a single character by ID */
 export const useCharacter = (id?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [CHARACTER_QUERY_KEY, id],
@@ -38,7 +39,7 @@ export const useCharacter = (id?: string) => {
 /** Mutations */
 export const useCharacterMutations = () => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const addMutation = useMutation({

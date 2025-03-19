@@ -2,6 +2,7 @@ import { ChevronLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import UserAvatarDropdown from "./UserAvatar";
 
 export interface PageHeaderProps {
   icon?: React.ReactNode;
@@ -58,6 +59,7 @@ export function PageHeader({
               <span className="hidden sm:inline">Search</span>
             </Button>
           )}
+          <UserAvatarDropdown />
         </div>
       </div>
       {subtitle && (

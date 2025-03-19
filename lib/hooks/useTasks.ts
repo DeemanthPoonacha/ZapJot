@@ -6,7 +6,8 @@ import {
   updateTask,
   deleteTask,
 } from "@/lib/services/tasks";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { Task, TaskCreate } from "@/types/tasks";
 
 // Query Key
@@ -14,7 +15,7 @@ const TASK_QUERY_KEY = "tasks";
 
 /** Fetch all tasks for the logged-in user */
 export const useTasks = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [TASK_QUERY_KEY, userId],
@@ -25,7 +26,7 @@ export const useTasks = () => {
 
 /** Fetch a single task by ID */
 export const useTask = (id?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
     queryKey: [TASK_QUERY_KEY, id],
@@ -38,7 +39,7 @@ export const useTask = (id?: string) => {
 /** Mutations */
 export const useTaskMutations = () => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   const addMutation = useMutation({

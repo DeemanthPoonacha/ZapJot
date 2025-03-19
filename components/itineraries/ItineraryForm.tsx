@@ -7,7 +7,8 @@ import {
 } from "@/types/itineraries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 import { toast } from "../ui/sonner";
 
@@ -20,7 +21,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   itinerary,
   onSuccess,
 }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
 
   const {
     register,

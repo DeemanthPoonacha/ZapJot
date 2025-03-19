@@ -6,12 +6,12 @@ import {
   updateJournal,
   deleteJournal,
 } from "@/lib/services/journals";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
 
 export const JOURNAL_QUERY_KEY = "journals";
 
 export const useJournals = (chapterId?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   return useQuery({
@@ -22,7 +22,7 @@ export const useJournals = (chapterId?: string) => {
 };
 
 export const useJournal = (chapterId?: string, journalId?: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
 
   return useQuery({
@@ -36,7 +36,7 @@ export const useJournal = (chapterId?: string, journalId?: string) => {
 };
 
 export const useJournalMutations = (chapterId: string) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   const queryClient = useQueryClient();
 

@@ -9,7 +9,8 @@ import { useCharacterMutations } from "@/lib/hooks/useCharacters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useUser } from "@/lib/hooks/useUser";
+import { useAuth } from "@/lib/context/AuthProvider";
+
 import { useState } from "react";
 import Image from "next/image";
 import { Plus, Upload, User } from "lucide-react";
@@ -38,7 +39,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
   onUpdate,
   onAdd,
 }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userId = user?.uid;
   const [isImageUploading, setIsImageUploading] = useState(false);
 
