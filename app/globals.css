@@ -103,3 +103,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.emptyIcon {
+  @apply h-16 w-16 text-muted-foreground mb-4;
+}

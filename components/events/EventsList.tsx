@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/dialog";
 import EventForm from "./EventForm";
 import { EventCard } from "./EventCard";
-import FloatingButton from "../ui/floating-button";
 import { Event, EventsFilter } from "@/types/events";
-import { useState } from "react";
 import usePlanner from "@/lib/hooks/usePlanner";
+import Empty from "../Empty";
+import { CalendarClock } from "lucide-react";
 
 const EventsList = ({
   query,
@@ -27,6 +27,17 @@ const EventsList = ({
   const { selectedEventId, setSelectedEventId } = usePlanner();
 
   if (isLoading) return <div>Loading...</div>;
+
+  if (!events?.length)
+    return (
+      <Empty
+        icon={<CalendarClock className="emptyIcon" />}
+        title="No events yet"
+        subtitle="Add events to keep track of important dates and activities"
+        buttonTitle="Create First Event"
+        handleCreateClick={() => setSelectedEventId("new")}
+      />
+    );
 
   // Helper to determine if a specific dialog is open
   const isDialogOpen = (dialogId: string) => selectedEventId === dialogId;

@@ -1,14 +1,23 @@
 import { useGoals } from "@/lib/hooks/useGoals";
-import GoalForm from "./GoalForm";
-import { Button } from "@/components/ui/button";
 import { Card } from "../ui/card";
 import { Progress } from "../ui/progress";
+import Empty from "../Empty";
+import { Goal } from "lucide-react";
 
 const GoalsList = () => {
   const { data: goals, isLoading } = useGoals();
 
   if (isLoading) return <div>Loading...</div>;
-  if (!goals || goals.length === 0) return <div>No goals found.</div>;
+  if (!goals?.length)
+    return (
+      <Empty
+        icon={<Goal className="emptyIcon" />}
+        title="No goals yet"
+        subtitle="Add goals to keep track of important things to achieve"
+        buttonTitle="Create First Goal"
+        handleCreateClick={() => {}}
+      />
+    );
 
   return (
     <div className="space-y-3">

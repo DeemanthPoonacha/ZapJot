@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Grid3X3, Users, Settings, Plus, ListTodo } from "lucide-react";
+import { Home, Grid2X2, Users, Settings, Plus, ListTodo } from "lucide-react";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Planner", icon: ListTodo, href: "/planner" },
-  { label: "Chapters", icon: Grid3X3, href: "/chapters" },
+  { label: "Chapters", icon: Grid2X2, href: "/chapters" },
   { label: "Characters", icon: Users, href: "/characters" },
   { label: "Settings", icon: Settings, href: "/settings" },
 ];

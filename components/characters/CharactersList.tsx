@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import CharacterCard from "./CharacterCard";
+import Empty from "../Empty";
 
 const CharactersList = () => {
   const { data: characters, isLoading } = useCharacters();
@@ -47,17 +48,13 @@ const CharactersList = () => {
 
   if (!characters?.length) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center h-64">
-        <UserCircle className="h-16 w-16 text-muted-foreground mb-4" />
-        <h3 className="text-xl font-medium mb-2">No characters yet</h3>
-        <p className="text-muted-foreground mb-6">
-          Add characters to keep track of important people in your life
-        </p>
-        <Button onClick={() => router.push("/characters/new")}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create First Character
-        </Button>
-      </div>
+      <Empty
+        icon={<UserCircle className="emptyIcon" />}
+        handleCreateClick={() => router.push("/characters/new")}
+        title="No characters yet"
+        subtitle="Add characters to keep track of important people in your life"
+        buttonTitle="Create First Character"
+      />
     );
   }
 

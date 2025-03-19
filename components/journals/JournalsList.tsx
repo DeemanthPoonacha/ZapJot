@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { GridCardWithOverlay } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import Empty from "../Empty";
+import { BookOpenText } from "lucide-react";
 
 const JournalsList = ({
   chapterId,
@@ -15,6 +17,17 @@ const JournalsList = ({
   const router = useRouter();
 
   if (isLoading) return <Skeleton className="h-40 w-full" />;
+
+  if (!journals?.length)
+    return (
+      <Empty
+        icon={<BookOpenText className="emptyIcon" />}
+        title="No journals yet"
+        subtitle="Add journals to keep track of important events and memories"
+        buttonTitle="Create First Journal"
+        handleCreateClick={() => {}}
+      />
+    );
 
   return (
     <div className={cn("space-y-4", className)}>

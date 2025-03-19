@@ -1,14 +1,25 @@
 import { useTasks, useTaskMutations } from "@/lib/hooks/useTasks";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus } from "lucide-react";
+import { ListChecks } from "lucide-react";
+import Empty from "../Empty";
 
 const TasksList = () => {
   const { data: tasks, isLoading } = useTasks();
   const { deleteMutation } = useTaskMutations();
 
   if (isLoading) return <p>Loading tasks...</p>;
+
+  if (!tasks?.length)
+    return (
+      <Empty
+        title="No tasks yet"
+        subtitle="Add tasks to keep track of important things to do"
+        buttonTitle="Create First Task"
+        handleCreateClick={() => {}}
+        icon={<ListChecks className="emptyIcon" />}
+      />
+    );
 
   return (
     <div className="space-y-3">

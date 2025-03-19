@@ -2,12 +2,25 @@ import { useItineraries } from "@/lib/hooks/useItineraries";
 import { Card } from "../ui/card";
 import ItineraryDetailPage from "./ItineraryDetail";
 import usePlanner from "@/lib/hooks/usePlanner";
+import Empty from "../Empty";
+import { Notebook, NotepadText } from "lucide-react";
 
 const ItineraryList = () => {
   const { data: itineraries, isLoading } = useItineraries();
   const { selectedItineraryId, setSelectedItineraryId } = usePlanner();
 
   if (isLoading) return <p>Loading...</p>;
+
+  if (!itineraries?.length)
+    return (
+      <Empty
+        icon={<NotepadText className="emptyIcon" />}
+        title="No itineraries yet"
+        subtitle="Add itineraries to keep track of important dates and activities"
+        buttonTitle="Create First Itinerary"
+        handleCreateClick={() => {}}
+      />
+    );
 
   return (
     <div className="space-y-3">
