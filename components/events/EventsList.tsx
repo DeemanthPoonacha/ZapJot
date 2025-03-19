@@ -12,6 +12,7 @@ import { Event, EventsFilter } from "@/types/events";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../Empty";
 import { CalendarClock } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
 
 const EventsList = ({
   query,
@@ -25,19 +26,6 @@ const EventsList = ({
   console.log("🚀 ~ EventsList ~ query:", query);
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!events?.length)
-    return (
-      <Empty
-        icon={<CalendarClock className="emptyIcon" />}
-        title="No events yet"
-        subtitle="Add events to keep track of important dates and activities"
-        buttonTitle="Create First Event"
-        handleCreateClick={() => setSelectedEventId("new")}
-      />
-    );
 
   // Helper to determine if a specific dialog is open
   const isDialogOpen = (dialogId: string) => selectedEventId === dialogId;
@@ -70,18 +58,31 @@ const EventsList = ({
           />
         )}
 
-        {/* Event-specific Dialogs */}
-        {events?.map((event) => (
-          <div key={event.id}>
-            <EventCard onClick={() => toggleDialog(event.id)} event={event} />
-            {isDialogOpen(event.id) && (
-              <EventDialogContent
-                handleClose={() => setSelectedEventId(null)}
-                event={event}
-              />
-            )}
-          </div>
-        ))}
+        {isLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-36 w-full" />
+          ))
+        ) : !events?.length ? (
+          <Empty
+            icon={<CalendarClock className="emptyIcon" />}
+            handleCreateClick={() => toggleDialog("new")}
+            title="No events yet"
+            subtitle="Add events to keep track of important dates and milestones"
+            buttonTitle="Create First Event"
+          />
+        ) : (
+          events?.map((event) => (
+            <div key={event.id}>
+              <EventCard onClick={() => toggleDialog(event.id)} event={event} />
+              {isDialogOpen(event.id) && (
+                <EventDialogContent
+                  handleClose={() => setSelectedEventId(null)}
+                  event={event}
+                />
+              )}
+            </div>
+          ))
+        )}
       </Dialog>
     </div>
   );

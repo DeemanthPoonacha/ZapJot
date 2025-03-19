@@ -6,22 +6,19 @@ import { RecentActivity } from "@/components/home/recent-activity";
 import { MoodTracker } from "@/components/home/mood-tracker";
 import { TodaysFocus } from "@/components/home/todays-focus";
 import PageLayout from "@/components/PageLayout";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function HomePage() {
   return (
     <PageLayout>
-      <ProtectedRoute>
-        <PageHeader title="DIGJOURN" />
-        <div className="space-y-6">
-          <HomeHeader />
-          <QuickActions />
-          <UpcomingEvents />
-          <RecentActivity />
-          <MoodTracker />
-          <TodaysFocus />
-        </div>
-      </ProtectedRoute>
+      <PageHeader title="ZapJot" />
+      <div className="space-y-6">
+        <HomeHeader />
+        <QuickActions />
+        <UpcomingEvents />
+        <RecentActivity />
+        <MoodTracker />
+        <TodaysFocus />
+      </div>
     </PageLayout>
   );
 }

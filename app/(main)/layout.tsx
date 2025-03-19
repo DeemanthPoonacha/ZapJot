@@ -1,6 +1,6 @@
 import { NavigationBar } from "@/components/NavigationBar";
 import React from "react";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 const Layout = ({
   children,
 }: Readonly<{
@@ -8,8 +8,10 @@ const Layout = ({
 }>) => {
   return (
     <div>
-      {children}
-      <NavigationBar />
+      <ProtectedRoute>
+        {children}
+        <NavigationBar />
+      </ProtectedRoute>
     </div>
   );
 };
