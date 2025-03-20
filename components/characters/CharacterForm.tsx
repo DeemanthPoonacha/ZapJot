@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import { useState } from "react";
-import { Plus, Upload, User } from "lucide-react";
+import { LoaderCircle, Plus, Upload, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import EventsList from "../events/EventsList";
 import {
@@ -26,6 +26,9 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { CldUploadWidget } from "next-cloudinary";
+import { CloudinaryResult } from "@/types/general";
+import UploadAvatar from "../ui/upload-avatar";
 
 interface CharacterFormProps {
   character?: Character | null;
@@ -83,18 +86,21 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
     }
   };
 
-  // Mock function for image upload - replace with your actual implementation
-  const handleImageUpload = () => {
-    setIsImageUploading(true);
-    // Simulate upload delay
-    setTimeout(() => {
-      form.setValue(
-        "image",
-        "https://api.dicebear.com/7.x/personas/svg?seed=" + Math.random()
-      );
+  const handleImageUploadSuccess = async (result: CloudinaryResult) => {
+    console.log("🚀 ~ handleImageUploadSuccess ~ result:", result);
+    // Get the secure URL from the upload result
+    const imageUrl = result.secure_url;
+
+    try {
+      form.setValue("image", imageUrl, { shouldDirty: true });
       setIsImageUploading(false);
-      toast.success("Image uploaded successfully");
-    }, 1000);
+      toast.success("Profile picture updated successfully");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile picture");
+    } finally {
+      setIsImageUploading(false);
+    }
   };
 
   if (!user)
@@ -107,52 +113,12 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Card className="overflow-hidden">
-          <CardContent className="p-6 text-center flex flex-col items-center">
-            <div className="relative mb-6 mt-2">
-              <Avatar className="h-32 w-32">
-                <AvatarImage
-                  src={form.watch("image") || "/placeholder.svg"}
-                  alt="Profile picture"
-                />
-                <AvatarFallback className="bg-muted">
-                  <User className="h-12 w-12 text-muted-foreground" />
-                </AvatarFallback>
-              </Avatar>
-
-              <Button
-                type="button"
-                size="icon"
-                onClick={handleImageUpload}
-                disabled={isImageUploading}
-                className="absolute bottom-0 right-0 rounded-full bg-primary hover:bg-primary/90 h-10 w-10 shadow-md"
-              >
-                {isImageUploading ? (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
-                ) : (
-                  <Upload className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Image URL"
-                      className="text-sm text-center"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+        <UploadAvatar
+          form={form}
+          fieldName="image"
+          isImageUploading={isImageUploading}
+          setIsImageUploading={setIsImageUploading}
+        />
 
         <div className="space-y-4">
           <FormField
@@ -228,12 +194,15 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
         <div className="flex gap-4 pt-4">
           <Button
             type="button"
-            onClick={() => form.reset()}
+            onClick={() => {
+              form.reset();
+              onUpdate?.();
+            }}
             variant="outline"
             disabled={isSubmitting}
             className="flex-1"
           >
-            Reset
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting ? (

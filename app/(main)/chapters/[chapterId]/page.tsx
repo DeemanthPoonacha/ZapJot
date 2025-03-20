@@ -82,18 +82,25 @@ const ChapterPage = () => {
     >
       {!isEditing ? (
         chapter && (
-          <ChapterCard
-            chapter={chapter}
-            extra={
-              <Button
-                variant={"outline"}
-                size="icon"
-                onClick={() => setIsEditing(true)}
-              >
-                <PenLine className="h-4 w-4" />
-              </Button>
-            }
-          />
+          <>
+            <ChapterCard
+              chapter={chapter}
+              extra={
+                <Button
+                  variant={"outline"}
+                  size="icon"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <PenLine className="h-4 w-4" />
+                </Button>
+              }
+            />
+            {chapter?.description && (
+              <p className="mt-2 px-4 text-sm text-muted-foreground">
+                {chapter.description}
+              </p>
+            )}
+          </>
         )
       ) : (
         <ChapterForm

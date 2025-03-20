@@ -37,7 +37,7 @@ const JournalsList = ({
         />
       ) : (
         <div className="grid grid-cols-2 sm:garid-cols-2 md:garid-cols-3 gap-4">
-          {journals?.map(({ id, title, coverImage, location }) => (
+          {journals?.map(({ id, title, coverImage, location, date }) => (
             <GridCardWithOverlay
               className="cursor-pointer hover:shadow-lg transition"
               onClick={() =>
@@ -45,6 +45,7 @@ const JournalsList = ({
               }
               key={id}
               title={title}
+              date={date}
               image={coverImage}
               location={location}
             />

@@ -26,7 +26,7 @@ export default function Empty({
       <p className="text-muted-foreground mb-6">{subtitle}</p>
       {customAction ||
         (showButton && (
-          <Button onClick={handleCreateClick}>
+          <Button type="button" onClick={handleCreateClick}>
             <Plus className="h-4 w-4" />
             {buttonTitle}
           </Button>

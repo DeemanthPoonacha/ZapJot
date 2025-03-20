@@ -37,15 +37,6 @@ const EventsList = ({
 
   return (
     <div className="space-y-4">
-      {!!addNewButton && (
-        <Button
-          type="button"
-          className="w-full"
-          onClick={() => toggleDialog("new")}
-        >
-          {addNewButton}
-        </Button>
-      )}
       {/* Add Event Dialog */}
       <Dialog
         open={selectedEventId !== null}
@@ -71,17 +62,31 @@ const EventsList = ({
             buttonTitle="Create First Event"
           />
         ) : (
-          events?.map((event) => (
-            <div key={event.id}>
-              <EventCard onClick={() => toggleDialog(event.id)} event={event} />
-              {isDialogOpen(event.id) && (
-                <EventDialogContent
-                  handleClose={() => setSelectedEventId(null)}
+          <>
+            {!!addNewButton && (
+              <Button
+                type="button"
+                className="w-full"
+                onClick={() => toggleDialog("new")}
+              >
+                {addNewButton}
+              </Button>
+            )}
+            {events?.map((event) => (
+              <div key={event.id}>
+                <EventCard
+                  onClick={() => toggleDialog(event.id)}
                   event={event}
                 />
-              )}
-            </div>
-          ))
+                {isDialogOpen(event.id) && (
+                  <EventDialogContent
+                    handleClose={() => setSelectedEventId(null)}
+                    event={event}
+                  />
+                )}
+              </div>
+            ))}
+          </>
         )}
       </Dialog>
     </div>

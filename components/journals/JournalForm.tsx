@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/form";
 import { toast } from "../ui/sonner";
 import DatePicker from "../ui/date-picker";
+import UploadImage from "../ui/upload-image";
+import { useState } from "react";
 
 interface JournalFormProps {
   chapterId: string;
@@ -53,7 +55,9 @@ const JournalForm: React.FC<JournalFormProps> = ({
     },
   });
 
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const isSubmitting =
+    isImageUploading ||
     form.formState.isSubmitting ||
     addMutation.isPending ||
     updateMutation.isPending;
@@ -94,21 +98,11 @@ const JournalForm: React.FC<JournalFormProps> = ({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="coverImage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cover Image</FormLabel>
-              <FormControl>
-                <ImageUploader
-                  imageUrl={field.value}
-                  onImageUpload={(url) => field.onChange(url)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <UploadImage
+          form={form}
+          fieldName="coverImage"
+          isImageUploading={isImageUploading}
+          setIsImageUploading={setIsImageUploading}
         />
 
         <FormField

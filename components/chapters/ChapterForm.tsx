@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/form";
 import DatePicker from "@/components/ui/date-picker"; // Import DatePicker component
 import ImageUploader from "@/components/ui/image-uploader"; // Import ImageUploader component
+import UploadImage from "../ui/upload-image";
+import { useState } from "react";
 
 interface ChapterFormProps {
   chapter?: Chapter;
@@ -49,10 +51,11 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
     defaultValues: defaultValues,
   });
 
-  console.log("🚀 ~ ChapterForm ~ err", form.formState.errors);
-
   const { addMutation, updateMutation } = useChapterMutations();
+
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const isSubmitting =
+    isImageUploading ||
     form.formState.isSubmitting ||
     addMutation.isPending ||
     updateMutation.isPending;
@@ -152,21 +155,11 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cover Image</FormLabel>
-              <FormControl>
-                <ImageUploader
-                  imageUrl={field.value}
-                  onImageUpload={(url) => field.onChange(url)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <UploadImage
+          form={form}
+          fieldName="image"
+          isImageUploading={isImageUploading}
+          setIsImageUploading={setIsImageUploading}
         />
 
         <div className="flex gap-4 pt-4">
