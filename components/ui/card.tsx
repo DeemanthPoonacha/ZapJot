@@ -123,7 +123,9 @@ function GridCardWithOverlay({
     >
       {image && (
         <CldImage
-          width={400}
+          gravity="auto"
+          crop="auto"
+          width={420}
           height={200}
           src={image}
           alt={title}

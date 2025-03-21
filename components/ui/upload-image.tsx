@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Upload, LoaderCircle } from "lucide-react";
+
+import { Upload, LoaderCircle, ImagePlus } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -53,13 +53,19 @@ const UploadImage = ({
           <FormControl>
             <div className="border rounded-md text-center flex flex-col items-center">
               <div className="relative m-4">
-                <CldImage
-                  width={400}
-                  height={200}
-                  src={field.value}
-                  alt={fieldName}
-                  className="w-full"
-                />
+                {field.value ? (
+                  <CldImage
+                    width={420}
+                    height={200}
+                    src={field.value}
+                    alt={fieldName}
+                    className="w-full"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImagePlus className="w-36 h-36" />
+                  </div>
+                )}
                 <CldUploadWidget
                   uploadPreset="zapjot_covers"
                   options={{
