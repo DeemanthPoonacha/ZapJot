@@ -50,7 +50,11 @@ const GoalsList = () => {
         ) : (
           goals.map((goal) => (
             <div key={goal.id}>
-              <GoalCard goal={goal} onEditClick={() => toggleDialog(goal.id)} />
+              <GoalCard
+                key={goal.id}
+                goal={goal}
+                onEditClick={() => toggleDialog(goal.id)}
+              />
               {isDialogOpen(goal.id) && (
                 <GoalDialogContent
                   handleClose={() => setSelectedGoalId(null)}

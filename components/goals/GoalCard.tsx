@@ -1,8 +1,38 @@
+import { useState } from "react";
 import { Goal } from "@/types/goals";
-import { Progress } from "@radix-ui/react-progress";
-import { Card, ListCard } from "../ui/card";
-import { Edit } from "lucide-react";
+import { Card, CardContent, ListCard, ListCardFooter } from "../ui/card";
+import {
+  Edit,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+  Flag,
+  Target,
+  Hourglass,
+  Notebook,
+  NotebookText,
+  CircleCheckBig,
+  Plus,
+  Minus,
+  CalendarX2,
+  CalendarX,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
+import { format } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
+import { Progress } from "../ui/progress";
+import { formatDate } from "@/lib/utils";
+import { Input } from "../ui/input";
+import { useGoalMutations } from "@/lib/hooks/useGoals";
+import QuickEdit from "./QuickEdit"; // Import the new QuickEdit component
+
+const PriorityColors = {
+  low: "bg-blue-100 text-blue-800",
+  medium: "bg-amber-100 text-amber-800",
+  high: "bg-rose-100 text-rose-800",
+};
 
 export default function GoalCard({
   goal,
@@ -11,27 +41,112 @@ export default function GoalCard({
   goal: Goal;
   onEditClick: () => void;
 }) {
-  return (
-    <ListCard className="p-4 space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="font-semibold">{goal.title}</h3>
+  const [expanded, setExpanded] = useState(false);
+  const percentComplete = Math.round((goal.progress / goal.objective) * 100);
 
-        <Button
-          className="cursor-pointer"
-          variant={"ghost"}
-          size={"icon"}
-          onClick={onEditClick}
-        >
-          <Edit className="w-5 h-5" />
-        </Button>
-      </div>
-      <div className="space-y-2">
-        <Progress value={(goal.progress / goal.objective) * 100} />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Current: {goal.progress}</span>
-          <span>Remaining: {goal.objective - goal.progress}</span>
+  return (
+    <ListCard className="transition-colors gap-0">
+      <CardContent className="px-4 py-2">
+        {/* Header section (always visible) */}
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-2">
+            <span className="font-semibold">{goal.title}</span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Button
+              className="cursor-pointer"
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEditClick();
+              }}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+            <Button
+              className="cursor-pointer"
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded(!expanded);
+              }}
+            >
+              {expanded ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </div>
-      </div>
+        <div className="flex text-muted-foreground text-sm mb-2">
+          {goal.description && (
+            <span className="italic">{goal.description}</span>
+          )}
+          {goal.deadline && (
+            <span
+              className="ml-auto flex gap-1 items-center"
+              color="bg-rose-100 text-rose-800"
+            >
+              <CalendarX className="w-4 h-4" />
+              {formatDate(goal.deadline)}
+            </span>
+          )}
+        </div>
+
+        {/* Progress section (always visible) */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Progress value={percentComplete} className="h-2 flex-1" />
+            <span className="font-medium text-sm whitespace-nowrap">
+              {percentComplete}%
+            </span>
+          </div>
+        </div>
+      </CardContent>
+
+      <ListCardFooter className="flex flex-col w-full">
+        <AnimatePresence>
+          <div className="flex w-full justify-between text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <span className="flex gap-1 items-center">
+                <CircleCheckBig className="w-4 h-4" />
+                Current
+              </span>
+
+              <span className="font-semibold">
+                {goal.progress} {goal.unit}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="flex gap-1 items-center">
+                <Target className="w-4 h-4" />
+                Objective
+              </span>
+
+              <span className="font-semibold">
+                {goal.objective} {goal.unit}
+              </span>
+            </div>
+          </div>
+        </AnimatePresence>
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden w-full border-t pt-2 mt-2"
+            >
+              <QuickEdit goal={goal} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </ListCardFooter>
     </ListCard>
   );
 }
