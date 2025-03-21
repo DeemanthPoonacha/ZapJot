@@ -8,6 +8,7 @@ export const createGoalSchema = z.object({
   priority: z.enum(["low", "medium", "high"]).default("medium"),
   progress: z.number().default(0),
   objective: z.number().default(100),
+  unit: z.string().default("%"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });

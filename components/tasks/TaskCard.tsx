@@ -32,7 +32,7 @@ export function TaskCard({
 
   return (
     <ListCard key={task.id}>
-      <CardContent className="p-4 gap-1">
+      <CardContent className="px-4 py-2 gap-1">
         <div className="w-full flex justify-between items-center space-x-2">
           <span className="flex items-center space-x-2">
             <Checkbox

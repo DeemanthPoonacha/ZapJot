@@ -85,9 +85,9 @@ const TaskForm = ({
         toast.success("Task updated successfully");
       } else {
         await addMutation.mutateAsync(data);
-        form.reset();
         toast.success("Task created successfully");
       }
+      form.reset();
       onClose?.();
     } catch (error) {
       console.error("Error saving task", error);

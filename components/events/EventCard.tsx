@@ -23,7 +23,7 @@ export function EventCard({
   );
   return (
     <ListCard onClick={onClick} className="cursor-pointer">
-      <CardContent className="p-4 gap-1">
+      <CardContent className="px-4 py-2 gap-1">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-primary truncate">
             {event.title}

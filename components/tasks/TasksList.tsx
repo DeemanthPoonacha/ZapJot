@@ -11,6 +11,7 @@ import Empty from "../Empty";
 import { Skeleton } from "../ui/skeleton";
 import TaskForm from "./TaskForm";
 import { TaskCard } from "./TaskCard";
+import { Task } from "@/types/tasks";
 
 const TasksList = () => {
   const { data: tasks, isLoading } = useTasks();
@@ -33,10 +34,7 @@ const TasksList = () => {
         onOpenChange={(open) => toggleDialog(open ? selectedTaskId : null)}
       >
         {isDialogOpen("new") && (
-          <TaskDialogContent
-            handleClose={() => setSelectedTaskId(null)}
-            task={null}
-          />
+          <TaskDialogContent handleClose={() => setSelectedTaskId(null)} />
         )}
 
         {isLoading ? (
@@ -73,7 +71,7 @@ function TaskDialogContent({
   task,
   handleClose,
 }: {
-  task: any; // Replace `any` with the appropriate Task type
+  task?: Task;
   handleClose: () => void;
 }) {
   return (
