@@ -20,6 +20,16 @@ export const formatDateTitle = (
   }); // Example: "Fri, 3rd Nov 2025"
 };
 
+// Function to format the date
+export const formatDate = (dateString: string = new Date().toISOString()) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }); // Example: "3rd Nov 2025"
+};
+
 export function GetDateTime() {
   return new Date().toString().split(" GMT", 1);
 }

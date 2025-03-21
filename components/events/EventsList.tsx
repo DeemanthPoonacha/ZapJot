@@ -37,7 +37,7 @@ const EventsList = ({
 
   return (
     <div className="space-y-4">
-      {/* Add Event Dialog */}
+      {/* Add/Edit Event Dialog */}
       <Dialog
         open={selectedEventId !== null}
         onOpenChange={(open) => toggleDialog(open ? selectedEventId : null)}

@@ -61,5 +61,41 @@ export const useTaskMutations = () => {
       queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
   });
 
-  return { addMutation, updateMutation, deleteMutation };
+  const toggleTaskCompletion = useMutation({
+    mutationFn: (task: Task) =>
+      updateTask(userId!, task.id, {
+        status: task.status === "completed" ? "pending" : "completed",
+        subtasks: task.subtasks.map((subtask) => ({
+          ...subtask,
+          status: task.status === "completed" ? "pending" : "completed",
+        })),
+      }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+  });
+
+  const toggleSubtaskCompletion = useMutation({
+    mutationFn: ({ task, subtaskId }: { task: Task; subtaskId: string }) =>
+      updateTask(userId!, task.id, {
+        subtasks: task.subtasks.map((subtask) =>
+          subtask.id === subtaskId
+            ? {
+                ...subtask,
+                status:
+                  subtask.status === "completed" ? "pending" : "completed",
+              }
+            : subtask
+        ),
+      }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+  });
+
+  return {
+    addMutation,
+    updateMutation,
+    deleteMutation,
+    toggleTaskCompletion,
+    toggleSubtaskCompletion,
+  };
 };

@@ -1,64 +1,89 @@
-import { useTasks, useTaskMutations } from "@/lib/hooks/useTasks";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useTasks } from "@/lib/hooks/useTasks";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ListChecks } from "lucide-react";
+import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../Empty";
+import { Skeleton } from "../ui/skeleton";
+import TaskForm from "./TaskForm";
+import { TaskCard } from "./TaskCard";
 
 const TasksList = () => {
   const { data: tasks, isLoading } = useTasks();
-  const { deleteMutation } = useTaskMutations();
+  console.log("🚀 ~ TasksList ~ tasks:", tasks);
+  const { selectedTaskId, setSelectedTaskId } = usePlanner();
 
-  if (isLoading) return <p>Loading tasks...</p>;
+  // Helper to determine if a specific dialog is open
+  const isDialogOpen = (dialogId: string) => selectedTaskId === dialogId;
 
-  if (!tasks?.length)
-    return (
-      <Empty
-        title="No tasks yet"
-        subtitle="Add tasks to keep track of important things to do"
-        buttonTitle="Create First Task"
-        handleCreateClick={() => {}}
-        icon={<ListChecks className="emptyIcon" />}
-      />
-    );
+  // Helper to open/close a specific dialog
+  const toggleDialog = (dialogId: string | null) => {
+    setSelectedTaskId(selectedTaskId === dialogId ? null : dialogId);
+  };
 
   return (
-    <div className="space-y-3">
-      {tasks?.map((task) => (
-        <Card key={task.id} className="p-4">
-          <div className="flex items-center space-x-2">
-            <Checkbox checked={task.status === "completed"} />
-            <span
-              className={
-                task.status === "completed"
-                  ? "line-through text-muted-foreground"
-                  : ""
-              }
-            >
-              {task.title}
-            </span>
-          </div>
-          {task.subtasks && (
-            <div className="ml-6 mt-2 space-y-2">
-              {task.subtasks.map((subtask) => (
-                <div key={subtask.id} className="flex items-center space-x-2">
-                  <Checkbox checked={subtask.status === "completed"} />
-                  <span
-                    className={
-                      subtask.status === "completed"
-                        ? "line-through text-muted-foreground"
-                        : ""
-                    }
-                  >
-                    {subtask.title}
-                  </span>
-                </div>
-              ))}
+    <div className="space-y-4">
+      {/* Add/Edit Task Dialog */}
+      <Dialog
+        open={selectedTaskId !== null}
+        onOpenChange={(open) => toggleDialog(open ? selectedTaskId : null)}
+      >
+        {isDialogOpen("new") && (
+          <TaskDialogContent
+            handleClose={() => setSelectedTaskId(null)}
+            task={null}
+          />
+        )}
+
+        {isLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full" />
+          ))
+        ) : !tasks?.length ? (
+          <Empty
+            title="No tasks yet"
+            subtitle="Add tasks to keep track of important things to do"
+            buttonTitle="Create First Task"
+            handleCreateClick={() => toggleDialog("new")}
+            icon={<ListChecks className="emptyIcon" />}
+          />
+        ) : (
+          tasks?.map((task) => (
+            <div key={task.id}>
+              <TaskCard task={task} onEditClick={() => toggleDialog(task.id)} />
+              {isDialogOpen(task.id) && (
+                <TaskDialogContent
+                  handleClose={() => setSelectedTaskId(null)}
+                  task={task}
+                />
+              )}
             </div>
-          )}
-        </Card>
-      ))}
+          ))
+        )}
+      </Dialog>
     </div>
   );
 };
+
+function TaskDialogContent({
+  task,
+  handleClose,
+}: {
+  task: any; // Replace `any` with the appropriate Task type
+  handleClose: () => void;
+}) {
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{task?.title || "New Task"}</DialogTitle>
+      </DialogHeader>
+      <TaskForm onClose={handleClose} taskData={task} />
+    </DialogContent>
+  );
+}
 
 export default TasksList;

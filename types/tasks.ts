@@ -11,7 +11,7 @@ export const createTaskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   dueDate: z.string().optional(), // ISO date format
-  priority: z.enum(["low", "medium", "high"]).default("medium"),
+  highPriority: z.boolean().default(false),
   status: z.enum(["pending", "in-progress", "completed"]).default("pending"),
   subtasks: z.array(subTasks).default([]),
   createdAt: z.string().default(() => new Date().toISOString()),
