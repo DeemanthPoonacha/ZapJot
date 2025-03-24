@@ -59,8 +59,8 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
 
   return (
     <div className="space-y-3">
-      <h5 className="font-semibold">Quick edit</h5>
-      {!!goal.deadline && (
+      <h5 className="font-semibold text-sm">Quick edit</h5>
+      {/* {!!goal.deadline && (
         <div className="flex items-center justify-between gap-2 w-full">
           <span className="flex gap-1">
             <Calendar className="w-4 h-4" />
@@ -68,7 +68,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
           </span>
           <span className="font-semibold">{formatDate(goal.deadline)}</span>
         </div>
-      )}
+      )} */}
       <div className="flex items-center justify-between gap-2 w-full">
         <span className="flex gap-1">
           <Target className="w-4 h-4" />

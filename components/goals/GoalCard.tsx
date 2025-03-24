@@ -1,38 +1,19 @@
 import { useState } from "react";
 import { Goal } from "@/types/goals";
-import { Card, CardContent, ListCard, ListCardFooter } from "../ui/card";
+import { CardContent, ListCard, ListCardFooter } from "../ui/card";
 import {
   Edit,
-  ChevronDown,
   ChevronUp,
-  Calendar,
-  Flag,
   Target,
-  Hourglass,
-  Notebook,
-  NotebookText,
   CircleCheckBig,
-  Plus,
-  Minus,
-  CalendarX2,
   CalendarX,
   ChevronRight,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "../ui/progress";
 import { formatDate } from "@/lib/utils";
-import { Input } from "../ui/input";
-import { useGoalMutations } from "@/lib/hooks/useGoals";
 import QuickEdit from "./QuickEdit"; // Import the new QuickEdit component
-
-const PriorityColors = {
-  low: "bg-blue-100 text-blue-800",
-  medium: "bg-amber-100 text-amber-800",
-  high: "bg-rose-100 text-rose-800",
-};
 
 export default function GoalCard({
   goal,
@@ -142,7 +123,10 @@ export default function GoalCard({
               transition={{ duration: 0.2 }}
               className="overflow-hidden w-full border-t pt-2 mt-2"
             >
-              <QuickEdit goal={goal} />
+              <QuickEdit
+                key={goal.id + goal.progress + goal.objective}
+                goal={goal}
+              />
             </motion.div>
           )}
         </AnimatePresence>
