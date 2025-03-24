@@ -9,7 +9,7 @@ const Planner = () => {
     selectedTab,
     setSelectedTab,
     setSelectedEventId,
-    setSelectedItineraryId: setSelectedItinerary,
+    setEditingItineraryId,
     setSelectedTaskId,
     setSelectedGoalId,
   } = usePlanner();
@@ -39,7 +39,7 @@ const Planner = () => {
       label: "New Itinerary",
       onClick: () => {
         setSelectedTab("itineraries");
-        setSelectedItinerary("new");
+        setEditingItineraryId("new");
       },
     },
   };

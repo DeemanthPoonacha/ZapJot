@@ -5,6 +5,7 @@ import {
   addItinerary,
   updateItinerary,
   deleteItinerary,
+  updateItineraryTask,
 } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 
@@ -67,5 +68,23 @@ export const useItineraryMutations = () => {
       }),
   });
 
-  return { addMutation, updateMutation, deleteMutation };
+  const editTaskMutation = useMutation({
+    mutationFn: ({
+      id,
+      dayId,
+      taskId,
+      data,
+    }: {
+      id: string;
+      dayId: string;
+      taskId: string;
+      data: Partial<Itinerary>;
+    }) => updateItineraryTask(userId!, id, dayId, taskId, data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ITINERARY_QUERY_KEY, userId],
+      }),
+  });
+
+  return { addMutation, updateMutation, deleteMutation, editTaskMutation };
 };

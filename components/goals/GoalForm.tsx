@@ -200,7 +200,7 @@ const GoalForm = ({
           )}
         >
           {isEditing && (
-            <DeleteConfirm itemName="Task" handleDelete={handleDelete} />
+            <DeleteConfirm itemName="Goal" handleDelete={handleDelete} />
           )}
           <div className="flex gap-2">
             <Button variant="outline" type="button" onClick={onClose}>

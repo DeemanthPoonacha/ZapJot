@@ -58,7 +58,10 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
   };
 
   return (
-    <div className="space-y-3">
+    <div
+      className="space-y-3 cursor-default"
+      onClick={(e) => e.stopPropagation()}
+    >
       <h5 className="font-semibold text-sm">Quick edit</h5>
       {/* {!!goal.deadline && (
         <div className="flex items-center justify-between gap-2 w-full">

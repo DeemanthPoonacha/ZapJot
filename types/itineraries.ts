@@ -11,22 +11,21 @@ const itineraryTaskSchema = z.object({
 // Day schema within the itinerary
 const itineraryDaySchema = z.object({
   id: z.string(), // Unique day ID
-  title: z.string().min(1, "Day title is required"), // Example: "Day 1"
-  budget: z.number().default(0), // Example: 12,000
-  tasks: z.array(itineraryTaskSchema).default([]), // List of activities/tasks
+  title: z.string().min(1, "Day title is required"),
+  budget: z.number().default(0),
+  tasks: z.array(itineraryTaskSchema).default([]),
 });
 
 // Schema for creating a new itinerary
 export const createItinerarySchema = z.object({
-  userId: z.string(),
-  title: z.string().min(1, "Title is required"), // Example: "Manali 2025"
+  title: z.string().min(1, "Title is required"),
   destination: z.string().optional(),
-  startDate: z.string(), // Example: "2025-12-02"
-  endDate: z.string(), // Example: "2025-12-07"
-  totalDays: z.number(), // Example: 6
-  budget: z.number().default(0), // Example: 68,000
-  actualCost: z.number().default(0), // Example: 0 initially
-  days: z.array(itineraryDaySchema).default([]), // List of days with activities
+  startDate: z.string(),
+  endDate: z.string(),
+  totalDays: z.number(),
+  budget: z.number().default(0),
+  actualCost: z.number().default(0),
+  days: z.array(itineraryDaySchema).default([]),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -43,5 +42,5 @@ export const itinerarySchema = createItinerarySchema.extend({
 export type Itinerary = z.infer<typeof itinerarySchema>;
 export type ItineraryCreate = z.infer<typeof createItinerarySchema>;
 export type ItineraryUpdate = z.infer<typeof updateItinerarySchema>;
-export type ItineraryDay = z.infer<typeof itineraryDaySchema>;
+export type ItineraryDayType = z.infer<typeof itineraryDaySchema>;
 export type ItineraryTask = z.infer<typeof itineraryTaskSchema>;

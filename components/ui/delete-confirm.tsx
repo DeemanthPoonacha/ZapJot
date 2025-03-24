@@ -7,16 +7,26 @@ const DeleteConfirm = ({
   itemName,
   handleDelete,
   trigger,
+  buttonVariant = "outline",
 }: {
   itemName?: string;
   handleDelete: () => void;
   trigger?: React.ReactNode;
+  buttonVariant?:
+    | "link"
+    | "outline"
+    | "default"
+    | "destructive"
+    | "secondary"
+    | "ghost"
+    | null
+    | undefined;
 }) => {
   return (
     <CustomAlertDialog
       trigger={
         trigger || (
-          <Button variant="outline" type="button">
+          <Button variant={buttonVariant} type="button">
             <Trash2 size={16} />
             <span className="hidden">Delete {itemName}</span>
           </Button>

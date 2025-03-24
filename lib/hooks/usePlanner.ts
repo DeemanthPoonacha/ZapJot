@@ -21,6 +21,10 @@ const usePlanner = () => {
     string | null
   >(["selectedItinerary"], null);
 
+  const [editingItineraryId, setEditingItineraryId] = useGlobalState<
+    string | null
+  >(["editingItinerary"], null);
+
   return {
     selectedTab,
     setSelectedTab,
@@ -32,6 +36,8 @@ const usePlanner = () => {
     setSelectedGoalId,
     selectedTaskId,
     setSelectedTaskId,
+    editingItineraryId,
+    setEditingItineraryId,
   };
 };
 

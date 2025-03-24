@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "../ui/progress";
 import { formatDate } from "@/lib/utils";
-import QuickEdit from "./QuickEdit"; // Import the new QuickEdit component
+import QuickEdit from "./QuickEdit";
 
 export default function GoalCard({
   goal,
@@ -24,9 +24,11 @@ export default function GoalCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const percentComplete = Math.round((goal.progress / goal.objective) * 100);
-
   return (
-    <ListCard className="transition-colors gap-0">
+    <ListCard
+      className="transition-colors gap-0 cursor-pointer"
+      onClick={() => setExpanded(!expanded)}
+    >
       <CardContent className="px-4 py-2">
         {/* Header section (always visible) */}
         <div className="flex justify-between items-center">
@@ -90,30 +92,28 @@ export default function GoalCard({
       </CardContent>
 
       <ListCardFooter className="flex flex-col w-full">
-        <AnimatePresence>
-          <div className="flex w-full justify-between text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="flex gap-1 items-center">
-                <CircleCheckBig className="w-4 h-4" />
-                Current
-              </span>
+        <div className="flex w-full justify-between text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span className="flex gap-1 items-center">
+              <CircleCheckBig className="w-4 h-4" />
+              Current
+            </span>
 
-              <span className="font-semibold">
-                {goal.progress} {goal.unit}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="flex gap-1 items-center">
-                <Target className="w-4 h-4" />
-                Objective
-              </span>
-
-              <span className="font-semibold">
-                {goal.objective} {goal.unit}
-              </span>
-            </div>
+            <span className="font-semibold">
+              {goal.progress} {goal.unit}
+            </span>
           </div>
-        </AnimatePresence>
+          <div className="flex items-center gap-2">
+            <span className="flex gap-1 items-center">
+              <Target className="w-4 h-4" />
+              Objective
+            </span>
+
+            <span className="font-semibold">
+              {goal.objective} {goal.unit}
+            </span>
+          </div>
+        </div>
         <AnimatePresence>
           {expanded && (
             <motion.div
