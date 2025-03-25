@@ -11,6 +11,7 @@ import {
 import ItineraryForm from "./ItineraryForm";
 import { Itinerary } from "@/types/itineraries";
 import ItineraryDetailCard from "./ItineraryDetailCard";
+import { Skeleton } from "../ui/skeleton";
 
 const ItineraryList = () => {
   const { data: itineraries, isLoading } = useItineraries();
@@ -37,7 +38,9 @@ const ItineraryList = () => {
           />
         )}
         {isLoading ? (
-          <p>Loading...</p>
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-36 w-full" />
+          ))
         ) : !itineraries?.length ? (
           <Empty
             icon={<NotepadText className="emptyIcon" />}
@@ -47,25 +50,23 @@ const ItineraryList = () => {
             handleCreateClick={() => toggleDialog("new")}
           />
         ) : (
-          <div>
-            {itineraries?.map((itinerary) => (
-              <div key={itinerary.id}>
-                <ItineraryDetailCard
+          itineraries?.map((itinerary) => (
+            <div key={itinerary.id}>
+              <ItineraryDetailCard
+                itinerary={itinerary}
+                onEditClick={() => toggleDialog(itinerary.id)}
+                onDelete={() => {
+                  setEditingItineraryId(null);
+                }}
+              />
+              {isDialogOpen(itinerary.id) && (
+                <ItineraryDialogContent
+                  handleClose={() => setEditingItineraryId(null)}
                   itinerary={itinerary}
-                  onEditClick={() => toggleDialog(itinerary.id)}
-                  onDelete={() => {
-                    setEditingItineraryId(null);
-                  }}
                 />
-                {isDialogOpen(itinerary.id) && (
-                  <ItineraryDialogContent
-                    handleClose={() => setEditingItineraryId(null)}
-                    itinerary={itinerary}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ))
         )}
       </Dialog>
     </div>

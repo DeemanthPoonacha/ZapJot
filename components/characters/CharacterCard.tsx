@@ -24,7 +24,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
       className="transition-transform hover:scale-[1.02] focus:outline-none rounded-lg"
     >
       <ListCard>
-        <CardContent className="p-4 pb-1">
+        <CardContent className="p-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 border-2 border-background">
               <AvatarImage
@@ -81,7 +81,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
           </div>
         </CardContent>
 
-        <ListCardFooter>
+        {/* <ListCardFooter>
           <div className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
             <span>
@@ -100,7 +100,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
               </span>
             </div>
           )}
-        </ListCardFooter>
+        </ListCardFooter> */}
       </ListCard>
     </Link>
   );

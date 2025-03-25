@@ -25,14 +25,14 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DeleteConfirm from "../ui/delete-confirm";
-import { Itinerary, ItineraryTask } from "@/types/itineraries";
+import { Itinerary } from "@/types/itineraries";
 import { toast } from "../ui/sonner";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 import { AnimatePresence, motion } from "framer-motion";
 import usePlanner from "@/lib/hooks/usePlanner";
 import { ItineraryDay } from "./ItineraryItemCard";
-import { Input } from "../ui/input";
 import { BudgetSummary } from "./BudgetSummary";
+// import dayjs from "dayjs";
 
 interface ItineraryDetailProps {
   itinerary: Itinerary;
@@ -49,7 +49,23 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   const { deleteMutation } = useItineraryMutations();
 
   const expandedMain = selectedItineraryId === itinerary.id;
-  const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
+
+  // Check if the day is today by start date and index
+  // const currentDay = itinerary.days.find(
+  //   (day: any, index) =>
+  //     dayjs(itinerary.startDate).add(index, "day").format("YYYY-MM-DD") ===
+  //     dayjs().format("YYYY-MM-DD")
+  // );
+  // console.log("🚀 ~ currentDay:", currentDay);
+
+  const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>(
+    // currentDay?.id
+    //   ? {
+    //       [currentDay.id]: true,
+    //     }
+    //   :
+    {}
+  );
 
   const handleDelete = async () => {
     if (!itinerary.id) return;
@@ -120,8 +136,6 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
       selectedItineraryId === itinerary.id ? null : itinerary.id
     );
   };
-
-  const day = itinerary.days[0];
 
   return (
     <ListCard className="w-full shadow-md gap-0">
@@ -293,14 +307,19 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         </p>
                       </div>
                     </div>
-                    <ItineraryDay
-                      key={day.id}
-                      day={day}
-                      isExpanded={expandedDays[day.id] || false}
-                      index={0}
-                      toggleExpandDay={toggleExpandDay}
-                      itineraryId={itinerary.id}
-                    />
+                    {/* {currentDay && (
+                      <div className="space-y-4 border-t pt-4">
+                        <h3 className="text-lg font-semibold">Today</h3>
+                        <ItineraryDay
+                          key={currentDay.id}
+                          day={currentDay}
+                          isExpanded
+                          index={0}
+                          toggleExpandDay={toggleExpandDay}
+                          itineraryId={itinerary.id}
+                        />
+                      </div>
+                    )} */}
                   </div>
                 </TabsContent>
 
@@ -359,7 +378,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
         </span>
         <span className="flex items-center">
           <MapPin className="h-4 w-4 mr-1" />
-          {itinerary.destination || "No destination specified"}
+          {itinerary.destination || "N/A"}
         </span>
       </ListCardFooter>
     </ListCard>

@@ -13,6 +13,7 @@ import {
 import usePlanner from "@/lib/hooks/usePlanner";
 import { Goal as GoalType } from "@/types/goals";
 import GoalCard from "./GoalCard";
+import { Skeleton } from "../ui/skeleton";
 
 const GoalsList = () => {
   const { data: goals, isLoading } = useGoals();
@@ -38,7 +39,9 @@ const GoalsList = () => {
         )}
 
         {isLoading ? (
-          <div>Loading...</div>
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-36 w-full" />
+          ))
         ) : !goals?.length ? (
           <Empty
             icon={<Goal className="emptyIcon" />}
