@@ -21,14 +21,23 @@ export function RecentActivity() {
         </Button>
       </div>
       <div className="space-y-3">
-        {activities.map((activity) => (
-          <div key={activity.id} className="flex justify-between items-center">
-            <span>{activity.text}</span>
-            <span className="text-sm text-muted-foreground">
-              {activity.time}
-            </span>
-          </div>
-        ))}
+        {!activities?.length ? (
+          <p className="text-sm text-muted-foreground text center">
+            No activities found
+          </p>
+        ) : (
+          activities.map((activity) => (
+            <div
+              key={activity.id}
+              className="flex justify-between items-center"
+            >
+              <span>{activity.text}</span>
+              <span className="text-sm text-muted-foreground">
+                {activity.time}
+              </span>
+            </div>
+          ))
+        )}
       </div>
     </Card>
   );

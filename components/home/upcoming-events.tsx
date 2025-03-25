@@ -31,7 +31,9 @@ export function UpcomingEvents() {
         </Button>
       </div>
       {!events?.length ? (
-        <p>No events found</p>
+        <p className="text-sm text-muted-foreground text center">
+          No events found
+        </p>
       ) : (
         <div className="space-y-3">
           {events.slice(0, 3).map((event) => (
