@@ -1,6 +1,6 @@
 import { UserCircle, Plus, CircleOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 
 export default function Empty({
   handleCreateClick,
@@ -16,8 +16,8 @@ export default function Empty({
   subtitle?: string;
   buttonTitle?: string;
   showButton?: boolean;
-  customAction?: ReactElement;
-  icon?: ReactElement;
+  customAction?: ReactNode;
+  icon?: ReactNode;
 }) {
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
