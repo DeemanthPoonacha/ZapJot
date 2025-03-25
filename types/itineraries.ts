@@ -9,7 +9,7 @@ const itineraryTaskSchema = z.object({
 });
 
 // Day schema within the itinerary
-const itineraryDaySchema = z.object({
+export const itineraryDaySchema = z.object({
   id: z.string(), // Unique day ID
   title: z.string().min(1, "Day title is required"),
   budget: z.number().default(0),
@@ -43,4 +43,5 @@ export type Itinerary = z.infer<typeof itinerarySchema>;
 export type ItineraryCreate = z.infer<typeof createItinerarySchema>;
 export type ItineraryUpdate = z.infer<typeof updateItinerarySchema>;
 export type ItineraryDayType = z.infer<typeof itineraryDaySchema>;
+export type ItineraryDayUpdate = Partial<ItineraryDayType>;
 export type ItineraryTask = z.infer<typeof itineraryTaskSchema>;

@@ -6,6 +6,10 @@ import {
   updateItinerary,
   deleteItinerary,
   updateItineraryTask,
+  updateItineraryDay,
+  addItineraryDay,
+  deleteItineraryDay,
+  updateItineraryCost,
 } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 
@@ -68,6 +72,31 @@ export const useItineraryMutations = () => {
       }),
   });
 
+  const updateDayMutation = useMutation({
+    mutationFn: ({
+      id,
+      dayId,
+      data,
+    }: {
+      id: string;
+      dayId: string;
+      data: Partial<Itinerary>;
+    }) => updateItineraryDay(userId!, id, dayId, data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ITINERARY_QUERY_KEY, userId],
+      }),
+  });
+
+  const deleteDayMutation = useMutation({
+    mutationFn: ({ id, dayId }: { id: string; dayId: string }) =>
+      deleteItineraryDay(userId!, id, dayId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ITINERARY_QUERY_KEY, userId],
+      }),
+  });
+
   const editTaskMutation = useMutation({
     mutationFn: ({
       id,
@@ -86,5 +115,22 @@ export const useItineraryMutations = () => {
       }),
   });
 
-  return { addMutation, updateMutation, deleteMutation, editTaskMutation };
+  const updateCostMutation = useMutation({
+    mutationFn: ({ id, cost }: { id: string; cost: number }) =>
+      updateItineraryCost(userId!, id, cost),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ITINERARY_QUERY_KEY, userId],
+      }),
+  });
+
+  return {
+    addMutation,
+    updateMutation,
+    deleteMutation,
+    updateDayMutation,
+    deleteDayMutation,
+    editTaskMutation,
+    updateCostMutation,
+  };
 };

@@ -31,6 +31,8 @@ import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 import { AnimatePresence, motion } from "framer-motion";
 import usePlanner from "@/lib/hooks/usePlanner";
 import { ItineraryDay } from "./ItineraryItemCard";
+import { Input } from "../ui/input";
+import { BudgetSummary } from "./BudgetSummary";
 
 interface ItineraryDetailProps {
   itinerary: Itinerary;
@@ -44,7 +46,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   onDelete,
 }) => {
   const { selectedItineraryId, setSelectedItineraryId } = usePlanner();
-  const { deleteMutation, editTaskMutation } = useItineraryMutations();
+  const { deleteMutation } = useItineraryMutations();
 
   const expandedMain = selectedItineraryId === itinerary.id;
   const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
@@ -92,6 +94,9 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
       acc + day.tasks.filter((task: any) => task.completed).length,
     0
   );
+
+  const remainingTasks = totalTasks - completedTasks;
+
   const completionPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
@@ -114,22 +119,6 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
     setSelectedItineraryId(
       selectedItineraryId === itinerary.id ? null : itinerary.id
     );
-  };
-
-  const { mutateAsync: taskMutate, isPending } = editTaskMutation;
-
-  const updateTask = (
-    dayId: string,
-    taskId: string,
-    data: Partial<ItineraryTask>
-  ) => {
-    try {
-      taskMutate({ id: itinerary.id, dayId, taskId, data });
-      toast.success("Task updated successfully");
-    } catch (error) {
-      console.error("Error toggling task completion:", error);
-      toast.error("Failed to update task");
-    }
   };
 
   const day = itinerary.days[0];
@@ -265,8 +254,11 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                           value={completionPercentage}
                           className="h-2"
                         />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {completedTasks} of {totalTasks} tasks completed
+                        <p className="text-xs text-muted-foreground mt-1 flex justify-between">
+                          <span>
+                            {completedTasks} of {totalTasks} tasks completed
+                          </span>
+                          <span>{remainingTasks} tasks remaining</span>
                         </p>
                       </div>
 
@@ -286,9 +278,18 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                           }
                           className="h-2"
                         />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          ${itinerary.actualCost.toLocaleString()} of $
-                          {itinerary.budget.toLocaleString()} used
+                        <p className="text-xs text-muted-foreground mt-1 flex justify-between">
+                          <span>
+                            ${itinerary.actualCost.toLocaleString()} of $
+                            {itinerary.budget.toLocaleString()} used
+                          </span>
+                          <span>
+                            $
+                            {(
+                              itinerary.budget - itinerary.actualCost
+                            ).toLocaleString()}{" "}
+                            remaining
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -297,9 +298,8 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                       day={day}
                       isExpanded={expandedDays[day.id] || false}
                       index={0}
-                      isPending={isPending}
                       toggleExpandDay={toggleExpandDay}
-                      updateTask={updateTask}
+                      itineraryId={itinerary.id}
                     />
                   </div>
                 </TabsContent>
@@ -336,107 +336,15 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         day={day}
                         isExpanded={expandedDays[day.id] || false}
                         index={index}
-                        isPending={isPending}
                         toggleExpandDay={toggleExpandDay}
-                        updateTask={updateTask}
+                        itineraryId={itinerary.id}
                       />
                     ))}
                   </div>
                 </TabsContent>
 
                 <TabsContent value="budget" className="space-y-4">
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <h3 className="text-lg font-semibold">Budget Summary</h3>
-                      <div>
-                        <Badge
-                          variant={
-                            itinerary.budget >= itinerary.actualCost
-                              ? "default"
-                              : "destructive"
-                          }
-                        >
-                          {itinerary.budget >= itinerary.actualCost
-                            ? "Under Budget"
-                            : "Over Budget"}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Card className="border-muted gap-0">
-                        <CardHeader className="px-4 pb-2">
-                          <CardTitle className="text-lg">
-                            Planned Budget
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="px-4 py-2">
-                          <p className="text-3xl font-bold">
-                            ${itinerary.budget.toLocaleString()}
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card className="border-muted gap-0">
-                        <CardHeader className="px-4 pb-2">
-                          <CardTitle className="text-lg">
-                            Actual Expenses
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="px-4 py-2">
-                          <p className="text-3xl font-bold">
-                            ${itinerary.actualCost.toLocaleString()}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {itinerary.budget >= itinerary.actualCost
-                              ? `$${(
-                                  itinerary.budget - itinerary.actualCost
-                                ).toLocaleString()} under budget`
-                              : `$${(
-                                  itinerary.actualCost - itinerary.budget
-                                ).toLocaleString()} over budget`}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    <h3 className="text-lg font-semibold mt-6">
-                      Daily Budget Breakdown
-                    </h3>
-                    <div className="space-y-3">
-                      {itinerary.days.map((day: any, index: number) => (
-                        <div
-                          key={day.id}
-                          className="flex items-center justify-between p-3 rounded-md border"
-                        >
-                          <div className="flex items-center">
-                            <div className="bg-muted w-8 h-8 rounded-full flex items-center justify-center mr-3">
-                              <span className="font-semibold text-sm">
-                                {index + 1}
-                              </span>
-                            </div>
-                            <p className="font-medium">{day.title}</p>
-                          </div>
-                          <p className="font-medium">
-                            ${day.budget.toLocaleString()}
-                          </p>
-                        </div>
-                      ))}
-
-                      <div className="flex items-center justify-between p-3 rounded-md border-2 mt-2">
-                        <p className="font-semibold">Total Daily Budgets</p>
-                        <p className="font-semibold">
-                          $
-                          {itinerary.days
-                            .reduce(
-                              (acc: number, day: any) => acc + day.budget,
-                              0
-                            )
-                            .toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <BudgetSummary itinerary={itinerary} />
                 </TabsContent>
               </Tabs>
             </motion.div>

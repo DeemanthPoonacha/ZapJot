@@ -27,7 +27,7 @@ const DeleteConfirm = ({
       trigger={
         trigger || (
           <Button variant={buttonVariant} type="button">
-            <Trash2 size={16} />
+            <Trash2 size={16} className="text-destructive" />
             <span className="hidden">Delete {itemName}</span>
           </Button>
         )

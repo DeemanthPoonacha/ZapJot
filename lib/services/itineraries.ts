@@ -11,8 +11,8 @@ import {
 import {
   ItineraryCreate,
   ItineraryUpdate,
-  ItineraryDay,
   ItineraryTask,
+  ItineraryDayType,
 } from "@/types/itineraries";
 
 // **Collection Reference**
@@ -53,6 +53,18 @@ export const updateItinerary = async (
   await updateDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
 };
 
+export const updateItineraryCost = async (
+  userId: string,
+  itineraryId: string,
+  cost: number
+) => {
+  const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
+  await updateDoc(docRef, {
+    actualCost: cost,
+    updatedAt: new Date().toISOString(),
+  });
+};
+
 /** Delete an itinerary */
 export const deleteItinerary = async (userId: string, itineraryId: string) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
@@ -63,7 +75,7 @@ export const deleteItinerary = async (userId: string, itineraryId: string) => {
 export const addItineraryDay = async (
   userId: string,
   itineraryId: string,
-  day: ItineraryDay
+  day: ItineraryDayType
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
@@ -76,7 +88,7 @@ export const updateItineraryDay = async (
   userId: string,
   itineraryId: string,
   dayId: string,
-  data: Partial<ItineraryDay>
+  data: Partial<ItineraryDayType>
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
