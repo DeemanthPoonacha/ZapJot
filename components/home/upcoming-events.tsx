@@ -5,7 +5,6 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEvents } from "@/lib/hooks/useEvents";
 import { Skeleton } from "../ui/skeleton";
-import { getNextOccurrence } from "@/lib/utils";
 import { EventNextOccurance } from "../events/EventCard";
 import usePlanner from "@/lib/hooks/usePlanner";
 
