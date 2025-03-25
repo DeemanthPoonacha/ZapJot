@@ -24,9 +24,9 @@ export function UpcomingEvents() {
           <Link
             href="/planner"
             onClick={() => setSelectedTab("events")}
-            className="flex items-center"
+            className="flex items-center !gap-1"
           >
-            All Events <ChevronRight className="h-4 w-4 ml-1" />
+            All Events <ChevronRight className="h-4 w-4" />
           </Link>
         </Button>
       </div>

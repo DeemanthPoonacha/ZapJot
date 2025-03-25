@@ -37,6 +37,12 @@ export default function FirebaseAuthUI() {
         uiConfig={uiConfig}
         firebaseAuth={auth}
       />
+      <div className="mt-4 flex gap-2">
+        For demo use email:
+        <code>jane.doe@gmail.com</code>
+        and password:
+        <code>password</code>
+      </div>
     </div>
   );
 }

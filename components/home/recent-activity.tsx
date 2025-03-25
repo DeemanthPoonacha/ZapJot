@@ -15,8 +15,8 @@ export function RecentActivity() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-semibold">Recent Activity</h2>
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/" className="flex items-center">
-            Explore More <ChevronRight className="h-4 w-4 ml-1" />
+          <Link href="/" className="flex items-center !gap-1">
+            Explore More <ChevronRight className="h-4 w-4" />
           </Link>
         </Button>
       </div>
