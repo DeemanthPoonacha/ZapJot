@@ -77,7 +77,7 @@ export const getNextOccurrence = (event: Event) => {
       if (!weekDays?.length) return null;
 
       // Today with event time
-      let baseDate = now.hour(hours).minute(minutes).second(0).millisecond(0);
+      const baseDate = now.hour(hours).minute(minutes).second(0).millisecond(0);
       const currentDay = now.day();
 
       // Find the next day in the repeatDays array
@@ -111,7 +111,7 @@ export const getNextOccurrence = (event: Event) => {
       const currentYear = now.year();
 
       // Today with event time
-      let baseDate = now.hour(hours).minute(minutes).second(0).millisecond(0);
+      const baseDate = now.hour(hours).minute(minutes).second(0).millisecond(0);
 
       // Check if today is a repeat day and the event hasn't occurred yet
       if (monthDays.includes(currentDate) && baseDate.isAfter(now)) {
@@ -152,7 +152,7 @@ export const getNextOccurrence = (event: Event) => {
       const currentYear = now.year();
 
       // This year's occurrence with event time
-      let thisYearDate = dayjs()
+      const thisYearDate = dayjs()
         .year(currentYear)
         .month(month)
         .date(day)

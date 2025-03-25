@@ -17,7 +17,7 @@ export function HomeHeader() {
         Good morning, {user?.displayName?.split(" ")[0]}
       </h1>
       <p className="text-sm opacity-90">
-        Here's what's happening today at a glance.
+        {`Here's what's happening today at a glance.`}
       </p>
       <div className="space-y-2">
         {taskLoading ? (
@@ -35,7 +35,7 @@ export function HomeHeader() {
             <p className="text-sm">🎯 {goals.length} goals in progress</p>
           )
         )}
-        <p className="text-sm">🎉 It's Paulo's Birthday today!</p>
+        <p className="text-sm">{`🎉 It's Paulo's Birthday today!`}</p>
       </div>
     </Card>
   );

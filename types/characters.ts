@@ -24,6 +24,7 @@ export const characterSchema = createCharacterSchema.extend({
 // Type Inference
 export type Character = z.infer<typeof characterSchema>;
 export type CharacterCreate = z.infer<typeof createCharacterSchema>;
+export type CharacterUpdate = z.infer<typeof updateCharacterSchema>;
 
 export interface CharactersFilter {
   characterIds?: string[];

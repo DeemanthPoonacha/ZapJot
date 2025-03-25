@@ -267,7 +267,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
 
           {dayFields.length === 0 ? (
             <div className="text-sm text-muted-foreground italic p-4 text-center border rounded-md">
-              No days added yet. Click "Add Day" to get started.
+              {`No days added yet. Click "Add Day" to get started.`}
             </div>
           ) : (
             <Accordion
@@ -380,7 +380,7 @@ const TasksList = ({
   dayIndex: number;
   form: UseFormReturn<ItineraryCreate>;
 }) => {
-  const { fields, append, remove, update } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: `days.${dayIndex}.tasks`,
   });

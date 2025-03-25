@@ -7,6 +7,7 @@ import {
   deleteJournal,
 } from "@/lib/services/journals";
 import { useAuth } from "@/lib/context/AuthProvider";
+import { JournalCreate, JournalUpdate } from "@/types/journals";
 
 export const JOURNAL_QUERY_KEY = "journals";
 
@@ -41,7 +42,7 @@ export const useJournalMutations = (chapterId: string) => {
   const queryClient = useQueryClient();
 
   const addMutation = useMutation({
-    mutationFn: (data: any) => addJournal(userId!, chapterId, data),
+    mutationFn: (data: JournalCreate) => addJournal(userId!, chapterId, data),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
@@ -49,8 +50,13 @@ export const useJournalMutations = (chapterId: string) => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ journalId, data }: { journalId: string; data: any }) =>
-      updateJournal(userId!, chapterId, journalId, data),
+    mutationFn: ({
+      journalId,
+      data,
+    }: {
+      journalId: string;
+      data: JournalUpdate;
+    }) => updateJournal(userId!, chapterId, journalId, data),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],

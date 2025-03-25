@@ -12,6 +12,7 @@ interface Props {
   // disableAutoSignIn().
   uiCallback?(ui: auth.AuthUI): void;
   // The Firebase App auth instance to use.
+  // eslint-disable-next-line
   firebaseAuth: any; // As firebaseui-web
   className?: string;
 }
@@ -31,6 +32,7 @@ const StyledFirebaseAuth = ({
   useEffect(() => {
     // Firebase UI only works on the Client. So we're loading the package only after
     // the component has mounted, so that this works when doing server-side rendering.
+    // eslint-disable-next-line
     setFirebaseui(require("firebaseui"));
   }, []);
 
@@ -53,8 +55,7 @@ const StyledFirebaseAuth = ({
     if (uiCallback) uiCallback(firebaseUiWidget);
 
     // Render the firebaseUi Widget.
-    // @ts-ignore
-    firebaseUiWidget.start(elementRef.current, uiConfig);
+    firebaseUiWidget.start(elementRef.current!, uiConfig);
 
     return () => {
       unregisterAuthObserver();

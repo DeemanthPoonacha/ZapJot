@@ -7,7 +7,6 @@ import {
   deleteItinerary,
   updateItineraryTask,
   updateItineraryDay,
-  addItineraryDay,
   deleteItineraryDay,
   updateItineraryCost,
 } from "@/lib/services/itineraries";

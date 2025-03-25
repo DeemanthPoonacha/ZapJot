@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  ListCardFooter,
-  ListCard,
-} from "@/components/ui/card";
+import { CardContent, ListCard } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -11,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
-import { User, Bell, Calendar, Users } from "lucide-react";
+import { User, Bell } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Character } from "@/types/characters";

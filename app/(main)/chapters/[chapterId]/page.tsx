@@ -108,9 +108,11 @@ const ChapterPage = () => {
           chapter={chapter as Chapter}
           onCancel={() => setIsEditing(false)}
           onUpdate={() => {
-            isMoving
-              ? router.push(`/chapters/${chapter?.id}?operation=move`)
-              : router.push(`/chapters/${chapter?.id}`);
+            router.push(
+              isMoving
+                ? `/chapters/${chapter?.id}?operation=move`
+                : `/chapters/${chapter?.id}`
+            );
             setIsEditing(false);
           }}
           onAdd={(id: string) => {

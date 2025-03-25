@@ -25,3 +25,4 @@ export const chapterSchema = createChapterSchema.extend({
 
 export type Chapter = z.infer<typeof chapterSchema>;
 export type ChapterCreate = z.infer<typeof createChapterSchema>;
+export type ChapterUpdate = z.infer<typeof updateChapterSchema>;

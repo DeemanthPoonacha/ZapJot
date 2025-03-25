@@ -1,6 +1,4 @@
-import { Card, GridCardWithOverlay } from "@/components/ui/card";
-import Image from "next/image";
-import { formatDateTitle } from "@/lib/utils";
+import { GridCardWithOverlay } from "@/components/ui/card";
 import { Chapter } from "@/types/chapters";
 
 function ChapterCard({

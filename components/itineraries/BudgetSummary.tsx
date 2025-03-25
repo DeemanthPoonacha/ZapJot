@@ -1,4 +1,4 @@
-import { Itinerary } from "@/types/itineraries";
+import { Itinerary, ItineraryDayType } from "@/types/itineraries";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
@@ -124,7 +124,7 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
 
       <h3 className="text-lg font-semibold mt-6">Daily Budget Breakdown</h3>
       <div className="space-y-3">
-        {itinerary.days.map((day: any, index: number) => (
+        {itinerary.days.map((day: ItineraryDayType, index: number) => (
           <div
             key={day.id}
             className="flex items-center justify-between p-3 rounded-md border"
@@ -144,7 +144,10 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
           <p className="font-semibold">
             $
             {itinerary.days
-              .reduce((acc: number, day: any) => acc + day.budget, 0)
+              .reduce(
+                (acc: number, day: ItineraryDayType) => acc + day.budget,
+                0
+              )
               .toLocaleString()}
           </p>
         </div>

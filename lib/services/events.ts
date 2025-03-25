@@ -100,8 +100,7 @@ export const deleteEvent = async (
   participants?: string[]
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
-  console.log("🚀 ~ eventRef:", eventRef, participants);
-  eventRef.id &&
+  if (eventRef.id)
     participants?.map(async (participant) => {
       await removeReminder(userId, participant, eventRef.id);
     });

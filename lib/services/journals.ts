@@ -1,5 +1,5 @@
 import { db } from "@/lib/services/firebase";
-import { Journal, JournalCreate } from "@/types/journals";
+import { Journal, JournalCreate, JournalUpdate } from "@/types/journals";
 import {
   collection,
   doc,
@@ -62,7 +62,7 @@ export const updateJournal = async (
   userId: string,
   chapterId: string,
   journalId: string,
-  data: JournalCreate
+  data: JournalUpdate
 ) => {
   const journalRef = doc(
     db,

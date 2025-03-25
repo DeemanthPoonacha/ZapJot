@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Grid2X2, Users, Settings, Plus, ListTodo } from "lucide-react";
+import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/" },

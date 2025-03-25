@@ -12,8 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import { useState } from "react";
-import { LoaderCircle, Plus, Upload, User } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Plus } from "lucide-react";
 import EventsList from "../events/EventsList";
 import {
   Form,
@@ -25,9 +24,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CldUploadWidget } from "next-cloudinary";
-import { CloudinaryResult } from "@/types/general";
 import UploadAvatar from "../ui/upload-avatar";
 
 interface CharacterFormProps {
@@ -83,23 +79,6 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
     } catch (error) {
       console.error("Error saving character", error);
       toast.error("Failed to save character");
-    }
-  };
-
-  const handleImageUploadSuccess = async (result: CloudinaryResult) => {
-    console.log("🚀 ~ handleImageUploadSuccess ~ result:", result);
-    // Get the secure URL from the upload result
-    const imageUrl = result.secure_url;
-
-    try {
-      form.setValue("image", imageUrl, { shouldDirty: true });
-      setIsImageUploading(false);
-      toast.success("Profile picture updated successfully");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile picture");
-    } finally {
-      setIsImageUploading(false);
     }
   };
 

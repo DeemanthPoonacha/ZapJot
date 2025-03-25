@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useGlobalState } from "./global-state";
 import { moveJournal } from "../services/journals";
-import { CHAPTER_QUERY_KEY } from "./useChapters";
 import { JOURNAL_QUERY_KEY } from "./useJournals";
 import { useAuth } from "../context/AuthProvider";
 

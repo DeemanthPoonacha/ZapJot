@@ -1,6 +1,6 @@
-import { UserCircle, Plus, CircleOff } from "lucide-react";
+import { Plus, CircleOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ReactElement, ReactNode } from "react";
+import { ReactNode } from "react";
 
 export default function Empty({
   handleCreateClick,

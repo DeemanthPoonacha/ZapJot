@@ -9,7 +9,6 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
 } from "firebase/auth";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import {
@@ -23,8 +22,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Lock, Mail, Upload, LoaderCircle } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import {
   Form,
@@ -35,8 +33,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "./ui/sonner";
-import { CldUploadWidget } from "next-cloudinary";
-import { CloudinaryResult } from "@/types/general";
 import UploadAvatar from "./ui/upload-avatar";
 
 const profileSchema = z.object({
@@ -65,7 +61,6 @@ const passwordSchema = z
 export default function Profile() {
   const { user, loading } = useAuth();
   console.log("🚀 ~ Profile ~ user:", user);
-  const router = useRouter();
   const [isImageUploading, setIsImageUploading] = useState(false);
   const userProviders = user?.providerData.map((profile) => profile.providerId);
   console.log("🚀 ~ Profile ~ userProviders:", userProviders);
@@ -234,8 +229,7 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle>Email Address</CardTitle>
                 <CardDescription>
-                  Update your email address. You'll need to provide your current
-                  password.
+                  {`Update your email address. You'll need to provide your current password.`}
                 </CardDescription>
               </CardHeader>
               <Form {...emailForm}>
@@ -296,8 +290,7 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle>Change Password</CardTitle>
                 <CardDescription>
-                  Update your password. You'll need to provide your current
-                  password.
+                  {`Update your password. You'll need to provide your current password.`}
                 </CardDescription>
               </CardHeader>
               <Form {...passwordForm}>

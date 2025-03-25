@@ -7,6 +7,7 @@ import {
   deleteChapter,
 } from "@/lib/services/chapters";
 import { useAuth } from "@/lib/context/AuthProvider";
+import { ChapterCreate, ChapterUpdate } from "@/types/chapters";
 
 export const CHAPTER_QUERY_KEY = "chapters";
 
@@ -48,14 +49,19 @@ export const useChapterMutations = () => {
   const queryClient = useQueryClient();
 
   const addMutation = useMutation({
-    mutationFn: (data: any) => addChapter(userId!, data),
+    mutationFn: (data: ChapterCreate) => addChapter(userId!, data),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ chapterId, data }: { chapterId: string; data: any }) =>
-      updateChapter(userId!, chapterId, data),
+    mutationFn: ({
+      chapterId,
+      data,
+    }: {
+      chapterId: string;
+      data: ChapterUpdate;
+    }) => updateChapter(userId!, chapterId, data),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
   });

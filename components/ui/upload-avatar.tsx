@@ -13,6 +13,7 @@ import {
 import { CldUploadWidget } from "next-cloudinary";
 import { CloudinaryResult } from "@/types/general";
 import { toast } from "./sonner";
+import { UseFormReturn } from "react-hook-form";
 
 const UploadAvatar = ({
   form,
@@ -20,7 +21,8 @@ const UploadAvatar = ({
   isImageUploading,
   setIsImageUploading,
 }: {
-  form: any;
+  // eslint-disable-next-line
+  form: UseFormReturn<any>;
   fieldName: string;
   isImageUploading: boolean;
   setIsImageUploading: (isUploading: boolean) => void;

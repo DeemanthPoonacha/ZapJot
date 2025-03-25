@@ -80,7 +80,7 @@ const JournalPage = () => {
               <DropdownMenuSeparator />
               {journal?.id && (
                 <DropdownMenuItem
-                  onSelect={(e) => {
+                  onSelect={() => {
                     setSelectedId(journal.id);
                     setSelectedParentId(chapterId! as string);
                     router.push(`/chapters?operation=move`);

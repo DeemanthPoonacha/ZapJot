@@ -12,29 +12,25 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import {
-  Character,
-  CharacterCreate,
-  CharactersFilter,
-} from "@/types/characters";
+import { Character, CharacterCreate } from "@/types/characters";
 
 /**
  * Get all characters for a user.
  */
 export const getCharacters = async (
-  userId: string,
-  filter?: CharactersFilter,
-  fields?: string[]
+  userId: string
+  // filter?: CharactersFilter,
+  // fields?: string[]
 ): Promise<Character[]> => {
-  let q = query(collection(db, `users/${userId}/characters`));
+  // let q = query(collection(db, `users/${userId}/characters`));
 
-  if (filter && filter.characterIds) {
-    q = query(q, where("id", "in", filter.characterIds));
-  }
+  // if (filter && filter.characterIds) {
+  //   q = query(q, where("id", "in", filter.characterIds));
+  // }
 
-  if (!!fields?.length) {
-    q = query(q, (q as any).select(...fields)); // `.select()` is a method, not an import
-  }
+  // if (!!fields?.length) {
+  //   q = query(q, (q as any).select(...fields)); // `.select()` is a method, not an import
+  // }
 
   const charactersRef = collection(db, `users/${userId}/characters`);
   const snapshot = await getDocs(charactersRef);

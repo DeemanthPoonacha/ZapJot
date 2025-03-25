@@ -139,7 +139,7 @@ export const ItineraryDay = ({
   // HANDLERS WITH PROPER EVENT PREVENTION
 
   // Card header click handler (toggles expanded state)
-  const handleHeaderClick = (e: React.MouseEvent) => {
+  const handleHeaderClick = () => {
     if (!isEditing) {
       toggleExpandDay(day.id);
     }

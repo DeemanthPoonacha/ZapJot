@@ -26,3 +26,4 @@ export const journalSchema = createJournalSchema.extend({
 // Type inference
 export type Journal = z.infer<typeof journalSchema>;
 export type JournalCreate = z.infer<typeof createJournalSchema>;
+export type JournalUpdate = z.infer<typeof updateJournalSchema>;

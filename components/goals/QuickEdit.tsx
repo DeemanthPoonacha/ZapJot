@@ -1,14 +1,12 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
-  Calendar,
   Target,
   CircleCheckBig,
   Hourglass,
   Minus,
   Plus,
 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
 import { Goal } from "@/types/goals";
 import { useGoalMutations } from "@/lib/hooks/useGoals";
 import { useState } from "react";

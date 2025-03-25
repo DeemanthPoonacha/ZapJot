@@ -1,5 +1,5 @@
 import { db } from "@/lib/services/firebase";
-import { Chapter, ChapterCreate } from "@/types/chapters";
+import { Chapter, ChapterCreate, ChapterUpdate } from "@/types/chapters";
 import {
   collection,
   doc,
@@ -46,7 +46,7 @@ export const addChapter = async (userId: string, data: ChapterCreate) => {
 export const updateChapter = async (
   userId: string,
   chapterId: string,
-  data: ChapterCreate
+  data: ChapterUpdate
 ) => {
   const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
   await updateDoc(chapterRef, { ...data, updatedAt: new Date().toISOString() });

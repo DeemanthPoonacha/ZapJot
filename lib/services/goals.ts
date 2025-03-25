@@ -9,7 +9,6 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where,
 } from "firebase/firestore";
 
 /** Get all goals for a specific user */

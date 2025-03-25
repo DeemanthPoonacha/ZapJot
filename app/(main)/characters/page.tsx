@@ -3,7 +3,7 @@ import CharactersList from "@/components/characters/CharactersList";
 import PageLayout from "@/components/PageLayout";
 import { useRouter } from "next/navigation";
 
-const characters = () => {
+const Characters = () => {
   const router = useRouter();
   return (
     <PageLayout
@@ -18,4 +18,4 @@ const characters = () => {
   );
 };
 
-export default characters;
+export default Characters;

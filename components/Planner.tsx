@@ -1,16 +1,14 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventsList from "./events/EventsList";
 import GoalsList from "./goals/GoalsList";
 import ItinerariesList from "./itineraries/ItineraryList";
 import TasksList from "./tasks/TasksList";
 import { Calendar } from "./ui/calendar";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import usePlanner from "@/lib/hooks/usePlanner";
 
-export default function PlannerPage({}: {}) {
+export default function PlannerPage() {
   const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">

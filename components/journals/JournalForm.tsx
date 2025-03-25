@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useJournalMutations } from "@/lib/hooks/useJournals";
 import { GetDateTime } from "@/lib/utils";
-import ImageUploader from "@/components/ui/image-uploader"; // Import ImageUploader component
 import {
   Form,
   FormControl,

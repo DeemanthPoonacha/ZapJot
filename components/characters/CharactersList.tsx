@@ -1,13 +1,7 @@
 import { useCharacters } from "@/lib/hooks/useCharacters";
-import {
-  Card,
-  CardContent,
-  ListCard,
-  ListCardFooter,
-} from "@/components/ui/card";
-import { UserCircle, Plus } from "lucide-react";
+import { CardContent, ListCard, ListCardFooter } from "@/components/ui/card";
+import { UserCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import CharacterCard from "./CharacterCard";
 import Empty from "../Empty";

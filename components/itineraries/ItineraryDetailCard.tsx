@@ -16,7 +16,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
-  Card,
   CardContent,
   CardHeader,
   CardTitle,
@@ -25,7 +24,11 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DeleteConfirm from "../ui/delete-confirm";
-import { Itinerary } from "@/types/itineraries";
+import {
+  Itinerary,
+  ItineraryDayType,
+  ItineraryTask,
+} from "@/types/itineraries";
 import { toast } from "../ui/sonner";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 import { AnimatePresence, motion } from "framer-motion";
@@ -90,7 +93,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   const expandAllDays = () => {
     const expanded: Record<string, boolean> = {};
-    itinerary.days.forEach((day: any) => {
+    itinerary.days.forEach((day: ItineraryDayType) => {
       expanded[day.id] = true;
     });
     setExpandedDays(expanded);
@@ -102,12 +105,12 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   // Calculate completed tasks
   const totalTasks = itinerary.days.reduce(
-    (acc: number, day: any) => acc + day.tasks.length,
+    (acc: number, day: ItineraryDayType) => acc + day.tasks.length,
     0
   );
   const completedTasks = itinerary.days.reduce(
-    (acc: number, day: any) =>
-      acc + day.tasks.filter((task: any) => task.completed).length,
+    (acc: number, day: ItineraryDayType) =>
+      acc + day.tasks.filter((task: ItineraryTask) => task.completed).length,
     0
   );
 
@@ -127,6 +130,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
     try {
       return format(new Date(dateString), "MMMM d, yyyy");
     } catch (e) {
+      console.log("🚀 ~ formatDate ~ e:", e);
       return dateString;
     }
   };

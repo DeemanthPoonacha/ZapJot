@@ -8,7 +8,7 @@ import {
 } from "@/lib/services/characters";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import { Character, CharacterCreate } from "@/types/characters";
+import { CharacterCreate, CharacterUpdate } from "@/types/characters";
 
 // Query Key
 const CHARACTER_QUERY_KEY = "characters";
@@ -51,7 +51,7 @@ export const useCharacterMutations = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: CharacterCreate }) =>
+    mutationFn: ({ id, data }: { id: string; data: CharacterUpdate }) =>
       updateCharacter(userId!, id, data),
     onSuccess: () =>
       queryClient.invalidateQueries({

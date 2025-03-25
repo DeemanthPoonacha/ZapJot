@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import DatePicker from "@/components/ui/date-picker"; // Import DatePicker component
-import ImageUploader from "@/components/ui/image-uploader"; // Import ImageUploader component
 import UploadImage from "../ui/upload-image";
 import { useState } from "react";
 

@@ -78,6 +78,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
         toast.success("Event deleted successfully");
         onClose?.();
       } catch (error) {
+        console.error("Error deleting event", error);
         toast.error("Error deleting event");
       }
     }
@@ -105,6 +106,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     }
   };
 
+  // eslint-disable-next-line
   const renderWeeklySelector = (field: any) => (
     <FormItem>
       <FormLabel>Select Days</FormLabel>
@@ -135,6 +137,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     </FormItem>
   );
 
+  // eslint-disable-next-line
   const renderMonthlySelector = (field: any) => (
     <FormItem>
       <FormLabel>Day</FormLabel>
@@ -165,6 +168,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     </FormItem>
   );
 
+  // eslint-disable-next-line
   const renderYearlySelector = (field: any) => {
     const monthValue = field.value[0]?.split("-")[0] || "";
     const dayValue = field.value[0]?.split("-")[1] || "";
