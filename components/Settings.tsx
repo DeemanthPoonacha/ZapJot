@@ -3,22 +3,22 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Slider } from "@/components/ui/slider";
+// import { Slider } from "@/components/ui/slider";
 import { useTheme } from "next-themes";
 
-const fonts = [
-  { value: "inter", label: "Inter" },
-  { value: "roboto", label: "Roboto" },
-  { value: "poppins", label: "Poppins" },
-];
+// const fonts = [
+//   { value: "inter", label: "Inter" },
+//   { value: "roboto", label: "Roboto" },
+//   { value: "poppins", label: "Poppins" },
+// ];
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
-  const [fontSize, setFontSize] = useState(16);
+  // const [fontSize, setFontSize] = useState(16);
 
   return (
     <div className="space-y-6">
-      <Card className="p-4">
+      <Card className="p-4 gap-0">
         <h2 className="text-lg font-semibold mb-4">Theme</h2>
         <RadioGroup
           defaultValue={theme}
@@ -38,7 +38,7 @@ export default function SettingsPage() {
           </div>
         </RadioGroup>
       </Card>
-
+      {/* 
       <Card className="p-4">
         <h2 className="text-lg font-semibold mb-4">Font</h2>
         <RadioGroup defaultValue="inter">
@@ -65,7 +65,7 @@ export default function SettingsPage() {
             {fontSize}px
           </div>
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 }

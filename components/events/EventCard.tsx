@@ -13,7 +13,6 @@ export function EventCard({
   event: Event;
   onClick: () => void;
 }) {
-  const nextOccurance = getNextOccurrence(event);
   const time = new Date(`${"2020-01-01"}T${event.time}:00`).toLocaleString(
     "en-IN",
     {
@@ -21,6 +20,7 @@ export function EventCard({
       minute: "numeric",
     }
   );
+
   return (
     <ListCard onClick={onClick} className="cursor-pointer">
       <CardContent className="px-4 py-2 gap-1">
@@ -28,19 +28,7 @@ export function EventCard({
           <h3 className="text-lg font-semibold text-primary truncate">
             {event.title}
           </h3>
-          {nextOccurance && (
-            <p className="text-sm text-Bold flex gap-1 items-center">
-              <Calendar1 className="h-4 w-4" />
-              <span
-                className={cn(
-                  "truncate max-w-32",
-                  dayjs(nextOccurance).isBefore(dayjs()) ? "line-through" : ""
-                )}
-              >
-                {nextOccurance?.format("ddd, MMM D, YYYY")}
-              </span>
-            </p>
-          )}
+          <EventNextOccurance event={event} />
         </div>
 
         <div
@@ -101,6 +89,23 @@ export function EventCard({
     </ListCard>
   );
 }
+
+export const EventNextOccurance = ({ event }: { event: Event }) => {
+  const nextOccurance = getNextOccurrence(event);
+  return (
+    <p className="text-sm text-Bold flex gap-1 items-center">
+      <Calendar1 className="h-4 w-4" />
+      <span
+        className={cn(
+          "truncate max-w-32",
+          dayjs(nextOccurance).isBefore(dayjs()) ? "line-through" : ""
+        )}
+      >
+        {nextOccurance?.format("ddd, MMM D, YYYY")}
+      </span>
+    </p>
+  );
+};
 
 const formatRepeatText = (repeat: RepeatType, repeatDays: string[]) => {
   switch (repeat) {
