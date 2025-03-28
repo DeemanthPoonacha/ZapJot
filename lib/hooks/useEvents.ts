@@ -5,6 +5,7 @@ import {
   addEvent,
   updateEvent,
   deleteEvent,
+  updateOccurrences,
 } from "@/lib/services/events";
 import { useAuth } from "@/lib/context/AuthProvider";
 
@@ -85,4 +86,19 @@ export const useEventMutations = () => {
   });
 
   return { addMutation, updateMutation, deleteMutation };
+};
+
+export const useEventsOccurrenceMutations = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const userId = user?.uid;
+
+  const updateMutation = useMutation({
+    mutationFn: (data: { id: string; nextOccurrence: Date }[]) =>
+      updateOccurrences(userId!, data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY] }),
+  });
+
+  return { updateMutation };
 };

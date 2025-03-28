@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { z } from "zod";
 
 export enum RepeatType {
@@ -13,12 +14,16 @@ export const participants = z.object({
   label: z.string(),
   value: z.string(),
 });
+export const TimestampType = z.custom<Timestamp>(
+  (value) => value instanceof Timestamp
+);
 
 // Base schema for event creation
 export const createEventSchema = z.object({
   title: z.string().min(1, "Title is required"),
   notes: z.string().optional(),
   date: z.string().optional(),
+  nextOccurrence: TimestampType.or(z.date()),
   time: z.string(),
   repeat: z.enum(RepeatTypes as any).default("none"),
   repeatDays: z.array(z.string()).default([]),

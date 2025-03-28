@@ -1,13 +1,15 @@
-import { useEvents } from "@/lib/hooks/useEvents";
+import { useEvents, useEventsOccurrenceMutations } from "@/lib/hooks/useEvents";
 import { Button } from "@/components/ui/button";
 import EventForm from "./EventForm";
 import { EventCard } from "./EventCard";
 import { Event, EventsFilter } from "@/types/events";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../Empty";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, RefreshCw } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
+import { getNextOccurrence } from "@/lib/utils";
+import { useEffect } from "react";
 
 const EventsList = ({
   query,
@@ -22,6 +24,8 @@ const EventsList = ({
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
 
+  const { updateMutation } = useEventsOccurrenceMutations();
+
   const isDialogOpen = (dialogId: string) => selectedEventId === dialogId;
   const toggleDialog = (dialogId: string | null) => {
     setSelectedEventId(selectedEventId === dialogId ? null : dialogId);
@@ -31,8 +35,30 @@ const EventsList = ({
     setSelectedEventId(null);
   };
 
+  useEffect(() => {
+    handleRefresh();
+  }, []);
+
+  const handleRefresh = () => {
+    const updatedEvents = events?.map((event) => ({
+      id: event.id,
+      nextOccurrence: getNextOccurrence(event)?.toDate(),
+    }));
+    if (updatedEvents) {
+      updateMutation.mutate(
+        updatedEvents as { id: string; nextOccurrence: Date }[]
+      );
+    }
+  };
+
   return (
     <div className="space-y-4 mb-8">
+      <div className="flex justify-between items-center">
+        <span className="text-lg font-semibold">Upcoming Events</span>
+        <Button type="button" onClick={handleRefresh}>
+          <RefreshCw className="h-4 w-4" /> Refresh
+        </Button>
+      </div>
       {isLoading ? (
         Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-36 w-full" />

@@ -1,4 +1,4 @@
-import { Event } from "@/types/events";
+import { Event, EventCreate } from "@/types/events";
 import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
@@ -47,7 +47,7 @@ export function getDates(month: number = 0, year: number = 2020) {
  * @param {Object} event - The event object with repeat, repeatDays, date, and time properties
  * @return {dayjs.Dayjs} The next occurrence date of the event as a dayjs object
  */
-export const getNextOccurrence = (event: Event) => {
+export const getNextOccurrence = (event: EventCreate) => {
   const now = dayjs();
   const eventTime = event.time || "00:00";
   const [hours, minutes] = eventTime.split(":").map(Number);

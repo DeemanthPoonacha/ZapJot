@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { cn, getDates } from "@/lib/utils";
+import { cn, getDates, getNextOccurrence } from "@/lib/utils";
 import { useEventMutations } from "@/lib/hooks/useEvents";
 import {
   createEventSchema,
@@ -36,6 +36,7 @@ import { searchByName } from "@/lib/services/characters";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import DeleteConfirm from "../ui/delete-confirm";
+import { Timestamp } from "firebase/firestore";
 
 type EventFormProps = {
   eventData?: Event;
@@ -57,6 +58,8 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     repeat: eventData?.repeat || "none",
     repeatDays: eventData?.repeatDays || [],
     participants: eventData?.participants || [],
+    nextOccurrence:
+      (eventData?.nextOccurrence as Timestamp).toDate() || new Date(),
   };
 
   const form = useForm<EventCreate>({
@@ -64,7 +67,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     defaultValues: defaultValues,
   });
 
-  console.log("part", form.watch("participants"));
+  console.log("part", form.watch("nextOccurrence"), form.formState.errors);
 
   const { addMutation, updateMutation, deleteMutation } = useEventMutations();
 
@@ -85,10 +88,13 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
   };
 
   const onSubmit = async (data: EventCreate) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
     try {
       if (repeatType !== "none") {
         delete data.date;
       }
+      data.nextOccurrence = getNextOccurrence(data)?.toDate()!;
+
       if (eventData?.id) {
         await updateMutation.mutateAsync({
           id: eventData?.id,
@@ -144,10 +150,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
       <div className="flex gap-2">
         <Select
           onValueChange={(value) => {
-            const newDays = field.value.includes(value)
-              ? field.value.filter((d: string) => d !== value)
-              : [...field.value, value];
-            field.onChange(newDays);
+            field.onChange([value]);
           }}
           defaultValue={field.value[0]}
         >

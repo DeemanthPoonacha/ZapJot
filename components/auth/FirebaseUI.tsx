@@ -38,7 +38,7 @@ export default function FirebaseAuthUI() {
         firebaseAuth={auth}
       />
       <div className="mt-4 flex flex-col items-center">
-        <div>For Demo</div>
+        <div>For Demo, sign in with email</div>
         <span>
           email: <code>jane.doe@gmail.com</code>
         </span>

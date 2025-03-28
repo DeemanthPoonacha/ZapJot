@@ -9,6 +9,8 @@ import {
   deleteDoc,
   where,
   query,
+  writeBatch,
+  orderBy,
 } from "firebase/firestore";
 import { EventCreate, Event, EventsFilter } from "@/types/events";
 import { addReminder, removeReminder } from "./characters";
@@ -27,6 +29,9 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
   if (filter && filter.eventIds) {
     q = query(q, where("id", "in", filter.eventIds));
   }
+
+  // q = query(q, where("nextOccurrence", ">", new Date()));
+  q = query(q, orderBy("nextOccurrence", "asc"));
 
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Event[];
@@ -105,4 +110,18 @@ export const deleteEvent = async (
       await removeReminder(userId, participant, eventRef.id);
     });
   await deleteDoc(eventRef);
+};
+
+export const updateOccurrences = async (
+  userId: string,
+  data: { id: string; nextOccurrence: Date }[]
+) => {
+  const batch = writeBatch(db);
+
+  data.forEach(({ id, nextOccurrence }) => {
+    const ref = doc(db, `users/${userId}/events/${id}`);
+    batch.update(ref, { nextOccurrence });
+  });
+
+  await batch.commit();
 };
