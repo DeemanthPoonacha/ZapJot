@@ -91,14 +91,19 @@ export function EventCard({
 }
 
 export const EventNextOccurance = ({ event }: { event: Event }) => {
-  const nextOccurance = getNextOccurrence(event);
+  const nextOccurance = event.nextOccurrence
+    ? dayjs(event.nextOccurrence as Date)
+    : getNextOccurrence(event);
   return (
-    <p className="text-sm text-Bold flex gap-1 items-center">
+    <p
+      className="text-sm text-Bold flex gap-1 items-center"
+      title={nextOccurance?.format("ddd, MMM D, YYYY HH:mm")}
+    >
       <Calendar1 className="h-4 w-4" />
       <span
         className={cn(
           "truncate max-w-32",
-          dayjs(nextOccurance).isBefore(dayjs()) ? "line-through" : ""
+          nextOccurance?.isBefore() ? "line-through" : ""
         )}
       >
         {nextOccurance?.format("ddd, MMM D, YYYY")}

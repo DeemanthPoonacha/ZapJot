@@ -40,7 +40,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
       q = query(q, where("nextOccurrence", "<", filter.dateRange.end));
   }
 
-  // q = query(q, where("nextOccurrence", ">", new Date()));
+  q = query(q, where("nextOccurrence", ">", new Date()));
   q = query(q, orderBy("nextOccurrence", "asc"));
 
   const snapshot = await getDocs(q);
