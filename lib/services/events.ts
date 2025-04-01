@@ -16,6 +16,8 @@ import { EventCreate, Event, EventsFilter } from "@/types/events";
 import { addReminder, removeReminder } from "./characters";
 
 export const getEvents = async (userId: string, filter?: EventsFilter) => {
+  console.log("🚀 ~ getEvents ~ filter:", filter);
+
   let q = query(collection(db, `users/${userId}/events`));
   console.log("filter", filter);
 
@@ -28,6 +30,14 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
 
   if (filter && filter.eventIds) {
     q = query(q, where("id", "in", filter.eventIds));
+  }
+
+  if (filter && filter.dateRange) {
+    if (filter.dateRange.start)
+      q = query(q, where("nextOccurrence", ">=", filter.dateRange.start));
+
+    if (filter.dateRange.end)
+      q = query(q, where("nextOccurrence", "<", filter.dateRange.end));
   }
 
   // q = query(q, where("nextOccurrence", ">", new Date()));

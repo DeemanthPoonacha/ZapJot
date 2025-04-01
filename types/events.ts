@@ -51,4 +51,5 @@ export type EventParticipant = z.infer<typeof participants>;
 export interface EventsFilter {
   eventIds?: string[];
   participants?: string[];
+  dateRange?: { start?: Date; end?: Date };
 }
