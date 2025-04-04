@@ -5,6 +5,7 @@ import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as ne
 import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";
 import { ALL_MONTHS, WEEK_DAYS } from "@/lib/constants";
+import { Timestamp } from "firebase/firestore";
 
 export function EventCard({
   event,
@@ -28,7 +29,20 @@ export function EventCard({
           <h3 className="text-lg font-semibold text-primary truncate">
             {event.title}
           </h3>
-          <EventNextOccurance event={event} />
+
+          {event.time && (
+            <p
+              className={cn(
+                "font-medium flex gap-1 items-center",
+                dayjs(event.nextOccurrence as Date).isBefore()
+                  ? "line-through"
+                  : ""
+              )}
+            >
+              <Clock className="h-4 w-4" />
+              <span className="truncate max-w-32">{time}</span>
+            </p>
+          )}
         </div>
 
         <div
@@ -45,13 +59,7 @@ export function EventCard({
                 : formatRepeatText(event.repeat, event.repeatDays as string[])}
             </span>
           </div>
-
-          {event.time && (
-            <p className="text-sm text-muted-foreground font-medium flex gap-1 items-center">
-              <Clock className="h-4 w-4" />
-              <span className="truncate max-w-32">{time}</span>
-            </p>
-          )}
+          <EventNextOccurance event={event} />
         </div>
         {event.notes && (
           <p className="text-sm text-muted-foreground flex gap-1 items-center">
@@ -90,23 +98,29 @@ export function EventCard({
   );
 }
 
-export const EventNextOccurance = ({ event }: { event: Event }) => {
-  const nextOccurance = event.nextOccurrence
+export const EventNextOccurance = ({
+  event,
+  format = "ddd, MMM D, YYYY",
+}: {
+  event: Event;
+  format?: string;
+}) => {
+  const nextOccurance = !(event.nextOccurrence as Timestamp).seconds
     ? dayjs(event.nextOccurrence as Date)
     : getNextOccurrence(event);
   return (
     <p
-      className="text-sm text-Bold flex gap-1 items-center"
+      className="text-sm text-muted-foreground text-Bold flex gap-1 items-center"
       title={nextOccurance?.format("ddd, MMM D, YYYY HH:mm")}
     >
       <Calendar1 className="h-4 w-4" />
       <span
         className={cn(
-          "truncate max-w-32",
-          nextOccurance?.isBefore() ? "line-through" : ""
+          "truncate max-w-32"
+          // nextOccurance?.isBefore() ? "line-through" : ""
         )}
       >
-        {nextOccurance?.format("ddd, MMM D, YYYY")}
+        {nextOccurance?.format(format)}
       </span>
     </p>
   );

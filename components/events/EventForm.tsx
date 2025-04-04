@@ -36,7 +36,6 @@ import { searchByName } from "@/lib/services/characters";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import DeleteConfirm from "../ui/delete-confirm";
-import { Timestamp } from "firebase/firestore";
 
 type EventFormProps = {
   eventData?: Event;
@@ -58,8 +57,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     repeat: eventData?.repeat || "none",
     repeatDays: eventData?.repeatDays || [],
     participants: eventData?.participants || [],
-    nextOccurrence:
-      (eventData?.nextOccurrence as Timestamp).toDate() || new Date(),
+    nextOccurrence: (eventData?.nextOccurrence as Date) || new Date(),
   };
 
   const form = useForm<EventCreate>({

@@ -143,9 +143,6 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
                   mode="single"
                   selected={new Date(field.value || "")}
                   onSelect={(date) => field.onChange(date?.toISOString())}
-                  disabled={(date) =>
-                    date > new Date() || date < new Date("1900-01-01")
-                  }
                   initialFocus
                 />
               </FormControl>

@@ -52,4 +52,6 @@ export interface EventsFilter {
   eventIds?: string[];
   participants?: string[];
   dateRange?: { start?: Date; end?: Date };
+  limit?: number;
+  onlyUpcoming?: boolean;
 }

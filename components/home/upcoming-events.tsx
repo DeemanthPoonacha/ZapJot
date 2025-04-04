@@ -9,7 +9,10 @@ import { EventNextOccurance } from "../events/EventCard";
 import usePlanner from "@/lib/hooks/usePlanner";
 
 export function UpcomingEvents() {
-  const { data: events, isLoading } = useEvents();
+  const { data: events, isLoading } = useEvents({
+    limit: 3,
+    onlyUpcoming: true,
+  });
   const { setSelectedTab } = usePlanner();
 
   if (isLoading) {
@@ -36,11 +39,11 @@ export function UpcomingEvents() {
         </p>
       ) : (
         <div className="space-y-3">
-          {events.slice(0, 3).map((event) => (
+          {events.map((event) => (
             <div key={event.id} className="flex justify-between items-center">
               <span>{event.title}</span>
               <span className="text-sm text-muted-foreground">
-                <EventNextOccurance event={event} />
+                <EventNextOccurance event={event} format="D MMM, hh:mma" />
               </span>
             </div>
           ))}

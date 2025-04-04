@@ -7,9 +7,13 @@ import ItinerariesList from "./itineraries/ItineraryList";
 import TasksList from "./tasks/TasksList";
 import { Calendar } from "./ui/calendar";
 import usePlanner from "@/lib/hooks/usePlanner";
+import dayjs from "dayjs";
+import { useState } from "react";
 
 export default function PlannerPage() {
   const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const endDate = selectedDate ? dayjs(selectedDate) : dayjs().add(2, "days");
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
       <TabsList className="grid w-full grid-cols-4 bg-muted/50">
@@ -25,8 +29,18 @@ export default function PlannerPage() {
         <Calendar
           mode="single"
           className="rounded-md border w-full flex justify-center"
+          selected={selectedDate}
+          onSelect={setSelectedDate}
         />
-        <EventsList />
+        <EventsList
+          showDefault={selectedDate === undefined}
+          query={{
+            dateRange: {
+              start: dayjs(selectedDate).startOf("day").toDate(),
+              end: endDate.endOf("day").toDate(),
+            },
+          }}
+        />
       </TabsContent>
       <TabsContent value="goals">
         <GoalsList />

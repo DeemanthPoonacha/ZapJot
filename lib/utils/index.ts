@@ -1,6 +1,6 @@
 import { Event, EventCreate } from "@/types/events";
 import { clsx, type ClassValue } from "clsx";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -172,4 +172,147 @@ export const getNextOccurrence = (event: EventCreate) => {
     default:
       return null;
   }
+};
+
+const getOccurrenceDate = (date: string, time: string) =>
+  dayjs(`${date}${time}`).toDate();
+
+function getDatesBetween(startDate: Dayjs, endDate: Dayjs) {
+  const dates: Record<
+    string,
+    {
+      date: string;
+      weekDay: string;
+      monthDay: string;
+      yearDay: string;
+    }
+  > = {};
+  let currentDate = startDate;
+  const end = endDate;
+
+  while (currentDate.isBefore(end) || currentDate.isSame(end, "day")) {
+    const dateStr = currentDate.format("YYYY-MM-DD");
+    if (!dates[dateStr])
+      dates[dateStr] = {
+        date: dateStr,
+        weekDay: currentDate.day().toString(),
+        monthDay: currentDate.date().toString(),
+        yearDay: currentDate.format("M-D"),
+      };
+
+    currentDate = currentDate.add(1, "day");
+  }
+
+  return dates;
+}
+
+/**
+ * Groups events by their date and handles different repetition types.
+ * @param {Array} events - The array of event objects to group.
+ * @param {Date} startDate - The start date for the grouping.
+ * @param {Date} endDate - The end date for the grouping.
+ * @returns {Object} An object where keys are dates and values are arrays of events for that date.
+ */
+export const groupEventsByDate = (
+  events: Event[],
+  startDate?: Date,
+  endDate?: Date
+): Record<string, Event[]> => {
+  // Get all dates between start and end date
+  const dateRange = getDatesBetween(
+    dayjs(startDate).startOf("day"),
+    dayjs(endDate).endOf("day")
+  );
+
+  // Initialize data structures to hold events by repetition type
+  const eventsByDate: Record<string, Event[]> = {};
+  const eventsByRepeatType = {
+    daily: [] as Event[],
+    weekly: {} as Record<string, Event[]>,
+    monthly: {} as Record<string, Event[]>,
+    yearly: {} as Record<string, Event[]>,
+  };
+
+  // Initialize the eventsByDate object with empty arrays for all dates
+  Object.keys(dateRange).forEach((date) => {
+    eventsByDate[date] = [];
+  });
+
+  // First pass: categorize events by their repetition type
+  events.forEach((event) => {
+    if (event.repeat === "none") {
+      const dateStr = event.date as string;
+
+      if (!eventsByDate[dateStr]) return;
+
+      eventsByDate[dateStr].push({
+        ...event,
+        nextOccurrence: getOccurrenceDate(event.date!, event.time),
+      });
+    } else if (event.repeat === "daily") {
+      eventsByRepeatType.daily.push(event);
+    } else if (["weekly", "monthly", "yearly"].includes(event.repeat)) {
+      // Handle events with repeatDays
+      event.repeatDays.forEach((day) => {
+        const repeatType = event.repeat as "weekly" | "monthly" | "yearly";
+        if (!eventsByRepeatType[repeatType][day]) {
+          eventsByRepeatType[repeatType][day] = [];
+        }
+        eventsByRepeatType[repeatType][day].push(event);
+      });
+    }
+  });
+
+  // Second pass: populate eventsByDate with recurring events for each date
+  Object.entries(dateRange).forEach(
+    ([date, { weekDay, monthDay, yearDay }]) => {
+      // Add daily events
+      if (eventsByRepeatType.daily.length > 0) {
+        eventsByDate[date].push(
+          ...eventsByRepeatType.daily.map((event) => ({
+            ...event,
+            nextOccurrence: getOccurrenceDate(date, event.time),
+          }))
+        );
+      }
+
+      // Add weekly events
+      const weeklyEventsForDay = eventsByRepeatType.weekly[weekDay] || [];
+      if (weeklyEventsForDay.length > 0) {
+        eventsByDate[date].push(
+          ...weeklyEventsForDay.map((event) => ({
+            ...event,
+            nextOccurrence: getOccurrenceDate(date, event.time),
+          }))
+        );
+      }
+
+      // Add monthly events
+      const monthlyEventsForDay = eventsByRepeatType.monthly[monthDay] || [];
+      if (monthlyEventsForDay.length > 0) {
+        eventsByDate[date].push(
+          ...monthlyEventsForDay.map((event) => ({
+            ...event,
+            nextOccurrence: getOccurrenceDate(date, event.time),
+          }))
+        );
+      }
+
+      // Add yearly events
+      const yearlyEventsForDay = eventsByRepeatType.yearly[yearDay] || [];
+      if (yearlyEventsForDay.length > 0) {
+        eventsByDate[date].push(
+          ...yearlyEventsForDay.map((event) => ({
+            ...event,
+            nextOccurrence: getOccurrenceDate(date, event.time),
+          }))
+        );
+      }
+    }
+  );
+
+  // Remove debugging console.log
+  // console.log("🚀 ~ Object.entries ~ weeklyEvents:", weeklyEvents);
+
+  return eventsByDate;
 };

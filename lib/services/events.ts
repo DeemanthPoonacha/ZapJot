@@ -11,6 +11,7 @@ import {
   query,
   writeBatch,
   orderBy,
+  limit,
 } from "firebase/firestore";
 import { EventCreate, Event, EventsFilter } from "@/types/events";
 import { addReminder, removeReminder } from "./characters";
@@ -32,15 +33,22 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
     q = query(q, where("id", "in", filter.eventIds));
   }
 
-  if (filter && filter.dateRange) {
-    if (filter.dateRange.start)
-      q = query(q, where("nextOccurrence", ">=", filter.dateRange.start));
-
-    if (filter.dateRange.end)
-      q = query(q, where("nextOccurrence", "<", filter.dateRange.end));
+  if (filter && filter.limit) {
+    q = query(q, limit(filter.limit));
   }
 
-  q = query(q, where("nextOccurrence", ">", new Date()));
+  if (filter && filter.onlyUpcoming) {
+    q = query(q, where("nextOccurrence", ">=", new Date()));
+  }
+
+  // if (filter && filter.dateRange) {
+  //   if (filter.dateRange.start)
+  //     q = query(q, where("nextOccurrence", ">=", filter.dateRange.start));
+
+  //   // if (filter.dateRange.end)
+  //   //   q = query(q, where("nextOccurrence", "<", filter.dateRange.end));
+  // }
+
   q = query(q, orderBy("nextOccurrence", "asc"));
 
   const snapshot = await getDocs(q);
@@ -64,6 +72,25 @@ export const addEvent = async (userId: string, data: EventCreate) => {
   });
   await setDoc(eventRef, { ...data, id: eventRef.id });
 };
+
+// export const addMultipleTest = (userId: string) => {
+//   for (let index = 0; index < 1000; index++) {
+//     addEvent(userId, {
+//       title: "test - once " + index,
+//       date: dayjs().add(index, "day").format("YYYY-MM-DD"),
+//       nextOccurrence: dayjs().add(index, "day").toDate(),
+//       repeat: "none",
+//       time: "01:20",
+//       repeatDays: [],
+//       createdAt: new Date().toISOString(),
+//       updatedAt: new Date().toISOString(),
+//     });
+//   }
+// };
+// export const deletMultipleTest = (userId: string, ids: string[]) => {
+//   ids.map((id) => deleteEvent(userId, id));
+// };
+
 export const updateEvent = async (
   userId: string,
   eventId: string,
