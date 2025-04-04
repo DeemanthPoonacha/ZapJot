@@ -91,7 +91,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
       if (repeatType !== "none") {
         delete data.date;
       }
-      data.nextOccurrence = getNextOccurrence(data)?.toDate()!;
+      data.nextOccurrence = getNextOccurrence(data)?.toDate() || new Date();
 
       if (eventData?.id) {
         await updateMutation.mutateAsync({
