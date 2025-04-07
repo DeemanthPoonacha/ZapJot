@@ -89,6 +89,10 @@ export default function UserAvatarDropdown() {
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/test")}>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Test</span>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} disabled={isLoading}>
           <LogOut className="mr-2 h-4 w-4" />

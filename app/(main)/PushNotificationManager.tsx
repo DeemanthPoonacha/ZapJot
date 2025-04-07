@@ -16,24 +16,44 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 function PushNotificationManager() {
-  const [isSupported, setIsSupported] = useState(false);
+  const [isSupported, setIsSupported] = useState(true);
   const [subscription, setSubscription] = useState<PushSubscription | null>(
     null
   );
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if ("serviceWorker" in navigator && "PushManager" in window) {
-      setIsSupported(true);
-      registerServiceWorker();
+    if (!("serviceWorker" in navigator)) {
+      console.error(
+        "Service workers are not supported in this browser. Push notifications will not work."
+      );
+      setIsSupported(false);
+    } else if (!("PushManager" in window)) {
+      console.error(
+        "Push notifications are not supported in this browser. Push notifications will not work."
+      );
+      setIsSupported(false);
     }
   }, []);
+
+  async function requestNotificationPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      console.error("Notification permission denied.");
+      setIsSupported(false);
+      throw new Error("Notification permission denied.");
+    }
+    // else {
+    //   new Notification("Permission granted!");
+    // }
+  }
 
   async function registerServiceWorker() {
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",
       updateViaCache: "none",
     });
+    // registration.showNotification("Service Worker registered!");
     const sub = await registration.pushManager.getSubscription();
     setSubscription(sub);
   }
@@ -41,12 +61,14 @@ function PushNotificationManager() {
   async function subscribeToPush() {
     try {
       const registration = await navigator.serviceWorker.ready;
+      console.log("🚀 ~ subscribeToPush ~ registration:", registration);
       const sub = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(
           process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
         ),
       });
+      console.log("🚀 ~ subscribeToPush ~ sub:", sub);
       setSubscription(sub);
       const serializedSub = JSON.parse(JSON.stringify(sub));
       console.log("🚀 ~ subscribeToPush ~ serializedSub:", serializedSub);
@@ -69,12 +91,19 @@ function PushNotificationManager() {
     }
   }
 
-  if (!isSupported) {
-    return <p>Push notifications are not supported in this browser.</p>;
-  }
-
   return (
     <div>
+      <Button
+        onClick={() => {
+          requestNotificationPermission();
+          registerServiceWorker();
+        }}
+      >
+        Enable Push Notifications
+      </Button>
+      {!isSupported && (
+        <p>Push notifications are not supported in this browser.</p>
+      )}
       <h3>Push Notifications</h3>
       {subscription ? (
         <>
