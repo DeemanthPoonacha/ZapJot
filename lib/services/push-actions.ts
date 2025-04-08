@@ -1,6 +1,6 @@
 "use server";
 
-import webpush from "web-push";
+import webpush, { SendResult } from "web-push";
 import {
   collection,
   addDoc,
@@ -17,15 +17,6 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY!
 );
 
-interface WebPushSubscription {
-  endpoint: string;
-  expirationTime?: number | null;
-  keys: {
-    p256dh: string;
-    auth: string;
-  };
-}
-
 export async function subscribeUser(userId: string, sub: PushSubscription) {
   try {
     // Store subscription with user ID in Firestore
@@ -41,12 +32,12 @@ export async function subscribeUser(userId: string, sub: PushSubscription) {
   }
 }
 
-export async function unsubscribeUser(userId: string, endpoint?: string) {
+export async function unsubscribeUser(userId: string) {
   try {
     // Find and delete the subscription
     const q = query(
       collection(db, "pushSubscriptions"),
-      where("userId", "==", userId),
+      where("userId", "==", userId)
       // where("subscription.endpoint", "==", endpoint)
     );
 
@@ -76,7 +67,7 @@ export async function sendNotificationToUser(userId: string, message: string) {
       return { success: false, error: "No subscriptions found for user" };
     }
 
-    const promises: any[] = [];
+    const promises: Promise<void | SendResult>[] = [];
 
     // Send notification to all user's devices
     querySnapshot.forEach((doc) => {
@@ -120,7 +111,7 @@ export async function sendNotificationToAll(message: string) {
       return { success: false, error: "No subscriptions found" };
     }
 
-    const promises: any[] = [];
+    const promises: Promise<void | SendResult>[] = [];
 
     querySnapshot.forEach((doc) => {
       const { subscription } = doc.data();
