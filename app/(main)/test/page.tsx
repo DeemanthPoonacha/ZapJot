@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import PushNotificationManager from "../PushNotificationManager";
+import PushNotificationManager from "../../../components/PushNotificationManager";
 import { Button } from "@/components/ui/button";
 
 function InstallPrompt() {

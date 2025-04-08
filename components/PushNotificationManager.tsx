@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
-import { subscribeUser, unsubscribeUser, sendNotification } from "./actions";
+import {
+  subscribeUser,
+  unsubscribeUser,
+  sendNotificationToUser,
+} from "../lib/services/push-actions";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/context/AuthProvider";
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -21,6 +26,8 @@ function PushNotificationManager() {
     null
   );
   const [message, setMessage] = useState("");
+  const { user } = useAuth();
+  const userId = user?.uid;
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) {
@@ -72,7 +79,7 @@ function PushNotificationManager() {
       setSubscription(sub);
       const serializedSub = JSON.parse(JSON.stringify(sub));
       console.log("🚀 ~ subscribeToPush ~ serializedSub:", serializedSub);
-      await subscribeUser(serializedSub);
+      await subscribeUser(userId!, serializedSub);
     } catch (error) {
       console.error("Error subscribing to push notifications:", error);
     }
@@ -81,12 +88,12 @@ function PushNotificationManager() {
   async function unsubscribeFromPush() {
     await subscription?.unsubscribe();
     setSubscription(null);
-    await unsubscribeUser();
+    await unsubscribeUser(userId!);
   }
 
   async function sendTestNotification() {
     if (subscription) {
-      await sendNotification(message);
+      await sendNotificationToUser(userId!, message);
       setMessage("");
     }
   }
