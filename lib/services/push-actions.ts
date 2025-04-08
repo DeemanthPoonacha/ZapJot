@@ -78,9 +78,10 @@ export async function sendNotificationToUser(userId: string, message: string) {
           .sendNotification(
             subscription,
             JSON.stringify({
-              title: "New Notification",
+              title: "This is a Test Notification",
               body: message,
               icon: "/icon-192x192.png",
+              url: "/test",
             })
           )
           .catch(async (error) => {

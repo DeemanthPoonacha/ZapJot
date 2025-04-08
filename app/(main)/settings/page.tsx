@@ -1,5 +1,5 @@
 import PageLayout from "@/components/PageLayout";
-import SettingsPage from "@/components/Settings";
+import SettingsPage from "@/components/settings/SettingsPage";
 import React from "react";
 
 const Settings = () => {

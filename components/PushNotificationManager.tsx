@@ -6,19 +6,7 @@ import {
 } from "../lib/services/push-actions";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/context/AuthProvider";
-
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
+import { urlBase64ToUint8Array } from "@/lib/utils";
 
 function PushNotificationManager() {
   const [isSupported, setIsSupported] = useState(true);
@@ -75,10 +63,8 @@ function PushNotificationManager() {
           process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
         ),
       });
-      console.log("🚀 ~ subscribeToPush ~ sub:", sub);
       setSubscription(sub);
       const serializedSub = JSON.parse(JSON.stringify(sub));
-      console.log("🚀 ~ subscribeToPush ~ serializedSub:", serializedSub);
       await subscribeUser(userId!, serializedSub);
     } catch (error) {
       console.error("Error subscribing to push notifications:", error);
