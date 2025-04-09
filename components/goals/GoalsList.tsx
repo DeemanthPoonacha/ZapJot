@@ -23,9 +23,11 @@ const GoalsList = () => {
   return (
     <div className="space-y-4 mb-8">
       {isLoading ? (
-        Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-36 w-full" />
-        ))
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-36 w-full" />
+          ))}
+        </div>
       ) : !goals?.length ? (
         <Empty
           icon={<Goal className="emptyIcon" />}
@@ -35,22 +37,24 @@ const GoalsList = () => {
           handleCreateClick={() => toggleDialog("new")}
         />
       ) : (
-        goals.map((goal) => (
-          <div key={goal.id}>
-            <GoalCard
-              key={goal.id}
-              goal={goal}
-              onEditClick={() => toggleDialog(goal.id)}
-            />
-            {isDialogOpen(goal.id) && (
-              <ResponsiveDialogDrawer
-                content={<GoalForm onClose={handleClose} goalData={goal} />}
-                title={goal.title}
-                handleClose={handleClose}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+          {goals.map((goal) => (
+            <div key={goal.id}>
+              <GoalCard
+                key={goal.id}
+                goal={goal}
+                onEditClick={() => toggleDialog(goal.id)}
               />
-            )}
-          </div>
-        ))
+              {isDialogOpen(goal.id) && (
+                <ResponsiveDialogDrawer
+                  content={<GoalForm onClose={handleClose} goalData={goal} />}
+                  title={goal.title}
+                  handleClose={handleClose}
+                />
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Add Goal Dialog */}

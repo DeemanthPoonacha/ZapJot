@@ -20,7 +20,7 @@ const JournalsList = ({
     <div className={cn("space-y-4", className)}>
       <h2 className="text-xl font-bold">Journals</h2>
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:garid-cols-2 md:garid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-32 w-full" />
           ))}
@@ -36,7 +36,7 @@ const JournalsList = ({
           }}
         />
       ) : (
-        <div className="grid grid-cols-1 sm:garid-cols-2 md:garid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {journals?.map(({ id, title, coverImage, location, date }) => (
             <GridCardWithOverlay
               className="cursor-pointer hover:shadow-lg transition"

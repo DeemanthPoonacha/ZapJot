@@ -20,6 +20,9 @@ const TasksList = () => {
     setSelectedTaskId(null);
   };
 
+  const completedTasks = tasks?.filter((task) => task.status === "completed");
+  const incompleteTasks = tasks?.filter((task) => task.status !== "completed");
+
   return (
     <div className="space-y-4 mb-8">
       {isLoading ? (
@@ -35,20 +38,59 @@ const TasksList = () => {
           icon={<ListChecks className="emptyIcon" />}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {tasks?.map((task) => (
-            <div key={task.id}>
-              <TaskCard task={task} onEditClick={() => toggleDialog(task.id)} />
-              {isDialogOpen(task.id) && (
-                <ResponsiveDialogDrawer
-                  content={<TaskForm onClose={handleClose} taskData={task} />}
-                  title={task.title}
-                  handleClose={handleClose}
-                />
-              )}
+        <>
+          <div className="pb-12">
+            <div className="flex justify-between items-center mb-8 border-b pb-4">
+              <span className="text-lg font-semibold">Pending Tasks</span>
+              {incompleteTasks?.length} Tasks
             </div>
-          ))}
-        </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+              {incompleteTasks?.map((task) => (
+                <div key={task.id}>
+                  <TaskCard
+                    task={task}
+                    onEditClick={() => toggleDialog(task.id)}
+                  />
+                  {isDialogOpen(task.id) && (
+                    <ResponsiveDialogDrawer
+                      content={
+                        <TaskForm onClose={handleClose} taskData={task} />
+                      }
+                      title={task.title}
+                      handleClose={handleClose}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pb-12">
+            <div className="flex justify-between items-center mb-8 border-b pb-4">
+              <span className="text-lg font-semibold">Completed Tasks</span>
+              {completedTasks?.length} Tasks
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {completedTasks?.map((task) => (
+                <div key={task.id}>
+                  <TaskCard
+                    task={task}
+                    onEditClick={() => toggleDialog(task.id)}
+                  />
+                  {isDialogOpen(task.id) && (
+                    <ResponsiveDialogDrawer
+                      content={
+                        <TaskForm onClose={handleClose} taskData={task} />
+                      }
+                      title={task.title}
+                      handleClose={handleClose}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {/* Add Task Dialog */}

@@ -8,18 +8,18 @@ import {
 } from "@/lib/services/tasks";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import { Task, TaskCreate } from "@/types/tasks";
+import { Task, TaskCreate, TaskFilter } from "@/types/tasks";
 
 // Query Key
 const TASK_QUERY_KEY = "tasks";
 
 /** Fetch all tasks for the logged-in user */
-export const useTasks = () => {
+export const useTasks = (query?: TaskFilter) => {
   const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
-    queryKey: [TASK_QUERY_KEY, userId],
-    queryFn: () => (userId ? getTasks(userId) : Promise.resolve([])),
+    queryKey: [TASK_QUERY_KEY, userId, query],
+    queryFn: () => (userId ? getTasks(userId, query) : Promise.resolve([])),
     enabled: !!userId,
   });
 };

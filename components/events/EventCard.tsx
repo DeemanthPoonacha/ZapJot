@@ -101,9 +101,11 @@ export function EventCard({
 export const EventNextOccurance = ({
   event,
   format = "ddd, MMM D, YYYY",
+  text = "",
 }: {
   event: Event;
   format?: string;
+  text?: string;
 }) => {
   const nextOccurance = !(event.nextOccurrence as Timestamp).seconds
     ? dayjs(event.nextOccurrence as Date)
@@ -114,6 +116,7 @@ export const EventNextOccurance = ({
       title={nextOccurance?.format("ddd, MMM D, YYYY HH:mm")}
     >
       <Calendar1 className="h-4 w-4" />
+      {text}
       <span
         className={cn(
           "truncate max-w-32"

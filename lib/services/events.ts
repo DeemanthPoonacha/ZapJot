@@ -19,26 +19,32 @@ import { addReminder, removeReminder } from "./characters";
 export const getEvents = async (userId: string, filter?: EventsFilter) => {
   console.log("🚀 ~ getEvents ~ filter:", filter);
 
-  let q = query(collection(db, `users/${userId}/events`));
-  console.log("filter", filter);
+  // Start with basic collection reference
+  const eventsRef = collection(db, `users/${userId}/events`);
+  let constraints = [];
 
-  if (filter && filter.participants) {
-    q = query(
-      q,
+  // Always add orderBy for nextOccurrence first since we're using it
+  constraints.push(orderBy("nextOccurrence", "asc"));
+
+  // Then add all the where clauses
+  if (filter?.onlyUpcoming) {
+    constraints.push(where("nextOccurrence", ">=", new Date()));
+  }
+
+  // Add other filters that don't conflict with orderBy
+  if (filter?.participants) {
+    constraints.push(
       where("participants", "array-contains-any", filter.participants)
     );
   }
 
-  if (filter && filter.eventIds) {
-    q = query(q, where("id", "in", filter.eventIds));
+  if (filter?.eventIds) {
+    constraints.push(where("id", "in", filter.eventIds));
   }
 
-  if (filter && filter.limit) {
-    q = query(q, limit(filter.limit));
-  }
-
-  if (filter && filter.onlyUpcoming) {
-    q = query(q, where("nextOccurrence", ">=", new Date()));
+  // Add limit last
+  if (filter?.limit) {
+    constraints.push(limit(filter.limit));
   }
 
   // if (filter && filter.dateRange) {
@@ -49,10 +55,19 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
   //   //   q = query(q, where("nextOccurrence", "<", filter.dateRange.end));
   // }
 
-  q = query(q, orderBy("nextOccurrence", "asc"));
+  // Create the query with all constraints
+  const q = query(eventsRef, ...constraints);
 
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Event[];
+  try {
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Event[];
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw error;
+  }
 };
 
 export const getEventById = async (userId: string, eventId: string) => {

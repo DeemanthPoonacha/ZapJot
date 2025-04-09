@@ -105,7 +105,7 @@ const EventList = ({
                       No Events Found
                     </p>
                   ) : (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
                       {events
                         ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
                         .map((event) => (

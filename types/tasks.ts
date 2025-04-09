@@ -31,3 +31,9 @@ export const taskSchema = createTaskSchema.extend({
 // Type inference
 export type Task = z.infer<typeof taskSchema>;
 export type TaskCreate = z.infer<typeof createTaskSchema>;
+
+export interface TaskFilter {
+  highPriority?: boolean;
+  status?: "pending" | "in-progress" | "completed";
+  limit?: number;
+}

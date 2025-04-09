@@ -1,5 +1,5 @@
 import { db } from "@/lib/services/firebase";
-import { Task, TaskCreate } from "@/types/tasks";
+import { Task, TaskCreate, TaskFilter } from "@/types/tasks";
 import {
   collection,
   doc,
@@ -8,14 +8,47 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  query,
+  limit,
+  where,
+  orderBy,
 } from "firebase/firestore";
 
-const getTasks = async (userId: string): Promise<Task[]> => {
-  const tasksCollection = collection(db, `users/${userId}/tasks`);
-  const snapshot = await getDocs(tasksCollection);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Task));
-};
+const getTasks = async (
+  userId: string,
+  filter?: TaskFilter
+): Promise<Task[]> => {
+  const tasksRef = collection(db, `users/${userId}/tasks`);
+  let constraints = [];
 
+  console.log("filter", filter);
+
+  constraints.push(orderBy("highPriority", "desc"));
+
+  if (filter?.status) {
+    constraints.push(where("status", "==", filter.status));
+  }
+
+  if (filter?.limit) {
+    constraints.push(limit(filter.limit));
+  }
+
+  const q = query(tasksRef, ...constraints);
+
+  try {
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as Task)
+    );
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+};
 const getTaskById = async (
   userId: string,
   taskId: string
