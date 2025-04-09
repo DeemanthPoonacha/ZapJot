@@ -7,6 +7,7 @@ import { MoodTracker } from "@/components/home/mood-tracker";
 import { TodaysFocus } from "@/components/home/todays-focus";
 import PageLayout from "@/components/PageLayout";
 import { PendingTasks } from "@/components/home/pending-tasks";
+import { JotDown } from "@/components/home/jot-down";
 
 export default function HomePage() {
   return (
@@ -20,7 +21,8 @@ export default function HomePage() {
           <PendingTasks />
           {/* <RecentActivity /> */}
         </div>
-        <MoodTracker />
+        <JotDown />
+        {/* <MoodTracker /> */}
         <TodaysFocus />
       </div>
     </PageLayout>

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
-import { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 
 export const allRoutes = [
@@ -36,12 +35,12 @@ export function NavigationBar() {
                 className={cn(
                   "relative flex flex-col items-center gap-1 p-2 text-muted-foreground transition-transform duration-200 hover:text-primary",
                   isActive &&
-                    "text-primary-foreground transform scale-110 transition-transform duration-200"
+                    "text-primary-foreground transform scale-110 transition-transform duration-200 bg-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl"
                 )}
               >
-                {isActive && (
+                {/* {isActive && (
                   <div className="absolute w-16 h-16 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary rounded-full -z-10 transition-transform duration-200 scale-110" />
-                )}
+                )} */}
                 <route.icon className="h-5 w-5" />
                 <span className="text-xs">{route.label}</span>
               </Link>
@@ -55,9 +54,12 @@ export function NavigationBar() {
   // Desktop navigation (sidebar)
   return (
     <nav className="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex-col lg:border-r lg:bg-background lg:p-4">
-      <div className="flex h-14 items-center px-4 font-semibold text-lg mb-8">
+      <Link
+        href="/"
+        className="flex h-14 items-center px-4 font-semibold text-lg mb-6 py-4 border-b"
+      >
         ZapJot
-      </div>
+      </Link>
       <div className="space-y-2 px-2">
         {allRoutes.map((route) => {
           const isActive =

@@ -46,6 +46,18 @@ export const addJournal = async (
   chapterId: string,
   data: JournalCreate
 ) => {
+  const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
+  const chapterSnapshot = await getDoc(chapterRef);
+
+  if (!chapterSnapshot.exists()) {
+    await setDoc(chapterRef, {
+      id: "others",
+      title: "Others",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
   const journalsRef = collection(
     db,
     `users/${userId}/chapters/${chapterId}/journals`

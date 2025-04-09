@@ -11,7 +11,7 @@ export function QuickActions() {
           <span className="text-sm font-medium">Capture</span>
         </Card>
       </Link>
-      <Link href="/chapters">
+      <Link href="/chapters/others/journals/new">
         <Card className="p-6 text-center hover:bg-accent transition-colors">
           <FileEdit className="h-8 w-8 mx-auto mb-2" />
           <span className="text-sm font-medium">New Journal</span>

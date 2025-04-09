@@ -111,9 +111,7 @@ const ChapterPage = () => {
               }
             />
             {chapter?.description && (
-              <p className="mt-2 px-4 text-sm text-muted-foreground">
-                {chapter.description}
-              </p>
+              <p className="mt-2 px-4 break-words">{chapter.description}</p>
             )}
           </>
         )

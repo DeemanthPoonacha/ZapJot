@@ -16,3 +16,5 @@ export const ALL_MONTHS = [
   "November",
   "December",
 ];
+
+export const DEFAULT_CHAPTER_ID = "others";

@@ -1,7 +1,5 @@
-import { date, z } from "zod";
+import { z } from "zod";
 import { journalSchema } from "./journals";
-
-// Chapter Schema
 
 export const createChapterSchema = z.object({
   userId: z.string(),

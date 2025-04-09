@@ -117,7 +117,7 @@ const JournalPage = () => {
               journal={journal as Journal}
             />
             {journal.content && (
-              <div className="prose mt-4">{journal.content}</div>
+              <p className="mt-2 px-4 break-words">{journal.content}</p>
             )}
             {!!selectedMedia?.src && (
               <CloudinaryMediaModal
