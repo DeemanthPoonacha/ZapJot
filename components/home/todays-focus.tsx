@@ -1,15 +1,15 @@
 import { Card } from "@/components/ui/card";
 
-export function TodaysFocus() {
+export async function TodaysFocus() {
+  // Simulate fetching data
+  const [data] = (await fetch("https://zenquotes.io/api/today").then((res) =>
+    res.json()
+  )) as { q: string; a: string; h: string }[];
+  console.log("🚀 ~ TodaysFocus ~ data:", data);
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/20 to-primary/10">
-      <h2 className="font-semibold mb-2">{`Today's focus`}</h2>
-      <h3 className="text-lg font-semibold mb-2">
-        Your travel itinerary for Paris starts today! 🗼
-      </h3>
-      <p className="text-sm text-muted-foreground">
-        {`Don't forget to pack your camera and passport!`}
-      </p>
+    <Card className="p-6 bg-gradient-to-br from-primary/20 to-primary/10 items-center mb-12">
+      <h1 className="text-2xl text-center font-semibold">"{data?.q}"</h1>
+      <p className="text-s opacity-90">-{data?.a}</p>
     </Card>
   );
 }

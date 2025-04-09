@@ -4,11 +4,21 @@ import { useAuth } from "@/lib/context/AuthProvider";
 import { Skeleton } from "../ui/skeleton";
 import { useTasks } from "@/lib/hooks/useTasks";
 import { useGoals } from "@/lib/hooks/useGoals";
+import { useEvents } from "@/lib/hooks/useEvents";
+import dayjs from "dayjs";
+import { Timestamp } from "firebase/firestore";
 
 export function HomeHeader() {
   const { user, loading } = useAuth();
   const { data: tasks, isLoading: taskLoading } = useTasks();
   const { data: goals, isLoading: goalLoading } = useGoals();
+  const { data: events, isLoading: eventLoading } = useEvents({
+    onlyUpcoming: true,
+  });
+
+  const todayEvents = events?.filter((event) =>
+    dayjs((event.nextOccurrence as Timestamp).toDate()).isSame(dayjs(), "day")
+  );
 
   if (loading) return <Skeleton className="h-44 rounded-md" />;
   return (
@@ -24,7 +34,10 @@ export function HomeHeader() {
           <Skeleton className="h-5 w-1/2" />
         ) : (
           !!tasks?.length && (
-            <p className="text-sm">📝 {tasks.length} tasks pending</p>
+            <p className="text-sm">
+              📝{" "}
+              {`${tasks.length} ${getPluralWord("task", tasks.length)} pending`}
+            </p>
           )
         )}
 
@@ -32,11 +45,31 @@ export function HomeHeader() {
           <Skeleton className="h-5 w-1/2" />
         ) : (
           !!goals?.length && (
-            <p className="text-sm">🎯 {goals.length} goals in progress</p>
+            <p className="text-sm">
+              🎯{" "}
+              {`${goals.length} ${getPluralWord("goal", goals.length)} pending`}
+            </p>
           )
         )}
-        <p className="text-sm">{`🎉 It's Paulo's Birthday today!`}</p>
+
+        {eventLoading ? (
+          <Skeleton className="h-5 w-1/2" />
+        ) : (
+          !!todayEvents?.length && (
+            <p className="text-sm">
+              📅{" "}
+              {`${todayEvents.length} ${getPluralWord(
+                "event",
+                todayEvents.length
+              )} upcoming today`}
+            </p>
+          )
+        )}
       </div>
     </Card>
   );
 }
+
+const getPluralWord = (word: string, count: number) => {
+  return count > 1 ? `${word}s` : word;
+};

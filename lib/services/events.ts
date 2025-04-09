@@ -26,7 +26,25 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
   // Always add orderBy for nextOccurrence first since we're using it
   constraints.push(orderBy("nextOccurrence", "asc"));
 
-  // Then add all the where clauses
+  // // Add date range filters
+  // if (filter?.dateRange) {
+  //   if (filter.dateRange.start) {
+  //     constraints.push(
+  //       where(
+  //         "nextOccurrence",
+  //         ">=",
+  //         Timestamp.fromDate(filter.dateRange.start)
+  //       )
+  //     );
+  //   }
+  //   if (filter.dateRange.end) {
+  //     constraints.push(
+  //       where("nextOccurrence", "<", Timestamp.fromDate(filter.dateRange.end))
+  //     );
+  //   }
+  // }
+
+  // Add upcoming filter (note: this might be redundant with dateRange.start if both are used)
   if (filter?.onlyUpcoming) {
     constraints.push(where("nextOccurrence", ">=", new Date()));
   }
@@ -47,14 +65,6 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
     constraints.push(limit(filter.limit));
   }
 
-  // if (filter && filter.dateRange) {
-  //   if (filter.dateRange.start)
-  //     q = query(q, where("nextOccurrence", ">=", filter.dateRange.start));
-
-  //   // if (filter.dateRange.end)
-  //   //   q = query(q, where("nextOccurrence", "<", filter.dateRange.end));
-  // }
-
   // Create the query with all constraints
   const q = query(eventsRef, ...constraints);
 
@@ -66,6 +76,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
     })) as Event[];
   } catch (error) {
     console.error("Error fetching events:", error);
+
     throw error;
   }
 };
