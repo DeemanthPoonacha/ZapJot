@@ -1,15 +1,11 @@
 // components/CloudinaryMediaModal.jsx
-import { useEffect } from "react";
 import { CldImage, CldVideoPlayer } from "next-cloudinary";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 
 export default function CloudinaryMediaModal({
   publicId,

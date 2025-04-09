@@ -19,7 +19,7 @@ const getTasks = async (
   filter?: TaskFilter
 ): Promise<Task[]> => {
   const tasksRef = collection(db, `users/${userId}/tasks`);
-  let constraints = [];
+  const constraints = [];
 
   console.log("filter", filter);
 

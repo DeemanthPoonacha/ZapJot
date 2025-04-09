@@ -122,7 +122,7 @@ const JournalPage = () => {
             {!!selectedMedia?.src && (
               <CloudinaryMediaModal
                 isModalOpen={!!selectedMedia}
-                setIsModalOpen={(value) => {
+                setIsModalOpen={() => {
                   setSelectedMedia(null);
                 }}
                 mediaType={selectedMedia.type}

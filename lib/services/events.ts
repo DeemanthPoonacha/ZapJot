@@ -21,7 +21,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
 
   // Start with basic collection reference
   const eventsRef = collection(db, `users/${userId}/events`);
-  let constraints = [];
+  const constraints = [];
 
   // Always add orderBy for nextOccurrence first since we're using it
   constraints.push(orderBy("nextOccurrence", "asc"));

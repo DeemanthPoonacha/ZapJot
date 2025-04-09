@@ -3,7 +3,7 @@ import { HomeHeader } from "@/components/home/home-header";
 import { QuickActions } from "@/components/home/quick-actions";
 import { UpcomingEvents } from "@/components/home/upcoming-events";
 // import { RecentActivity } from "@/components/home/recent-activity";
-import { MoodTracker } from "@/components/home/mood-tracker";
+// import { MoodTracker } from "@/components/home/mood-tracker";
 import { TodaysFocus } from "@/components/home/todays-focus";
 import PageLayout from "@/components/PageLayout";
 import { PendingTasks } from "@/components/home/pending-tasks";

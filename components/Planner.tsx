@@ -9,16 +9,7 @@ import { Calendar } from "./ui/calendar";
 import usePlanner from "@/lib/hooks/usePlanner";
 import dayjs from "dayjs";
 import { useState } from "react";
-import {
-  CalendarCheck,
-  CalendarIcon,
-  Goal,
-  LandPlot,
-  List,
-  ListCheck,
-  MapPin,
-  MapPinned,
-} from "lucide-react";
+import { CalendarCheck, Goal, LandPlot, ListCheck } from "lucide-react";
 
 export default function PlannerPage() {
   const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();

@@ -3,19 +3,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-
-export function JotDowna() {
-  return (
-    <Card className="p-4">
-      <h2 className="font-semibold mb-4">Jot something down...</h2>
-      <div className="space-y-4">
-        <Textarea placeholder="What's on your mind?" />
-        <Button className="w-full">Save</Button>
-      </div>
-    </Card>
-  );
-}
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,7 +10,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
