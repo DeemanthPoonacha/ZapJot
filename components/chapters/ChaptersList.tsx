@@ -14,7 +14,7 @@ const ChaptersList = ({ isMoving }: { isMoving?: boolean }) => {
   return (
     <div className={cn("space-y-4")}>
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:garid-cols-2 md:garid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-32 w-full" />
           ))}
@@ -28,7 +28,7 @@ const ChaptersList = ({ isMoving }: { isMoving?: boolean }) => {
           buttonTitle="Create First Chapter"
         />
       ) : (
-        <div className="grid grid-cols-1 sm:garid-cols-2 md:garid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {chapters?.map((chapter) => (
             <Link
               href={

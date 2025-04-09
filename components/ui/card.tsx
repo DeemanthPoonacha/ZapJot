@@ -123,9 +123,11 @@ function GridCardWithOverlay({
       {image && (
         <CldImage
           gravity="auto"
-          crop="auto"
-          width={420}
-          height={200}
+          // crop="auto"
+          sizes="100vw"
+          // aspectRatio="16:9"
+          crop="fill"
+          fill={true}
           src={image}
           alt={title}
           className="object-cover transition-transform duration-300 group-hover:scale-110"

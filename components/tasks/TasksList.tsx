@@ -35,18 +35,20 @@ const TasksList = () => {
           icon={<ListChecks className="emptyIcon" />}
         />
       ) : (
-        tasks?.map((task) => (
-          <div key={task.id}>
-            <TaskCard task={task} onEditClick={() => toggleDialog(task.id)} />
-            {isDialogOpen(task.id) && (
-              <ResponsiveDialogDrawer
-                content={<TaskForm onClose={handleClose} taskData={task} />}
-                title={task.title}
-                handleClose={handleClose}
-              />
-            )}
-          </div>
-        ))
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {tasks?.map((task) => (
+            <div key={task.id}>
+              <TaskCard task={task} onEditClick={() => toggleDialog(task.id)} />
+              {isDialogOpen(task.id) && (
+                <ResponsiveDialogDrawer
+                  content={<TaskForm onClose={handleClose} taskData={task} />}
+                  title={task.title}
+                  handleClose={handleClose}
+                />
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Add Task Dialog */}

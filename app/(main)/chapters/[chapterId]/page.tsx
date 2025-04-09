@@ -9,6 +9,7 @@ import { toast } from "@/components/ui/sonner";
 import { useChapter, useChapterMutations } from "@/lib/hooks/useChapters";
 import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
+import CloudinaryMediaModal from "@/types/MediaPreviewModal";
 import { PenLine } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -26,6 +27,12 @@ const ChapterPage = () => {
 
   const { deleteMutation } = useChapterMutations();
   const { moveJournalMutation } = useOperations();
+
+  const [selectedMedia, setSelectedMedia] = useState<{
+    title: string;
+    type: "image" | "video";
+    src: string;
+  } | null>(null);
 
   const handleDelete = async () => {
     try {
@@ -84,6 +91,14 @@ const ChapterPage = () => {
         chapter && (
           <>
             <ChapterCard
+              onClick={() =>
+                setSelectedMedia({
+                  title: chapter.title,
+                  type: "image",
+                  src: chapter.image!,
+                })
+              }
+              className="min-h-96"
               chapter={chapter}
               extra={
                 <Button
@@ -123,6 +138,17 @@ const ChapterPage = () => {
       )}
       {chapter?.id && (
         <JournalsList className="mt-4" chapterId={chapterId! as string} />
+      )}
+      {!!selectedMedia?.src && (
+        <CloudinaryMediaModal
+          isModalOpen={!!selectedMedia}
+          setIsModalOpen={(value) => {
+            setSelectedMedia(null);
+          }}
+          mediaType={selectedMedia.type}
+          publicId={selectedMedia.src}
+          title={selectedMedia.title}
+        />
       )}
     </PageLayout>
   );

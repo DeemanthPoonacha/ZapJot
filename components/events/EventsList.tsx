@@ -60,7 +60,7 @@ const EventList = ({
   };
 
   return (
-    <div className="py-6 px-4">
+    <div className="py-6">
       <div className="space-y-4 mb-8">
         {showDefault && (
           <div className="flex justify-between items-center mb-8 border-b pb-4">
@@ -105,28 +105,30 @@ const EventList = ({
                       No Events Found
                     </p>
                   ) : (
-                    events
-                      ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
-                      .map((event) => (
-                        <div key={event.id}>
-                          <EventCard
-                            onClick={() => toggleDialog(event.id)}
-                            event={event}
-                          />
-                          {isDialogOpen(event.id) && (
-                            <ResponsiveDialogDrawer
-                              content={
-                                <EventForm
-                                  onClose={handleClose}
-                                  eventData={event}
-                                />
-                              }
-                              title={event.title}
-                              handleClose={handleClose}
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      {events
+                        ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
+                        .map((event) => (
+                          <div key={event.id}>
+                            <EventCard
+                              onClick={() => toggleDialog(event.id)}
+                              event={event}
                             />
-                          )}
-                        </div>
-                      ))
+                            {isDialogOpen(event.id) && (
+                              <ResponsiveDialogDrawer
+                                content={
+                                  <EventForm
+                                    onClose={handleClose}
+                                    eventData={event}
+                                  />
+                                }
+                                title={event.title}
+                                handleClose={handleClose}
+                              />
+                            )}
+                          </div>
+                        ))}
+                    </div>
                   )}
                 </div>
               ))}

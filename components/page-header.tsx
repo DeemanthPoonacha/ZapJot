@@ -43,7 +43,9 @@ export function PageHeader({
           )}
           <div className="flex items-center gap-2 min-w-0">
             {icon && <span className="text-primary">{icon}</span>}
-            <h1 className="text-xl font-semibold truncate">{title}</h1>
+            <h1 className="text-xl font-semibold truncate md:text-2xl">
+              {title}
+            </h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -63,7 +65,7 @@ export function PageHeader({
         </div>
       </div>
       {subtitle && (
-        <p className="text-sm text-muted-foreground ml-0 sm:ml-10 truncate">
+        <p className="text-sm text-muted-foreground ml-0 sm:ml-10 truncate md:text-base">
           {subtitle}
         </p>
       )}

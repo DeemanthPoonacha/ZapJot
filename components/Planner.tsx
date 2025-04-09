@@ -9,6 +9,16 @@ import { Calendar } from "./ui/calendar";
 import usePlanner from "@/lib/hooks/usePlanner";
 import dayjs from "dayjs";
 import { useState } from "react";
+import {
+  CalendarCheck,
+  CalendarIcon,
+  Goal,
+  LandPlot,
+  List,
+  ListCheck,
+  MapPin,
+  MapPinned,
+} from "lucide-react";
 
 export default function PlannerPage() {
   const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();
@@ -16,11 +26,23 @@ export default function PlannerPage() {
   const endDate = selectedDate ? dayjs(selectedDate) : dayjs().add(2, "days");
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-4 bg-muted/50">
-        <TabsTrigger value="tasks">Tasks</TabsTrigger>
-        <TabsTrigger value="events">Events</TabsTrigger>
-        <TabsTrigger value="goals">Goals</TabsTrigger>
-        <TabsTrigger value="itineraries">Itineraries</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-4 bg-muted/50 md:h-16 mb-2">
+        <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="tasks">
+          <ListCheck /> Tasks
+        </TabsTrigger>
+        <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="events">
+          <CalendarCheck /> Events
+        </TabsTrigger>
+        <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="goals">
+          <Goal /> Goals
+        </TabsTrigger>
+        <TabsTrigger
+          className="md:flex-col md:h-12 md:gap-0"
+          value="itineraries"
+        >
+          <LandPlot />
+          Itineraries
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="tasks">
         <TasksList />

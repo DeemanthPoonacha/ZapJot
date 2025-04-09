@@ -4,9 +4,13 @@ import { Journal } from "@/types/journals";
 function JournalCard({
   journal: Journal,
   extra,
+  className,
+  onClick,
 }: {
   journal: Journal;
   extra?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
 }) {
   return (
     <GridCardWithOverlay
@@ -16,6 +20,8 @@ function JournalCard({
       // subtitle={Journal.content}
       location={Journal.location}
       extra={extra}
+      className={className}
+      onClick={onClick}
     />
   );
 }

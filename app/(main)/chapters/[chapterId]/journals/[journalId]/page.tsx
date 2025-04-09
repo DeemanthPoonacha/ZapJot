@@ -17,6 +17,7 @@ import { EllipsisVertical, MoveRight, SquarePen, Trash2 } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
 import useOperations from "@/lib/hooks/useOperations";
 import { toast } from "@/components/ui/sonner";
+import CloudinaryMediaModal from "@/types/MediaPreviewModal";
 
 const JournalPage = () => {
   const { chapterId, journalId } = useParams();
@@ -24,6 +25,12 @@ const JournalPage = () => {
     chapterId! as string,
     journalId! as string
   );
+
+  const [selectedMedia, setSelectedMedia] = useState<{
+    title: string;
+    type: "image" | "video";
+    src: string;
+  } | null>(null);
 
   const [isEditing, setIsEditing] = useState(journalId === "new");
 
@@ -98,9 +105,30 @@ const JournalPage = () => {
       {!isEditing ? (
         journal && (
           <div>
-            <JournalCard journal={journal as Journal} />
+            <JournalCard
+              onClick={() =>
+                setSelectedMedia({
+                  title: journal.title,
+                  type: "image",
+                  src: journal.coverImage!,
+                })
+              }
+              className="min-h-96"
+              journal={journal as Journal}
+            />
             {journal.content && (
               <div className="prose mt-4">{journal.content}</div>
+            )}
+            {!!selectedMedia?.src && (
+              <CloudinaryMediaModal
+                isModalOpen={!!selectedMedia}
+                setIsModalOpen={(value) => {
+                  setSelectedMedia(null);
+                }}
+                mediaType={selectedMedia.type}
+                publicId={selectedMedia.src}
+                title={selectedMedia.title}
+              />
             )}
           </div>
         )

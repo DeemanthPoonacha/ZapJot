@@ -8,6 +8,7 @@ import {
   CircleCheckBig,
   CalendarX,
   ChevronRight,
+  Loader,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +25,8 @@ export default function GoalCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const percentComplete = Math.round((goal.progress / goal.objective) * 100);
+  const isComplete = goal.progress >= goal.objective;
+
   return (
     <ListCard
       className="transition-colors gap-0 cursor-pointer"
@@ -32,7 +35,8 @@ export default function GoalCard({
       <CardContent className="px-4 py-2">
         {/* Header section (always visible) */}
         <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            {!isComplete ? <Loader /> : <CircleCheckBig />}
             <span className="font-semibold">{goal.title}</span>
           </div>
 

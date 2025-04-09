@@ -14,8 +14,10 @@ export default function HomePage() {
       <div className="space-y-6">
         <HomeHeader />
         <QuickActions />
-        <UpcomingEvents />
-        <RecentActivity />
+        <div className="grid md:grid-cols-2 gap-4">
+          <UpcomingEvents />
+          <RecentActivity />
+        </div>
         <MoodTracker />
         <TodaysFocus />
       </div>

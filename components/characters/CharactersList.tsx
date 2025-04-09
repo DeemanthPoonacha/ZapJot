@@ -12,7 +12,7 @@ const CharactersList = () => {
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-1 md:garid-cols-2 lg:garid-cols-3">
+      <div className="grid md:grid-cols-2 gap-4">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <ListCard key={i} className="overflow-hidden">
             <CardContent className="p-4">
@@ -54,7 +54,7 @@ const CharactersList = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-1 md:garid-cols-2 lg:garid-cols-3">
+      <div className="grid md:grid-cols-2 gap-4">
         {characters.map((character) => (
           <CharacterCard key={character.id} character={character} />
         ))}
