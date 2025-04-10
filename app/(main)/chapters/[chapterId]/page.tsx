@@ -12,7 +12,7 @@ import { Chapter } from "@/types/chapters";
 import CloudinaryMediaModal from "@/types/MediaPreviewModal";
 import { PenLine } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 const NotFound = () => <p>Chapter not found</p>;
 
