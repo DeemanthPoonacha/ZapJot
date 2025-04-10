@@ -6,6 +6,7 @@ import { Skeleton } from "../ui/skeleton";
 import TaskForm from "./TaskForm";
 import { TaskCard } from "./TaskCard";
 import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
+import { getPluralWord } from "@/lib/utils";
 
 const TasksList = () => {
   const { data: tasks, isLoading } = useTasks();
@@ -20,15 +21,22 @@ const TasksList = () => {
     setSelectedTaskId(null);
   };
 
-  const completedTasks = tasks?.filter((task) => task.status === "completed");
-  const incompleteTasks = tasks?.filter((task) => task.status !== "completed");
+  const [completedTasks, pendingTasks] = tasks?.reduce(
+    ([completed, pending], task) =>
+      task.status === "completed"
+        ? [[...completed, task], pending]
+        : [completed, [...pending, task]],
+    [[], []] as [typeof tasks, typeof tasks]
+  ) || [[], []];
 
   return (
     <div className="space-y-4 mb-8">
       {isLoading ? (
-        Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full" />
-        ))
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full" />
+          ))}
+        </div>
       ) : !tasks?.length ? (
         <Empty
           title="No tasks yet"
@@ -39,56 +47,80 @@ const TasksList = () => {
         />
       ) : (
         <>
+          {/* In-Progress Tasks */}
           <div className="pb-12">
-            <div className="flex justify-between items-center mb-8 border-b pb-4">
-              <span className="text-lg font-semibold">Pending Tasks</span>
-              {incompleteTasks?.length} Tasks
+            <div className="flex justify-between items-center pb-4">
+              <span className="text-lg font-semibold">Pending</span>
+              {`${pendingTasks?.length} ${getPluralWord(
+                "Task",
+                pendingTasks?.length
+              )}`}
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
-              {incompleteTasks?.map((task) => (
-                <div key={task.id}>
-                  <TaskCard
-                    task={task}
-                    onEditClick={() => toggleDialog(task.id)}
-                  />
-                  {isDialogOpen(task.id) && (
-                    <ResponsiveDialogDrawer
-                      content={
-                        <TaskForm onClose={handleClose} taskData={task} />
-                      }
-                      title={task.title}
-                      handleClose={handleClose}
+            {pendingTasks?.length === 0 ? (
+              <Empty
+                title="No tasks in progress"
+                subtitle="Add tasks to keep track of important things to do"
+                buttonTitle="Create New Task"
+                handleCreateClick={() => toggleDialog("new")}
+                icon={<ListChecks className="emptyIcon" />}
+              />
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                {pendingTasks?.map((task) => (
+                  <div key={task.id}>
+                    <TaskCard
+                      task={task}
+                      onEditClick={() => toggleDialog(task.id)}
                     />
-                  )}
-                </div>
-              ))}
-            </div>
+                    {isDialogOpen(task.id) && (
+                      <ResponsiveDialogDrawer
+                        content={
+                          <TaskForm onClose={handleClose} taskData={task} />
+                        }
+                        title={task.title}
+                        handleClose={handleClose}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
+          {/* Completed Tasks */}
           <div className="pb-12">
-            <div className="flex justify-between items-center mb-8 border-b pb-4">
-              <span className="text-lg font-semibold">Completed Tasks</span>
-              {completedTasks?.length} Tasks
+            <div className="flex justify-between items-center pb-4">
+              <span className="text-lg font-semibold">Completed</span>
+              {`${completedTasks?.length} ${getPluralWord(
+                "Task",
+                completedTasks?.length
+              )}`}
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {completedTasks?.map((task) => (
-                <div key={task.id}>
-                  <TaskCard
-                    task={task}
-                    onEditClick={() => toggleDialog(task.id)}
-                  />
-                  {isDialogOpen(task.id) && (
-                    <ResponsiveDialogDrawer
-                      content={
-                        <TaskForm onClose={handleClose} taskData={task} />
-                      }
-                      title={task.title}
-                      handleClose={handleClose}
+            {completedTasks?.length === 0 ? (
+              <p className="text-muted-foreground mb-6 text-center py-4 md:py-12">
+                No Tasks completed yet
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                {completedTasks?.map((task) => (
+                  <div key={task.id}>
+                    <TaskCard
+                      task={task}
+                      onEditClick={() => toggleDialog(task.id)}
                     />
-                  )}
-                </div>
-              ))}
-            </div>
+                    {isDialogOpen(task.id) && (
+                      <ResponsiveDialogDrawer
+                        content={
+                          <TaskForm onClose={handleClose} taskData={task} />
+                        }
+                        title={task.title}
+                        handleClose={handleClose}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </>
       )}

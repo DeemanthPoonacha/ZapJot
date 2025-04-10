@@ -3,6 +3,14 @@ import { clsx, type ClassValue } from "clsx";
 import dayjs, { Dayjs } from "dayjs";
 import { twMerge } from "tailwind-merge";
 
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export const getPluralWord = (word: string, count: number) => {
+  return count !== 1 ? `${word}s` : word;
+};
+
 export function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -14,10 +22,6 @@ export function urlBase64ToUint8Array(base64String: string) {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
-}
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
 }
 
 // Function to format the date
@@ -324,7 +328,6 @@ export const groupEventsByDate = (
     }
   );
 
-  // Remove debugging console.log
   // console.log("🚀 ~ Object.entries ~ weeklyEvents:", weeklyEvents);
 
   return eventsByDate;

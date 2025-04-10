@@ -7,6 +7,7 @@ import { useGoals } from "@/lib/hooks/useGoals";
 import { useEvents } from "@/lib/hooks/useEvents";
 import dayjs from "dayjs";
 import { Timestamp } from "firebase/firestore";
+import { getPluralWord } from "@/lib/utils";
 
 export function HomeHeader() {
   const { user, loading } = useAuth();
@@ -69,7 +70,3 @@ export function HomeHeader() {
     </Card>
   );
 }
-
-const getPluralWord = (word: string, count: number) => {
-  return count > 1 ? `${word}s` : word;
-};

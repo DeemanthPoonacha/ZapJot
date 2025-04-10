@@ -9,7 +9,11 @@ import Empty from "../Empty";
 import { CalendarClock, RefreshCw } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
-import { getNextOccurrence, groupEventsByDate } from "@/lib/utils";
+import {
+  getNextOccurrence,
+  getPluralWord,
+  groupEventsByDate,
+} from "@/lib/utils";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 
@@ -97,9 +101,15 @@ const EventList = ({
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([date, events]) => (
                 <div key={date} className="mb-8 space-y-4">
-                  <h2 className="text-xl font-semibold border-b pb-2 mb-4">
-                    {dayjs(date).format("ddd, MMMM D, YYYY")}
-                  </h2>
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl">
+                      {dayjs(date).format("ddd, MMMM D, YYYY")}
+                    </h2>
+                    {`${events.length} ${getPluralWord(
+                      "Event",
+                      events.length
+                    )}`}
+                  </div>
                   {!events.length ? (
                     <p className="text-muted-foreground mb-6 text-center py-4">
                       No Events Found

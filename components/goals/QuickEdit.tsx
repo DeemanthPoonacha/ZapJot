@@ -1,18 +1,14 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import {
-  Target,
-  CircleCheckBig,
-  Hourglass,
-  Minus,
-  Plus,
-} from "lucide-react";
+import { Target, CircleCheckBig, Hourglass, Minus, Plus } from "lucide-react";
 import { Goal } from "@/types/goals";
 import { useGoalMutations } from "@/lib/hooks/useGoals";
 import { useState } from "react";
+import DeleteConfirm from "../ui/delete-confirm";
+import { toast } from "../ui/sonner";
 
 export default function QuickEdit({ goal }: { goal: Goal }) {
-  const { updateMutation } = useGoalMutations();
+  const { updateMutation, deleteMutation } = useGoalMutations();
   const { mutateAsync: updateGoal, isPending } = updateMutation;
 
   const [objective, setObjective] = useState(goal.objective);
@@ -53,6 +49,16 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
   const incrementProgress = () => setProgress(progress + delta);
   const decrementProgress = () => {
     if (progress - delta > 0) setProgress(progress - delta);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteMutation.mutateAsync(goal.id);
+      toast.success("Goal deleted successfully");
+    } catch (error) {
+      console.error("Error deleting goal", error);
+      toast.error("Failed to delete goal");
+    }
   };
 
   return (
@@ -149,26 +155,29 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
           {remaining} {goal.unit}
         </span>
       </div>
-      <div className="flex items-center justify-end gap-2 w-full mb-2">
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            setObjective(goal.objective);
-            setProgress(goal.progress);
-          }}
-          disabled={isPending}
-        >
-          Reset
-        </Button>
-        <Button
-          onClick={handleSave}
-          size="sm"
-          className=""
-          disabled={isPending}
-        >
-          Update
-        </Button>
+      <div className="flex items-center justify-between gap-2 py-2">
+        <DeleteConfirm itemName="Goal" handleDelete={handleDelete} />
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              setObjective(goal.objective);
+              setProgress(goal.progress);
+            }}
+            disabled={isPending}
+          >
+            Reset
+          </Button>
+          <Button
+            onClick={handleSave}
+            size="sm"
+            className=""
+            disabled={isPending}
+          >
+            Update
+          </Button>
+        </div>
       </div>
     </div>
   );
