@@ -8,7 +8,11 @@ const DeleteConfirm = ({
   handleDelete,
   trigger,
   buttonVariant = "outline",
+  title,
+  description,
 }: {
+  description?: string;
+  title?: string;
   itemName?: string;
   handleDelete: () => void;
   trigger?: React.ReactNode;
@@ -41,8 +45,11 @@ const DeleteConfirm = ({
           onClick: handleDelete,
         },
       ]}
-      dialogTitle={`Delete ${itemName}`}
-      dialogDescription={`Are you sure you want to delete this ${itemName}? This action cannot be undone.`}
+      dialogTitle={title || `Delete ${itemName}`}
+      dialogDescription={
+        description ||
+        `Are you sure you want to delete this ${itemName}? This action cannot be undone.`
+      }
     />
   );
 };

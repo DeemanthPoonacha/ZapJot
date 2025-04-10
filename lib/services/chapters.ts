@@ -8,6 +8,7 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  writeBatch,
 } from "firebase/firestore";
 
 // Get all chapters for a user
@@ -56,4 +57,23 @@ export const updateChapter = async (
 export const deleteChapter = async (userId: string, chapterId: string) => {
   const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
   await deleteDoc(chapterRef);
+  await deleteJournalsInChapter(userId, chapterId);
+};
+
+export const deleteJournalsInChapter = async (
+  userId: string,
+  chapterId: string
+) => {
+  const journalsRef = collection(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals`
+  );
+  const snapshot = await getDocs(journalsRef);
+
+  const batch = writeBatch(db);
+  snapshot.docs.forEach((docSnap) => {
+    batch.delete(docSnap.ref);
+  });
+
+  await batch.commit();
 };

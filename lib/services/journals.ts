@@ -10,6 +10,7 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
+import { DEFAULT_CHAPTER_ID } from "../constants";
 
 // Get all journals for a chapter
 export const getJournals = async (userId: string, chapterId: string) => {
@@ -46,17 +47,7 @@ export const addJournal = async (
   chapterId: string,
   data: JournalCreate
 ) => {
-  const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
-  const chapterSnapshot = await getDoc(chapterRef);
-
-  if (!chapterSnapshot.exists()) {
-    await setDoc(chapterRef, {
-      id: "others",
-      title: "Others",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-  }
+  await checkAndCreateNewChapter(userId, chapterId);
 
   const journalsRef = collection(
     db,
@@ -76,11 +67,19 @@ export const updateJournal = async (
   journalId: string,
   data: JournalUpdate
 ) => {
+  console.log("🚀 ~ chapterId:", chapterId);
+  const newChapterId = data.chapterId;
+  if (newChapterId && newChapterId !== chapterId) {
+    await moveJournal(userId, journalId, chapterId, newChapterId);
+  }
+  const editingChapterId = newChapterId || chapterId;
+
   const journalRef = doc(
     db,
-    `users/${userId}/chapters/${chapterId}/journals/${journalId}`
+    `users/${userId}/chapters/${editingChapterId}/journals/${journalId}`
   );
   await updateDoc(journalRef, { ...data, updatedAt: new Date().toISOString() });
+  return { id: journalId, ...data };
 };
 
 export const moveJournal = async (
@@ -89,6 +88,12 @@ export const moveJournal = async (
   oldChapterId: string,
   newChapterId: string
 ) => {
+  console.log("Moving journal from", oldChapterId, "to", newChapterId);
+
+  if (newChapterId === oldChapterId) {
+    return;
+  }
+
   const oldRef = doc(
     db,
     `users/${userId}/chapters/${oldChapterId}/journals/${journalId}`
@@ -102,6 +107,8 @@ export const moveJournal = async (
   if (!snapshot.exists()) {
     throw new Error("Journal not found");
   }
+
+  await checkAndCreateNewChapter(userId, newChapterId);
 
   const journalData = snapshot.data();
   await setDoc(newRef, {
@@ -125,3 +132,22 @@ export const deleteJournal = async (
   );
   await deleteDoc(journalRef);
 };
+
+async function checkAndCreateNewChapter(userId: string, newChapterId: string) {
+  const chapterRef = doc(db, `users/${userId}/chapters/${newChapterId}`);
+  const chapterSnapshot = await getDoc(chapterRef);
+
+  if (!chapterSnapshot.exists()) {
+    await setDoc(chapterRef, {
+      id: generateIdByName(newChapterId) || DEFAULT_CHAPTER_ID,
+      title:
+        `${newChapterId[0].toUpperCase()}${newChapterId.slice(1)}` || "Others",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+  }
+}
+
+function generateIdByName(newChapterId: string): string {
+  return newChapterId.trim().toLowerCase().replace(/ /g, "-");
+}

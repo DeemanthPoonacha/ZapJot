@@ -52,6 +52,11 @@ const JournalPage = () => {
     }
   };
 
+  const onFinish = (id: string, chId?: string) => {
+    router.push(`/chapters/${chId || chapterId}/journals/${id}`);
+    setIsEditing(false);
+  };
+
   return (
     <PageLayout
       headerProps={{
@@ -137,14 +142,7 @@ const JournalPage = () => {
           chapterId={chapterId as string}
           journal={journal as Journal}
           onCancel={() => setIsEditing(false)}
-          onUpdate={() => {
-            router.push(`/chapters/${chapterId}/journals/${journal?.id}`);
-            setIsEditing(false);
-          }}
-          onAdd={(id: string) => {
-            router.push(`/chapters/${chapterId}/journals/${id}`);
-            setIsEditing(false);
-          }}
+          onFinish={onFinish}
         />
       )}
     </PageLayout>

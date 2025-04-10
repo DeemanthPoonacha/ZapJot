@@ -89,7 +89,7 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="py-4 space-y-6">
         <FormField
           control={form.control}
           name="title"
@@ -158,7 +158,7 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
           setIsImageUploading={setIsImageUploading}
         />
 
-        <div className="flex gap-4 pt-4">
+        <div className="flex max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {

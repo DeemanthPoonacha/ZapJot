@@ -42,10 +42,11 @@ export const useJournalMutations = (chapterId: string) => {
   const queryClient = useQueryClient();
 
   const addMutation = useMutation({
-    mutationFn: (data: JournalCreate) => addJournal(userId!, chapterId, data),
-    onSuccess: () =>
+    mutationFn: (data: JournalCreate) =>
+      addJournal(userId!, data.chapterId || chapterId, data),
+    onSuccess: (data) =>
       queryClient.invalidateQueries({
-        queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
+        queryKey: [JOURNAL_QUERY_KEY, userId, data.chapterId || chapterId],
       }),
   });
 
@@ -57,9 +58,9 @@ export const useJournalMutations = (chapterId: string) => {
       journalId: string;
       data: JournalUpdate;
     }) => updateJournal(userId!, chapterId, journalId, data),
-    onSuccess: () =>
+    onSuccess: (data) =>
       queryClient.invalidateQueries({
-        queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
+        queryKey: [JOURNAL_QUERY_KEY, userId, data.chapterId || chapterId],
       }),
   });
 

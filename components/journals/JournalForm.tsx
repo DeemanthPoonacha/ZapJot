@@ -1,7 +1,16 @@
+import { useEffect, useState } from "react";
+import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useChapters } from "@/lib/hooks/useChapters";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createJournalSchema, Journal, JournalCreate } from "@/types/journals";
-import { useAuth } from "@/lib/context/AuthProvider";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,30 +28,46 @@ import {
 import { toast } from "../ui/sonner";
 import DatePicker from "../ui/date-picker";
 import UploadImage from "../ui/upload-image";
-import { useState } from "react";
 
 interface JournalFormProps {
   chapterId: string;
   journal?: Journal;
-  onAdd?: (id: string) => void;
-  onUpdate?: () => void;
+  onFinish?: (id: string, chId?: string) => void;
   onCancel?: () => void;
 }
 
 const JournalForm: React.FC<JournalFormProps> = ({
   chapterId,
   journal,
-  onUpdate,
-  onAdd,
+  onFinish,
   onCancel,
 }) => {
-  const { user } = useAuth();
   const { addMutation, updateMutation } = useJournalMutations(chapterId);
+  const { data: chapters, isLoading } = useChapters();
+  const [chapterOptions, setChapterOptions] = useState<
+    { id: string; title: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (chapters) {
+      const options = chapters.map((chapter) => ({
+        id: chapter.id,
+        title: chapter.title,
+      }));
+      if (!options.some((chapter) => chapter.id === DEFAULT_CHAPTER_ID)) {
+        options?.push({
+          id: DEFAULT_CHAPTER_ID,
+          title: "Others",
+        });
+      }
+      setChapterOptions(options);
+    }
+  }, [chapters]);
 
   const defaultValues = {
     title: journal?.title || `New Journal - ${GetDateTime()}`,
     content: journal?.content || "",
-    chapterId,
+    chapterId: chapterId || DEFAULT_CHAPTER_ID,
     coverImage: journal?.coverImage || "",
     date: journal?.date || new Date().toISOString(), // Add default value for date
     location: journal?.location || "",
@@ -62,27 +87,30 @@ const JournalForm: React.FC<JournalFormProps> = ({
     updateMutation.isPending;
 
   const onSubmit = async (data: JournalCreate) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
     try {
+      let jId = journal?.id;
+      const chId = data.chapterId || chapterId;
+
       if (journal?.id) {
         await updateMutation.mutateAsync({ journalId: journal.id, data });
         toast.success("Journal updated successfully");
-        onUpdate?.();
       } else {
         const result = await addMutation.mutateAsync(data);
+        jId = result.id;
         toast.success("Journal created successfully");
-        onAdd?.(result.id);
       }
+
+      onFinish?.(jId!, chId);
     } catch (error) {
       console.error("Error saving journal", error);
       toast.error("Failed to save journal");
     }
   };
 
-  if (!user) return <div>Loading...</div>;
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="py-4 space-y-6">
         <FormField
           control={form.control}
           name="title"
@@ -104,27 +132,59 @@ const JournalForm: React.FC<JournalFormProps> = ({
           setIsImageUploading={setIsImageUploading}
         />
 
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  mode="single"
-                  selected={new Date(field.value ?? "")}
-                  onSelect={(date) => field.onChange(date?.toISOString())}
-                  disabled={(date) =>
-                    date > new Date() || date < new Date("1900-01-01")
-                  }
-                  initialFocus
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    mode="single"
+                    selected={new Date(field.value ?? "")}
+                    onSelect={(date) => field.onChange(date?.toISOString())}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            disabled={isLoading}
+            control={form.control}
+            name="chapterId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Chapter</FormLabel>
+                <FormControl>
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select chapter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {chapterOptions?.map((chapter) => (
+                        <SelectItem key={chapter.id} value={chapter.id}>
+                          {chapter.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -154,7 +214,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           )}
         />
 
-        <div className="flex gap-4 pt-4">
+        <div className="flex max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {

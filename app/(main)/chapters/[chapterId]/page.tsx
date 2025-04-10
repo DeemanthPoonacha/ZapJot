@@ -12,7 +12,9 @@ import { Chapter } from "@/types/chapters";
 import CloudinaryMediaModal from "@/types/MediaPreviewModal";
 import { PenLine } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+const NotFound = () => <p>Chapter not found</p>;
 
 const ChapterPage = () => {
   const { chapterId } = useParams();
@@ -68,14 +70,22 @@ const ChapterPage = () => {
   return (
     <PageLayout
       headerProps={{
-        title: isMoving ? "Move Journal" : chapter?.title || "New Chapter",
+        title: isMoving
+          ? "Move Journal"
+          : isNewChapter
+          ? "New Chapter"
+          : chapter?.title || (chapterId as string),
         backLink: "/chapters",
         extra:
           chapter?.id &&
           (isMoving ? (
             <Button onClick={handleMoveChapter}>Move Here</Button>
           ) : (
-            <DeleteConfirm itemName="Chapter" handleDelete={handleDelete} />
+            <DeleteConfirm
+              itemName="Chapter"
+              description="Are you sure you want to delete this chapter? All journals in this chapter will be deleted. This action cannot be undone."
+              handleDelete={handleDelete}
+            />
           )),
       }}
       {...(!isNewChapter && {
@@ -87,7 +97,9 @@ const ChapterPage = () => {
         },
       })}
     >
-      {!isEditing ? (
+      {!chapter && !isNewChapter ? (
+        <NotFound />
+      ) : !isEditing ? (
         chapter && (
           <>
             <ChapterCard
