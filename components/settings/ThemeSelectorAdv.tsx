@@ -14,11 +14,11 @@ import { Button } from "../ui/button";
 
 export default function ThemesPage() {
   return (
-    <main className="container mx-auto py-8">
+    <main className="">
       <CustomizableThemeSelector />
 
-      <div className="mt-16 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6">UI Components Preview</h2>
+      <div className="mt-4 mx-auto">
+        <h2 className="text-lg font-semibold">UI Components Preview</h2>
 
         <Tabs defaultValue="components" className="w-full">
           <TabsList className="">

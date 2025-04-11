@@ -27,7 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { adjustBrightness, hexToHSL, invertColor } from "@/lib/utils";
-import { Edit, Trash, Trash2 } from "lucide-react";
+import { Edit3 } from "lucide-react";
 import DeleteConfirm from "../ui/delete-confirm";
 
 // Define the theme color properties
@@ -109,6 +109,84 @@ const defaultThemes: Theme[] = [
       border: "#BBEFC2",
     },
   },
+  {
+    id: "rose",
+    name: "Rose",
+    colors: {
+      background: "#FFF1F2",
+      foreground: "#4C1D1D",
+      primary: "#E11D48",
+      secondary: "#FFE4E6",
+      accent: "#FFE4E6",
+      muted: "#FFE4E6",
+      border: "#FECDD3",
+    },
+  },
+  {
+    id: "ocean",
+    name: "Ocean",
+    colors: {
+      background: "#F0F9FF",
+      foreground: "#082F49",
+      primary: "#0EA5E9",
+      secondary: "#E0F2FE",
+      accent: "#E0F2FE",
+      muted: "#E0F2FE",
+      border: "#BAE6FD",
+    },
+  },
+  {
+    id: "sunset",
+    name: "Sunset",
+    colors: {
+      background: "#FFF7ED",
+      foreground: "#431407",
+      primary: "#EA580C",
+      secondary: "#FFEDD5",
+      accent: "#FFEDD5",
+      muted: "#FFEDD5",
+      border: "#FED7AA",
+    },
+  },
+  {
+    id: "midnight",
+    name: "Midnight",
+    colors: {
+      background: "#0D1117",
+      foreground: "#E6EDF3",
+      primary: "#3B82F6",
+      secondary: "#161B22",
+      accent: "#1F2937",
+      muted: "#1F2937",
+      border: "#334155",
+    },
+  },
+  {
+    id: "crimson",
+    name: "Crimson",
+    colors: {
+      background: "#1A0C0C",
+      foreground: "#F5EAEA",
+      primary: "#DC2626",
+      secondary: "#2B1212",
+      accent: "#3F1B1B",
+      muted: "#3F1B1B",
+      border: "#7F1D1D",
+    },
+  },
+  {
+    id: "cyberpunk",
+    name: "Cyberpunk",
+    colors: {
+      background: "#0A0A0F",
+      foreground: "#E5E7EB",
+      primary: "#D946EF",
+      secondary: "#1C1C2B",
+      accent: "#06B6D4",
+      muted: "#1C1C2B",
+      border: "#4B5563",
+    },
+  },
 ];
 
 // Create a schema for form validation
@@ -139,6 +217,7 @@ const formSchema = z.object({
     }),
   }),
 });
+type ThemeFormType = z.infer<typeof formSchema>;
 
 export function CustomizableThemeSelector() {
   const { theme, setTheme } = useTheme();
@@ -154,11 +233,11 @@ export function CustomizableThemeSelector() {
     colors: colorProperties.reduce(
       (obj, prop) => ({ ...obj, [prop.id]: prop.defaultLight }),
       {}
-    ) as any,
+    ) as Record<string, string>,
   };
 
   // Initialize the form with react-hook-form and zod validation
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<ThemeFormType>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
   });
@@ -364,10 +443,19 @@ export function CustomizableThemeSelector() {
     return null;
   }
 
+  type ThemeColors =
+    | "colors.background"
+    | "colors.foreground"
+    | "colors.primary"
+    | "colors.secondary"
+    | "colors.accent"
+    | "colors.muted"
+    | "colors.border";
+
   return (
-    <div className="w-full mx-auto p-6">
+    <div className="">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Theme Selector</h2>
+        <h2 className="text-xl font-semibold">Themes</h2>
 
         <Dialog
           open={isDialogOpen}
@@ -418,7 +506,7 @@ export function CustomizableThemeSelector() {
                       <FormField
                         key={prop.id}
                         control={form.control}
-                        name={`colors.${prop.id}` as any}
+                        name={`colors.${prop.id}` as ThemeColors}
                         render={({ field }) => (
                           <FormItem className="grid grid-cols-3 items-center gap-4">
                             <FormLabel className="text-right">
@@ -524,17 +612,17 @@ export function CustomizableThemeSelector() {
                           e.stopPropagation();
                           handleEditTheme(themeOption.id);
                         }}
-                        className="text-xs px-2 py-1 rounded-sm"
+                        className="text-xs"
                         style={{ backgroundColor: preview.primary }}
                       >
-                        <Edit
+                        <Edit3
                           style={{ color: preview.background }}
                           className="w-4 h-4"
                         />
                       </Button>
                       <DeleteConfirm
                         itemName={"theme"}
-                        buttonClassName={`bg-${preview.primary} text-${preview.foreground} px-2 py-1 rounded-sm text-xs`}
+                        buttonClassName={`bg-${preview.primary} text-${preview.foreground} text-xs`}
                         iconClassName={`text-red-400`}
                         handleDelete={(e) => {
                           e.stopPropagation();
