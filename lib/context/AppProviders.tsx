@@ -18,7 +18,7 @@ export default function AppProvider({ children }: { children: ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           {children}
         </AuthProvider>
       </QueryClientProvider>

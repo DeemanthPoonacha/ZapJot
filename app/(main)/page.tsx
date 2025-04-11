@@ -8,11 +8,15 @@ import { TodaysFocus } from "@/components/home/todays-focus";
 import PageLayout from "@/components/PageLayout";
 import { PendingTasks } from "@/components/home/pending-tasks";
 import { JotDown } from "@/components/home/jot-down";
+import Image from "next/image";
 
 export default function HomePage() {
   return (
     <PageLayout>
-      <PageHeader title="ZapJot" />
+      <PageHeader
+        icon={<Image src="/logo.png" width={42} height={42} alt="zapjot" />}
+        title="ZapJot"
+      />
       <div className="space-y-6">
         <HomeHeader />
         <QuickActions />

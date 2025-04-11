@@ -22,7 +22,7 @@ export function NavigationBar() {
     // Mobile navigation (bottom bar)
     return (
       <nav className="fixed bottom-0 w-full border-t bg-background p-2 z-50 lg:hidden">
-        <div className="mx-auto flex max-w-md justify-between px-4">
+        <div className="mx-auto grid grid-cols-5 container px-4">
           {allRoutes.map((route) => {
             const isActive =
               route.label === "Home"

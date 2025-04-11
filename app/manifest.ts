@@ -3,23 +3,25 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "ZapJot",
-    short_name: "ZJ",
+    short_name: "ZapJot",
     description:
       "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
     start_url: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#ffffff",
-    theme_color: "#000000",
+    theme_color: "#2e0f42",
+    background_color: "#b87adf",
     icons: [
       {
-        src: "/icon-192x192.png",
-        sizes: "192x192",
+        purpose: "maskable",
+        sizes: "512x512",
+        src: "icon512_maskable.png",
         type: "image/png",
       },
       {
-        src: "/icon-512x512.png",
+        purpose: "any",
         sizes: "512x512",
+        src: "icon512_rounded.png",
         type: "image/png",
       },
     ],
