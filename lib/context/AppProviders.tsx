@@ -12,9 +12,17 @@ export default function AppProvider({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider
       attribute="class"
-      // defaultTheme="dark"
+      defaultTheme="system"
       enableSystem
-      // disableTransitionOnChange
+      enableColorScheme
+      // THIS LINE IS IMPORTANT
+      forcedTheme={undefined}
+      // attribute="class"
+      // // defaultTheme="dark"
+      // enableSystem
+      // // disableTransitionOnChange
+      // defaultTheme="system"
+      // themes={["light", "dark", "purple", "green"]}
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>

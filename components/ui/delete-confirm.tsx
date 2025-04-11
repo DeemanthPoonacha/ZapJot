@@ -1,7 +1,8 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { CustomAlertDialog } from "./custom-alert";
 import { Trash2 } from "lucide-react";
 import { Button } from "./button";
+import { cn } from "@/lib/utils";
 
 const DeleteConfirm = ({
   itemName,
@@ -10,11 +11,13 @@ const DeleteConfirm = ({
   buttonVariant = "outline",
   title,
   description,
+  iconClassName,
+  buttonClassName,
 }: {
   description?: string;
   title?: string;
   itemName?: string;
-  handleDelete: () => void;
+  handleDelete: MouseEventHandler<HTMLButtonElement>;
   trigger?: React.ReactNode;
   buttonVariant?:
     | "link"
@@ -25,13 +28,22 @@ const DeleteConfirm = ({
     | "ghost"
     | null
     | undefined;
+  buttonClassName?: string;
+  iconClassName?: string;
 }) => {
   return (
     <CustomAlertDialog
       trigger={
         trigger || (
-          <Button variant={buttonVariant} type="button">
-            <Trash2 size={16} className="text-destructive" />
+          <Button
+            variant={buttonVariant}
+            type="button"
+            className={buttonClassName}
+          >
+            <Trash2
+              size={16}
+              className={cn("text-destructive", iconClassName)}
+            />
             <span className="hidden">Delete {itemName}</span>
           </Button>
         )

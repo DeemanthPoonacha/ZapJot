@@ -9,6 +9,7 @@ import PageLayout from "@/components/PageLayout";
 import { PendingTasks } from "@/components/home/pending-tasks";
 import { JotDown } from "@/components/home/jot-down";
 import Image from "next/image";
+import { Home } from "@/components/settings/ThemeSelector";
 
 export default function HomePage() {
   return (

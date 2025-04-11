@@ -203,7 +203,7 @@ export const ItineraryDay = ({
           className="border-l-4 gap-0"
           style={{
             borderLeftColor:
-              dayCompletionPercent === 100 ? "var(--success)" : "var(--muted)",
+              dayCompletionPercent === 100 ? "var(--primary)" : "var(--muted)",
           }}
         >
           <CardHeader

@@ -332,3 +332,85 @@ export const groupEventsByDate = (
 
   return eventsByDate;
 };
+
+// Helper function to convert hex to HSL format for CSS variables
+export function hexToHSL(hex: string): string {
+  // Remove the # if present
+  hex = hex.replace("#", "");
+
+  // Convert hex to RGB
+  const r = parseInt(hex.substring(0, 2), 16) / 255;
+  const g = parseInt(hex.substring(2, 4), 16) / 255;
+  const b = parseInt(hex.substring(4, 6), 16) / 255;
+
+  // Find min and max values of R, G, B
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+
+  // Calculate luminance
+  let l = (max + min) / 2;
+
+  // If max and min are the same, it's a shade of gray
+  if (max === min) {
+    return `0 0% ${Math.round(l * 100)}%`;
+  }
+
+  // Calculate saturation
+  let s = l > 0.5 ? (max - min) / (2 - max - min) : (max - min) / (max + min);
+
+  // Calculate hue
+  let h = 0;
+  if (max === r) {
+    h = ((g - b) / (max - min)) % 6;
+  } else if (max === g) {
+    h = (b - r) / (max - min) + 2;
+  } else {
+    h = (r - g) / (max - min) + 4;
+  }
+
+  h = Math.round(h * 60);
+  if (h < 0) h += 360;
+
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+
+  return `${h} ${s}% ${l}%`;
+}
+
+// Invert a color for contrast
+export function invertColor(hex: string): string {
+  hex = hex.replace("#", "");
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Determine if color is light or dark
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+  // Return white for dark colors, black for light colors
+  return brightness < 128 ? "#FFFFFF" : "#000000";
+}
+
+// Adjust brightness of a color
+export function adjustBrightness(hex: string, factor: number): string {
+  hex = hex.replace("#", "");
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+
+  if (factor < 1) {
+    // darken
+    r = Math.floor(r * factor);
+    g = Math.floor(g * factor);
+    b = Math.floor(b * factor);
+  } else {
+    // lighten
+    r = Math.min(255, Math.floor(r + (255 - r) * (factor - 1)));
+    g = Math.min(255, Math.floor(g + (255 - g) * (factor - 1)));
+    b = Math.min(255, Math.floor(b + (255 - b) * (factor - 1)));
+  }
+
+  return `#${r.toString(16).padStart(2, "0")}${g
+    .toString(16)
+    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}

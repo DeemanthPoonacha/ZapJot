@@ -1,13 +1,13 @@
 "use client";
-import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { Separator } from "@/components/ui/separator";
 import { NotificationSettings } from "./NotificationsSettings";
+import ThemesPage from "./ThemeSelectorAdv";
 
 export default function SettingsPage() {
   return (
     <div className="container space-y-8">
       <div>
-        <ThemeSelector />
+        <ThemesPage />
       </div>
 
       <Separator />

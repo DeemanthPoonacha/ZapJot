@@ -9,6 +9,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { MouseEventHandler } from "react";
 
 export function CustomAlertDialog({
   trigger = <Button variant="outline">Show Dialog</Button>,
@@ -34,7 +35,7 @@ export function CustomAlertDialog({
       | "ghost"
       | null
       | undefined;
-    onClick: () => void;
+    onClick: MouseEventHandler<HTMLButtonElement>;
   }[];
 }) {
   return (
