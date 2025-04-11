@@ -15,14 +15,6 @@ export default function AppProvider({ children }: { children: ReactNode }) {
       defaultTheme="system"
       enableSystem
       enableColorScheme
-      // THIS LINE IS IMPORTANT
-      forcedTheme={undefined}
-      // attribute="class"
-      // // defaultTheme="dark"
-      // enableSystem
-      // // disableTransitionOnChange
-      // defaultTheme="system"
-      // themes={["light", "dark", "purple", "green"]}
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>

@@ -1,6 +1,7 @@
 "use client";
 import ChapterCard from "@/components/chapters/ChapterCard";
 import ChapterForm from "@/components/chapters/ChapterForm";
+import { CustomLoader } from "@/components/CustomLoader";
 import JournalsList from "@/components/journals/JournalsList";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,7 @@ const ChapterPage = () => {
   const isNewChapter = chapterId === "new";
   const [isEditing, setIsEditing] = useState(isNewChapter);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <CustomLoader />;
 
   return (
     <PageLayout

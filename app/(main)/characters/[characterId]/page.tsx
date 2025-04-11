@@ -1,5 +1,6 @@
 "use client";
 import CharacterForm from "@/components/characters/CharacterForm";
+import { CustomLoader } from "@/components/CustomLoader";
 import PageLayout from "@/components/PageLayout";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { toast } from "@/components/ui/sonner";
@@ -27,7 +28,7 @@ const Chapter = () => {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <CustomLoader />;
 
   return (
     <PageLayout

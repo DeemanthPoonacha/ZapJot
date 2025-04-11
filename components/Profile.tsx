@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "./ui/sonner";
 import UploadAvatar from "./ui/upload-avatar";
+import { CustomLoader } from "./CustomLoader";
 
 const profileSchema = z.object({
   displayName: z.string().min(1, "Display name is required"),
@@ -152,13 +153,7 @@ export default function Profile() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading...
-      </div>
-    );
-  }
+  if (loading) return <CustomLoader />;
 
   return (
     <div className="container max-w-4xl mx-auto space-y-6 py-6">

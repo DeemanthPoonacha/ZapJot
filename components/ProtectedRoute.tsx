@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/AuthProvider";
+import { CustomLoader } from "./CustomLoader";
 
 export default function ProtectedRoute({
   children,
@@ -18,7 +19,7 @@ export default function ProtectedRoute({
   }, [user, loading, router]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <CustomLoader />;
   }
 
   return user ? <>{children}</> : null;
