@@ -10,7 +10,7 @@ import { toast } from "@/components/ui/sonner";
 import { useChapter, useChapterMutations } from "@/lib/hooks/useChapters";
 import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
-import CloudinaryMediaModal from "@/types/MediaPreviewModal";
+import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 import { PenLine } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -132,7 +132,10 @@ const ChapterPage = () => {
         <ChapterForm
           key={chapter?.id || "new"}
           chapter={chapter as Chapter}
-          onCancel={() => setIsEditing(false)}
+          onCancel={() => {
+            if (!chapter?.id) router.push(`/chapters`);
+            setIsEditing(false);
+          }}
           onUpdate={() => {
             router.push(
               isMoving

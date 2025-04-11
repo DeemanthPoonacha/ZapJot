@@ -17,7 +17,7 @@ import { EllipsisVertical, MoveRight, SquarePen, Trash2 } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
 import useOperations from "@/lib/hooks/useOperations";
 import { toast } from "@/components/ui/sonner";
-import CloudinaryMediaModal from "@/types/MediaPreviewModal";
+import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 
 const JournalPage = () => {
   const { chapterId, journalId } = useParams();
@@ -141,7 +141,10 @@ const JournalPage = () => {
         <JournalForm
           chapterId={chapterId as string}
           journal={journal as Journal}
-          onCancel={() => setIsEditing(false)}
+          onCancel={() => {
+            if (!journal?.id) router.push(`/chapters/${chapterId}`);
+            setIsEditing(false);
+          }}
           onFinish={onFinish}
         />
       )}
