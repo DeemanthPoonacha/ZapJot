@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 
-import { Upload, LoaderCircle, ImagePlus } from "lucide-react";
+import { Upload, LoaderCircle, ImagePlus, Camera } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -14,18 +14,22 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { CloudinaryResult } from "@/types/general";
 import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
+import { Card } from "./card";
+import { useEffect, useRef } from "react";
 
 const UploadImage = ({
   form,
   fieldName,
   isImageUploading,
   setIsImageUploading,
+  defaultCamOpen,
 }: {
   // eslint-disable-next-line
   form: UseFormReturn<any>;
   fieldName: string;
   isImageUploading: boolean;
   setIsImageUploading: (isUploading: boolean) => void;
+  defaultCamOpen?: boolean;
 }) => {
   const handleImageUploadSuccess = async (result: CloudinaryResult) => {
     // Get the secure URL from the upload result
@@ -44,6 +48,20 @@ const UploadImage = ({
       setIsImageUploading(false);
     }
   };
+  const openWidgetRef = useRef<() => void>(null);
+
+  // This effect will run once the component mounts
+  useEffect(() => {
+    // Check if the open function has been stored in the ref
+    if (openWidgetRef.current && defaultCamOpen) {
+      // Small delay to ensure the widget is properly initialized
+      const timer = setTimeout(() => {
+        openWidgetRef.current?.();
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <FormField
@@ -92,11 +110,17 @@ const UploadImage = ({
                     handleImageUploadSuccess(result?.info as CloudinaryResult);
                     widget.close();
                   }}
-                  onOpen={() => setIsImageUploading(true)}
+                  onOpen={() => {
+                    form.setValue(fieldName, "", { shouldDirty: true });
+                    setIsImageUploading(true);
+                  }}
                   onClose={() => setIsImageUploading(false)}
                   signatureEndpoint="/api/sign-image"
                 >
                   {({ open }) => {
+                    // Store the open function in ref for use in useEffect
+                    openWidgetRef.current = open;
+
                     return (
                       <Button
                         type="button"
