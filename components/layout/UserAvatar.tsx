@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { logOut } from "@/lib/services/auth";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 export default function UserAvatarDropdown() {
   const { user } = useAuth();

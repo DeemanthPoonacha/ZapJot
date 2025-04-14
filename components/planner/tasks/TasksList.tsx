@@ -1,11 +1,11 @@
 import { useTasks } from "@/lib/hooks/useTasks";
 import { ListChecks } from "lucide-react";
 import usePlanner from "@/lib/hooks/usePlanner";
-import Empty from "../Empty";
-import { Skeleton } from "../ui/skeleton";
+import Empty from "../../Empty";
+import { Skeleton } from "../../ui/skeleton";
 import TaskForm from "./TaskForm";
 import { TaskCard } from "./TaskCard";
-import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
+import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
 
 const TasksList = () => {

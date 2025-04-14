@@ -53,7 +53,7 @@ export default function ThemesPage() {
                   <Input id="name" placeholder="Enter your name" />
                 </div>
 
-                <div className="flex space-x-2">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="default">Primary</Button>
                   <Button variant="secondary">Secondary</Button>
                   <Button variant="outline">Outline</Button>
@@ -83,10 +83,7 @@ export default function ThemesPage() {
             </div>
           </TabsContent>
 
-          <TabsContent
-            value="colors"
-            className="space-y-6 bg-white p-2 rounded-lg"
-          >
+          <TabsContent value="colors" className="space-y-6 p-2 rounded-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
                 { name: "background", label: "Background" },
@@ -96,16 +93,16 @@ export default function ThemesPage() {
                 { name: "accent", label: "Accent" },
                 { name: "muted", label: "Muted" },
                 { name: "border", label: "Border" },
-                { name: "card", label: "Card" },
-                { name: "popover", label: "Popover" },
+                // { name: "card", label: "Card" },
+                // { name: "popover", label: "Popover" },
               ].map((color) => (
-                <div key={color.name} className="p-4 border rounded-lg">
-                  <div
-                    className={`w-full h-16 mb-2 rounded bg-${color.name}`}
-                  ></div>
+                <Card key={color.name} className="p-4 border rounded-lg">
+                  <CardHeader
+                    className={`w-full h-16 mb-2 rounded bg-foreground bg-${color.name}`}
+                  ></CardHeader>
                   <p className="font-medium">{color.label}</p>
                   <p className="text-sm text-muted-foreground">{color.name}</p>
-                </div>
+                </Card>
               ))}
             </div>
           </TabsContent>

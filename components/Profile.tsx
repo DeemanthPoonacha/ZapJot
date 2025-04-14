@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "./ui/sonner";
 import UploadAvatar from "./ui/upload-avatar";
-import { CustomLoader } from "./CustomLoader";
+import { CustomLoader } from "./layout/CustomLoader";
 
 const profileSchema = z.object({
   displayName: z.string().min(1, "Display name is required"),

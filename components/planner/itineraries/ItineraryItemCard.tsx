@@ -19,10 +19,10 @@ import {
   ItineraryDayUpdate,
   ItineraryTask,
 } from "@/types/itineraries";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "../../ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
-import { toast } from "../ui/sonner";
+import { toast } from "../../ui/sonner";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import DeleteConfirm from "../ui/delete-confirm";
+import DeleteConfirm from "../../ui/delete-confirm";
 
 export const ItineraryDay = ({
   itineraryId,

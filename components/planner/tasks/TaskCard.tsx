@@ -1,11 +1,11 @@
 import { Task } from "@/types/tasks";
-import { CardContent, ListCard, ListCardFooter } from "../ui/card";
+import { CardContent, ListCard, ListCardFooter } from "../../ui/card";
 import { Calendar1, Edit, Star } from "lucide-react";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
 import { cn, formatDate } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
 export function TaskCard({
   task,

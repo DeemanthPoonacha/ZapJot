@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/AuthProvider";
-import { CustomLoader } from "./CustomLoader";
+import { CustomLoader } from "./layout/CustomLoader";
 
 export default function ProtectedRoute({
   children,

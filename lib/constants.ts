@@ -49,6 +49,19 @@ export const defaultThemes: Theme[] = [
     id: "dark",
     name: "Dark",
     colors: {
+      background: "#09090B", // hsl(240 10% 3.9%)
+      foreground: "#FAFAFA", // hsl(0 0% 98%)
+      primary: "#FAFAFA", // hsl(0 0% 98%)
+      secondary: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      accent: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      muted: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      border: "#1E1E2A", // hsl(240 3.7% 15.9%)
+    },
+  },
+  {
+    id: "abyss",
+    name: "Abyss",
+    colors: {
       background: "#0F1729",
       foreground: "#F8FAFC",
       primary: "#F8FAFC",

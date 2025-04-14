@@ -1,11 +1,11 @@
 import { useItineraries } from "@/lib/hooks/useItineraries";
 import usePlanner from "@/lib/hooks/usePlanner";
-import Empty from "../Empty";
+import Empty from "../../Empty";
 import { NotepadText } from "lucide-react";
 import ItineraryForm from "./ItineraryForm";
 import ItineraryDetailCard from "./ItineraryDetailCard";
-import { Skeleton } from "../ui/skeleton";
-import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
+import { Skeleton } from "../../ui/skeleton";
+import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 
 const ItineraryList = () => {
   const { data: itineraries, isLoading } = useItineraries();

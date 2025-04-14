@@ -1,6 +1,6 @@
 "use client";
 import JournalForm from "@/components/journals/JournalForm";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { useJournal, useJournalMutations } from "@/lib/hooks/useJournals";
 import { Journal } from "@/types/journals";

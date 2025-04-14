@@ -63,6 +63,36 @@
   --chart-5: hsl(340 75% 55%);
 }
 
+.abyss {
+  --background: hsl(218 36% 12%);
+  --foreground: hsl(210 40% 98%);
+
+  --card: hsl(218 36% 12%);
+  --card-foreground: hsl(210 40% 98%);
+
+  --popover: hsl(218 36% 12%);
+  --popover-foreground: hsl(210 40% 98%);
+
+  --primary: hsl(210 40% 98%);
+  --primary-foreground: hsl(218 36% 12%);
+
+  --secondary: hsl(215 28% 22%);
+  --secondary-foreground: hsl(210 40% 98%);
+
+  --muted: hsl(215 28% 22%);
+  --muted-foreground: hsl(210 20% 65%);
+
+  --accent: hsl(215 28% 22%);
+  --accent-foreground: hsl(210 40% 98%);
+
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(0 0% 98%);
+
+  --border: hsl(215 19% 35%);
+  --input: hsl(215 19% 35%);
+  --ring: hsl(210 40% 98%);
+}
+
 .purple {
   --background: hsl(280 50% 98%);
   --foreground: hsl(272 40% 16%);

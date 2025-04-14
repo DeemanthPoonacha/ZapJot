@@ -1,11 +1,11 @@
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
 import { Target, CircleCheckBig, Hourglass, Minus, Plus } from "lucide-react";
 import { Goal } from "@/types/goals";
 import { useGoalMutations } from "@/lib/hooks/useGoals";
 import { useState } from "react";
-import DeleteConfirm from "../ui/delete-confirm";
-import { toast } from "../ui/sonner";
+import DeleteConfirm from "../../ui/delete-confirm";
+import { toast } from "../../ui/sonner";
 
 export default function QuickEdit({ goal }: { goal: Goal }) {
   const { updateMutation, deleteMutation } = useGoalMutations();

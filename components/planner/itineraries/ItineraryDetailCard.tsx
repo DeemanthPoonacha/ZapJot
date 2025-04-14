@@ -23,13 +23,13 @@ import {
   ListCardFooter,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DeleteConfirm from "../ui/delete-confirm";
+import DeleteConfirm from "../../ui/delete-confirm";
 import {
   Itinerary,
   ItineraryDayType,
   ItineraryTask,
 } from "@/types/itineraries";
-import { toast } from "../ui/sonner";
+import { toast } from "../../ui/sonner";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 import { AnimatePresence, motion } from "framer-motion";
 import usePlanner from "@/lib/hooks/usePlanner";

@@ -1,6 +1,6 @@
 "use client";
-import PageLayout from "@/components/PageLayout";
-import PlannerPage from "@/components/Planner";
+import PageLayout from "@/components/layout/PageLayout";
+import PlannerPage from "@/components/planner/Planner";
 import { FloatingButtonProps } from "@/components/ui/floating-button";
 import usePlanner from "@/lib/hooks/usePlanner";
 

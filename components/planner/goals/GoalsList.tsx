@@ -1,11 +1,11 @@
 import { useGoals } from "@/lib/hooks/useGoals";
-import Empty from "../Empty";
+import Empty from "../../Empty";
 import { Goal } from "lucide-react";
 import GoalForm from "./GoalForm";
 import usePlanner from "@/lib/hooks/usePlanner";
 import GoalCard from "./GoalCard";
-import { Skeleton } from "../ui/skeleton";
-import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
+import { Skeleton } from "../../ui/skeleton";
+import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
 
 const GoalsList = () => {

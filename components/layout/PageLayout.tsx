@@ -1,6 +1,6 @@
 import React from "react";
 import { PageHeader, PageHeaderProps } from "./page-header";
-import FloatingButton, { FloatingButtonProps } from "./ui/floating-button";
+import FloatingButton, { FloatingButtonProps } from "../ui/floating-button";
 
 const PageLayout = ({
   children,

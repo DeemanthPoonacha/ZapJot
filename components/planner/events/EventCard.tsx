@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Calendar1, Clock, MapPin, RepeatIcon, Users } from "lucide-react";
-import { CardContent, ListCard, ListCardFooter } from "../ui/card";
+import { CardContent, ListCard, ListCardFooter } from "../../ui/card";
 import { getNextOccurrence } from "@/lib/utils"; // Adjust the import path as necessary
 import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";

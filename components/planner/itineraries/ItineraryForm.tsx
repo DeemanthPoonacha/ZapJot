@@ -1,6 +1,6 @@
 import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "../ui/sonner";
+import { toast } from "../../ui/sonner";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 
 // UI Components
@@ -28,7 +28,7 @@ import {
   createItinerarySchema,
 } from "@/types/itineraries";
 import { cn } from "@/lib/utils";
-import DeleteConfirm from "../ui/delete-confirm";
+import DeleteConfirm from "../../ui/delete-confirm";
 
 interface ItineraryFormProps {
   itineraryData?: Itinerary;

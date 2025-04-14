@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEvents } from "@/lib/hooks/useEvents";
 import { Skeleton } from "../ui/skeleton";
-import { EventNextOccurance } from "../events/EventCard";
+import { EventNextOccurance } from "../planner/events/EventCard";
 import usePlanner from "@/lib/hooks/usePlanner";
 
 export function UpcomingEvents() {
@@ -43,7 +43,11 @@ export function UpcomingEvents() {
             <div key={event.id} className="flex justify-between items-center">
               <span>{event.title}</span>
               <span className="text-sm text-muted-foreground">
-                <EventNextOccurance text="Next on " event={event} format="D MMM, hh:mma" />
+                <EventNextOccurance
+                  text="Next on "
+                  event={event}
+                  format="D MMM, hh:mma"
+                />
               </span>
             </div>
           ))}

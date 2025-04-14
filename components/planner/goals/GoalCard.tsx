@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Goal } from "@/types/goals";
-import { CardContent, ListCard, ListCardFooter } from "../ui/card";
+import { CardContent, ListCard, ListCardFooter } from "../../ui/card";
 import {
   Edit,
   ChevronUp,
@@ -10,9 +10,9 @@ import {
   ChevronRight,
   Loader,
 } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { Progress } from "../ui/progress";
+import { Progress } from "../../ui/progress";
 import { formatDate } from "@/lib/utils";
 import QuickEdit from "./QuickEdit";
 

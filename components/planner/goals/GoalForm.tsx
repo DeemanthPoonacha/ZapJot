@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createGoalSchema, Goal, GoalCreate } from "@/types/goals";
 import { useGoalMutations } from "@/lib/hooks/useGoals";
-import { toast } from "../ui/sonner";
+import { toast } from "../../ui/sonner";
 
 // UI Components
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import DeleteConfirm from "../ui/delete-confirm";
+import DeleteConfirm from "../../ui/delete-confirm";
 import { Save } from "lucide-react";
 
 const GoalForm = ({

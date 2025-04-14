@@ -1,7 +1,7 @@
 "use client";
 import CharacterForm from "@/components/characters/CharacterForm";
-import { CustomLoader } from "@/components/CustomLoader";
-import PageLayout from "@/components/PageLayout";
+import { CustomLoader } from "@/components/layout/CustomLoader";
+import PageLayout from "@/components/layout/PageLayout";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { toast } from "@/components/ui/sonner";
 import { useCharacter, useCharacterMutations } from "@/lib/hooks/useCharacters";

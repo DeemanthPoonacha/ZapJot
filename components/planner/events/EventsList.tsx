@@ -5,10 +5,10 @@ import EventForm from "./EventForm";
 import { EventCard } from "./EventCard";
 import { Event, EventsFilter } from "@/types/events";
 import usePlanner from "@/lib/hooks/usePlanner";
-import Empty from "../Empty";
+import Empty from "../../Empty";
 import { CalendarClock, RefreshCw } from "lucide-react";
-import { Skeleton } from "../ui/skeleton";
-import ResponsiveDialogDrawer from "../ui/ResponsiveDialogDrawer";
+import { Skeleton } from "../../ui/skeleton";
+import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import {
   getNextOccurrence,
   getPluralWord,

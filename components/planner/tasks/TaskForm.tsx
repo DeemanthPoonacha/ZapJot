@@ -1,6 +1,6 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "../ui/sonner";
+import { toast } from "../../ui/sonner";
 import { cn } from "@/lib/utils";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
 import { createTaskSchema, Task, TaskCreate } from "@/types/tasks";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import DeleteConfirm from "../ui/delete-confirm";
+import DeleteConfirm from "../../ui/delete-confirm";
 import {
   Form,
   FormControl,

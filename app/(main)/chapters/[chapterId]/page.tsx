@@ -1,9 +1,9 @@
 "use client";
 import ChapterCard from "@/components/chapters/ChapterCard";
 import ChapterForm from "@/components/chapters/ChapterForm";
-import { CustomLoader } from "@/components/CustomLoader";
+import { CustomLoader } from "@/components/layout/CustomLoader";
 import JournalsList from "@/components/journals/JournalsList";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { toast } from "@/components/ui/sonner";

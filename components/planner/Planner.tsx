@@ -5,7 +5,7 @@ import EventsList from "./events/EventsList";
 import GoalsList from "./goals/GoalsList";
 import ItinerariesList from "./itineraries/ItineraryList";
 import TasksList from "./tasks/TasksList";
-import { Calendar } from "./ui/calendar";
+import { Calendar } from "../ui/calendar";
 import usePlanner from "@/lib/hooks/usePlanner";
 import dayjs from "dayjs";
 import { useState } from "react";

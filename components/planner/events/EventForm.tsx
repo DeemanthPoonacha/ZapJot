@@ -28,14 +28,14 @@ import {
   RepeatType,
 } from "@/types/events";
 import dayjs from "dayjs";
-import { Label } from "../ui/label";
-import { toast } from "../ui/sonner";
-import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../lib/constants";
-import MultipleSelector from "../ui/multi-select";
+import { Label } from "../../ui/label";
+import { toast } from "../../ui/sonner";
+import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../../lib/constants";
+import MultipleSelector from "../../ui/multi-select";
 import { searchByName } from "@/lib/services/characters";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import DeleteConfirm from "../ui/delete-confirm";
+import DeleteConfirm from "../../ui/delete-confirm";
 
 type EventFormProps = {
   eventData?: Event;

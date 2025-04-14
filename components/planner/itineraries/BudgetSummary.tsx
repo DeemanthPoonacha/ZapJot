@@ -1,12 +1,12 @@
 import { Itinerary, ItineraryDayType } from "@/types/itineraries";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
-import { Input } from "../ui/input";
-import { Badge } from "../ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "../../ui/card";
+import { Input } from "../../ui/input";
+import { Badge } from "../../ui/badge";
 import { useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { Check, Edit, X } from "lucide-react";
 import { useItineraryMutations } from "@/lib/hooks/useItineraries";
-import { toast } from "../ui/sonner";
+import { toast } from "../../ui/sonner";
 
 export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
   const [isEditing, setIsEditing] = useState(false);

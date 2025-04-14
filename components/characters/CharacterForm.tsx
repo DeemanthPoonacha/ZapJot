@@ -13,7 +13,7 @@ import { useAuth } from "@/lib/context/AuthProvider";
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import EventsList from "../events/EventsList";
+import EventsList from "../planner/events/EventsList";
 import {
   Form,
   FormControl,

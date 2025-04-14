@@ -1,7 +1,7 @@
 // app/signin/page.jsx (for App Router)
 "use client";
 import FirebaseAuthUI from "@/components/auth/FirebaseUI";
-import { CustomLoader } from "@/components/CustomLoader";
+import { CustomLoader } from "@/components/layout/CustomLoader";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
