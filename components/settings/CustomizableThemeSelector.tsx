@@ -27,15 +27,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { adjustBrightness, hexToHSL, invertColor } from "@/lib/utils";
-import { Edit3 } from "lucide-react";
+import { Edit3, Plus } from "lucide-react";
 import DeleteConfirm from "../ui/delete-confirm";
-import {
-  ThemeColor,
-  Theme,
-  ThemeFormType,
-  ThemeformSchema,
-} from "@/types/themes";
+import { Theme, ThemeFormType, ThemeformSchema } from "@/types/themes";
 import { defaultThemes, colorProperties } from "@/lib/constants";
+import { Card } from "../ui/card";
 
 export function CustomizableThemeSelector() {
   const { theme, setTheme } = useTheme();
@@ -159,8 +155,11 @@ export function CustomizableThemeSelector() {
         id: isEditingId,
         name: values.name,
         colors: values.colors,
-        isCustom: true,
+        type: "custom",
       });
+
+      // Force a small delay before switching themes
+      setTimeout(() => handleThemeChange(isEditingId), 50);
     } else {
       // Adding a new theme
       const newId = "custom-theme-" + Date.now().toString();
@@ -168,7 +167,7 @@ export function CustomizableThemeSelector() {
         id: newId,
         name: values.name,
         colors: values.colors,
-        isCustom: true,
+        type: "custom",
       });
 
       // Force a small delay before switching themes
@@ -238,7 +237,9 @@ export function CustomizableThemeSelector() {
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline">Create New Theme</Button>
+        <Button variant="outline">
+          <Plus /> Create Custom Theme
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -340,6 +341,8 @@ export function CustomizableThemeSelector() {
     </Dialog>
   );
 
+  const groupedThemes = Object.groupBy(allThemes, ({ type }) => type);
+
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
@@ -348,68 +351,70 @@ export function CustomizableThemeSelector() {
         {themeEditorDialog}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {allThemes.map((themeOption) => {
-          const { colors: preview } = themeOption;
+      {Object.entries(groupedThemes).map(([key, themes]) => (
+        <div className="mb-8" key={key}>
+          <span className="flex items-center gap-2 mb-3 justify-between">
+            {key.charAt(0).toUpperCase() + key.slice(1)} themes
+            {key === "custom" && themeEditorDialog}
+          </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {themes?.map((themeOption) => {
+              const { colors } = themeOption;
 
-          return (
-            <div
-              key={themeOption.id}
-              className={`flex flex-col rounded-md border-2 ${
-                theme === themeOption.id ? "border-primary" : "border-muted"
-              } overflow-hidden`}
-            >
-              {/* Theme preview */}
-              <div
-                className="cursor-pointer"
-                style={{
-                  backgroundColor: preview.background,
-                  color: preview.foreground,
-                }}
-                onClick={() => handleThemeChange(themeOption.id)}
-              >
-                {/* Header */}
-                <div
-                  className="p-3 font-medium text-center border-b flex justify-between items-center"
-                  style={{ borderColor: preview.border }}
+              return (
+                <Card
+                  key={themeOption.id}
+                  className={`cursor-pointer flex flex-col rounded-md border-2 ${
+                    theme === themeOption.id ? "border-primary" : "border-muted"
+                  } overflow-hidden`}
+                  onClick={() => handleThemeChange(themeOption.id)}
+                  style={{
+                    backgroundColor: colors.background,
+                    color: colors.foreground,
+                  }}
                 >
-                  <span>{themeOption.name}</span>
-                  {themeOption.isCustom && (
-                    <div className="flex gap-2">
-                      <Button
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditTheme(themeOption.id);
-                        }}
-                        className="text-xs"
-                        style={{ backgroundColor: preview.primary }}
-                      >
-                        <Edit3
-                          style={{ color: preview.background }}
-                          className="w-4 h-4"
+                  {/* Header */}
+                  <div
+                    className="p-3 font-medium text-center border-b flex justify-between items-center"
+                    style={{ borderColor: colors.border }}
+                  >
+                    <span>{themeOption.name}</span>
+                    {themeOption.type === "custom" && (
+                      <div className="flex gap-2">
+                        <Button
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditTheme(themeOption.id);
+                          }}
+                          className="text-xs"
+                          style={{ backgroundColor: colors.primary }}
+                        >
+                          <Edit3
+                            style={{ color: colors.background }}
+                            className="w-4 h-4"
+                          />
+                        </Button>
+                        <DeleteConfirm
+                          itemName={"theme"}
+                          buttonClassName={`bg-${colors.primary} text-${colors.foreground} text-xs`}
+                          iconClassName={`text-red-400`}
+                          handleDelete={(e) => {
+                            handleDeleteTheme(themeOption.id);
+                          }}
                         />
-                      </Button>
-                      <DeleteConfirm
-                        itemName={"theme"}
-                        buttonClassName={`bg-${preview.primary} text-${preview.foreground} text-xs`}
-                        iconClassName={`text-red-400`}
-                        handleDelete={(e) => {
-                          e.stopPropagation();
-                          handleDeleteTheme(themeOption.id);
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
 
-                {/* Content preview */}
-                <ThemePreview colors={preview} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                  {/* Content preview */}
+                  <ThemePreview colors={colors} />
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

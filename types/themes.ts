@@ -42,5 +42,5 @@ export type Theme = {
   id: string;
   name: string;
   colors: Record<string, string>;
-  isCustom?: boolean;
+  type: "basic" | "light" | "dark" | "custom";
 };

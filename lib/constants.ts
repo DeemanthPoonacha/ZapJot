@@ -35,6 +35,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "light",
     name: "Light",
+    type: "basic",
     colors: {
       background: "#FFFFFF",
       foreground: "#0F1729",
@@ -48,6 +49,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "dark",
     name: "Dark",
+    type: "basic",
     colors: {
       background: "#09090B", // hsl(240 10% 3.9%)
       foreground: "#FAFAFA", // hsl(0 0% 98%)
@@ -59,21 +61,9 @@ export const defaultThemes: Theme[] = [
     },
   },
   {
-    id: "abyss",
-    name: "Abyss",
-    colors: {
-      background: "#0F1729",
-      foreground: "#F8FAFC",
-      primary: "#F8FAFC",
-      secondary: "#1E293B",
-      accent: "#1E293B",
-      muted: "#1E293B",
-      border: "#334155",
-    },
-  },
-  {
     id: "purple",
     name: "Purple",
+    type: "light",
     colors: {
       background: "#FAF5FF",
       foreground: "#2D1B4F",
@@ -87,6 +77,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "green",
     name: "Green",
+    type: "light",
     colors: {
       background: "#F0FFF4",
       foreground: "#1C4532",
@@ -100,6 +91,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "rose",
     name: "Rose",
+    type: "light",
     colors: {
       background: "#FFF1F2",
       foreground: "#4C1D1D",
@@ -113,6 +105,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "ocean",
     name: "Ocean",
+    type: "light",
     colors: {
       background: "#F0F9FF",
       foreground: "#082F49",
@@ -126,6 +119,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "sunset",
     name: "Sunset",
+    type: "light",
     colors: {
       background: "#FFF7ED",
       foreground: "#431407",
@@ -137,8 +131,23 @@ export const defaultThemes: Theme[] = [
     },
   },
   {
+    id: "abyss",
+    name: "Abyss",
+    type: "dark",
+    colors: {
+      background: "#0F1729",
+      foreground: "#F8FAFC",
+      primary: "#F8FAFC",
+      secondary: "#1E293B",
+      accent: "#1E293B",
+      muted: "#1E293B",
+      border: "#334155",
+    },
+  },
+  {
     id: "midnight",
     name: "Midnight",
+    type: "dark",
     colors: {
       background: "#0D1117",
       foreground: "#E6EDF3",
@@ -152,6 +161,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "crimson",
     name: "Crimson",
+    type: "dark",
     colors: {
       background: "#1A0C0C",
       foreground: "#F5EAEA",
@@ -165,6 +175,7 @@ export const defaultThemes: Theme[] = [
   {
     id: "cyberpunk",
     name: "Cyberpunk",
+    type: "dark",
     colors: {
       background: "#0A0A0F",
       foreground: "#E5E7EB",
