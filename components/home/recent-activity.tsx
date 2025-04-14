@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/layout/link/CustomLink";
 
 export function RecentActivity() {
   const activities = [

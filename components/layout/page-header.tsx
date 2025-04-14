@@ -1,6 +1,6 @@
 import { ChevronLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/components/layout/link/CustomLink";
 import { cn } from "@/lib/utils";
 import UserAvatarDropdown from "./UserAvatar";
 

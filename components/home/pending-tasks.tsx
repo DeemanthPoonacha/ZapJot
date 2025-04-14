@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/layout/link/CustomLink";
 import { useTasks } from "@/lib/hooks/useTasks";
 import { Skeleton } from "../ui/skeleton";
 import usePlanner from "@/lib/hooks/usePlanner";

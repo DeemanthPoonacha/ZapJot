@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
+import { Link } from "@/components/layout/link/CustomLink";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/" },

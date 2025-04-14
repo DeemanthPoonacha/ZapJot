@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppProviders from "@/lib/context/AppProviders";
 import { Toaster } from "@/components/ui/sonner";
+import { NProgressDone } from "@/components/layout/link/CustomLink";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
           <main className="min-h-screen flex flex-col">
             {children}
 
+            <NProgressDone />
             <Toaster />
           </main>
         </AppProviders>

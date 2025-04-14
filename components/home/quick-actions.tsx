@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Camera, FileEdit } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/layout/link/CustomLink";
 
 export function QuickActions() {
   return (

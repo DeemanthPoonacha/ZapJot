@@ -387,3 +387,13 @@ input[type="number"] {
 .emptyIcon {
   @apply h-16 w-16 text-muted-foreground mb-4;
 }
+
+#nprogress {
+  .bar {
+    @apply !border-t-4 !border-t-primary;
+  }
+
+  .peg {
+    box-shadow: 0 0 2px #fff000, 0 0 5px #fff !important;
+  }
+}

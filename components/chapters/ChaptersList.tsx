@@ -1,5 +1,5 @@
 import { useChapters } from "@/lib/hooks/useChapters";
-import Link from "next/link";
+import { Link } from "@/components/layout/link/CustomLink";
 import { useRouter } from "next/navigation";
 import ChapterCard from "./ChapterCard";
 import Empty from "../Empty";
