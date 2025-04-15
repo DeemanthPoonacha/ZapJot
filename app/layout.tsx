@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppProviders from "@/lib/context/AppProviders";
@@ -17,10 +17,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#2e0f42",
+};
+
 export const metadata: Metadata = {
-  title: "ZapJot",
+  title: { default: "ZapJot", template: "%s | ZapJot" },
   description:
     "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
+
+  metadataBase: new URL("https://zap-jot.netlify.app/"),
+  openGraph: {
+    title: "ZapJot",
+    description:
+      "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
+    url: "https://zap-jot.netlify.app/",
+    siteName: "ZapJot",
+    images: [{ url: "https://zap-jot.netlify.app/logo.png" }],
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +44,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <head /> */}
+      <head></head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
