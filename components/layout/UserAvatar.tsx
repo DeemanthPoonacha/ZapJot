@@ -17,9 +17,12 @@ import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { logOut } from "@/lib/services/auth";
 import { Button } from "../ui/button";
+import { useSettings } from "@/lib/hooks/useSettings";
 
 export default function UserAvatarDropdown() {
   const { user } = useAuth();
+  useSettings();
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const SIGN_IN_ROUTE = "/sign-in";

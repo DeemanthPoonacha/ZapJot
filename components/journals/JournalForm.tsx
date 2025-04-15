@@ -28,13 +28,13 @@ import {
 import { toast } from "../ui/sonner";
 import DatePicker from "../ui/date-picker";
 import UploadImage from "../ui/upload-image";
-import { useSearchParams } from "next/navigation";
 
 interface JournalFormProps {
   chapterId: string;
   journal?: Journal;
   onFinish?: (id: string, chId?: string) => void;
   onCancel?: () => void;
+  defaultCamOpen?: boolean;
 }
 
 const JournalForm: React.FC<JournalFormProps> = ({
@@ -42,10 +42,8 @@ const JournalForm: React.FC<JournalFormProps> = ({
   journal,
   onFinish,
   onCancel,
+  defaultCamOpen,
 }) => {
-  const searchParams = useSearchParams();
-  const defaultCamOpen = searchParams.get("isCamOpen");
-
   const { addMutation, updateMutation } = useJournalMutations(chapterId);
   const { data: chapters, isLoading } = useChapters();
   const [chapterOptions, setChapterOptions] = useState<
@@ -130,7 +128,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
         />
 
         <UploadImage
-          defaultCamOpen={defaultCamOpen === "true"}
+          defaultCamOpen={defaultCamOpen}
           form={form}
           fieldName="coverImage"
           isImageUploading={isImageUploading}

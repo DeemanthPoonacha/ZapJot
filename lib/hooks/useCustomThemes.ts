@@ -13,12 +13,13 @@ import { defaultThemes } from "@/lib/constants";
 import { useAuth } from "../context/AuthProvider";
 import { db } from "../services/firebase";
 import { addCustomCssVariables, removeCustomCssVariables } from "../utils";
-import { useSystemTheme } from "./useSystemTheme";
+import { useTheme } from "next-themes";
 
 export const THEMES_QUERY_KEY = "themes";
 
 export function useCustomThemes() {
-  const systemTheme = useSystemTheme();
+  const { systemTheme } = useTheme();
+
   const { user } = useAuth();
   const userId = user?.uid;
   const queryClient = useQueryClient();

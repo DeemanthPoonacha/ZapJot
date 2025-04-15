@@ -1,21 +1,25 @@
-// components/theme/CustomizableThemeSelector.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ThemeCard } from "./ThemeCard";
 import { ThemeFormDialog } from "./ThemeEditorDialog";
-import { useCustomThemes } from "@/lib/hooks/useCustomThemes";
+import { useSettings } from "@/lib/hooks/useSettings";
 
 export function CustomizableThemeSelector() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditingId, setIsEditingId] = useState<string | null>(null);
 
-  const { allThemes, isLoading, deleteTheme } = useCustomThemes();
+  const {
+    allThemes,
+    handleDeleteTheme,
+    handleThemeChange,
+    isThemesLoading,
+    currentTheme,
+    updateTheme,
+  } = useSettings();
 
   useEffect(() => {
     setMounted(true);
@@ -40,27 +44,6 @@ export function CustomizableThemeSelector() {
     }
   };
 
-  const handleDeleteTheme = async (themeId: string) => {
-    try {
-      await deleteTheme(themeId);
-
-      // If we're deleting the active theme, switch to light
-      if (theme === themeId) {
-        setTheme("light");
-      }
-    } catch (error) {
-      console.error("Failed to delete theme:", error);
-    }
-  };
-
-  const handleThemeChange = (themeName: string) => {
-    // Clear all existing theme classes
-    if (theme !== themeName) document.documentElement.className = "";
-
-    // Set new theme
-    setTheme(themeName);
-  };
-
   const closeDialog = () => {
     setIsDialogOpen(false);
     setIsEditingId(null);
@@ -70,7 +53,7 @@ export function CustomizableThemeSelector() {
     return null;
   }
 
-  if (isLoading) {
+  if (isThemesLoading) {
     return <div className="text-center py-8">Loading themes...</div>;
   }
 
@@ -107,8 +90,11 @@ export function CustomizableThemeSelector() {
               <ThemeCard
                 key={themeOption.id}
                 theme={themeOption}
-                isActive={theme === themeOption.id}
-                onThemeSelect={handleThemeChange}
+                isActive={currentTheme === themeOption.id}
+                onThemeSelect={(themeId) => {
+                  updateTheme(themeId);
+                  handleThemeChange(themeId);
+                }}
                 onEditTheme={handleEditTheme}
                 onDeleteTheme={handleDeleteTheme}
               />

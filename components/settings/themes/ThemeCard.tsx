@@ -1,4 +1,3 @@
-// components/theme/ThemeCard.tsx
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Edit3 } from "lucide-react";

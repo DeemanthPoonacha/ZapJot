@@ -15,7 +15,6 @@ export default function SettingsPage() {
       <Separator />
 
       <div>
-        <ThemeSelector />
         <h2 className="text-xl font-bold mb-4">Appearance</h2>
         <ThemesPage />
       </div>

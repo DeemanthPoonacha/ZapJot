@@ -18,8 +18,12 @@ import JournalCard from "@/components/journals/JournalCard";
 import useOperations from "@/lib/hooks/useOperations";
 import { toast } from "@/components/ui/sonner";
 import CloudinaryMediaModal from "@/components/MediaPreviewModal";
+import { useSearchParams } from "next/navigation";
 
 const JournalPage = () => {
+  const searchParams = useSearchParams();
+  const defaultCamOpen = searchParams.get("isCamOpen");
+
   const { chapterId, journalId } = useParams();
   const { data: journal } = useJournal(
     chapterId! as string,
@@ -139,6 +143,7 @@ const JournalPage = () => {
         )
       ) : (
         <JournalForm
+          defaultCamOpen={defaultCamOpen === "true"}
           chapterId={chapterId as string}
           journal={journal as Journal}
           onCancel={() => {

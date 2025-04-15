@@ -1,4 +1,4 @@
-// @/lib/context/AuthContext.tsx
+"use client";
 import {
   createContext,
   useContext,
