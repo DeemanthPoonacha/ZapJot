@@ -26,7 +26,7 @@ export const createThemeSchema = z.object({
       .string()
       .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
   }),
-  type: z.enum(["system", "light", "dark", "custom"]).default("custom"),
+  type: z.enum(["basic", "light", "dark", "custom"]).default("custom"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -48,7 +48,7 @@ export type ThemeType = z.infer<typeof themeSchema>;
 export interface Theme {
   id: string;
   name: string;
-  type: "system" | "light" | "dark" | "custom";
+  type: "basic" | "light" | "dark" | "custom";
   colors: {
     background: string;
     foreground: string;

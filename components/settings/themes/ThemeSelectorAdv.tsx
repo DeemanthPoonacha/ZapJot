@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import { CustomizableThemeSelector } from "./CustomizableThemeSelector";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 export default function ThemesPage() {
   return (

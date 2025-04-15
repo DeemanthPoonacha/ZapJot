@@ -7,18 +7,18 @@ import {
   setDoc,
   deleteDoc,
   updateDoc,
-  query,
-  where,
 } from "firebase/firestore";
 import { Theme, ThemeCreate, ThemeUpdate } from "@/types/themes";
 import { defaultThemes } from "@/lib/constants";
 import { useAuth } from "../context/AuthProvider";
 import { db } from "../services/firebase";
 import { addCustomCssVariables, removeCustomCssVariables } from "../utils";
+import { useSystemTheme } from "./useSystemTheme";
 
 export const THEMES_QUERY_KEY = "themes";
 
 export function useCustomThemes() {
+  const systemTheme = useSystemTheme();
   const { user } = useAuth();
   const userId = user?.uid;
   const queryClient = useQueryClient();
@@ -148,8 +148,15 @@ export function useCustomThemes() {
 
   // Combine default themes with custom themes
   const allThemes = useMemo(() => {
+    defaultThemes[2] = {
+      ...defaultThemes[2],
+      colors:
+        systemTheme === "dark"
+          ? defaultThemes[1].colors
+          : defaultThemes[0].colors,
+    };
     return [...defaultThemes, ...customThemes];
-  }, [customThemes]);
+  }, [customThemes, systemTheme]);
 
   // Apply CSS variables for all custom themes when loaded
   useMemo(() => {

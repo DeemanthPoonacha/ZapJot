@@ -1,5 +1,5 @@
 import { getDates } from "@/lib/utils";
-import { ThemeColor, Theme } from "@/types/themes";
+import { Theme } from "@/types/themes";
 
 export const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const MONTH_DAYS = getDates();
@@ -20,7 +20,7 @@ export const ALL_MONTHS = [
 
 export const DEFAULT_CHAPTER_ID = "others";
 
-export const colorProperties: ThemeColor[] = [
+export const colorProperties = [
   { id: "background", name: "Background", defaultLight: "#FFFFFF" },
   { id: "foreground", name: "Foreground", defaultLight: "#0F1729" },
   { id: "primary", name: "Primary", defaultLight: "#1E293B" },
@@ -49,6 +49,20 @@ export const defaultThemes: Theme[] = [
   {
     id: "dark",
     name: "Dark",
+    type: "basic",
+    colors: {
+      background: "#09090B", // hsl(240 10% 3.9%)
+      foreground: "#FAFAFA", // hsl(0 0% 98%)
+      primary: "#FAFAFA", // hsl(0 0% 98%)
+      secondary: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      accent: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      muted: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      border: "#1E1E2A", // hsl(240 3.7% 15.9%)
+    },
+  },
+  {
+    id: "system",
+    name: "System",
     type: "basic",
     colors: {
       background: "#09090B", // hsl(240 10% 3.9%)

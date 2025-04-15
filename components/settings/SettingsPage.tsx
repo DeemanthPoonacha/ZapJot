@@ -1,7 +1,8 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
 import { NotificationSettings } from "./NotificationsSettings";
-import ThemesPage from "./ThemeSelectorAdv";
+import ThemesPage from "./themes/ThemeSelectorAdv";
+import { ThemeSelector } from "./themes/ThemeSelectorBasic";
 
 export default function SettingsPage() {
   return (
@@ -14,6 +15,7 @@ export default function SettingsPage() {
       <Separator />
 
       <div>
+        <ThemeSelector />
         <h2 className="text-xl font-bold mb-4">Appearance</h2>
         <ThemesPage />
       </div>
