@@ -21,11 +21,7 @@ export const useSettings = () => {
   }, [userId]);
 
   // Fetch themes from Firebase
-  const {
-    data: userData,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: userData, isLoading: isSettingsLoading } = useQuery({
     queryKey: [SETTINGS_QUERY_KEY, userId!],
     queryFn: async () => {
       if (!userRef) return {};
@@ -38,17 +34,18 @@ export const useSettings = () => {
   });
 
   //update settings
-  const { mutateAsync: updateSettings } = useMutation({
-    mutationFn: async (data: { theme: string }) => {
-      if (!userRef) return {};
-      await setDoc(userRef, { settings: data });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [SETTINGS_QUERY_KEY, userId!],
-      });
-    },
-  });
+  const { mutateAsync: updateSettings, isPending: isSettingsUpdating } =
+    useMutation({
+      mutationFn: async (data: { theme: string }) => {
+        if (!userRef) return {};
+        await setDoc(userRef, { settings: data });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [SETTINGS_QUERY_KEY, userId!],
+        });
+      },
+    });
 
   const { theme, setTheme } = useTheme();
   const {
@@ -97,5 +94,7 @@ export const useSettings = () => {
     allThemes,
     isThemesLoading,
     currentTheme: theme,
+    isSettingsLoading,
+    isSettingsUpdating,
   };
 };

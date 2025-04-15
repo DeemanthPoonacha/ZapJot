@@ -4,6 +4,8 @@ import "./globals.css";
 import AppProviders from "@/lib/context/AppProviders";
 import { Toaster } from "@/components/ui/sonner";
 import { NProgressDone } from "@/components/layout/link/CustomLink";
+import { Suspense } from "react";
+import { CustomLoader } from "@/components/layout/CustomLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +38,9 @@ export default function RootLayout({
           <main className="min-h-screen flex flex-col">
             {children}
 
-            <NProgressDone />
+            <Suspense fallback={<CustomLoader />}>
+              <NProgressDone />
+            </Suspense>
             <Toaster />
           </main>
         </AppProviders>

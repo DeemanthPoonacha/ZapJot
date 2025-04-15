@@ -2,7 +2,6 @@
 import { Separator } from "@/components/ui/separator";
 import { NotificationSettings } from "./NotificationsSettings";
 import ThemesPage from "./themes/ThemeSelectorAdv";
-import { ThemeSelector } from "./themes/ThemeSelectorBasic";
 
 export default function SettingsPage() {
   return (
