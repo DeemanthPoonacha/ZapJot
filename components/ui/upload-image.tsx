@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 
-import { Upload, LoaderCircle, ImagePlus, Camera } from "lucide-react";
+import { Upload, LoaderCircle, ImagePlus } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -14,7 +14,6 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { CloudinaryResult } from "@/types/general";
 import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
-import { Card } from "./card";
 import { useEffect, useRef } from "react";
 
 const UploadImage = ({

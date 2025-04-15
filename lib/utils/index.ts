@@ -1,4 +1,5 @@
 import { Event, EventCreate } from "@/types/events";
+import { Theme } from "@/types/themes";
 import { clsx, type ClassValue } from "clsx";
 import dayjs, { Dayjs } from "dayjs";
 import { twMerge } from "tailwind-merge";
@@ -413,4 +414,48 @@ export function adjustBrightness(hex: string, factor: number): string {
   return `#${r.toString(16).padStart(2, "0")}${g
     .toString(16)
     .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+export const addCustomCssVariables = (themeObj: Theme) => {
+  let styleEl = document.getElementById(`theme-${themeObj.id}`);
+  if (!styleEl) {
+    styleEl = document.createElement("style");
+    styleEl.id = `theme-${themeObj.id}`;
+    document.head.appendChild(styleEl);
+  }
+
+  const cssVariables = `
+      [data-theme="${themeObj.id}"],
+      .${themeObj.id} {
+        --background: hsl(${hexToHSL(themeObj.colors.background)});
+        --foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --primary: hsl(${hexToHSL(themeObj.colors.primary)});
+        --primary-foreground: hsl(${hexToHSL(
+          invertColor(themeObj.colors.primary)
+        )});
+        --secondary: hsl(${hexToHSL(themeObj.colors.secondary)});
+        --secondary-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --accent: hsl(${hexToHSL(themeObj.colors.accent)});
+        --accent-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --muted: hsl(${hexToHSL(themeObj.colors.muted)});
+        --muted-foreground: hsl(${hexToHSL(
+          adjustBrightness(themeObj.colors.foreground, 0.6)
+        )});
+        --border: hsl(${hexToHSL(themeObj.colors.border)});
+        --input: hsl(${hexToHSL(themeObj.colors.border)});
+        --card: hsl(${hexToHSL(themeObj.colors.background)});
+        --card-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --popover: hsl(${hexToHSL(themeObj.colors.background)});
+        --popover-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --ring: hsl(${hexToHSL(themeObj.colors.primary)});
+      }
+    `;
+  styleEl.textContent = cssVariables;
+};
+
+export function removeCustomCssVariables(deletedThemeId: string) {
+  const styleEl = document.getElementById(`theme-${deletedThemeId}`);
+  if (styleEl) {
+    document.head.removeChild(styleEl);
+  }
 }
