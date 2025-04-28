@@ -11,9 +11,10 @@ import {
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
 import { UserSettings } from "@/types/settings";
+import serviceAccountJson from "@/service_key.json";
 
 if (!admin.apps.length) {
-  const serviceAccount = require("@/service_key.json");
+  const serviceAccount = serviceAccountJson as admin.ServiceAccount;
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
