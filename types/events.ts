@@ -28,6 +28,7 @@ export const createEventSchema = z.object({
   repeat: z.enum(RepeatTypes as any).default("none"),
   repeatDays: z.array(z.string()).default([]),
   location: z.string().optional(),
+  nextNotificationAt: TimestampType.or(z.date()).nullable().default(null),
   participants: z.array(participants).optional(),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
@@ -45,6 +46,7 @@ export const eventSchema = createEventSchema.extend({
 // Type inference
 export type Event = z.infer<typeof eventSchema>;
 export type EventCreate = z.infer<typeof createEventSchema>;
+export type EventUpdate = z.infer<typeof updateEventSchema>;
 
 export type EventParticipant = z.infer<typeof participants>;
 

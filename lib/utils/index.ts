@@ -1,7 +1,9 @@
-import { Event, EventCreate } from "@/types/events";
+import { Event, EventUpdate } from "@/types/events";
 import { Theme } from "@/types/themes";
 import { clsx, type ClassValue } from "clsx";
+import { addMinutes, isAfter } from "date-fns";
 import dayjs, { Dayjs } from "dayjs";
+import { Timestamp } from "firebase/firestore";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -60,12 +62,34 @@ export function getDates(month: number = 0, year: number = 2020) {
   return Array.from({ length: daysInMonth }, (_, i) => i + 1);
 }
 
+export function updateEventOccurrence(data: EventUpdate) {
+  const nextOccurrence = getNextOccurrence(data)?.toDate() || null;
+  if (nextOccurrence) data.nextOccurrence = nextOccurrence;
+  const nextNotificationAt = getNextNotificationTime(nextOccurrence);
+  if (nextNotificationAt) data.nextNotificationAt = nextNotificationAt;
+}
+
+export function getNextNotificationTime(
+  nextOccurrence: Date | null
+): Date | null {
+  if (!nextOccurrence) return null;
+
+  const occurrence =
+    nextOccurrence instanceof Timestamp
+      ? nextOccurrence.toDate()
+      : nextOccurrence;
+
+  const notificationTime = addMinutes(occurrence, -10); // 10 mins before
+
+  return isAfter(notificationTime, new Date()) ? notificationTime : null;
+}
+
 /**
  * Calculates the next occurrence of an event based on its repeat pattern
  * @param {Object} event - The event object with repeat, repeatDays, date, and time properties
  * @return {dayjs.Dayjs} The next occurrence date of the event as a dayjs object
  */
-export const getNextOccurrence = (event: EventCreate) => {
+export const getNextOccurrence = (event: EventUpdate) => {
   const now = dayjs();
   const eventTime = event.time || "00:00";
   const [hours, minutes] = eventTime.split(":").map(Number);

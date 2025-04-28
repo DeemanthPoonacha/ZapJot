@@ -10,8 +10,8 @@ import { CalendarClock, RefreshCw } from "lucide-react";
 import { Skeleton } from "../../ui/skeleton";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import {
-  getNextOccurrence,
   getPluralWord,
+  updateEventOccurrence,
   groupEventsByDate,
 } from "@/lib/utils";
 import { useEffect } from "react";
@@ -28,7 +28,6 @@ const EventList = ({
   addNewButton?: React.ReactNode;
   defaultNewEvent?: Partial<Event>;
 }) => {
-  console.log("🚀 ~ EventsList ~ query:", query);
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
 
@@ -44,22 +43,21 @@ const EventList = ({
     ? groupEventsByDate(events!, query?.dateRange?.start, query?.dateRange?.end)
     : {};
 
-  console.log("🚀 ~ groupedEvents:", groupedEvents);
   const handleClose = () => {
     setSelectedEventId(null);
   };
 
   useEffect(() => {
     handleRefresh();
-  }, []);
+  }, [events?.length]);
 
   const handleRefresh = () => {
-    const updatedEvents = events?.map((event) => ({
-      id: event.id,
-      nextOccurrence: getNextOccurrence(event)?.toDate(),
-    }));
+    const updatedEvents = events?.map((event) => {
+      updateEventOccurrence(event);
+      return event;
+    });
     if (updatedEvents) {
-      mutateAsync(updatedEvents as { id: string; nextOccurrence: Date }[]);
+      mutateAsync(updatedEvents);
     }
   };
 

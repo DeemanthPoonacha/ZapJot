@@ -34,7 +34,6 @@ import { WEEK_DAYS, MONTH_DAYS, ALL_MONTHS } from "../../../lib/constants";
 import MultipleSelector from "../../ui/multi-select";
 import { searchByName } from "@/lib/services/characters";
 import { useAuth } from "@/lib/context/AuthProvider";
-
 import DeleteConfirm from "../../ui/delete-confirm";
 
 type EventFormProps = {
@@ -58,6 +57,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
     repeatDays: eventData?.repeatDays || [],
     participants: eventData?.participants || [],
     nextOccurrence: (eventData?.nextOccurrence as Date) || new Date(),
+    nextNotificationAt: (eventData?.nextNotificationAt as Date) || null,
   };
 
   const form = useForm<EventCreate>({

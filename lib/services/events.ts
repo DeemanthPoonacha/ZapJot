@@ -13,7 +13,7 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { EventCreate, Event, EventsFilter } from "@/types/events";
+import { EventCreate, Event, EventsFilter, EventUpdate } from "@/types/events";
 import { addReminder, removeReminder } from "./characters";
 
 export const getEvents = async (userId: string, filter?: EventsFilter) => {
@@ -120,7 +120,7 @@ export const addEvent = async (userId: string, data: EventCreate) => {
 export const updateEvent = async (
   userId: string,
   eventId: string,
-  data: EventCreate
+  data: EventUpdate
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
   const existingEvent = await getEventById(userId, eventId);
@@ -177,13 +177,13 @@ export const deleteEvent = async (
 
 export const updateOccurrences = async (
   userId: string,
-  data: { id: string; nextOccurrence: Date }[]
+  data: { id: string; nextOccurrence: Date; nextNotificationAt: Date }[]
 ) => {
   const batch = writeBatch(db);
 
-  data.forEach(({ id, nextOccurrence }) => {
+  data.forEach(({ id, nextOccurrence, nextNotificationAt }) => {
     const ref = doc(db, `users/${userId}/events/${id}`);
-    batch.update(ref, { nextOccurrence });
+    batch.update(ref, { nextOccurrence, nextNotificationAt });
   });
 
   await batch.commit();

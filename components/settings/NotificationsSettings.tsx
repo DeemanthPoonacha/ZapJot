@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useEffect, useState } from "react";
 
 import {
@@ -14,12 +13,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/sonner";
 import { useAuth } from "@/lib/context/AuthProvider";
-import { urlBase64ToUint8Array } from "@/lib/utils";
-import { subscribeUser, unsubscribeUser } from "@/lib/services/push-actions";
-
-const FormSchema = z.object({
-  enable_notifications: z.boolean().default(false),
-});
+import { getFcmToken } from "@/lib/utils/notifications";
+import { notificationsSchema, NotificationsSettings } from "@/types/settings";
+import { useSettings } from "@/lib/hooks/useSettings";
 
 export function NotificationSettings() {
   const { user } = useAuth();
@@ -27,39 +23,31 @@ export function NotificationSettings() {
 
   const [isSupported, setIsSupported] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null
-  );
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: { enable_notifications: false },
+  const { settings, updateNotificationSettings } = useSettings();
+
+  const form = useForm<NotificationsSettings>({
+    resolver: zodResolver(notificationsSchema),
+    defaultValues: {
+      enable_notifications: false, // temporary initial
+    },
   });
+
+  useEffect(() => {
+    if (settings) {
+      form.reset({
+        enable_notifications:
+          settings.notifications.enable_notifications ?? false,
+      });
+    }
+  }, [settings, form]);
 
   useEffect(() => {
     checkNotificationSupport();
   }, []);
 
   async function checkNotificationSupport() {
-    function isPushSupported() {
-      return "serviceWorker" in navigator && "PushManager" in window;
-    }
-
-    if (!isPushSupported()) {
-      setIsSupported(false);
-      return;
-    }
-
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      const existingSub = await registration.pushManager.getSubscription();
-
-      if (existingSub) {
-        setSubscription(existingSub);
-        form.setValue("enable_notifications", true);
-      }
-    } catch (error) {
-      console.error("Error checking notification status:", error);
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
       setIsSupported(false);
     }
   }
@@ -70,84 +58,53 @@ export function NotificationSettings() {
       toast.error("Notification permission denied.");
       throw new Error("Notification permission denied.");
     }
-    return true;
-  }
-
-  async function registerServiceWorker() {
-    try {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
-      return registration;
-    } catch (error) {
-      console.error("Service worker registration failed:", error);
-      throw error;
-    }
-  }
-
-  async function subscribeToPush() {
-    if (!userId) {
-      toast.error("Authentication required.");
-      return false;
-    }
-
-    try {
-      setIsLoading(true);
-      await requestPermission();
-      const registration = await registerServiceWorker();
-
-      // Get existing subscription or create a new one
-      const sub =
-        (await registration.pushManager.getSubscription()) ||
-        (await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(
-            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
-          ),
-        }));
-
-      // Store subscription on server
-      await subscribeUser(userId, JSON.parse(JSON.stringify(sub)));
-      setSubscription(sub);
-      toast.success("Notifications enabled.");
-      return true;
-    } catch (error) {
-      console.error("Failed to subscribe:", error);
-      toast.error("Failed to enable notifications.");
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function unsubscribeFromPush() {
-    if (!userId || !subscription) return false;
-
-    try {
-      setIsLoading(true);
-      await subscription.unsubscribe();
-      await unsubscribeUser(userId);
-      setSubscription(null);
-      toast.success("Notifications disabled.");
-      return true;
-    } catch (error) {
-      console.error("Failed to unsubscribe:", error);
-      toast.error("Failed to disable notifications.");
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
   }
 
   async function handleToggleChange(checked: boolean) {
+    if (!userId) {
+      toast.error("Authentication required.");
+      return;
+    }
+
     if (checked) {
-      const success = await subscribeToPush();
-      if (!success) {
+      try {
+        setIsLoading(true);
+        await requestPermission();
+        const token = await getFcmToken();
+
+        if (!token) {
+          throw new Error("Failed to get FCM token.");
+        }
+
+        await updateNotificationSettings({
+          enable_notifications: true,
+          fcmToken: token,
+        });
+
+        toast.success("Notifications enabled.");
+      } catch (error) {
+        console.error(error);
         form.setValue("enable_notifications", false);
+        toast.error("Failed to enable notifications.");
+      } finally {
+        setIsLoading(false);
       }
     } else {
-      await unsubscribeFromPush();
+      try {
+        setIsLoading(true);
+
+        await updateNotificationSettings({
+          enable_notifications: false,
+          fcmToken: null,
+        });
+
+        toast.success("Notifications disabled.");
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to disable notifications.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   }
 

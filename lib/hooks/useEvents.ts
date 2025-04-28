@@ -9,8 +9,9 @@ import {
 } from "@/lib/services/events";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import { EventCreate, EventsFilter } from "@/types/events";
+import { Event, EventCreate, EventsFilter, EventUpdate } from "@/types/events";
 import { useCharacters } from "./useCharacters";
+import { updateEventOccurrence } from "../utils";
 
 const EVENT_QUERY_KEY = "events";
 
@@ -61,14 +62,19 @@ export const useEventMutations = () => {
   const userId = user?.uid;
 
   const addMutation = useMutation({
-    mutationFn: (data: EventCreate) => addEvent(userId!, data),
+    mutationFn: (data: EventCreate) => {
+      updateEventOccurrence(data);
+      return addEvent(userId!, data);
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: EventCreate }) =>
-      updateEvent(userId!, id, data),
+    mutationFn: ({ id, data }: { id: string; data: EventUpdate }) => {
+      updateEventOccurrence(data);
+      return updateEvent(userId!, id, data);
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
   });
@@ -94,8 +100,24 @@ export const useEventsOccurrenceMutations = () => {
   const userId = user?.uid;
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; nextOccurrence: Date }[]) =>
-      updateOccurrences(userId!, data),
+    mutationFn: (data: Event[]) => {
+      data?.map((event) => {
+        updateEventOccurrence(event);
+        return {
+          id: event.id,
+          nextOccurrence: event.nextOccurrence,
+          nextNotificationAt: event.nextNotificationAt,
+        };
+      });
+      return updateOccurrences(
+        userId!,
+        data as {
+          id: string;
+          nextOccurrence: Date;
+          nextNotificationAt: Date;
+        }[]
+      );
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY] }),
   });

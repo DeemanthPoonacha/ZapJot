@@ -6,6 +6,11 @@ import { useAuth } from "../context/AuthProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
+import {
+  NotificationsSettings,
+  SettingsUpdate,
+  UserSettings,
+} from "@/types/settings";
 
 export const SETTINGS_QUERY_KEY = "settings";
 
@@ -24,10 +29,11 @@ export const useSettings = () => {
   const { data: userData, isLoading: isSettingsLoading } = useQuery({
     queryKey: [SETTINGS_QUERY_KEY, userId!],
     queryFn: async () => {
-      if (!userRef) return {};
+      if (!userRef) return null;
 
       const snapshot = await getDoc(userRef);
-      return snapshot.exists() ? snapshot.data() : {};
+
+      return snapshot.exists() ? (snapshot.data() as UserSettings) : null;
     },
     // Only run query if user is logged in
     enabled: !!userId,
@@ -36,9 +42,15 @@ export const useSettings = () => {
   //update settings
   const { mutateAsync: updateSettings, isPending: isSettingsUpdating } =
     useMutation({
-      mutationFn: async (data: { theme: string }) => {
+      mutationFn: async (data: SettingsUpdate) => {
         if (!userRef) return {};
-        await setDoc(userRef, { settings: data });
+        await setDoc(userRef, {
+          settings: {
+            ...userData?.settings,
+            ...data,
+            updatedAt: new Date().toISOString(),
+          },
+        });
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
@@ -46,6 +58,14 @@ export const useSettings = () => {
         });
       },
     });
+
+  const updateNotificationSettings = async (
+    notificationSettings: NotificationsSettings
+  ) => {
+    await updateSettings({
+      notifications: notificationSettings,
+    });
+  };
 
   const { theme, setTheme } = useTheme();
   const {
@@ -55,7 +75,9 @@ export const useSettings = () => {
   } = useCustomThemes();
 
   const updateTheme = async (themeId: string) => {
-    await updateSettings({ theme: themeId });
+    await updateSettings({
+      theme: themeId,
+    });
   };
 
   const handleThemeChange = async (themeName: string) => {
@@ -88,6 +110,7 @@ export const useSettings = () => {
   return {
     settings: userData?.settings,
     updateSettings,
+    updateNotificationSettings,
     updateTheme,
     handleThemeChange,
     handleDeleteTheme,
