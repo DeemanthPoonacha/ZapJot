@@ -14,8 +14,12 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/sonner";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { getFcmToken } from "@/lib/utils/notifications";
-import { notificationsSchema, NotificationsSettings } from "@/types/settings";
+import { z } from "zod";
 import { useSettings } from "@/lib/hooks/useSettings";
+
+const FormSchema = z.object({
+  enable_notifications: z.boolean().default(false),
+});
 
 export function NotificationSettings() {
   const { user } = useAuth();
@@ -26,18 +30,16 @@ export function NotificationSettings() {
 
   const { settings, updateNotificationSettings } = useSettings();
 
-  const form = useForm<NotificationsSettings>({
-    resolver: zodResolver(notificationsSchema),
-    defaultValues: {
-      enable_notifications: false, // temporary initial
-    },
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: { enable_notifications: false },
   });
 
   useEffect(() => {
     if (settings) {
       form.reset({
         enable_notifications:
-          settings.notifications.enable_notifications ?? false,
+          settings.notifications.devices?.[getDeviceId()]?.enabled ?? false,
       });
     }
   }, [settings, form]);
@@ -66,19 +68,28 @@ export function NotificationSettings() {
       return;
     }
 
+    const deviceId = getDeviceId();
+
     if (checked) {
       try {
         setIsLoading(true);
         await requestPermission();
-        const token = await getFcmToken();
 
+        const token = await getFcmToken();
         if (!token) {
           throw new Error("Failed to get FCM token.");
         }
 
+        localStorage.setItem("fcmToken", token);
+
         await updateNotificationSettings({
-          enable_notifications: true,
-          fcmToken: token,
+          devices: {
+            [deviceId]: {
+              token,
+              enabled: true,
+              lastActive: new Date().toISOString(),
+            },
+          },
         });
 
         toast.success("Notifications enabled.");
@@ -93,10 +104,18 @@ export function NotificationSettings() {
       try {
         setIsLoading(true);
 
-        await updateNotificationSettings({
-          enable_notifications: false,
-          fcmToken: null,
-        });
+        const token = localStorage.getItem("fcmToken");
+        if (token) {
+          await updateNotificationSettings({
+            devices: {
+              [deviceId]: {
+                token,
+                enabled: false,
+                lastActive: new Date().toISOString(),
+              },
+            },
+          });
+        }
 
         toast.success("Notifications disabled.");
       } catch (error) {
@@ -144,4 +163,14 @@ export function NotificationSettings() {
       </form>
     </Form>
   );
+}
+
+export function getDeviceId() {
+  const key = "zapjot_device_id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(key, id);
+  }
+  return id;
 }

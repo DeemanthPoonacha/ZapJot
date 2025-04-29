@@ -12,6 +12,7 @@ import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
 import { UserSettings } from "@/types/settings";
 import serviceAccountJson from "@/service_key.json";
+import { getMinutesRelative } from "@/lib/utils";
 
 if (!admin.apps.length) {
   const serviceAccount = serviceAccountJson as admin.ServiceAccount;
@@ -48,22 +49,29 @@ export async function GET(request: Request) {
 
     for (const document of snapshot.docs) {
       const event = document.data();
-      const userRef = document.ref.path.split("/")[1]; // crude userId extract
-      const user = await getDoc(doc(db, "users", userRef));
-      const fcmToken = (user.data() as UserSettings)?.settings?.notifications
-        ?.fcmToken;
+      const userId = document.ref.path.split("/")[1];
+      const userSnap = await getDoc(doc(db, "users", userId));
+      const user = userSnap.data() as UserSettings;
 
-      if (fcmToken) {
+      const devices = user?.settings?.notifications?.devices || {};
+
+      for (const [deviceId, deviceInfo] of Object.entries(devices)) {
+        if (!deviceInfo.enabled || !deviceInfo.token) continue;
+
         const payload: Message = {
-          token: fcmToken,
+          token: deviceInfo.token,
           notification: {
             title: event.title,
-            body: `${event.nextOccurrence}`,
+            body: `${getMinutesRelative(event.nextOccurrence?.toDate())}`,
           },
         };
-        console.log("🚀 ~ GET ~ payload:", payload);
 
-        await admin.messaging().send(payload);
+        console.log(`Sending to ${deviceId}:`, payload);
+        try {
+          await admin.messaging().send(payload);
+        } catch (sendError) {
+          console.error(`Failed to send to ${deviceId}`, sendError);
+        }
       }
 
       await updateDoc(document.ref, { nextNotificationAt: null });

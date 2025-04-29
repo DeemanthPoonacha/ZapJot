@@ -5,6 +5,7 @@ import { addMinutes, isAfter } from "date-fns";
 import dayjs, { Dayjs } from "dayjs";
 import { Timestamp } from "firebase/firestore";
 import { twMerge } from "tailwind-merge";
+import { formatDistanceToNow } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,6 +26,10 @@ export function urlBase64ToUint8Array(base64String: string) {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
+}
+
+export function getMinutesRelative(date: Date): string {
+  return formatDistanceToNow(date, { addSuffix: true });
 }
 
 // Function to format the date

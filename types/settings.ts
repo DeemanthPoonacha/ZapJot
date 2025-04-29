@@ -1,8 +1,16 @@
 import { z } from "zod";
 
+export const deviceSchema = z.record(
+  z.string(), // device_id
+  z.object({
+    token: z.string(),
+    enabled: z.boolean(),
+    lastActive: z.string().datetime(),
+  })
+);
+
 export const notificationsSchema = z.object({
-  enable_notifications: z.boolean().default(false),
-  fcmToken: z.string().or(z.null()).default(null),
+  devices: deviceSchema.default({}),
 });
 
 export const settingsSchema = z.object({
