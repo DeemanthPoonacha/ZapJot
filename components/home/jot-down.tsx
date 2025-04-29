@@ -20,7 +20,7 @@ import { createJournalSchema, JournalCreate } from "@/types/journals";
 import { useJournalMutations } from "@/lib/hooks/useJournals";
 import { GetDateTime } from "@/lib/utils";
 import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
-import { useRouter } from "next/navigation";
+import { useNProgressRouter } from "../layout/link/CustomLink";
 
 export function JotDown() {
   const defaultValues = {
@@ -39,7 +39,7 @@ export function JotDown() {
     },
   });
 
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
   const { addMutation } = useJournalMutations(DEFAULT_CHAPTER_ID);
   const { mutateAsync, isPending } = addMutation;
 
@@ -47,7 +47,7 @@ export function JotDown() {
     try {
       const result = await mutateAsync(data);
       toast.success("Journal created successfully");
-      router.push(`/chapters/${DEFAULT_CHAPTER_ID}/journals/${result.id}`);
+      routerPush(`/chapters/${DEFAULT_CHAPTER_ID}/journals/${result.id}`);
     } catch (error) {
       console.error("Error saving journal", error);
       toast.error("Failed to save journal");

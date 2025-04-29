@@ -3,18 +3,18 @@
 import FirebaseAuthUI from "@/components/auth/FirebaseUI";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { useAuth } from "@/lib/context/AuthProvider";
-import { useRouter } from "next/navigation";
+import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import { useEffect } from "react";
 
 export default function SignInPage() {
   const { user, loading } = useAuth();
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   useEffect(() => {
     if (user && !loading) {
-      router.push("/");
+      routerPush("/");
     }
-  }, [user, loading, router]);
+  }, [user, loading]);
 
   if (loading) {
     return <CustomLoader />;

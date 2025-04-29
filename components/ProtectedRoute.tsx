@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNProgressRouter } from "./layout/link/CustomLink";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { CustomLoader } from "./layout/CustomLoader";
 
@@ -10,13 +10,13 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const { user, loading } = useAuth();
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/auth/sign-in");
+      routerPush("/auth/sign-in");
     }
-  }, [user, loading, router]);
+  }, [user, loading]);
 
   if (loading) {
     return <CustomLoader />;

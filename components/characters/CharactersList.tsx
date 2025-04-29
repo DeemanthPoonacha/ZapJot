@@ -2,13 +2,13 @@ import { useCharacters } from "@/lib/hooks/useCharacters";
 import { CardContent, ListCard, ListCardFooter } from "@/components/ui/card";
 import { UserCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter } from "next/navigation";
+import { useNProgressRouter } from "../layout/link/CustomLink";
 import CharacterCard from "./CharacterCard";
 import Empty from "../Empty";
 
 const CharactersList = () => {
   const { data: characters, isLoading } = useCharacters();
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   if (isLoading) {
     return (
@@ -44,7 +44,7 @@ const CharactersList = () => {
     return (
       <Empty
         icon={<UserCircle className="emptyIcon" />}
-        handleCreateClick={() => router.push("/characters/new")}
+        handleCreateClick={() => routerPush("/characters/new")}
         title="No characters yet"
         subtitle="Add characters to keep track of important people in your life"
         buttonTitle="Create First Character"

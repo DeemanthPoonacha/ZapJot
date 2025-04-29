@@ -37,3 +37,16 @@ export function NProgressDone() {
   }, [pathname, searchParams]);
   return null;
 }
+
+import { useRouter } from "next/navigation";
+
+export function useNProgressRouter() {
+  const router = useRouter();
+
+  const routerPush = (href: string) => {
+    NProgress.start();
+    router.push(href);
+  };
+
+  return { routerPush };
+}

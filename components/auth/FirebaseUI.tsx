@@ -23,7 +23,7 @@ export default function FirebaseAuthUI() {
     // callbacks: {
     //   signInSuccessWithAuthResult: (authResult) => {
     //     // You can add custom logic here after successful sign-in
-    //     router.push("/");
+    //     routerPush("/");
     //     return false; // Prevents redirect to signInSuccessUrl
     //   },
     // },

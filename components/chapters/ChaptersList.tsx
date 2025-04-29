@@ -1,6 +1,5 @@
 import { useChapters } from "@/lib/hooks/useChapters";
-import { Link } from "@/components/layout/link/CustomLink";
-import { useRouter } from "next/navigation";
+import { Link, useNProgressRouter } from "@/components/layout/link/CustomLink";
 import ChapterCard from "./ChapterCard";
 import Empty from "../Empty";
 import { Grid2X2 } from "lucide-react";
@@ -9,7 +8,7 @@ import { Skeleton } from "../ui/skeleton";
 
 const ChaptersList = ({ isMoving }: { isMoving?: boolean }) => {
   const { data: chapters, isLoading } = useChapters();
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   return (
     <div className={cn("space-y-4")}>
@@ -22,7 +21,7 @@ const ChaptersList = ({ isMoving }: { isMoving?: boolean }) => {
       ) : !chapters?.length ? (
         <Empty
           icon={<Grid2X2 className="emptyIcon" />}
-          handleCreateClick={() => router.push("/chapters/new")}
+          handleCreateClick={() => routerPush("/chapters/new")}
           title="No chapters yet"
           subtitle="Add chapters to keep track of important people in your life"
           buttonTitle="Create First Chapter"

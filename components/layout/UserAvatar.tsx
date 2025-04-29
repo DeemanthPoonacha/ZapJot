@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Link } from "@/components/layout/link/CustomLink";
+import { Link, useNProgressRouter } from "@/components/layout/link/CustomLink";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +21,7 @@ export default function UserAvatarDropdown() {
   const { user } = useAuth();
   useSettings();
 
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
   const [isLoading, setIsLoading] = useState(false);
   const SIGN_IN_ROUTE = "/sign-in";
 
@@ -30,7 +29,7 @@ export default function UserAvatarDropdown() {
     try {
       setIsLoading(true);
       await logOut();
-      router.push(SIGN_IN_ROUTE);
+      routerPush(SIGN_IN_ROUTE);
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
@@ -83,11 +82,11 @@ export default function UserAvatarDropdown() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/profile")}>
+        <DropdownMenuItem onClick={() => routerPush("/profile")}>
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}>
+        <DropdownMenuItem onClick={() => routerPush("/settings")}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>

@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { EllipsisVertical, MoveRight, SquarePen, Trash2 } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
@@ -19,6 +19,7 @@ import useOperations from "@/lib/hooks/useOperations";
 import { toast } from "@/components/ui/sonner";
 import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 import { useSearchParams } from "next/navigation";
+import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 
 const JournalPage = () => {
   const searchParams = useSearchParams();
@@ -39,7 +40,7 @@ const JournalPage = () => {
   const [isEditing, setIsEditing] = useState(journalId === "new");
 
   const { deleteMutation } = useJournalMutations(chapterId! as string);
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   const { setSelectedId, setSelectedParentId } = useOperations();
 
@@ -47,7 +48,7 @@ const JournalPage = () => {
     try {
       if (journal?.id) {
         await deleteMutation.mutateAsync(journal.id);
-        router.push(`/chapters/${chapterId}`);
+        routerPush(`/chapters/${chapterId}`);
         toast.success("Journal deleted successfully");
       }
     } catch (error) {
@@ -57,7 +58,7 @@ const JournalPage = () => {
   };
 
   const onFinish = (id: string, chId?: string) => {
-    router.push(`/chapters/${chId || chapterId}/journals/${id}`);
+    routerPush(`/chapters/${chId || chapterId}/journals/${id}`);
     setIsEditing(false);
   };
 
@@ -99,7 +100,7 @@ const JournalPage = () => {
                   onSelect={() => {
                     setSelectedId(journal.id);
                     setSelectedParentId(chapterId! as string);
-                    router.push(`/chapters?operation=move`);
+                    routerPush(`/chapters?operation=move`);
                   }}
                 >
                   <MoveRight size={16} />
@@ -147,7 +148,7 @@ const JournalPage = () => {
           chapterId={chapterId as string}
           journal={journal as Journal}
           onCancel={() => {
-            if (!journal?.id) router.push(`/chapters/${chapterId}`);
+            if (!journal?.id) routerPush(`/chapters/${chapterId}`);
             setIsEditing(false);
           }}
           onFinish={onFinish}

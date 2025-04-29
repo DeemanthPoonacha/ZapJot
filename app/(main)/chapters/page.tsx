@@ -1,11 +1,12 @@
 "use client";
 import ChaptersList from "@/components/chapters/ChaptersList";
+import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import PageLayout from "@/components/layout/PageLayout";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 const Chapters = () => {
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   const searchParams = useSearchParams();
   const operation = searchParams.get("operation");
@@ -17,7 +18,7 @@ const Chapters = () => {
       floatingButtonProps={{
         label: "New Chapter",
         onClick: () => {
-          router.push("/chapters/new");
+          routerPush("/chapters/new");
         },
       }}
     >

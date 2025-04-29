@@ -41,8 +41,8 @@ export function PendingTasks() {
         <div className="space-y-3">
           {tasks.map((task) => (
             <div key={task.id} className="flex justify-between items-center">
-              <span>{task.title}</span>
-              <span className="text-sm text-muted-foreground">
+              <span className="line-clamp-1 max-w-2/3">{task.title}</span>
+              <span className="text-sm text-muted-foreground text-right">
                 {task.highPriority
                   ? "High Priority"
                   : task.dueDate

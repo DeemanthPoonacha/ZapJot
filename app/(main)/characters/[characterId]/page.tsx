@@ -1,16 +1,17 @@
 "use client";
 import CharacterForm from "@/components/characters/CharacterForm";
 import { CustomLoader } from "@/components/layout/CustomLoader";
+import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import PageLayout from "@/components/layout/PageLayout";
 import DeleteConfirm from "@/components/ui/delete-confirm";
 import { toast } from "@/components/ui/sonner";
 import { useCharacter, useCharacterMutations } from "@/lib/hooks/useCharacters";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React from "react";
 
 const Chapter = () => {
   const { characterId } = useParams();
-  const router = useRouter();
+  const { routerPush } = useNProgressRouter();
 
   const { data: character, isLoading } = useCharacter(characterId! as string);
 
@@ -19,7 +20,7 @@ const Chapter = () => {
     try {
       if (character?.id) {
         await deleteMutation.mutateAsync(character.id);
-        router.push(`/characters`);
+        routerPush(`/characters`);
         toast.success("Character deleted successfully");
       }
     } catch (error) {
@@ -42,8 +43,8 @@ const Chapter = () => {
     >
       <CharacterForm
         character={character}
-        onUpdate={() => router.push(`/characters`)}
-        onAdd={(id: string) => router.push(`/characters/${id}`)}
+        onUpdate={() => routerPush(`/characters`)}
+        onAdd={(id: string) => routerPush(`/characters/${id}`)}
       />
     </PageLayout>
   );

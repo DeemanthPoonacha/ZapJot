@@ -12,8 +12,9 @@ import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
 import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 import { PenLine } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 
 const NotFound = () => <p>Chapter not found</p>;
 
@@ -23,8 +24,8 @@ const ChapterPage = () => {
   const searchParams = useSearchParams();
   const operation = searchParams.get("operation");
   const isMoving = operation === "move";
+  const { routerPush } = useNProgressRouter();
 
-  const router = useRouter();
   console.log("🚀 ~ ChapterPage ~ searchParams:", searchParams, chapterId);
   const { data: chapter, isLoading } = useChapter(chapterId! as string);
 
@@ -41,7 +42,7 @@ const ChapterPage = () => {
     try {
       if (chapter?.id) {
         await deleteMutation.mutateAsync(chapter.id);
-        router.push(`/chapters`);
+        routerPush(`/chapters`);
         toast.success("Chapter deleted successfully");
       }
     } catch (error) {
@@ -54,7 +55,7 @@ const ChapterPage = () => {
     try {
       if (chapter?.id) {
         await moveJournalMutation.mutateAsync(chapter.id);
-        router.push(`/chapters/${chapter.id}`);
+        routerPush(`/chapters/${chapter.id}`);
         toast.success("Journal moved successfully");
       }
     } catch (error) {
@@ -93,7 +94,7 @@ const ChapterPage = () => {
         floatingButtonProps: {
           label: "New Journal",
           onClick: () => {
-            router.push(`/chapters/${chapterId}/journals/new`);
+            routerPush(`/chapters/${chapterId}/journals/new`);
           },
         },
       })}
@@ -133,11 +134,11 @@ const ChapterPage = () => {
           key={chapter?.id || "new"}
           chapter={chapter as Chapter}
           onCancel={() => {
-            if (!chapter?.id) router.push(`/chapters`);
+            if (!chapter?.id) routerPush(`/chapters`);
             setIsEditing(false);
           }}
           onUpdate={() => {
-            router.push(
+            routerPush(
               isMoving
                 ? `/chapters/${chapter?.id}?operation=move`
                 : `/chapters/${chapter?.id}`
@@ -145,7 +146,7 @@ const ChapterPage = () => {
             setIsEditing(false);
           }}
           onAdd={(id: string) => {
-            router.push(`/chapters/${id}`);
+            routerPush(`/chapters/${id}`);
             setIsEditing(false);
           }}
         />

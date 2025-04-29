@@ -20,15 +20,17 @@ export function HomeHeader() {
   const todayEvents = events?.filter((event) =>
     dayjs((event.nextOccurrence as Timestamp).toDate()).isSame(dayjs(), "day")
   );
+  const greet = () =>
+    user
+      ? `Hello, ${user.displayName || user.email?.split("@")[0]}!`
+      : "Hello!";
 
   if (loading) return <Skeleton className="h-44 rounded-md" />;
   return (
     <Card className="p-6 bg-gradient-to-br from-primary to-primary/60 text-primary-foreground gap-4">
-      <h1 className="text-2xl font-semibold">
-        Good morning, {user?.displayName?.split(" ")[0]}
-      </h1>
+      <h1 className="text-2xl font-semibold">{greet()}</h1>
       <p className="text-sm opacity-90">
-        {`Here's what's happening today at a glance.`}
+        {`Here's what's happening at a glance.`}
       </p>
       <div className="space-y-2">
         {taskLoading ? (

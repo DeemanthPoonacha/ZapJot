@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@/components/layout/link/CustomLink";
+import Image from "next/image";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/" },
@@ -56,8 +57,9 @@ export function NavigationBar() {
     <nav className="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex-col lg:border-r lg:bg-background lg:p-4">
       <Link
         href="/"
-        className="flex h-14 items-center px-4 font-semibold text-lg mb-6 py-4 border-b"
+        className="flex h-14 items-center px-4 font-semibold text-lg mb-6 py-4 border-b gap-2"
       >
+        <Image src="/logo.png" width={42} height={42} alt="zapjot" />
         ZapJot
       </Link>
       <div className="space-y-2 px-2">

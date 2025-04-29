@@ -41,8 +41,8 @@ export function UpcomingEvents() {
         <div className="space-y-3">
           {events.map((event) => (
             <div key={event.id} className="flex justify-between items-center">
-              <span>{event.title}</span>
-              <span className="text-sm text-muted-foreground">
+              <span className="line-clamp-1 max-w-2/3">{event.title}</span>
+              <span className="text-sm text-muted-foreground text-right">
                 <EventNextOccurance
                   text="Next on "
                   event={event}
