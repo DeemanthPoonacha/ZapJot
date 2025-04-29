@@ -45,7 +45,10 @@ export async function GET(request: Request) {
       return Response.json({ status: "No notifications to send" });
     }
 
-    console.log("Notifications to send", snapshot.size);
+    const totalEvents = snapshot.size;
+    console.log(`Total events: ${totalEvents}`);
+
+    let sentCount = 0;
 
     for (const document of snapshot.docs) {
       const event = document.data();
@@ -56,19 +59,24 @@ export async function GET(request: Request) {
       const devices = user?.settings?.notifications?.devices || {};
 
       for (const [deviceId, deviceInfo] of Object.entries(devices)) {
-        if (!deviceInfo.enabled || !deviceInfo.token) continue;
-
-        const payload: Message = {
-          token: deviceInfo.token,
-          notification: {
-            title: event.title,
-            body: `${getMinutesRelative(event.nextOccurrence?.toDate())}`,
-          },
-        };
-
-        console.log(`Sending to ${deviceId}:`, payload);
         try {
+          if (!deviceInfo.enabled || !deviceInfo.token) continue;
+
+          const payload: Message = {
+            token: deviceInfo.token,
+            notification: {
+              title: event.title,
+              body: `${getMinutesRelative(event.nextOccurrence?.toDate())}`,
+            },
+            webpush: {
+              fcmOptions: {
+                link: "https://zap-jot.netlify.app/planner",
+              },
+            },
+          };
+
           await admin.messaging().send(payload);
+          sentCount++;
         } catch (sendError) {
           console.error(`Failed to send to ${deviceId}`, sendError);
         }
@@ -77,7 +85,10 @@ export async function GET(request: Request) {
       await updateDoc(document.ref, { nextNotificationAt: null });
     }
 
-    return Response.json({ status: "Notifications sent" });
+    return Response.json({
+      status: `Notificaions sent!`,
+      sentCount,
+    });
   } catch (error) {
     console.error("Error sending notifications:", error);
     return Response.json(

@@ -64,7 +64,7 @@ export function CustomizableThemeSelector() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Themes</h2>
 
-        <Button variant="outline" onClick={handleCreateClick}>
+        <Button variant="default" onClick={handleCreateClick}>
           <Plus /> Create Custom Theme
         </Button>
       </div>
@@ -75,7 +75,7 @@ export function CustomizableThemeSelector() {
             {key.charAt(0).toUpperCase() + key.slice(1)} themes
             {key === "custom" && (
               <Button
-                variant="outline"
+                variant="default"
                 onClick={() => {
                   setIsEditingId(null);
                   setIsDialogOpen(true);

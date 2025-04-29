@@ -25,10 +25,13 @@ messaging.onBackgroundMessage(function (payload) {
     payload
   );
 
+  const url = payload.fcmOptions?.link || payload.data?.url || "/";
+
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
-    body: payload.notification.body,
-    icon: "/logo.png", // optional
+    body: payload.notification.body || "New notification",
+    icon: "/logo.png",
+    data: { url },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -40,20 +43,24 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
   // Handle notification click - navigate to URL if specified
-  const urlToOpen = event.notification.data?.url || "/";
+  const urlToOpen = event.notification.data?.url;
 
   event.waitUntil(
-    self.clients.matchAll({ type: "window" }).then((clientList) => {
-      // Check if there's already a window/tab open with the target URL
-      for (const client of clientList) {
-        if (client.url === urlToOpen && "focus" in client) {
-          return client.focus();
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        if (!urlToOpen) return;
+
+        // Check if there's already a window/tab open with the target URL
+        for (const client of clientList) {
+          if (client.url === urlToOpen && "focus" in client) {
+            return client.focus();
+          }
         }
-      }
-      // If no window/tab is open with the URL, open a new one
-      if (self.clients.openWindow) {
-        return self.clients.openWindow(urlToOpen);
-      }
-    })
+        // If no window/tab is open with the URL, open a new one
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(urlToOpen);
+        }
+      })
   );
 });

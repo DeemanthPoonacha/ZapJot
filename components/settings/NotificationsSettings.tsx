@@ -214,8 +214,8 @@ export function NotificationSettings() {
                     Notification Timing
                   </FormLabel>
                   <FormDescription className="text-sm">
-                    Choose when to get event alerts on all registered devices
-                    (if enabled).
+                    Choose when to get event alerts on all registered and
+                    enabled devices
                   </FormDescription>
                 </div>
               </div>
@@ -224,10 +224,13 @@ export function NotificationSettings() {
                   disabled={!isSupported || isLoading}
                   onValueChange={(value) => {
                     const intValue = parseInt(value, 10);
+                    if (isNaN(intValue)) {
+                      return;
+                    }
                     field.onChange(intValue);
                     handleNotifyMinsChange(intValue);
                   }}
-                  defaultValue={field.value.toString()}
+                  value={field.value.toString()}
                   aria-label="Select notification timing"
                 >
                   <FormControl>
