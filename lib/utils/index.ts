@@ -67,15 +67,19 @@ export function getDates(month: number = 0, year: number = 2020) {
   return Array.from({ length: daysInMonth }, (_, i) => i + 1);
 }
 
-export function updateEventOccurrence(data: EventUpdate) {
+export function updateEventOccurrence(data: EventUpdate, minsBefore?: number) {
   const nextOccurrence = getNextOccurrence(data)?.toDate() || null;
   if (nextOccurrence) data.nextOccurrence = nextOccurrence;
-  const nextNotificationAt = getNextNotificationTime(nextOccurrence);
+  const nextNotificationAt = getNextNotificationTime(
+    nextOccurrence,
+    minsBefore
+  );
   if (nextNotificationAt) data.nextNotificationAt = nextNotificationAt;
 }
 
 export function getNextNotificationTime(
-  nextOccurrence: Date | null
+  nextOccurrence: Date | null,
+  minsBefore = 10
 ): Date | null {
   if (!nextOccurrence) return null;
 
@@ -84,7 +88,7 @@ export function getNextNotificationTime(
       ? nextOccurrence.toDate()
       : nextOccurrence;
 
-  const notificationTime = addMinutes(occurrence, -10); // 10 mins before
+  const notificationTime = addMinutes(occurrence, -minsBefore); // 10 mins before
 
   return isAfter(notificationTime, new Date()) ? notificationTime : null;
 }

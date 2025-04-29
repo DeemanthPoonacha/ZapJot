@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import {
-  NotificationsSettings,
+  NotificationsSettingsUpdate,
   SettingsUpdate,
   UserSettings,
 } from "@/types/settings";
@@ -60,10 +60,13 @@ export const useSettings = () => {
     });
 
   const updateNotificationSettings = async (
-    notificationSettings: NotificationsSettings
+    notificationSettings: NotificationsSettingsUpdate
   ) => {
     await updateSettings({
-      notifications: notificationSettings,
+      notifications: {
+        ...userData?.settings?.notifications,
+        ...notificationSettings,
+      },
     });
   };
 

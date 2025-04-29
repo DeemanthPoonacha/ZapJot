@@ -181,7 +181,7 @@ export const updateOccurrences = async (
 ) => {
   const batch = writeBatch(db);
 
-  data.forEach(({ id, nextOccurrence, nextNotificationAt }) => {
+  data?.forEach(({ id, nextOccurrence, nextNotificationAt }) => {
     const ref = doc(db, `users/${userId}/events/${id}`);
     batch.update(ref, { nextOccurrence, nextNotificationAt });
   });

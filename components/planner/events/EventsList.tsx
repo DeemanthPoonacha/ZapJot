@@ -9,11 +9,7 @@ import Empty from "../../Empty";
 import { CalendarClock, RefreshCw } from "lucide-react";
 import { Skeleton } from "../../ui/skeleton";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
-import {
-  getPluralWord,
-  updateEventOccurrence,
-  groupEventsByDate,
-} from "@/lib/utils";
+import { getPluralWord, groupEventsByDate } from "@/lib/utils";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 
@@ -31,8 +27,8 @@ const EventList = ({
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
 
-  const { updateMutation } = useEventsOccurrenceMutations();
-  const { mutateAsync, isPending } = updateMutation;
+  const { mutateAsync: refreshOccurrences, isPending: isRefreshPending } =
+    useEventsOccurrenceMutations().updateMutation;
 
   const isDialogOpen = (dialogId: string) => selectedEventId === dialogId;
   const toggleDialog = (dialogId: string | null) => {
@@ -52,13 +48,7 @@ const EventList = ({
   }, [events?.length]);
 
   const handleRefresh = () => {
-    const updatedEvents = events?.map((event) => {
-      updateEventOccurrence(event);
-      return event;
-    });
-    if (updatedEvents) {
-      mutateAsync(updatedEvents);
-    }
+    refreshOccurrences();
   };
 
   return (
@@ -67,7 +57,11 @@ const EventList = ({
         {showDefault && (
           <div className="flex justify-between items-center mb-8 border-b pb-4">
             <span className="text-lg font-semibold">Upcoming Events</span>
-            <Button type="button" onClick={handleRefresh} disabled={isPending}>
+            <Button
+              type="button"
+              onClick={handleRefresh}
+              disabled={isRefreshPending}
+            >
               <RefreshCw className="h-4 w-4" /> Refresh
             </Button>
           </div>

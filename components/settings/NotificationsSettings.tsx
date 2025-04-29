@@ -16,9 +16,18 @@ import { useAuth } from "@/lib/context/AuthProvider";
 import { getFcmToken } from "@/lib/utils/notifications";
 import { z } from "zod";
 import { useSettings } from "@/lib/hooks/useSettings";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Bell, Clock } from "lucide-react";
 
 const FormSchema = z.object({
   enable_notifications: z.boolean().default(false),
+  notifyMinsBefore: z.number().min(1).max(60).default(10),
 });
 
 export function NotificationSettings() {
@@ -32,7 +41,7 @@ export function NotificationSettings() {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: { enable_notifications: false },
+    defaultValues: { enable_notifications: false, notifyMinsBefore: 10 },
   });
 
   useEffect(() => {
@@ -40,6 +49,7 @@ export function NotificationSettings() {
       form.reset({
         enable_notifications:
           settings.notifications.devices?.[getDeviceId()]?.enabled ?? false,
+        notifyMinsBefore: settings.notifications.notifyMinsBefore ?? 10,
       });
     }
   }, [settings, form]);
@@ -83,7 +93,9 @@ export function NotificationSettings() {
         localStorage.setItem("fcmToken", token);
 
         await updateNotificationSettings({
+          ...settings?.notifications,
           devices: {
+            ...settings?.notifications.devices,
             [deviceId]: {
               token,
               enabled: true,
@@ -107,7 +119,9 @@ export function NotificationSettings() {
         const token = localStorage.getItem("fcmToken");
         if (token) {
           await updateNotificationSettings({
+            ...settings?.notifications,
             devices: {
+              ...settings?.notifications.devices,
               [deviceId]: {
                 token,
                 enabled: false,
@@ -127,25 +141,50 @@ export function NotificationSettings() {
     }
   }
 
+  async function handleNotifyMinsChange(value: number) {
+    if (!userId) {
+      toast.error("Authentication required.");
+      return;
+    }
+
+    try {
+      await updateNotificationSettings({
+        ...settings?.notifications,
+        notifyMinsBefore: value,
+      });
+      toast.success("Notification timing updated.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update notification timing.");
+    }
+  }
+
   return (
     <Form {...form}>
       <form className="w-full space-y-6">
         {!isSupported && (
-          <p className="text-sm text-muted-foreground">
-            Push notifications are not supported in this browser.
-          </p>
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg p-4 text-sm flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            <p>Push notifications are not supported in this browser.</p>
+          </div>
         )}
 
+        {/* Notifications Toggle */}
         <FormField
           control={form.control}
           name="enable_notifications"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div>
-                <FormLabel>Notifications</FormLabel>
-                <FormDescription>
-                  Enable push notifications for updates
-                </FormDescription>
+            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200">
+              <div className="flex items-center gap-3">
+                <Bell className="h-5 w-5" />
+                <div className="space-y-1">
+                  <FormLabel className="text-base font-semibold">
+                    Enable Notifications
+                  </FormLabel>
+                  <FormDescription className="text-sm">
+                    Get event and update alerts on this device.
+                  </FormDescription>
+                </div>
               </div>
               <FormControl>
                 <Switch
@@ -155,8 +194,55 @@ export function NotificationSettings() {
                     field.onChange(checked);
                     handleToggleChange(checked);
                   }}
+                  aria-label="Toggle notifications"
                 />
               </FormControl>
+            </FormItem>
+          )}
+        />
+
+        {/* Notification Timing */}
+        <FormField
+          control={form.control}
+          name="notifyMinsBefore"
+          render={({ field }) => (
+            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200">
+              <div className="flex items-center gap-3">
+                <Clock className="h-5 w-5" />
+                <div className="space-y-1">
+                  <FormLabel className="text-base font-semibold">
+                    Notification Timing
+                  </FormLabel>
+                  <FormDescription className="text-sm">
+                    Choose when to get event alerts on all registered devices
+                    (if enabled).
+                  </FormDescription>
+                </div>
+              </div>
+              <div className="min-w-32">
+                <Select
+                  disabled={!isSupported || isLoading}
+                  onValueChange={(value) => {
+                    const intValue = parseInt(value, 10);
+                    field.onChange(intValue);
+                    handleNotifyMinsChange(intValue);
+                  }}
+                  defaultValue={field.value.toString()}
+                  aria-label="Select notification timing"
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select time" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="5">5 minutes</SelectItem>
+                    <SelectItem value="10">10 minutes</SelectItem>
+                    <SelectItem value="30">30 minutes</SelectItem>
+                    <SelectItem value="60">1 hour</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </FormItem>
           )}
         />

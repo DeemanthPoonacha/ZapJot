@@ -9,9 +9,10 @@ import {
 } from "@/lib/services/events";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import { Event, EventCreate, EventsFilter, EventUpdate } from "@/types/events";
+import { EventCreate, EventsFilter, EventUpdate } from "@/types/events";
 import { useCharacters } from "./useCharacters";
 import { updateEventOccurrence } from "../utils";
+import { useSettings } from "./useSettings";
 
 const EVENT_QUERY_KEY = "events";
 
@@ -60,10 +61,12 @@ export const useEventMutations = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const userId = user?.uid;
+  const { settings } = useSettings();
+  const minutesBefore = settings?.notifications?.notifyMinsBefore;
 
   const addMutation = useMutation({
     mutationFn: (data: EventCreate) => {
-      updateEventOccurrence(data);
+      updateEventOccurrence(data, minutesBefore);
       return addEvent(userId!, data);
     },
     onSuccess: () =>
@@ -72,7 +75,7 @@ export const useEventMutations = () => {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: EventUpdate }) => {
-      updateEventOccurrence(data);
+      updateEventOccurrence(data, minutesBefore);
       return updateEvent(userId!, id, data);
     },
     onSuccess: () =>
@@ -98,11 +101,15 @@ export const useEventsOccurrenceMutations = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const userId = user?.uid;
+  const { data: events } = useEvents();
+  const { settings } = useSettings();
+  const minutesBefore = settings?.notifications?.notifyMinsBefore;
 
   const updateMutation = useMutation({
-    mutationFn: (data: Event[]) => {
-      data?.map((event) => {
-        updateEventOccurrence(event);
+    mutationFn: () => {
+      if (!events) return Promise.resolve(null);
+      events.map((event) => {
+        updateEventOccurrence(event, minutesBefore);
         return {
           id: event.id,
           nextOccurrence: event.nextOccurrence,
@@ -111,7 +118,7 @@ export const useEventsOccurrenceMutations = () => {
       });
       return updateOccurrences(
         userId!,
-        data as {
+        events as {
           id: string;
           nextOccurrence: Date;
           nextNotificationAt: Date;
