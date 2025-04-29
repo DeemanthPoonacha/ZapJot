@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, ToasterProps } from "sonner";
 import { toast } from "sonner";
+import "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
@@ -12,16 +13,18 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       toastOptions={{
+        style: {
+          border: "var(--border) solid 1px",
+        },
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground font-medium",
-          cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground font-medium",
+            "group toast !bg-background !text-foreground !border-border !shadow-lg",
+          description: "!text-muted-foreground",
+          actionButton: "!bg-primary !text-primary-foreground font-medium",
+          cancelButton: "!bg-muted !text-muted-foreground font-medium",
         },
       }}
+      duration={30000}
       {...props}
     />
   );
