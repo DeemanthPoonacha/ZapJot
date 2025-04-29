@@ -156,7 +156,7 @@ export default function Profile() {
   if (loading) return <CustomLoader />;
 
   return (
-    <div className="container max-w-4xl mx-auto space-y-6 py-6">
+    <div className="container mx-auto space-y-6 py-6">
       <div className="flex flex-col gap-4">
         <p className="leading-none font-semibold">Profile Information</p>
         <p className="text-muted-foreground text-sm">

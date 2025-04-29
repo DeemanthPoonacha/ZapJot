@@ -62,7 +62,7 @@ export function CustomizableThemeSelector() {
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Themes</h2>
+        <h2 className="text-xl font-medium">Themes</h2>
 
         <Button variant="default" onClick={handleCreateClick}>
           <Plus /> Create Custom Theme
@@ -70,7 +70,7 @@ export function CustomizableThemeSelector() {
       </div>
 
       {Object.entries(groupedThemes).map(([key, themes]) => (
-        <div className="mb-8" key={key}>
+        <div className="mb-12" key={key}>
           <span className="flex items-center gap-2 mb-3 justify-between">
             {key.charAt(0).toUpperCase() + key.slice(1)} themes
             {key === "custom" && (

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/components/layout/link/CustomLink";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -91,10 +90,6 @@ export default function UserAvatarDropdown() {
         <DropdownMenuItem onClick={() => router.push("/settings")}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/test")}>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Test</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} disabled={isLoading}>
