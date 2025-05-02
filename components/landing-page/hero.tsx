@@ -1,6 +1,7 @@
 import { ArrowRight, CheckSquare } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { CTAButton } from "./cta-section";
 
 export const Hero = () => (
   <section className="relative overflow-hidden py-20 md:py-32 lg:py-40">
@@ -21,10 +22,7 @@ export const Hero = () => (
             important people and moments — all in one beautiful place.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button size="lg" className="h-12 px-8">
-              Get Started Free
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <CTAButton />
             <Button size="lg" variant="outline" className="h-12 px-8">
               Learn More
             </Button>

@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
+import { Link } from "../layout/link/CustomLink";
 
 export function CTASection() {
   return (
@@ -14,10 +15,7 @@ export function CTASection() {
             journal, plan, and manage their lives.
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" className="h-12 px-8">
-              Get Started Free
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <CTAButton />
             {/* <Button size="lg" variant="outline" className="h-12 px-8">
           See Pricing
         </Button> */}
@@ -28,5 +26,24 @@ export function CTASection() {
         </div>
       </div>
     </section>
+  );
+}
+
+export function CTAButton({
+  className = "h-12 px-8",
+  size = "lg",
+  withArrow = true,
+}: {
+  className?: string;
+  size?: "lg" | "default" | "sm" | "icon" | null | undefined;
+  withArrow?: boolean;
+}) {
+  return (
+    <Link href="/home">
+      <Button size={size} className={className}>
+        Get Started For Free
+        {withArrow && <ArrowRight className="ml-2 h-4 w-4" />}
+      </Button>
+    </Link>
   );
 }

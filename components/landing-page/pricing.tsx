@@ -17,7 +17,7 @@ export function Pricing() {
               completely free
             </span>{" "}
             —{" "}
-            <a href="/signup" className="hover:underline font-bold">
+            <a href="/home" className="hover:underline font-bold">
               Get started today!
             </a>
           </p>

@@ -1,6 +1,7 @@
 import { Logo } from "@/components/landing-page/Logo";
 import { Link } from "@/components/layout/link/CustomLink";
 import { Button } from "../ui/button";
+import { CTAButton } from "./cta-section";
 
 export function Header() {
   return (
@@ -40,9 +41,7 @@ export function Header() {
           >
             Log in
           </Link>
-          <Link href="/home">
-            <Button>Get Started Free</Button>
-          </Link>
+          <CTAButton size="default" className="" withArrow={false} />
         </div>
       </div>
     </header>

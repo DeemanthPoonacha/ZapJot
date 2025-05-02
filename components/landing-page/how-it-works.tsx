@@ -1,4 +1,5 @@
 import { ImageFrame } from "./ImageFrame";
+import Slides from "./slides";
 
 export function HowItWorks() {
   return (
@@ -47,9 +48,8 @@ export function HowItWorks() {
               </p>
             </div>
           </div>
-          <div className="mt-16 flex justify-center">
-            <ImageFrame />
-          </div>
+          {/* <ImageFrame /> */}
+          <Slides />
         </div>
       </div>
     </section>
