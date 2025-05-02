@@ -1,0 +1,9 @@
+import { Link } from "@/components/layout/link/CustomLink";
+import Image from "next/image";
+
+export const Logo = () => (
+  <Link href="/" className="flex items-center gap-2">
+    <Image src="/logo.png" width={42} height={42} alt="zapjot" />
+    <span className="text-xl font-bold">ZapJot</span>
+  </Link>
+);
