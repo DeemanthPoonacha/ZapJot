@@ -18,7 +18,7 @@ export function Testimonials() {
           <div className="flex flex-col rounded-lg border bg-background p-8 shadow-sm">
             <div className="flex items-center gap-4">
               <Image
-                src="/placeholder.svg?height=60&width=60"
+                src="/logo.png"
                 width={60}
                 height={60}
                 alt="User Avatar"
@@ -57,7 +57,7 @@ export function Testimonials() {
           <div className="flex flex-col rounded-lg border bg-background p-8 shadow-sm">
             <div className="flex items-center gap-4">
               <Image
-                src="/placeholder.svg?height=60&width=60"
+                src="/logo.png"
                 width={60}
                 height={60}
                 alt="User Avatar"
@@ -96,7 +96,7 @@ export function Testimonials() {
           <div className="flex flex-col rounded-lg border bg-background p-8 shadow-sm">
             <div className="flex items-center gap-4">
               <Image
-                src="/placeholder.svg?height=60&width=60"
+                src="/logo.png"
                 width={60}
                 height={60}
                 alt="User Avatar"

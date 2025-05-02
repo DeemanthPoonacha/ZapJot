@@ -1,6 +1,5 @@
 import { Logo } from "@/components/landing-page/Logo";
 import { Link } from "@/components/layout/link/CustomLink";
-import { Button } from "../ui/button";
 import { CTAButton } from "./cta-section";
 
 export function Header() {

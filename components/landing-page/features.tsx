@@ -1,98 +1,71 @@
-import { Calendar, CheckSquare, Clock, Edit3, Users } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Edit3,
+  FolderKanban,
+  Paintbrush,
+  Users,
+  MonitorSmartphone,
+} from "lucide-react";
+
+const features = [
+  {
+    icon: <Edit3 className="h-8 w-8 text-primary" />,
+    title: "Life Logging",
+    desc: "Document your days with journals, organize them into meaningful chapters, and revisit memories with ease.",
+  },
+  {
+    icon: <Calendar className="h-8 w-8 text-primary" />,
+    title: "Planners",
+    desc: "Manage events, tasks, and itineraries with built-in calendars and checklists.",
+  },
+  {
+    icon: <Users className="h-8 w-8 text-primary" />,
+    title: "People & Relationships",
+    desc: "Keep profiles of the people in your life — track birthdays, shared memories, and thoughtful details.",
+  },
+  {
+    icon: <Paintbrush className="h-8 w-8 text-primary" />,
+    title: "Customization",
+    desc: "Make ZapJot your own with personalized themes and interface preferences.",
+  },
+  {
+    icon: <Clock className="h-8 w-8 text-primary" />,
+    title: "Reminders",
+    desc: "Stay on top of everything with smart reminders for tasks, plans, and special dates.",
+  },
+  {
+    icon: <MonitorSmartphone className="h-8 w-8 text-primary" />,
+    title: "Cross-Device Friendly",
+    desc: "Enjoy a seamless, responsive experience across mobile, tablet, and desktop devices.",
+  },
+];
 
 export function Features() {
   return (
     <section id="features" className="bg-muted/50 py-20 md:py-32">
       <div className="container px-4 md:px-6">
-        <div className="mx-auto text-center md:max-w-[58rem]">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Everything you need, all in one place
+        <div className="mx-auto text-center md:max-w-3xl">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            Your life. Organized.
           </h2>
-          <p className="mt-4 text-muted-foreground md:text-xl">
-            ZapJot combines the best of journaling, planning, and task
-            management in a single, intuitive interface.
+          <p className="mt-4 text-muted-foreground text-lg md:text-xl">
+            ZapJot brings journaling, planning, task management, and life
+            tracking into one powerful and personal space.
           </p>
         </div>
-        <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="flex flex-col items-center rounded-lg border bg-background p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="rounded-full bg-primary/10 p-4">
-              <Edit3 className="h-8 w-8 text-primary" />
+
+        <div className="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map(({ icon, title, desc }) => (
+            <div
+              key={title}
+              className="flex flex-col items-center rounded-2xl border bg-background p-8 shadow-sm transition-all hover:shadow-md"
+            >
+              <div className="rounded-full bg-primary/10 p-4">{icon}</div>
+              <h3 className="mt-6 text-xl font-semibold">{title}</h3>
+              <p className="mt-2 text-center text-muted-foreground">{desc}</p>
             </div>
-            <h3 className="mt-6 text-xl font-bold">Journaling</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Capture your thoughts, ideas, and memories with rich text, images,
-              and more.
-            </p>
-          </div>
-          <div className="flex flex-col items-center rounded-lg border bg-background p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="rounded-full bg-primary/10 p-4">
-              <Calendar className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="mt-6 text-xl font-bold">Planning</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Organize your schedule with intuitive calendar views and event
-              management.
-            </p>
-          </div>
-          <div className="flex flex-col items-center rounded-lg border bg-background p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="rounded-full bg-primary/10 p-4">
-              <CheckSquare className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="mt-6 text-xl font-bold">Tasks</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Stay on top of your to-dos with powerful task management features.
-            </p>
-          </div>
-          <div className="flex flex-col items-center rounded-lg border bg-background p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="rounded-full bg-primary/10 p-4">
-              <Users className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="mt-6 text-xl font-bold">Characters</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Keep track of important people in your life and your interactions
-              with them.
-            </p>
-          </div>
-          <div className="flex flex-col items-center rounded-lg border bg-background p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="rounded-full bg-primary/10 p-4">
-              <Clock className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="mt-6 text-xl font-bold">Reminders</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Never forget important dates or tasks with customizable reminders.
-            </p>
-          </div>
-          <div className="flex flex-col items-center rounded-lg border bg-background p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="rounded-full bg-primary/10 p-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-8 w-8 text-primary"
-              >
-                <path d="M12 2v1" />
-                <path d="M12 21v1" />
-                <path d="M4.93 4.93l.7.7" />
-                <path d="M18.36 18.36l.7.7" />
-                <path d="M2 12h1" />
-                <path d="M21 12h1" />
-                <path d="M4.93 19.07l.7-.7" />
-                <path d="M18.36 5.64l.7-.7" />
-                <circle cx="12" cy="12" r="4" />
-              </svg>
-            </div>
-            <h3 className="mt-6 text-xl font-bold">Insights</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Gain valuable insights into your habits, productivity, and
-              personal growth.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </section>

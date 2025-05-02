@@ -1,4 +1,4 @@
-import { ArrowRight, CheckSquare } from "lucide-react";
+import { CheckSquare } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { CTAButton } from "./cta-section";

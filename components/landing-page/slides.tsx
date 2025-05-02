@@ -70,7 +70,15 @@ export default function Slides() {
     },
   ];
 
-  const extendToMinSize = (array: any[], minSize = 5) => {
+  const extendToMinSize = (
+    array: {
+      id: number;
+      title: string;
+      description: string;
+      imageUrl: string;
+    }[],
+    minSize = 5
+  ) => {
     if (array.length === 0) return []; // Handle edge case for empty input array
 
     const timesToExtend = Math.ceil(minSize / array.length); // Calculate how many times to extend

@@ -1,11 +1,10 @@
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 export function ImageFrame({
   data: { id, title, description, imageUrl = "/screenshots/chapters.png" },
   onClick,
-  isSelected,
-}: {
+}: // isSelected,
+{
   data: {
     id: number;
     title: string;
@@ -16,7 +15,11 @@ export function ImageFrame({
   isSelected?: boolean;
 }) {
   return (
-    <div onClick={onClick} className="relative mx-auto cursor-pointer group">
+    <div
+      key={id}
+      onClick={onClick}
+      className="relative mx-auto cursor-pointer group"
+    >
       <div className="text-primary font-semibold text-center">{title}</div>
       <div className="relative rounded-2xl bg-gradient-to-b from-primary/20 to-primary/5 p-2 shadow-xl">
         <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-primary/30 blur-2xl" />

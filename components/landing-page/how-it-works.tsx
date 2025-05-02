@@ -1,4 +1,3 @@
-import { ImageFrame } from "./ImageFrame";
 import Slides from "./slides";
 
 export function HowItWorks() {
