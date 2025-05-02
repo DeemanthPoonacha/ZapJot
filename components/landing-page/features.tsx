@@ -2,7 +2,6 @@ import {
   Calendar,
   Clock,
   Edit3,
-  FolderKanban,
   Paintbrush,
   Users,
   MonitorSmartphone,
@@ -12,7 +11,7 @@ const features = [
   {
     icon: <Edit3 className="h-8 w-8 text-primary" />,
     title: "Life Logging",
-    desc: "Document your days with journals, organize them into meaningful chapters, and revisit memories with ease.",
+    desc: "Capture your moments in journals, organize them into meaningful chapters, and effortlessly relive your favorite memories.",
   },
   {
     icon: <Calendar className="h-8 w-8 text-primary" />,
