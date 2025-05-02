@@ -6,6 +6,7 @@ import { Checkbox } from "../../ui/checkbox";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
 import { cn, formatDate } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import dayjs from "dayjs";
 
 export function TaskCard({
   task,
@@ -113,7 +114,15 @@ export function TaskCard({
             {task.dueDate && (
               <span className="text-xs text-muted-foreground flex gap-1 items-center">
                 <Calendar1 className="h-4 w-4" />
-                <span>Due: {formatDate(task.dueDate)}</span>
+                Due:
+                <span
+                  className={cn(
+                    "font-medium flex gap-1 items-center",
+                    dayjs(task.dueDate).isBefore() ? "line-through" : ""
+                  )}
+                >
+                  {formatDate(task.dueDate)}
+                </span>
               </span>
             )}
           </div>

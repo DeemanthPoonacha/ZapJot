@@ -12,7 +12,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (user && !loading) {
-      routerPush("/");
+      routerPush("/home");
     }
   }, [user, loading]);
 
@@ -20,5 +20,5 @@ export default function SignInPage() {
     return <CustomLoader />;
   }
 
-  return <div>{!user && <FirebaseAuthUI />}</div>;
+  return !user && <FirebaseAuthUI />;
 }
