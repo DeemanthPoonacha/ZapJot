@@ -21,7 +21,7 @@ export function CTASection() {
         </Button> */}
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            No credit card required. It's free to use!
+            No credit card required. It&apos;s free to use!
           </p>
         </div>
       </div>

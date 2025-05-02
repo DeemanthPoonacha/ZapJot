@@ -30,7 +30,7 @@ export const Hero = () => (
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <CheckSquare className="h-4 w-4 text-primary" />
-              <span>It's free to use</span>
+              <span>It&apos;s free to use</span>
             </div>
             <div className="flex items-center gap-1">
               <CheckSquare className="h-4 w-4 text-primary" />

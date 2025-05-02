@@ -117,9 +117,9 @@ export function Pricing() {
         <div className="mx-auto mt-16 max-w-3xl rounded-lg border bg-muted/50 p-8">
           <h3 className="text-xl font-bold">Looking for more?</h3>
           <p className="mt-2 text-muted-foreground">
-            We're constantly improving ZapJot. Premium features with advanced
-            capabilities are coming soon. Stay tuned for subscription options
-            that will take your productivity to the next level.
+            We&apos;re constantly improving ZapJot. Premium features with
+            advanced capabilities are coming soon. Stay tuned for subscription
+            options that will take your productivity to the next level.
           </p>
         </div>
       </div>

@@ -10,7 +10,7 @@ export function HowItWorks() {
             How ZapJot Works
           </h2>
           <p className="mt-4 text-muted-foreground md:text-xl">
-            Getting started is easy. Here's how you can transform your
+            Getting started is easy. Here&apos;s how you can transform your
             productivity in just a few steps.
           </p>
         </div>

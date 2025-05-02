@@ -9,8 +9,9 @@ export function Testimonials() {
             Loved by thousands
           </h2>
           <p className="mt-4 text-muted-foreground md:text-xl">
-            Don't just take our word for it. Here's what our users have to say
-            about ZapJot.
+            {
+              "Don't just take our word for it. Here's what our users have to say about ZapJot."
+            }
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -47,10 +48,9 @@ export function Testimonials() {
             </div>
             <blockquote className="mt-4 flex-1">
               <p className="text-muted-foreground">
-                "ZapJot has completely transformed how I organize my life. The
-                journaling feature helps me process my thoughts, and the task
-                management keeps me on track. It's like having a personal
-                assistant!"
+                {
+                  "ZapJot has completely transformed how I organize my life. The journaling feature helps me process my thoughts, and the task management keeps me on track. It's like having a personal assistant!"
+                }
               </p>
             </blockquote>
           </div>
@@ -87,9 +87,9 @@ export function Testimonials() {
             </div>
             <blockquote className="mt-4 flex-1">
               <p className="text-muted-foreground">
-                "As someone who juggles multiple projects, ZapJot has been a
-                game-changer. The interface is intuitive, and having everything
-                in one place saves me hours each week. Highly recommend!"
+                {
+                  "As someone who juggles multiple projects, ZapJot has been a game-changer. The interface is intuitive, and having everything in one place saves me hours each week. Highly recommend!"
+                }
               </p>
             </blockquote>
           </div>
@@ -124,9 +124,9 @@ export function Testimonials() {
             </div>
             <blockquote className="mt-4 flex-1">
               <p className="text-muted-foreground">
-                "I've tried dozens of productivity apps, but ZapJot is the first
-                one that actually stuck. The character tracking feature is
-                unique and helps me maintain meaningful relationships."
+                {
+                  "I've tried dozens of productivity apps, but ZapJot is the first one that actually stuck. The character tracking feature is unique and helps me maintain meaningful relationships."
+                }
               </p>
             </blockquote>
           </div>
