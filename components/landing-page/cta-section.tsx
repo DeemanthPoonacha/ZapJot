@@ -1,10 +1,12 @@
+"use client";
 import { ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "../layout/link/CustomLink";
+import { useAuth } from "@/lib/context/AuthProvider";
 
 export function CTASection() {
   return (
-    <section className="bg-muted/50 mb-20 md:mb-32 py-20 md:py-32">
+    <section className="bg-muted/50 py-20 md:py-32">
       <div className="container px-4 md:px-6">
         <div className="mx-auto max-w-3xl rounded-3xl bg-primary/15 p-8 text-center md:p-12 lg:p-16">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -30,7 +32,7 @@ export function CTASection() {
 }
 
 export function CTAButton({
-  className = "h-12 px-8",
+  className = "h-12 px-8 w-full",
   size = "lg",
   withArrow = true,
 }: {
@@ -38,10 +40,11 @@ export function CTAButton({
   size?: "lg" | "default" | "sm" | "icon" | null | undefined;
   withArrow?: boolean;
 }) {
+  const { user } = useAuth();
   return (
-    <Link href="/home">
+    <Link href="/home" className="w-full">
       <Button size={size} className={className}>
-        Get Started For Free
+        {user ? "Go to Home" : "Get Started For Free"}
         {withArrow && <ArrowRight className="ml-2 h-4 w-4" />}
       </Button>
     </Link>

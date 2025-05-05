@@ -2,6 +2,7 @@ import { CheckSquare } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { CTAButton } from "./cta-section";
+import { Link } from "../layout/link/CustomLink";
 
 export const Hero = () => (
   <section className="relative overflow-hidden py-20 md:py-32 lg:py-40">
@@ -23,9 +24,11 @@ export const Hero = () => (
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <CTAButton />
-            <Button size="lg" variant="outline" className="h-12 px-8">
-              Learn More
-            </Button>
+            <Link href="#how-it-works" className="w-full">
+              <Button size="lg" variant="outline" className="h-12 px-8 w-full">
+                Learn More
+              </Button>
+            </Link>
           </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">

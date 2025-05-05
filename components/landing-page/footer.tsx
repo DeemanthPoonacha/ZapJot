@@ -20,7 +20,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="#features"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Features
@@ -28,7 +28,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#pricing"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Pricing
@@ -36,57 +36,18 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#how-it-works"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Integrations
+                  How It Works
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#testimonials"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Changelog
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">
-              Company
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Contact
+                  Testimonials
                 </Link>
               </li>
             </ul>
@@ -118,6 +79,21 @@ export function Footer() {
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Cookie Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">
+              Support
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="#contact"
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Contact
                 </Link>
               </li>
             </ul>

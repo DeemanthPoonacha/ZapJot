@@ -1,6 +1,6 @@
 export function Pricing() {
   return (
-    <section id="pricing" className="py-20 md:py-32">
+    <section id="pricing" className="py-20 md:py-32 px-4 md:px-6">
       <div className="container">
         <div className="mx-auto text-center md:max-w-[58rem]">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">

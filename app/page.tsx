@@ -6,6 +6,7 @@ import { HowItWorks } from "../components/landing-page/how-it-works";
 import { Footer } from "../components/landing-page/footer";
 import { CTASection } from "@/components/landing-page/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
+import Contact from "@/components/landing-page/contact";
 
 export default function LandingPage() {
   return (
@@ -30,6 +31,9 @@ export default function LandingPage() {
 
         {/* CTA Section */}
         <CTASection />
+
+        {/* Contact Section */}
+        <Contact />
       </main>
 
       <Footer />
