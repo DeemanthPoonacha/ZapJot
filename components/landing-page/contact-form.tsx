@@ -92,7 +92,7 @@ export default function ContactForm() {
           </div>
           <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
           <p className="text-muted-foreground max-w-md">
-            Thank you for reaching out. We'll get back to you soon.
+            Thank you for reaching out. We&apos;ll get back to you soon.
           </p>
         </motion.div>
       ) : (

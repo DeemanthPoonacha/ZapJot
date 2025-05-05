@@ -9,8 +9,8 @@ const Contact = () => {
             Get in Touch
           </h2>
           <p className="mt-4 text-muted-foreground md:text-xl">
-            Have questions, feedback, or just want to say hello? We'd love to
-            hear from you.
+            Have questions, feedback, or just want to say hello? We&apos;d love
+            to hear from you.
           </p>
         </div>
 
