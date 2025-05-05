@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/context/AuthProvider";
 import { Link } from "../layout/link/CustomLink";
 import { CTAButton } from "./cta-section";
 
-export function HeaderAction() {
+export default function HeaderAction() {
   const { user } = useAuth();
   return (
     <div className="flex items-center gap-4">

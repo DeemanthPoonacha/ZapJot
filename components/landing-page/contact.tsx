@@ -1,4 +1,6 @@
-import ContactForm from "./contact-form";
+import dynamic from "next/dynamic";
+
+const ContactForm = dynamic(() => import("./contact-form"), {});
 
 const Contact = () => {
   return (

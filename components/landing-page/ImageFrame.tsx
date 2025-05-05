@@ -30,7 +30,6 @@ export function ImageFrame({
           height={600}
           alt="ZapJot App Preview"
           className="rounded-xl shadow-sm mx-auto"
-          priority
         />
       </div>
       <p className="w-full absolute p-2 text- mt-2 line-clamp-2 text-muted-foreground text-center !z-20">

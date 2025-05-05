@@ -1,6 +1,9 @@
 import { Logo } from "@/components/landing-page/Logo";
 import { Link } from "@/components/layout/link/CustomLink";
-import { HeaderAction } from "./HeaderAction";
+
+import dynamic from "next/dynamic";
+
+const HeaderAction = dynamic(() => import("./HeaderAction"), {});
 
 export function Header() {
   return (
