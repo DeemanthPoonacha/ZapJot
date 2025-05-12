@@ -30,6 +30,7 @@ export function JotDown() {
     coverImage: "",
     date: new Date().toISOString(), // Add default value for date
     location: "",
+    iv: "",
   };
 
   const form = useForm<z.infer<typeof createJournalSchema>>({

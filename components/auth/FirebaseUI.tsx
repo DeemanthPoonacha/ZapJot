@@ -3,6 +3,7 @@ import { auth } from "@/lib/services/firebase";
 import StyledFirebaseAuth from "./StyledAuthUI";
 import Image from "next/image";
 import { Link } from "../layout/link/CustomLink";
+import { setUserKey } from "@/lib/services/encryption";
 
 export default function FirebaseAuthUI() {
   // Configure FirebaseUI
@@ -19,15 +20,17 @@ export default function FirebaseAuthUI() {
     tosUrl: "/terms-of-service",
     // Privacy policy url
     privacyPolicyUrl: "/privacy-policy",
-
     // Callbacks
-    // callbacks: {
-    //   signInSuccessWithAuthResult: (authResult) => {
-    //     // You can add custom logic here after successful sign-in
-    //     routerPush("/");
-    //     return false; // Prevents redirect to signInSuccessUrl
-    //   },
-    // },
+    callbacks: {
+      signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+        // Check if the user is new
+        if (authResult.additionalUserInfo?.isNewUser) {
+          // User is new, perform any additional setup here
+          setUserKey(authResult.user.uid, authResult.user.email);
+        }
+        return true; // Prevents redirect to signInSuccessUrl
+      },
+    },
   };
 
   return (

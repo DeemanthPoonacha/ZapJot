@@ -73,6 +73,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
     coverImage: journal?.coverImage || "",
     date: journal?.date || new Date().toISOString(), // Add default value for date
     location: journal?.location || "",
+    iv: journal?.iv || "",
   };
   const form = useForm({
     resolver: zodResolver(createJournalSchema),

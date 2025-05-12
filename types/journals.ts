@@ -5,6 +5,7 @@ import { z } from "zod";
 export const createJournalSchema = z.object({
   title: z.string().default(formatDateTitle),
   content: z.string().optional(),
+  iv: z.string(),
   coverImage: z.string().optional(),
   location: z.string().optional(),
   gallery: z.array(z.string()).optional(), // List of image URLs (videos in future)
