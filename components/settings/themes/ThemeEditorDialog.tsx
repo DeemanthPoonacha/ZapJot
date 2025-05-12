@@ -43,7 +43,7 @@ export function ThemeFormDialog({
   const defaultValues = {
     name: "",
     colors: colorProperties.reduce(
-      (obj, prop) => ({ ...obj, [prop.id]: prop.defaultLight }),
+      (obj, prop) => ({ ...obj, [prop.id]: prop.hexColor }),
       {}
     ),
   };

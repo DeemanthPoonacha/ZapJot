@@ -1,11 +1,11 @@
 import PageLayout from "@/components/layout/PageLayout";
-import Profile from "@/components/Profile";
 import React from "react";
+import Account from "@/components/account/Account";
 
 const ProfilePage = () => {
   return (
-    <PageLayout headerProps={{ title: "Profile" }}>
-      <Profile />
+    <PageLayout headerProps={{ title: "Account" }}>
+      <Account />
     </PageLayout>
   );
 };

@@ -15,11 +15,9 @@ import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { logOut } from "@/lib/services/auth";
 import { Button } from "../ui/button";
-import { useSettings } from "@/lib/hooks/useSettings";
 
 export default function UserAvatarDropdown() {
   const { user } = useAuth();
-  useSettings();
 
   const { routerPush } = useNProgressRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -82,17 +80,17 @@ export default function UserAvatarDropdown() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => routerPush("/profile")}>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+        <DropdownMenuItem onClick={() => routerPush("/account")}>
+          <User />
+          <span>Account</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => routerPush("/settings")}>
-          <Settings className="mr-2 h-4 w-4" />
+          <Settings />
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} disabled={isLoading}>
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut />
           <span>{isLoading ? "Logging out..." : "Log out"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,4 +1,4 @@
-import { UserEncryptedKey } from "../services/encryption";
+import { UserEncryptedKey } from "@/types/user";
 
 // --- Encoding Utilities ---
 const encoder = new TextEncoder();

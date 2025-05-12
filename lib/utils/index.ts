@@ -492,3 +492,13 @@ export function removeCustomCssVariables(deletedThemeId: string) {
     document.head.removeChild(styleEl);
   }
 }
+
+export function getDeviceId() {
+  const key = "zapjot_device_id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(key, id);
+  }
+  return id;
+}

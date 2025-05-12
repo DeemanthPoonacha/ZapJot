@@ -133,7 +133,11 @@ export const deleteJournal = async (
   await deleteDoc(journalRef);
 };
 
-async function checkAndCreateNewChapter(userId: string, newChapterId: string) {
+export async function checkAndCreateNewChapter(
+  userId: string,
+  newChapterId: string,
+  description: string = "This chapter holds notes, thoughts, or entries that don't quite fit into any specific category or predefined chapter. It's a flexible space for miscellaneous ideas, spontaneous jottings, or anything you're unsure where to place—until you decide if it belongs elsewhere or deserves a chapter of its own."
+) {
   const chapterRef = doc(db, `users/${userId}/chapters/${newChapterId}`);
   const chapterSnapshot = await getDoc(chapterRef);
 
@@ -142,6 +146,7 @@ async function checkAndCreateNewChapter(userId: string, newChapterId: string) {
       id: generateIdByName(newChapterId) || DEFAULT_CHAPTER_ID,
       title:
         `${newChapterId[0].toUpperCase()}${newChapterId.slice(1)}` || "Others",
+      description,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });

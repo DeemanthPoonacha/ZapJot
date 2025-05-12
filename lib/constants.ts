@@ -19,15 +19,16 @@ export const ALL_MONTHS = [
 ];
 
 export const DEFAULT_CHAPTER_ID = "others";
+export const DEFAULT_THEME = "purple";
 
 export const colorProperties = [
-  { id: "background", name: "Background", defaultLight: "#FFFFFF" },
-  { id: "foreground", name: "Foreground", defaultLight: "#0F1729" },
-  { id: "primary", name: "Primary", defaultLight: "#1E293B" },
-  { id: "secondary", name: "Secondary", defaultLight: "#F1F5F9" },
-  { id: "accent", name: "Accent", defaultLight: "#F1F5F9" },
-  { id: "muted", name: "Muted", defaultLight: "#F1F5F9" },
-  { id: "border", name: "Border", defaultLight: "#E2E8F0" },
+  { id: "background", name: "Background", hexColor: "#FFFFFF" },
+  { id: "foreground", name: "Foreground", hexColor: "#0F1729" },
+  { id: "primary", name: "Primary", hexColor: "#1E293B" },
+  { id: "secondary", name: "Secondary", hexColor: "#F1F5F9" },
+  { id: "accent", name: "Accent", hexColor: "#F1F5F9" },
+  { id: "muted", name: "Muted", hexColor: "#F1F5F9" },
+  { id: "border", name: "Border", hexColor: "#E2E8F0" },
 ];
 
 // Default themes

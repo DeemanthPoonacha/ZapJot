@@ -3,7 +3,7 @@ import { auth } from "@/lib/services/firebase";
 import StyledFirebaseAuth from "./StyledAuthUI";
 import Image from "next/image";
 import { Link } from "../layout/link/CustomLink";
-import { setUserKey } from "@/lib/services/encryption";
+import { setUpUser } from "@/lib/services/user-config";
 
 export default function FirebaseAuthUI() {
   // Configure FirebaseUI
@@ -23,12 +23,13 @@ export default function FirebaseAuthUI() {
     // Callbacks
     callbacks: {
       signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+        console.log("🚀 ~ FirebaseAuthUI ~ redirectUrl:", redirectUrl);
         // Check if the user is new
         if (authResult.additionalUserInfo?.isNewUser) {
           // User is new, perform any additional setup here
-          setUserKey(authResult.user.uid, authResult.user.email);
+          setUpUser(authResult.user.uid, authResult.user.email);
         }
-        return true; // Prevents redirect to signInSuccessUrl
+        return false; // Prevents redirect to signInSuccessUrl
       },
     },
   };

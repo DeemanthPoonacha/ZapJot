@@ -33,7 +33,3 @@ export type NotificationsSettings = z.infer<typeof notificationsSchema>;
 export type NotificationsSettingsUpdate = z.infer<
   typeof notificationsUpdateSchema
 >;
-
-export type UserSettings = {
-  settings: Settings;
-};

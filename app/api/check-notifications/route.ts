@@ -10,9 +10,9 @@ import {
 } from "firebase/firestore";
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
-import { UserSettings } from "@/types/settings";
 import serviceAccountJson from "@/service_key.json";
 import { getMinutesRelative } from "@/lib/utils";
+import { UserInDb } from "@/types/user";
 
 if (!admin.apps.length) {
   const serviceAccount = serviceAccountJson as admin.ServiceAccount;
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
       const event = document.data();
       const userId = document.ref.path.split("/")[1];
       const userSnap = await getDoc(doc(db, "users", userId));
-      const user = userSnap.data() as UserSettings;
+      const user = userSnap.data() as UserInDb;
 
       const devices = user?.settings?.notifications?.devices || {};
 

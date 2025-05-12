@@ -6,11 +6,9 @@ import { useAuth } from "../context/AuthProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
-import {
-  NotificationsSettingsUpdate,
-  SettingsUpdate,
-  UserSettings,
-} from "@/types/settings";
+import { NotificationsSettingsUpdate, SettingsUpdate } from "@/types/settings";
+import { UserInDb } from "@/types/user";
+import { DEFAULT_THEME } from "../constants";
 
 export const SETTINGS_QUERY_KEY = "settings";
 
@@ -33,7 +31,7 @@ export const useSettings = () => {
 
       const snapshot = await getDoc(userRef);
 
-      return snapshot.exists() ? (snapshot.data() as UserSettings) : null;
+      return snapshot.exists() ? (snapshot.data() as UserInDb) : null;
     },
     // Only run query if user is logged in
     enabled: !!userId,
@@ -97,7 +95,7 @@ export const useSettings = () => {
 
       // If we're deleting the active theme, switch to light
       if (theme === themeId) {
-        setTheme("light");
+        setTheme(DEFAULT_THEME);
       }
     } catch (error) {
       console.error("Failed to delete theme:", error);

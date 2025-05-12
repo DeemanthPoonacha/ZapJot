@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Bell, Clock } from "lucide-react";
+import { getDeviceId } from "@/lib/utils";
 
 const FormSchema = z.object({
   enable_notifications: z.boolean().default(false),
@@ -52,6 +53,10 @@ export function NotificationSettings() {
         notifyMinsBefore: settings.notifications.notifyMinsBefore ?? 10,
       });
     }
+    console.log(
+      "🚀 ~ useEffect ~ settings.notifications.notifyMinsBefore :",
+      settings?.notifications.notifyMinsBefore
+    );
   }, [settings, form]);
 
   useEffect(() => {
@@ -221,7 +226,12 @@ export function NotificationSettings() {
               </div>
               <div className="min-w-32">
                 <Select
-                  disabled={!isSupported || isLoading}
+                  disabled={
+                    !settings?.notifications.devices?.[getDeviceId()]
+                      ?.enabled ||
+                    !isSupported ||
+                    isLoading
+                  }
                   onValueChange={(value) => {
                     const intValue = parseInt(value, 10);
                     if (isNaN(intValue)) {
@@ -252,14 +262,4 @@ export function NotificationSettings() {
       </form>
     </Form>
   );
-}
-
-export function getDeviceId() {
-  const key = "zapjot_device_id";
-  let id = localStorage.getItem(key);
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem(key, id);
-  }
-  return id;
 }

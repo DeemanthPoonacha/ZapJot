@@ -1,11 +1,7 @@
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { generateEncryptedUserKey } from "../utils/encryption";
-
-export type UserEncryptedKey = {
-  encryptedKey: string;
-  iv: string;
-};
+import { UserEncryptedKey } from "@/types/user";
 
 export async function setUserKey(userId: string, email: string) {
   try {
