@@ -44,13 +44,14 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
       await deleteAccount(data);
       toast.success("Account deleted successfully!");
       reset();
-    } catch (e: any) {
-      console.error("Account deletion failed:", e);
-      if (e.code === "auth/wrong-password") setError("Incorrect password!");
-      else if (e.code === "auth/too-many-requests")
+    } catch (e: unknown) {
+      const err = e as { code: string; message: string };
+      console.error("Account deletion failed:", err);
+      if (err.code === "auth/wrong-password") setError("Incorrect password!");
+      else if (err.code === "auth/too-many-requests")
         setError("Something went wrong. Please try again later.");
       else {
-        setError(e.message);
+        setError(err.message);
       }
       toast.error("Error deleting account!");
     } finally {
