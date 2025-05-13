@@ -23,7 +23,7 @@ const messaging = async () => {
     console.error("Push notifications are not supported in this browser.");
     return null;
   }
-  return  getMessaging(app);
+  return getMessaging(app);
 };
 
 // const analytics = getAnalytics(app);

@@ -158,7 +158,7 @@ export default function Profile() {
   return (
     <div className="container mx-auto space-y-6 py-6">
       <div className="flex flex-col gap-4">
-        <p className="leading-none font-semibold">Profile Information</p>
+        <p className="leading-none text-base font-semibold">Profile Information</p>
         <p className="text-muted-foreground text-sm">
           Update your profile information.
         </p>
@@ -168,12 +168,6 @@ export default function Profile() {
             onSubmit={profileForm.handleSubmit(handleProfileUpdate)}
             className="space-y-4"
           >
-            <UploadAvatar
-              form={profileForm}
-              fieldName="photoURL"
-              isImageUploading={isImageUploading}
-              setIsImageUploading={setIsImageUploading}
-            />
             <FormField
               control={profileForm.control}
               name="displayName"
@@ -188,6 +182,12 @@ export default function Profile() {
               )}
             />
 
+            <UploadAvatar
+              form={profileForm}
+              fieldName="photoURL"
+              isImageUploading={isImageUploading}
+              setIsImageUploading={setIsImageUploading}
+            />
             <Button
               type="submit"
               className="w-full"

@@ -8,6 +8,8 @@ import {
   sendPasswordResetEmail,
   deleteUser,
   reauthenticateWithPopup,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import { auth } from "./firebase";
 import { deleteUserData } from "./user-config";
@@ -33,26 +35,28 @@ export const resetPassword = async (email: string) => {
   return sendPasswordResetEmail(auth, email);
 };
 
-export const deleteAccount = async () => {
+export const deleteAccount = async (reauthData?: {
+  email?: string;
+  password?: string;
+}) => {
   const user = auth.currentUser;
   if (!user) throw new Error("No user is currently signed in.");
-  try {
-    // Optional: Delete user data from Firestore/Storage
-    await deleteUserData(user.uid);
 
-    // Attempt to delete the user
-    await deleteUser(user);
-  } catch (error) {
-    if ((error as { code: string }).code === "auth/requires-recent-login") {
-      // Reauthenticate with Google popup
-      const provider = new GoogleAuthProvider();
-      await reauthenticateWithPopup(user, provider);
+  const providerId = user.providerData[0]?.providerId;
 
-      // Try deleting again after reauthentication
-      await deleteUserData(user.uid); // In case data wasn't deleted before
-      await deleteUser(user);
-    } else {
-      throw error;
+  if (providerId === "google.com") {
+    await reauthenticateWithPopup(user, new GoogleAuthProvider());
+  } else if (providerId === "password") {
+    const { email, password } = reauthData || {};
+    if (!email || !password) {
+      throw new Error("Email and password required for reauthentication.");
     }
+    const credential = EmailAuthProvider.credential(email, password);
+    await reauthenticateWithCredential(user, credential);
+  } else {
+    throw new Error(`Unsupported provider: ${providerId}`);
   }
+
+  await deleteUserData(user.uid);
+  await deleteUser(user);
 };
