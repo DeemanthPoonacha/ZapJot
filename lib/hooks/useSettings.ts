@@ -42,13 +42,17 @@ export const useSettings = () => {
     useMutation({
       mutationFn: async (data: SettingsUpdate) => {
         if (!userRef) return {};
-        await setDoc(userRef, {
-          settings: {
-            ...userData?.settings,
-            ...data,
-            updatedAt: new Date().toISOString(),
+        await setDoc(
+          userRef,
+          {
+            settings: {
+              ...userData?.settings,
+              ...data,
+              updatedAt: new Date().toISOString(),
+            },
           },
-        });
+          { merge: true }
+        );
       },
       onSuccess: () => {
         queryClient.invalidateQueries({

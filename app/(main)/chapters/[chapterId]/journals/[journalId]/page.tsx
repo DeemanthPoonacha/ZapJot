@@ -20,13 +20,14 @@ import { toast } from "@/components/ui/sonner";
 import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 import { useSearchParams } from "next/navigation";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
+import { CustomLoader } from "@/components/layout/CustomLoader";
 
 const JournalPage = () => {
   const searchParams = useSearchParams();
   const defaultCamOpen = searchParams.get("isCamOpen");
 
   const { chapterId, journalId } = useParams();
-  const { data: journal } = useJournal(
+  const { data: journal, isLoading } = useJournal(
     chapterId! as string,
     journalId! as string
   );
@@ -113,7 +114,9 @@ const JournalPage = () => {
       }}
     >
       {!isEditing ? (
-        journal && (
+        isLoading ? (
+          <CustomLoader />
+        ) : journal ? (
           <div>
             <JournalCard
               onClick={() =>
@@ -140,6 +143,10 @@ const JournalPage = () => {
                 title={selectedMedia.title}
               />
             )}
+          </div>
+        ) : (
+          <div className="flex h-[80vh] items-center justify-center">
+            Could not load journal data
           </div>
         )
       ) : (

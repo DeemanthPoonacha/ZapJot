@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import NextLink from "next/link";
 import { forwardRef } from "react";
 import NProgress from "nprogress";
@@ -38,13 +38,13 @@ export function NProgressDone() {
   return null;
 }
 
-import { useRouter } from "next/navigation";
-
 export function useNProgressRouter() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const routerPush = (href: string) => {
     NProgress.start();
+    if (href === pathname) NProgress.done();
     router.push(href);
   };
 
