@@ -156,9 +156,11 @@ export default function Profile() {
   if (loading) return <CustomLoader />;
 
   return (
-    <div className="container mx-auto space-y-6 py-6">
+    <div className="container mx-auto space-y-6 pb-6">
       <div className="flex flex-col gap-4">
-        <p className="leading-none text-base font-semibold">Profile Information</p>
+        <p className="leading-none text-base font-semibold">
+          Profile Information
+        </p>
         <p className="text-muted-foreground text-sm">
           Update your profile information.
         </p>
@@ -207,7 +209,7 @@ export default function Profile() {
       </div>
 
       {!isGoogleUser && (
-        <Tabs defaultValue="email">
+        <Tabs tabValues={["email", "password"]} defaultValue="email">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="h-4 w-4" />

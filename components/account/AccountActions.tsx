@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { LogOut, Trash2 } from "lucide-react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import { toast } from "../ui/sonner";
+import { Separator } from "../ui/separator";
 
 const AccountActions = () => {
   const SIGN_IN_ROUTE = "/sign-in";
@@ -45,7 +46,7 @@ const AccountActions = () => {
         </div>
       </div>
 
-      <hr />
+      <Separator />
 
       <div className="flex items-center justify-between rounded-lg transition-all duration-200">
         <div className="flex items-center gap-3">

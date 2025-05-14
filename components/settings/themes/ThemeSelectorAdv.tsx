@@ -20,7 +20,11 @@ export default function ThemesPage() {
       <div className="mt-4 mx-auto">
         <h2 className="text-lg font-semibold">UI Components Preview</h2>
 
-        <Tabs defaultValue="components" className="w-full">
+        <Tabs
+          tabValues={["components", "colors"]}
+          defaultValue="components"
+          className="w-full"
+        >
           <TabsList className="">
             <TabsTrigger value="components">Components</TabsTrigger>
             <TabsTrigger value="colors">Color Palette</TabsTrigger>
@@ -62,7 +66,7 @@ export default function ThemesPage() {
               </div>
             </div>
 
-            <div className="p-6 border rounded-lg">
+            <div className="mt-6 p-6 border rounded-lg">
               <h3 className="text-lg font-medium mb-4">Text Examples</h3>
               <div className="space-y-2">
                 <p className="text-foreground">
@@ -83,7 +87,7 @@ export default function ThemesPage() {
             </div>
           </TabsContent>
 
-          <TabsContent value="colors" className="space-y-6 p-2 rounded-lg">
+          <TabsContent value="colors" className="space-y-6 px-0 rounded-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
                 { name: "background", label: "Background" },
@@ -98,7 +102,7 @@ export default function ThemesPage() {
               ].map((color) => (
                 <Card key={color.name} className="p-4 border rounded-lg">
                   <CardHeader
-                    className={`w-full h-16 mb-2 rounded bg-foreground bg-${color.name}`}
+                    className={`w-full h-16 mb-2 rounded bg-foreground bg-${color.name} border`}
                   ></CardHeader>
                   <p className="font-medium">{color.label}</p>
                   <p className="text-sm text-muted-foreground">{color.name}</p>

@@ -217,7 +217,10 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
               transition={{ duration: 0.2 }}
               className="overflow-hidden w-full border-t pt-2"
             >
-              <Tabs defaultValue="overview">
+              <Tabs
+                tabValues={["overview", "schedule", "budget"]}
+                defaultValue="overview"
+              >
                 <TabsList className="mb-4 grid w-full grid-cols-3 bg-muted/50">
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="schedule">Schedule</TabsTrigger>

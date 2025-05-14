@@ -21,7 +21,7 @@ const ItineraryList = () => {
   };
 
   return (
-    <div className="space-y-4 mb-8">
+    <div className="space-y-4 mb-8 pb-4">
       {isLoading ? (
         Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-36 w-full" />

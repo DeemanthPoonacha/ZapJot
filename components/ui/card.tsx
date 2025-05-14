@@ -137,7 +137,7 @@ function GridCardWithOverlay({
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300" />
 
       {/* Text content */}
-      <div className="absolute inset-0 p-4 flex flex-col justify-end z-10">
+      <div className="absolute inset-0 p-4 pb-3 flex flex-col justify-end z-10">
         <h3 className="text-lg font-semibold text-white drop-shadow-md truncate">
           {title}
         </h3>
@@ -146,11 +146,11 @@ function GridCardWithOverlay({
         )}
         <div className="flex justify-between">
           <p className="text-xs text-white/60 mt-1 flex gap-1 items-center">
-            <Calendar1 size={16} /> {formatDateTitle(date)}
+            <Calendar1 size={16} className="mb-1"/> {formatDateTitle(date)}
           </p>
           {location && (
             <p className="text-xs text-white/60 mt-1 flex gap-1 items-center">
-              <MapPin size={16} /> {location}
+              <MapPin size={16} className="mb-1/2"/> {location}
             </p>
           )}
         </div>

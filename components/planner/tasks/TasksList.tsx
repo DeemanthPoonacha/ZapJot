@@ -48,7 +48,7 @@ const TasksList = () => {
       ) : (
         <>
           {/* In-Progress Tasks */}
-          <div className="pb-12">
+          <div className="pb-8">
             <div className="flex justify-between items-center pb-4">
               <span className="text-lg font-semibold">Pending</span>
               {`${pendingTasks?.length} ${getPluralWord(
@@ -88,7 +88,7 @@ const TasksList = () => {
           </div>
 
           {/* Completed Tasks */}
-          <div className="pb-12">
+          <div className="pb-8">
             <div className="flex justify-between items-center pb-4">
               <span className="text-lg font-semibold">Completed</span>
               {`${completedTasks?.length} ${getPluralWord(

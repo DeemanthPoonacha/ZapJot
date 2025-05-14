@@ -16,7 +16,12 @@ export default function PlannerPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const endDate = selectedDate ? dayjs(selectedDate) : dayjs().add(2, "days");
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+    <Tabs
+      tabValues={["tasks", "events", "goals", "itineraries"]}
+      value={activeTab}
+      onValueChange={onTabChange}
+      className="w-full"
+    >
       <TabsList className="grid w-full grid-cols-4 bg-muted/50 md:h-16 mb-2">
         <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="tasks">
           <ListCheck /> Tasks
