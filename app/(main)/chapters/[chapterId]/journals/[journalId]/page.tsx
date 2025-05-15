@@ -21,6 +21,7 @@ import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 import { useSearchParams } from "next/navigation";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import { CustomLoader } from "@/components/layout/CustomLoader";
+import { WysiwygViewer } from "@/components/ui/wysiwyg";
 
 const JournalPage = () => {
   const searchParams = useSearchParams();
@@ -130,7 +131,9 @@ const JournalPage = () => {
               journal={journal as Journal}
             />
             {journal.content && (
-              <p className="mt-2 px-4 break-words">{journal.content}</p>
+              <p className="mt-2 px-4 break-words">
+                <WysiwygViewer html={journal.content} />
+              </p>
             )}
             {!!selectedMedia?.src && (
               <CloudinaryMediaModal

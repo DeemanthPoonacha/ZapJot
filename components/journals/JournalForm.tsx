@@ -28,6 +28,7 @@ import {
 import { toast } from "../ui/sonner";
 import DatePicker from "../ui/date-picker";
 import UploadImage from "../ui/upload-image";
+import WysiwygEditor from "../ui/wysiwyg";
 
 interface JournalFormProps {
   chapterId: string;
@@ -208,10 +209,10 @@ const JournalForm: React.FC<JournalFormProps> = ({
           control={form.control}
           name="content"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>Content</FormLabel>
               <FormControl>
-                <Textarea {...field} placeholder="Journal content" />
+                <WysiwygEditor {...field} initialValue={field.value} />
               </FormControl>
               <FormMessage />
             </FormItem>

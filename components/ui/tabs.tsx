@@ -55,7 +55,8 @@ function Tabs({
       {React.Children.map(children, (child) => {
         if (
           React.isValidElement(child) &&
-          (child.type as any).displayName === "TabsContent"
+          // @ts-expect-error: 'displayName' is a custom property
+          child.type.displayName === "TabsContent"
         ) {
           return React.cloneElement(
             child as React.ReactElement<{ swipeHandlers?: SwipeableHandlers }>,
