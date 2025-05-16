@@ -8,6 +8,7 @@ import { useEvents } from "@/lib/hooks/useEvents";
 import dayjs from "dayjs";
 import { Timestamp } from "firebase/firestore";
 import { getPluralWord } from "@/lib/utils";
+import Image from "next/image";
 
 export function HomeHeader() {
   const { user, loading } = useAuth();
@@ -27,7 +28,7 @@ export function HomeHeader() {
 
   if (loading) return <Skeleton className="h-44 rounded-md" />;
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary to-primary/60 text-primary-foreground gap-4">
+    <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-primary to-primary/60 text-primary-foreground gap-4">
       <h1 className="text-2xl font-semibold">{greet()}</h1>
       <p className="text-sm opacity-90">
         {`Here's what's happening at a glance.`}
@@ -69,6 +70,13 @@ export function HomeHeader() {
           )
         )}
       </div>
+      <Image
+        className="absolute opacity-10 right-0 sm:right-10 top-1/2 -translate-y-1/2 rotate-[10deg] w-1/2 sm:w-1/3"
+        src="/z_icon.png"
+        alt="logo"
+        width={300}
+        height={300}
+      />
     </Card>
   );
 }

@@ -103,7 +103,7 @@ export default function GoalCard({
               Current
             </span>
 
-            <span className="font-semibold">
+            <span className="font-semibold text-primary">
               {goal.progress} {goal.unit}
             </span>
           </div>
@@ -113,7 +113,7 @@ export default function GoalCard({
               Objective
             </span>
 
-            <span className="font-semibold">
+            <span className="font-semibold text-primary">
               {goal.objective} {goal.unit}
             </span>
           </div>

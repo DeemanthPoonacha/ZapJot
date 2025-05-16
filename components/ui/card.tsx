@@ -117,6 +117,7 @@ function GridCardWithOverlay({
       {...props}
       className={cn(
         "group relative h-32 overflow-hidden rounded-2xl shadow-lg",
+        "transition-all hover:border-l-4 hover:border-l-primary",
         className
       )}
     >
@@ -146,11 +147,11 @@ function GridCardWithOverlay({
         )}
         <div className="flex justify-between">
           <p className="text-xs text-white/60 mt-1 flex gap-1 items-center">
-            <Calendar1 size={16} className="mb-1"/> {formatDateTitle(date)}
+            <Calendar1 size={16} className="mb-1" /> {formatDateTitle(date)}
           </p>
           {location && (
             <p className="text-xs text-white/60 mt-1 flex gap-1 items-center">
-              <MapPin size={16} className="mb-1/2"/> {location}
+              <MapPin size={16} className="mb-1/2" /> {location}
             </p>
           )}
         </div>

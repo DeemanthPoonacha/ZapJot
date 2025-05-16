@@ -16,7 +16,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
     <Link
       href={`/characters/${character.id}`}
       key={character.id}
-      className="transition-transform hover:scale-[1.02] focus:outline-none rounded-lg"
+      // className="transition-transform hover:scale-[1.02] focus:outline-none rounded-lg"
     >
       <ListCard>
         <CardContent className="p-4">

@@ -4,6 +4,7 @@ import { Edit3 } from "lucide-react";
 import { Theme } from "@/types/themes";
 import { ThemePreview } from "./ThemePreview";
 import DeleteConfirm from "@/components/ui/delete-confirm";
+import ThemedCanvasImage from "@/components/layout/themed-image";
 
 interface ThemeCardProps {
   theme: Theme;
@@ -38,7 +39,16 @@ export function ThemeCard({
         className="p-3 font-medium text-center border-b flex justify-between items-center"
         style={{ borderColor: colors.border }}
       >
-        <span>{theme.name}</span>
+        <div className="flex items-center gap-2">
+          <ThemedCanvasImage
+            src="/greyed_out_logo_md.svg"
+            width={42}
+            height={44}
+            alt="zapjot"
+            color={colors.primary}
+          />
+          <span>{theme.name}</span>
+        </div>
         {theme.type === "custom" && (
           <div className="flex gap-2">
             <Button

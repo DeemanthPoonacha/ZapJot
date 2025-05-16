@@ -2,9 +2,17 @@
 import { useAuth } from "@/lib/context/AuthProvider";
 import { Link } from "../layout/link/CustomLink";
 import { CTAButton } from "./cta-section";
+import { useEffect } from "react";
+import { useSettings } from "@/lib/hooks/useSettings";
 
 export default function HeaderAction() {
   const { user } = useAuth();
+  const { handleThemeChange } = useSettings();
+
+  useEffect(() => {
+    handleThemeChange("purple");
+  }, []);
+
   return (
     <div className="flex items-center gap-4">
       {!user && (

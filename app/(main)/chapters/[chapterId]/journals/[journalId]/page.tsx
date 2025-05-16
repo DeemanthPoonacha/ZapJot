@@ -75,10 +75,12 @@ const JournalPage = () => {
               <EllipsisVertical size={20} />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                <SquarePen size={16} />
-                Edit
-              </DropdownMenuItem>
+              {!isEditing && (
+                <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                  <SquarePen size={16} />
+                  Edit
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault(); // Prevents menu from closing too soon
@@ -118,7 +120,7 @@ const JournalPage = () => {
         isLoading ? (
           <CustomLoader />
         ) : journal ? (
-          <div>
+          <div className="flex flex-col gap-4">
             <JournalCard
               onClick={() =>
                 setSelectedMedia({
@@ -131,9 +133,9 @@ const JournalPage = () => {
               journal={journal as Journal}
             />
             {journal.content && (
-              <p className="mt-2 px-4 break-words">
+              <div className="mt-2 px-4 break-words">
                 <WysiwygViewer html={journal.content} />
-              </p>
+              </div>
             )}
             {!!selectedMedia?.src && (
               <CloudinaryMediaModal

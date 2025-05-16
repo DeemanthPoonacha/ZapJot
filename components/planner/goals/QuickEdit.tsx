@@ -83,7 +83,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
         </span>
         <div className="flex items-center">
           <Button
-            variant="outline"
+            variant="default"
             size="icon"
             className="h-8 w-8 rounded-r-none"
             onClick={decrementObjective}
@@ -100,7 +100,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
             min="1"
           />
           <Button
-            variant="outline"
+            variant="default"
             size="icon"
             className="h-8 w-8 rounded-l-none"
             disabled={isPending}
@@ -118,7 +118,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
         </span>
         <div className="flex items-center">
           <Button
-            variant="outline"
+            variant="default"
             size="icon"
             className="h-8 w-8 rounded-r-none"
             onClick={decrementProgress}
@@ -135,7 +135,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
             min="0"
           />
           <Button
-            variant="outline"
+            variant="default"
             size="icon"
             className="h-8 w-8 rounded-l-none"
             disabled={isPending}
@@ -151,7 +151,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
           <Hourglass className="w-4 h-4" />
           Remaining
         </span>
-        <span className="font-semibold text-sm">
+        <span className="font-semibold text-primary text-sm">
           {remaining} {goal.unit}
         </span>
       </div>

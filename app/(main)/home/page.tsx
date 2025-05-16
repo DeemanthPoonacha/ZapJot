@@ -8,13 +8,21 @@ import { TodaysFocus } from "@/components/home/todays-focus";
 import PageLayout from "@/components/layout/PageLayout";
 import { PendingTasks } from "@/components/home/pending-tasks";
 import { JotDown } from "@/components/home/jot-down";
-import Image from "next/image";
+// import Image from "next/image";
+import ThemedCanvasImage from "@/components/layout/themed-image";
 
 export default function HomePage() {
   return (
     <PageLayout>
       <PageHeader
-        icon={<Image src="/logo.png" width={42} height={42} alt="zapjot" />}
+        icon={
+          <ThemedCanvasImage
+            src="/greyed_out_logo_md.svg"
+            width={42}
+            height={44}
+            alt="zapjot"
+          />
+        }
         title="ZapJot"
       />
       <div className="space-y-6">

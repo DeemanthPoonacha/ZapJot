@@ -17,7 +17,7 @@ const WysiwygEditor: React.FC<Props> = ({ initialValue = "", onChange }) => {
       value={content}
       config={{
         readonly: false,
-        height: 400,
+        minHeight: 400,
         theme: "default",
         width: "100%",
         maxWidth: "100%",
