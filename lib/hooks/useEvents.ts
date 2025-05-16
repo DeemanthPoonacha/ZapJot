@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/context/AuthProvider";
 
 import { EventCreate, EventsFilter, EventUpdate } from "@/types/events";
 import { useCharacters } from "./useCharacters";
-import { updateEventOccurrence } from "../utils";
+import { updateEventOccurrence } from "../utils/events";
 import { useSettings } from "./useSettings";
 
 const EVENT_QUERY_KEY = "events";

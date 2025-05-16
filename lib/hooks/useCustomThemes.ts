@@ -12,7 +12,10 @@ import { Theme, ThemeCreate, ThemeUpdate } from "@/types/themes";
 import { defaultThemes } from "@/lib/constants";
 import { useAuth } from "../context/AuthProvider";
 import { db } from "../services/firebase";
-import { addCustomCssVariables, removeCustomCssVariables } from "../utils";
+import {
+  addCustomCssVariables,
+  removeCustomCssVariables,
+} from "../utils/colors";
 import { useTheme } from "next-themes";
 
 export const THEMES_QUERY_KEY = "themes";

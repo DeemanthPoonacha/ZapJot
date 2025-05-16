@@ -15,7 +15,7 @@ import { createJournalSchema, Journal, JournalCreate } from "@/types/journals";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useJournalMutations } from "@/lib/hooks/useJournals";
-import { GetDateTime } from "@/lib/utils";
+import { GetDateTime } from "@/lib/utils/date-time";
 import {
   Form,
   FormControl,

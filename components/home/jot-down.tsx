@@ -18,7 +18,7 @@ import {
 import { toast } from "../ui/sonner";
 import { createJournalSchema, JournalCreate } from "@/types/journals";
 import { useJournalMutations } from "@/lib/hooks/useJournals";
-import { GetDateTime } from "@/lib/utils";
+import { GetDateTime } from "@/lib/utils/date-time";
 import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
 import { useNProgressRouter } from "../layout/link/CustomLink";
 

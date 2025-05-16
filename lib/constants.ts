@@ -1,4 +1,4 @@
-import { getDates } from "@/lib/utils";
+import { getDates } from "./utils/date-time";
 import { Theme } from "@/types/themes";
 
 export const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

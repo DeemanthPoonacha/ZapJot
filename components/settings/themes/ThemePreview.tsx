@@ -1,4 +1,4 @@
-import { invertColor } from "@/lib/utils";
+import { invertColor } from "@/lib/utils/colors";
 
 interface ThemePreviewProps {
   colors: Record<string, string>;

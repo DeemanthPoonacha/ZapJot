@@ -11,7 +11,7 @@ import {
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
 import serviceAccountJson from "@/service_key.json";
-import { getMinutesRelative } from "@/lib/utils";
+import { getMinutesRelative } from "@/lib/utils/date-time";
 import { UserInDb } from "@/types/user";
 
 if (!admin.apps.length) {

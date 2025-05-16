@@ -1,4 +1,4 @@
-import { formatDateTitle } from "@/lib/utils";
+import { formatDateTitle } from "@/lib/utils/date-time";
 import { z } from "zod";
 
 // Base schema for creating a journal

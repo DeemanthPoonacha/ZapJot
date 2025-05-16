@@ -13,7 +13,7 @@ import {
 import { Button } from "../../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "../../ui/progress";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils/date-time";
 import QuickEdit from "./QuickEdit";
 
 export default function GoalCard({

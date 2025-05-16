@@ -6,7 +6,7 @@ import { Link } from "@/components/layout/link/CustomLink";
 import { useTasks } from "@/lib/hooks/useTasks";
 import { Skeleton } from "../ui/skeleton";
 import usePlanner from "@/lib/hooks/usePlanner";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils/date-time";
 
 export function PendingTasks() {
   const { data: tasks, isLoading } = useTasks({

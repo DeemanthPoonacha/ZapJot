@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@/components/layout/link/CustomLink";
-import Image from "next/image";
 import ThemedCanvasImage from "./themed-image";
 
 export const allRoutes = [
@@ -55,7 +54,12 @@ export function NavigationBar() {
         href="/"
         className="flex h-14 items-center px-4 font-semibold text-lg mb-6 py-4 border-b gap-2"
       >
-        <ThemedCanvasImage src="/logo.png" width={42} height={42} alt="zapjot" />
+        <ThemedCanvasImage
+          src="/logo.png"
+          width={42}
+          height={42}
+          alt="zapjot"
+        />
         ZapJot
       </Link>
       <div className="space-y-2 px-2">

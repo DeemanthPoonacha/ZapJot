@@ -4,7 +4,8 @@ import { Calendar1, Edit, Star } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/utils/date-time";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import dayjs from "dayjs";
 

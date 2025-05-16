@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { cn, formatDateTitle } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { formatDateTitle } from "@/lib/utils/date-time";
 import { Calendar1, MapPin } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 

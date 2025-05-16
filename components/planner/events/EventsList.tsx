@@ -9,7 +9,8 @@ import Empty from "../../Empty";
 import { CalendarClock, RefreshCw } from "lucide-react";
 import { Skeleton } from "../../ui/skeleton";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
-import { getPluralWord, groupEventsByDate } from "@/lib/utils";
+import { getPluralWord } from "@/lib/utils";
+import { groupEventsByDate } from "@/lib/utils/events";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 

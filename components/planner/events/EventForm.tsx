@@ -19,7 +19,9 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { cn, getDates, getNextOccurrence } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { getNextOccurrence } from "@/lib/utils/events";
+import { getDates } from "@/lib/utils/date-time";
 import { useEventMutations } from "@/lib/hooks/useEvents";
 import {
   createEventSchema,
