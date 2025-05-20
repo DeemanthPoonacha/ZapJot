@@ -72,14 +72,6 @@ export function Footer() {
                 Terms of Service
               </Link>
             </li>
-            <li>
-              <Link
-                href="/#"
-                className="text-sm text-muted-foreground hover:text-foreground"
-              >
-                Cookie Policy
-              </Link>
-            </li>
           </ul>
         </div>
         <div>

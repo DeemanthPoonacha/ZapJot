@@ -2,53 +2,102 @@
 
 **Effective Date:** 2025-05-20
 
-We at **ZapJot** respect your privacy. This policy explains how we collect, use, and protect your data when you use our Services.
+We at **ZapJot** value your privacy. This Privacy Policy describes how we collect, use, and safeguard your information when you use our Services.
+
+---
 
 ## 1. Data We Collect
 
-- **Account Info:** Email address, name, and authentication details.
-- **Content:** Journals, planners, characters, etc., created and managed by you.
-- **Usage Data:** App usage statistics and crash reports (anonymous).
+We collect only the data necessary to provide a secure and seamless experience:
+
+- **Account Information:** Your email address, name, and authentication data via Firebase Authentication.
+- **User Content:** Journals, planners, tasks, characters, goals, and other information you create.
+- **Metadata:** Timestamps, chapter titles, tags, and other non-sensitive metadata used for search and filtering.
+- **App Usage Data (Anonymous):** Crash logs, app performance data, and basic usage statistics to improve the service. No personally identifiable information is included.
+
+---
 
 ## 2. Client-Side Encryption
 
-We use **end-to-end AES encryption** for your journal content. Only you can decrypt your journals. Even we cannot access or read your encrypted entries.
+Your privacy is our priority. We use **end-to-end AES encryption** for all journal content:
 
-- Metadata (like creation date, chapter title, tags) may be stored unencrypted to enable features like search and filtering.
-- Encryption keys are securely stored on your device and in Firestore encrypted using a key derived from your Firebase Auth credentials.
+- Only **you** can decrypt your encrypted journal entries. Not even ZapJot has access to your private content.
+- Metadata (e.g., chapter titles, creation dates) may be stored in plaintext to support functionality like filtering and search.
+- Your encryption key is stored securely on your device and in Firestore, where it is encrypted using a key derived from your Firebase Auth credentials.
+
+---
 
 ## 3. How We Use Your Data
 
-- To operate and improve the app.
-- To provide support and fix bugs.
-- To deliver features like reminders and notifications.
+We use your information strictly to:
 
-We **do not sell or share your personal data** with advertisers or third parties.
+- Provide and improve the core features of ZapJot.
+- Deliver essential functionality, such as reminders, notifications, and secure backups.
+- Diagnose errors, fix bugs, and support your experience.
+
+We **do not sell, trade, or share your personal data** with advertisers or any third parties.
+
+---
 
 ## 4. Third-Party Services
 
-We may use Firebase, Firestore, and other secure cloud services for authentication, database storage, and analytics. These services have their own privacy policies.
+ZapJot uses reputable and secure services, including:
+
+- **Firebase Authentication** – for login and secure session handling.
+- **Firestore** – for storing your data safely.
+- **Firebase Crashlytics** (optional/anonymous) – to diagnose crashes and app issues.
+
+These providers have their own privacy practices. We recommend reviewing [Firebase’s Privacy Policy](https://firebase.google.com/support/privacy) for more information.
+
+---
 
 ## 5. Your Rights
 
-You can:
+You have full control over your data:
 
-- View, edit, or delete your content.
-- Export your data.
-- Request account deletion at any time.
+- View or edit your content anytime from the app.
+- Export your journal and planner data in a readable format.
+- Permanently delete your account and all associated data upon request.
+
+To initiate data export or deletion, contact support or use in-app settings (if available).
+
+---
 
 ## 6. Data Retention
 
-We retain your content as long as your account is active. Upon deletion, your content (including encrypted journals) will be permanently erased from our servers.
+- Your data is retained only while your account is active.
+- When you delete your account, all your data — including encrypted journals — is permanently removed from our servers.
+
+---
 
 ## 7. Children’s Privacy
 
-ZapJot is not intended for users under 13. We do not knowingly collect data from children without parental consent.
+ZapJot is not intended for children under the age of 13. We do not knowingly collect personal data from children without verified parental consent. If we become aware of such data, we will delete it promptly.
 
-## 8. Security
+---
 
-We take strong security measures, including encryption and secure authentication, but no system is 100% secure. You are responsible for protecting your credentials.
+## 8. Security Measures
+
+We implement strong security protocols including:
+
+- **End-to-end encryption** for sensitive content
+- **Secure authentication** via Firebase
+- **HTTPS** for all data transmission
+
+However, no system is completely foolproof. You are responsible for keeping your login credentials secure.
+
+---
 
 ## 9. Policy Updates
 
-We may update this Privacy Policy
+We may update this Privacy Policy to reflect changes to our practices or legal requirements. When we do, we will update the "Effective Date" above. Significant changes may be communicated to users directly.
+
+---
+
+## 10. Contact Us
+
+For any questions, concerns, or data-related requests, [contact us](/#contact).
+
+---
+
+Thank you for trusting **ZapJot** to keep your memories and plans safe.
