@@ -12,7 +12,8 @@ NProgress.configure({ showSpinner: false });
 
 export const Link = forwardRef<HTMLAnchorElement, React.ComponentProps<"a">>(
   function Link({ href, onClick, ...rest }, ref) {
-    const useLink = href && href.startsWith("/");
+    const pathname = usePathname();
+    const useLink = href && href.startsWith(pathname);
     if (!useLink) return <a href={href} onClick={onClick} {...rest} />;
 
     return (

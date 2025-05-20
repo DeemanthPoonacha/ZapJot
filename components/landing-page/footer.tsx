@@ -1,4 +1,5 @@
 import { Logo } from "@/components/landing-page/Logo";
+import { Link } from "../layout/link/CustomLink";
 
 export function Footer() {
   return (
@@ -17,36 +18,36 @@ export function Footer() {
           </h3>
           <ul className="space-y-2">
             <li>
-              <a
+              <Link
                 href="/#features"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Features
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/#pricing"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Pricing
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/#how-it-works"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 How It Works
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/#testimonials"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Testimonials
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -56,28 +57,28 @@ export function Footer() {
           </h3>
           <ul className="space-y-2">
             <li>
-              <a
+              <Link
                 href="/privacy-policy"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Privacy Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/terms-of-service"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Terms of Service
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                href="/#"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Cookie Policy
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -87,12 +88,12 @@ export function Footer() {
           </h3>
           <ul className="space-y-2">
             <li>
-              <a
+              <Link
                 href="/#contact"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -117,7 +118,10 @@ export function Footer() {
             © {new Date().getFullYear()} ZapJot. All rights reserved.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            <Link
+              href="/#"
+              className="text-muted-foreground hover:text-foreground"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -133,8 +137,11 @@ export function Footer() {
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
               </svg>
               <span className="sr-only">Facebook</span>
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            </Link>
+            <Link
+              href="/#"
+              className="text-muted-foreground hover:text-foreground"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -152,8 +159,11 @@ export function Footer() {
                 <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
               </svg>
               <span className="sr-only">Instagram</span>
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            </Link>
+            <Link
+              href="/#"
+              className="text-muted-foreground hover:text-foreground"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -169,8 +179,11 @@ export function Footer() {
                 <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
               </svg>
               <span className="sr-only">Twitter</span>
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            </Link>
+            <Link
+              href="/#"
+              className="text-muted-foreground hover:text-foreground"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -188,7 +201,7 @@ export function Footer() {
                 <circle cx="4" cy="4" r="2" />
               </svg>
               <span className="sr-only">LinkedIn</span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
