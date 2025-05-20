@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -642,4 +643,11 @@ textarea.jodit-ui-text-area__input,
   dfn {
     font-style: italic;
   }
+}
+
+.prose {
+  :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: var(--color-foreground);
+  }
+  @apply h-full flex flex-col container py-24 px-4 mx-auto lg:max-w-5xl lg:py-10;
 }
