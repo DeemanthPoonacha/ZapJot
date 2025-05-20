@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { CTAButton } from "./cta-section";
 import { Link } from "../layout/link/CustomLink";
+const appVersion = process.env.APP_VERSION;
 
 export const Hero = () => (
   <section className="relative overflow-hidden py-20 md:py-32 lg:py-40">
@@ -12,7 +13,7 @@ export const Hero = () => (
           <div className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm">
             <span className="font-medium">New Release</span>
             <span className="ml-2 rounded-md bg-primary/20 px-1.5 py-0.5 text-xs text-primary">
-              v1.0
+              {`v${appVersion}`}
             </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
