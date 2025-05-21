@@ -25,16 +25,20 @@ export const metadata: Metadata = {
   title: { default: "ZapJot", template: "%s | ZapJot" },
   description:
     "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
-
   keywords: [
-    "journal app",
+    "ZapJot",
+    "journal",
     "planner",
     "ZapJot",
     "diary",
     "goal tracker",
-    "memory app",
+    "journal app",
+    "planner app",
+    "personal organizer",
+    "diary app",
+    "daily journal",
+    "productivity app",
   ],
-
   metadataBase: new URL("https://zap-jot.netlify.app/"),
   openGraph: {
     title: "ZapJot",

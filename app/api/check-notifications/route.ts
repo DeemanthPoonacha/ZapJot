@@ -1,13 +1,4 @@
-import { db } from "@/lib/services/firebase";
-import {
-  getDocs,
-  query,
-  collectionGroup,
-  where,
-  getDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { getFirestore } from "firebase-admin/firestore";
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
 import serviceAccountJson from "@/service_key.json";
@@ -33,12 +24,11 @@ export async function GET(request: Request) {
     const now = new Date();
 
     // Fetch due notifications from Firestore
-    const snapshot = await getDocs(
-      query(
-        collectionGroup(db, "events"),
-        where("nextNotificationAt", "<=", now)
-      )
-    );
+    const adminDb = getFirestore();
+    const snapshot = await adminDb
+      .collectionGroup("events")
+      .where("nextNotificationAt", "<=", now)
+      .get();
 
     if (snapshot.empty) {
       console.log("No notifications to send");
@@ -53,7 +43,7 @@ export async function GET(request: Request) {
     for (const document of snapshot.docs) {
       const event = document.data();
       const userId = document.ref.path.split("/")[1];
-      const userSnap = await getDoc(doc(db, "users", userId));
+      const userSnap = await adminDb.doc(`users/${userId}`).get();
       const user = userSnap.data() as UserInDb;
 
       const devices = user?.settings?.notifications?.devices || {};
@@ -82,7 +72,7 @@ export async function GET(request: Request) {
         }
       }
 
-      await updateDoc(document.ref, { nextNotificationAt: null });
+      await adminDb.doc(document.ref.path).update({ nextNotificationAt: null });
     }
 
     return Response.json({
