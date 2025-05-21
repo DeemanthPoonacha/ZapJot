@@ -3,7 +3,7 @@ import Slides from "./slides";
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="py-20 md:py-32">
-      <div className="container px-4 md:px-6">
+      <article className="container px-4 md:px-6">
         <div className="mx-auto text-center md:max-w-[58rem]">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             How ZapJot Works
@@ -50,7 +50,7 @@ export function HowItWorks() {
           {/* <ImageFrame /> */}
           <Slides />
         </div>
-      </div>
+      </article>
     </section>
   );
 }

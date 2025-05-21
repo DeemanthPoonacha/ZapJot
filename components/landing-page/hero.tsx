@@ -7,7 +7,7 @@ const appVersion = process.env.APP_VERSION;
 
 export const Hero = () => (
   <section className="relative overflow-hidden py-[10%] px-4 md:px-6">
-    <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center justify-between">
+    <article className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center justify-between">
       <div className="space-y-6">
         <div className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm">
           <span className="font-medium">New Release</span>
@@ -50,6 +50,6 @@ export const Hero = () => (
         className="justify-self-center lg:justify-self-end 2xl:mr-32"
       />
       {/* <ImageFrame /> */}
-    </div>
+    </article>
   </section>
 );

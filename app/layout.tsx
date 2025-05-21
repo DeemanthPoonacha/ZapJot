@@ -26,6 +26,15 @@ export const metadata: Metadata = {
   description:
     "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
 
+  keywords: [
+    "journal app",
+    "planner",
+    "ZapJot",
+    "diary",
+    "goal tracker",
+    "memory app",
+  ],
+
   metadataBase: new URL("https://zap-jot.netlify.app/"),
   openGraph: {
     title: "ZapJot",
@@ -33,7 +42,21 @@ export const metadata: Metadata = {
       "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
     url: "https://zap-jot.netlify.app/",
     siteName: "ZapJot",
-    images: [{ url: "https://zap-jot.netlify.app/logo.png" }],
+    images: [
+      { url: "https://zap-jot.netlify.app/logo.png", alt: "ZapJot Preview" },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "ZapJot",
+    description: "The fast & intuitive digital journal and planner.",
+    images: ["https://zap-jot.netlify.app/logo.png"],
+  },
+  other: {
+    "google-site-verification": "LUEt2oCJr6eaA_LHQsrMzE-6tKVF1yT-zH0oMqonmQQ",
   },
 };
 
