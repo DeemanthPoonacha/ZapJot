@@ -71,6 +71,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "ZapJot",
+              url: "https://zap-jot.netlify.app/",
+              applicationCategory: "ProductivityApplication",
+              operatingSystem: "Web",
+              description:
+                "Fast and intuitive personal journal and planner app.",
+            }),
+          }}
+        />
         <AppProviders>
           <main className="min-h-screen flex flex-col items-center">
             {children}

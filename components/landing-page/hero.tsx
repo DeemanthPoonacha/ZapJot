@@ -11,7 +11,7 @@ export const Hero = () => (
       <div className="space-y-6">
         <div className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm">
           <span className="font-medium">New Release</span>
-          <span className="ml-2 rounded-md bg-primary/20 px-1.5 py-0.5 text-xs text-primary">
+          <span className="ml-2 rounded-md bg-primary/20 px-1.5 py-0.5 text-xs">
             {`v${appVersion}`}
           </span>
         </div>

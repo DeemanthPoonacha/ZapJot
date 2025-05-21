@@ -44,7 +44,7 @@ export function ThemeCard({
             src="/greyed_out_logo_md.svg"
             width={42}
             height={44}
-            alt="zapjot"
+            alt="logo"
             color={colors.primary}
           />
           <span>{theme.name}</span>
