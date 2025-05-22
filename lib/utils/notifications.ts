@@ -11,14 +11,13 @@ export const getFcmToken = async (): Promise<string | null> => {
     );
     console.log("🚀 ~ getFcmToken ~ registration:", registration);
 
-    const messagingInstance = await messaging();
-    if (!messagingInstance) {
+    if (!messaging) {
       console.error("Firebase messaging is not supported.");
       return null;
     }
 
     // Pass the service worker to getToken
-    const token = await getToken(messagingInstance!, {
+    const token = await getToken(messaging!, {
       vapidKey: FCM_VAPID_KEY,
       serviceWorkerRegistration: registration,
     });

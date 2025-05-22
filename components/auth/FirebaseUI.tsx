@@ -1,9 +1,10 @@
 import { GoogleAuthProvider, EmailAuthProvider } from "firebase/auth";
-import { auth } from "@/lib/services/firebase";
+import { analytics, auth } from "@/lib/services/firebase";
 import StyledFirebaseAuth from "./StyledAuthUI";
 import Image from "next/image";
 import { Link } from "../layout/link/CustomLink";
 import { setUpUser } from "@/lib/services/user-config";
+import { logEvent } from "firebase/analytics";
 
 export default function FirebaseAuthUI() {
   // Configure FirebaseUI
@@ -24,10 +25,19 @@ export default function FirebaseAuthUI() {
     callbacks: {
       signInSuccessWithAuthResult: (authResult, redirectUrl) => {
         console.log("🚀 ~ FirebaseAuthUI ~ redirectUrl:", redirectUrl);
+        let eventName = "login";
         // Check if the user is new
         if (authResult.additionalUserInfo?.isNewUser) {
           // User is new, perform any additional setup here
           setUpUser(authResult.user.uid, authResult.user.email);
+          eventName = "sign_up"; // Change event name to sign_up
+        }
+
+        if (analytics) {
+          logEvent(analytics, eventName, {
+            method: authResult.additionalUserInfo?.providerId,
+          });
+          console.log("Logged event for sign-in:", eventName);
         }
         return false; // Prevents redirect to signInSuccessUrl
       },

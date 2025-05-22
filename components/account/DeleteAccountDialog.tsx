@@ -12,6 +12,8 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
 import { deleteAccount } from "@/lib/services/auth";
+import { analytics } from "@/lib/services/firebase";
+import { logEvent } from "firebase/analytics";
 
 interface DeleteAccountDialogProps {
   open: boolean;
@@ -42,6 +44,14 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
       setIsLoading(true);
       const data = isPasswordProvider ? { email, password } : undefined;
       await deleteAccount(data);
+
+      if (analytics) {
+        logEvent(analytics, "delete_account", {
+          method: isPasswordProvider ? "password" : "other",
+        });
+        console.log("Logged event for account deletion.");
+      }
+
       toast.success("Account deleted successfully!");
       reset();
     } catch (e: unknown) {

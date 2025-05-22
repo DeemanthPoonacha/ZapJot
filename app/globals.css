@@ -646,7 +646,7 @@ textarea.jodit-ui-text-area__input,
 }
 
 .prose {
-  :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  :where(*):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     color: var(--color-foreground);
   }
   @apply h-full flex flex-col container py-24 px-4 mx-auto lg:max-w-5xl lg:py-10;

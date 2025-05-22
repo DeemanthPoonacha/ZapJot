@@ -1,7 +1,12 @@
 import fs from "fs";
+import { Metadata } from "next";
 import path from "path";
 import { remark } from "remark";
 import html from "remark-html";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+};
 
 export default async function Page() {
   const filePath = path.join(process.cwd(), "contents", "privacy-policy.md");

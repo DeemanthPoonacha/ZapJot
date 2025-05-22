@@ -1,8 +1,16 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-// import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { getMessaging, isSupported } from "firebase/messaging";
+import {
+  Analytics,
+  getAnalytics,
+  isSupported as isAnalyticsSupported,
+} from "firebase/analytics"; // Import getAnalytics and rename isSupported for clarity
+import {
+  getMessaging,
+  isSupported as isMessagingSupported,
+  Messaging,
+} from "firebase/messaging"; // Import getMessaging and rename isSupported
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,15 +25,37 @@ const firebaseConfig = {
 const app = getApps.length === 0 ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const auth = getAuth(app);
-const messaging = async () => {
-  const supported = await isSupported();
-  if (!supported) {
-    console.error("Push notifications are not supported in this browser.");
-    return null;
+
+// Initialize Messaging with support check
+let messaging: Messaging | null = null; // Initialize as null
+isMessagingSupported().then((supported) => {
+  // Use the renamed function
+  if (supported) {
+    try {
+      messaging = getMessaging(app);
+      console.log("Firebase messaging initialized.");
+    } catch (e) {
+      console.error("Error initializing Firebase messaging:", e);
+    }
+  } else {
+    console.warn("Firebase messaging is not supported in this environment.");
   }
-  return getMessaging(app);
-};
+});
 
-// const analytics = getAnalytics(app);
+// Initialize Analytics with support check
+let analytics: Analytics | null = null; // Initialize as null
+isAnalyticsSupported().then((supported) => {
+  // Use the renamed function
+  if (supported) {
+    try {
+      analytics = getAnalytics(app);
+      console.log("Firebase Analytics initialized.");
+    } catch (e) {
+      console.error("Error initializing Firebase Analytics:", e);
+    }
+  } else {
+    console.warn("Firebase Analytics is not supported in this environment.");
+  }
+});
 
-export { db, app, auth, messaging };
+export { db, app, auth, messaging, analytics }; // Export the analytics instance!
