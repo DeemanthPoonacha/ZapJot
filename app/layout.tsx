@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     url: "https://zap-jot.netlify.app/",
     siteName: "ZapJot",
     images: [
-      { url: "https://zap-jot.netlify.app/logo.png", alt: "ZapJot Preview" },
+      { url: "https://zap-jot.netlify.app/logo.webp", alt: "ZapJot Preview" },
     ],
     locale: "en_US",
     type: "website",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ZapJot",
     description: "The fast & intuitive digital journal and planner.",
-    images: ["https://zap-jot.netlify.app/logo.png"],
+    images: ["https://zap-jot.netlify.app/logo.webp"],
   },
   other: {
     "google-site-verification": "LUEt2oCJr6eaA_LHQsrMzE-6tKVF1yT-zH0oMqonmQQ",

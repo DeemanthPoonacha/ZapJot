@@ -30,7 +30,7 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body || "New notification",
-    icon: "/logo.png",
+    icon: "/logo.webp",
     data: { url },
   };
 

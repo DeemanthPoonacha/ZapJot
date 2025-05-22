@@ -41,7 +41,7 @@ export default function FirebaseAuthUI() {
         <div className="px-8 pt-8 pb-6 text-center">
           <Link href="/" className="mb-2">
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               width={60}
               height={60}
               alt="zapjot"

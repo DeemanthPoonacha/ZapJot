@@ -54,7 +54,7 @@ export function NavigationBar() {
         href="/"
         className="flex h-14 items-center px-4 font-semibold text-lg mb-6 py-4 border-b gap-2"
       >
-        <ThemedCanvasImage src="/logo.png" width={42} height={42} alt="logo" />
+        <ThemedCanvasImage src="/logo.webp" width={42} height={42} alt="logo" />
         ZapJot
       </Link>
       <div className="space-y-2 px-2">

@@ -42,7 +42,7 @@ export const Hero = () => (
         </div>
       </div>
       <Image
-        src="/logo.png"
+        src="/logo.webp"
         width={460}
         height={460}
         alt="ZapJot App Preview"

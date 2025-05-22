@@ -72,7 +72,7 @@ export function HomeHeader() {
       </div>
       <Image
         className="absolute opacity-10 right-0 sm:right-10 top-1/2 -translate-y-1/2 rotate-[10deg] w-1/2 sm:w-1/3"
-        src="/z_icon.png"
+        src="/z_icon.webp"
         alt="logo"
         width={300}
         height={300}
