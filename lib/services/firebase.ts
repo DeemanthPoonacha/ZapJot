@@ -11,6 +11,8 @@ import {
   isSupported as isMessagingSupported,
   Messaging,
 } from "firebase/messaging"; // Import getMessaging and rename isSupported
+import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -58,4 +60,20 @@ isAnalyticsSupported().then((supported) => {
   }
 });
 
-export { db, app, auth, messaging, analytics }; // Export the analytics instance!
+// Add this after initializing `app`
+if (typeof window !== "undefined") {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(
+      process.env.NEXT_PUBLIC_RECAPTCHA_V3_KEY || ""
+    ),
+    isTokenAutoRefreshEnabled: true,
+  });
+}
+
+// Initialize the Gemini Developer API backend service
+const ai = getAI(app, { backend: new GoogleAIBackend() });
+
+// Create a `GenerativeModel` instance with a model that supports your use case
+const model = getGenerativeModel(ai, { model: "gemini-2.0-flash" });
+
+export { db, app, auth, messaging, analytics, ai, model }; // Export the analytics instance!
