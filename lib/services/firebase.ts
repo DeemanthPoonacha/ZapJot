@@ -5,12 +5,12 @@ import {
   Analytics,
   getAnalytics,
   isSupported as isAnalyticsSupported,
-} from "firebase/analytics"; // Import getAnalytics and rename isSupported for clarity
+} from "firebase/analytics";
 import {
   getMessaging,
   isSupported as isMessagingSupported,
   Messaging,
-} from "firebase/messaging"; // Import getMessaging and rename isSupported
+} from "firebase/messaging";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { AI_SYSTEM_PROMPT } from "../constants";
@@ -25,14 +25,13 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = getApps.length === 0 ? initializeApp(firebaseConfig) : getApp();
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 // Initialize Messaging with support check
-let messaging: Messaging | null = null; // Initialize as null
+let messaging: Messaging | null = null;
 isMessagingSupported().then((supported) => {
-  // Use the renamed function
   if (supported) {
     try {
       messaging = getMessaging(app);
@@ -46,9 +45,8 @@ isMessagingSupported().then((supported) => {
 });
 
 // Initialize Analytics with support check
-let analytics: Analytics | null = null; // Initialize as null
+let analytics: Analytics | null = null;
 isAnalyticsSupported().then((supported) => {
-  // Use the renamed function
   if (supported) {
     try {
       analytics = getAnalytics(app);
@@ -74,10 +72,17 @@ if (typeof window !== "undefined") {
 // Initialize the Gemini Developer API backend service
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
-// Create a `GenerativeModel` instance with a model that supports your use case
+// Create a `GenerativeModel` instance with enhanced configuration
 const model = getGenerativeModel(ai, {
   model: "gemini-2.0-flash",
   systemInstruction: AI_SYSTEM_PROMPT,
+  generationConfig: {
+    responseMimeType: "application/json", // Default to JSON responses
+    temperature: 0.7, // Adjust creativity level
+    topK: 40,
+    topP: 0.95,
+    maxOutputTokens: 2048, // Limit response length
+  },
 });
 
-export { db, app, auth, messaging, analytics, ai, model }; // Export the analytics instance!
+export { db, app, auth, messaging, analytics, ai, model };

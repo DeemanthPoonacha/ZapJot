@@ -583,6 +583,7 @@ Create Itinerary:
       budget: 5000,
       destination: "Tokyo, Japan",
       actualCost: 4750,
+      startDate: "2025-03-14",
       endDate: "2025-03-21",
       totalDays: 7,
     }

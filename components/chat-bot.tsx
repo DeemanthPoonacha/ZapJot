@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, Plus, X } from "lucide-react";
+import { MessageCircle, Plus, X, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAiResponse } from "@/lib/hooks/useAiResponse";
+import { useAiChat } from "@/lib/hooks/useAiChat";
 import EventForm from "./planner/events/EventForm";
 import TaskForm from "./planner/tasks/TaskForm";
 import CharacterForm from "./characters/CharacterForm";
@@ -28,7 +28,8 @@ export default function ChatBotUI() {
     []
   );
 
-  const { mutate: askAI, isPending } = useAiResponse();
+  // Updated to use the new chat hook
+  const { sendMessage: askAI, resetSession, isSessionActive } = useAiChat();
   const { routerPush } = useNProgressRouter();
 
   const sendMessage = () => {
@@ -37,15 +38,25 @@ export default function ChatBotUI() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
-    askAI(input, {
+    askAI.mutate(input, {
       onSuccess: (responseText) => {
         const command = tryParseCommand(responseText);
-        if (command.action) {
+        if (command?.action) {
           executeAICommand(command);
         }
         setMessages((prev) => [
           ...prev,
-          { role: ChatRole.AI, text: command.message },
+          { role: ChatRole.AI, text: command?.message || responseText },
+        ]);
+      },
+      onError: (error) => {
+        console.error("AI Error:", error);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: ChatRole.AI,
+            text: "Sorry, I encountered an error. Please try again.",
+          },
         ]);
       },
     });
@@ -121,6 +132,14 @@ export default function ChatBotUI() {
     setActionModal(defaultCreate);
     setShowInput(true);
   };
+
+  // Added session reset handler
+  const handleResetSession = () => {
+    resetSession();
+    setMessages([]);
+    resetModal();
+  };
+
   function tryParseCommand(rawText: string) {
     const json = rawText
       .replace(/^```json/, "") // remove opening ```json
@@ -136,6 +155,7 @@ export default function ChatBotUI() {
     }
     return null;
   }
+
   function executeAICommand(command: any) {
     setShowInput(false);
     switch (command.action) {
@@ -228,6 +248,10 @@ export default function ChatBotUI() {
         variant="default"
       >
         <MessageCircle size={24} />
+        {/* Session indicator */}
+        {isSessionActive && (
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-white" />
+        )}
       </Button>
 
       {/* Animated Chat Panel */}
@@ -241,14 +265,39 @@ export default function ChatBotUI() {
             className="pointer-events-auto absolute bottom-32 lg:bottom-22 right-8 lg:right-12 xl:right-20 2xl:right-8 z-50 w-[90vw] max-w-sm bg-background rounded-2xl shadow-xl border p-4 space-y-4"
           >
             <div className="flex justify-between items-center">
-              <div className="text-sm font-semibold">ZapJot Assistant</div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setOpen(false)}
-              >
-                <X size={18} />
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="text-sm font-semibold">ZapJot Assistant</div>
+                {/* Session status indicator */}
+                <div
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    isSessionActive
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {isSessionActive ? "Active" : "New"}
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                {/* Reset session button */}
+                {isSessionActive && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleResetSession}
+                    title="Reset conversation"
+                  >
+                    <RotateCcw size={16} />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setOpen(false)}
+                >
+                  <X size={18} />
+                </Button>
+              </div>
             </div>
 
             <div className="max-h-60 overflow-y-auto space-y-2 text-sm">
@@ -264,13 +313,14 @@ export default function ChatBotUI() {
                   <span className="whitespace-pre-wrap">{msg.text}</span>
                 </div>
               ))}
-              {isPending && (
+              {askAI.isPending && (
                 <div className="text-gray-400 italic">Thinking...</div>
               )}
             </div>
 
-            {!isPending && actionModal}
-            {showInput && (
+            {!askAI.isPending && actionModal}
+
+            {
               <>
                 <textarea
                   rows={2}
@@ -281,13 +331,13 @@ export default function ChatBotUI() {
                 />
                 <Button
                   onClick={sendMessage}
-                  disabled={isPending || !input.trim()}
+                  disabled={askAI.isPending || !input.trim()}
                   className="w-full"
                 >
                   Send
                 </Button>
               </>
-            )}
+            }
           </motion.div>
         )}
       </AnimatePresence>
