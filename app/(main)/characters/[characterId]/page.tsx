@@ -44,6 +44,7 @@ const Chapter = () => {
       <CharacterForm
         character={character}
         onUpdate={() => routerPush(`/characters`)}
+        onCancel={() => routerPush(`/characters`)}
         onAdd={(id: string) => routerPush(`/characters/${id}`)}
       />
     </PageLayout>

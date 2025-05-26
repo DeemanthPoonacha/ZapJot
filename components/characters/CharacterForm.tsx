@@ -30,12 +30,14 @@ interface CharacterFormProps {
   character?: Character | null;
   onUpdate?: () => void;
   onAdd?: (id: string) => void;
+  onCancel?: () => void;
 }
 
 const CharacterForm: React.FC<CharacterFormProps> = ({
   character,
   onUpdate,
   onAdd,
+  onCancel,
 }) => {
   const { user } = useAuth();
   const userId = user?.uid;
@@ -153,7 +155,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           />
         </div>
 
-        {!!character && (
+        {!!character?.id && (
           <div className="space-y-2">
             <FormLabel className="block mb-2">Events/Reminders</FormLabel>
             <EventsList
@@ -175,7 +177,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             type="button"
             onClick={() => {
               form.reset();
-              onUpdate?.();
+              onCancel?.();
             }}
             variant="outline"
             disabled={isSubmitting}

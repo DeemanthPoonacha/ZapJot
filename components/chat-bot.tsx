@@ -7,6 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAiResponse } from "@/lib/hooks/useAiResponse";
 import EventForm from "./planner/events/EventForm";
 import TaskForm from "./planner/tasks/TaskForm";
+import CharacterForm from "./characters/CharacterForm";
+import { useNProgressRouter } from "./layout/link/CustomLink";
+import GoalForm from "./planner/goals/GoalForm";
+import ChapterForm from "./chapters/ChapterForm";
+import JournalForm from "./journals/JournalForm";
+import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
+import ItineraryForm from "./planner/itineraries/ItineraryForm";
 
 export default function ChatBotUI() {
   const [open, setOpen] = useState(false);
@@ -24,6 +31,7 @@ export default function ChatBotUI() {
     null
   );
   const { mutate: askAI, isPending } = useAiResponse();
+  const { routerPush } = useNProgressRouter();
 
   function tryParseCommand(rawText: string) {
     const json = rawText
@@ -42,22 +50,78 @@ export default function ChatBotUI() {
   }
   function executeAICommand(command: any) {
     switch (command.action) {
+      case "create_chapter":
+        console.log("Creating chapter:", command);
+        setActionModal(
+          <ChapterForm
+            chapter={command}
+            onAdd={(id: string) => {
+              routerPush(`/chapters/${id}`);
+              setActionModal(null);
+            }}
+            onUpdate={() => setActionModal(null)}
+            onCancel={() => setActionModal(null)}
+          />
+        );
+        break;
+
       case "create_journal":
-        // Call your Firestore journal creation logic here
         console.log("Creating journal:", command);
+        setActionModal(
+          <JournalForm
+            journal={command}
+            chapterId={DEFAULT_CHAPTER_ID}
+            onFinish={(id: string, chapterId?: string) => {
+              routerPush(
+                `/chapters/${chapterId || DEFAULT_CHAPTER_ID}/journals/${id}`
+              );
+              setActionModal(null);
+            }}
+            onCancel={() => setActionModal(null)}
+          />
+        );
         break;
 
       case "create_event":
         console.log("Creating event:", command);
         setActionModal(
-          <EventForm onClose={() => setActionModal(null)} eventData={command} />
+          <EventForm eventData={command} onClose={() => setActionModal(null)} />
         );
         break;
 
       case "create_task":
         console.log("Creating task:", command);
         setActionModal(
-          <TaskForm onClose={() => setActionModal(null)} taskData={command} />
+          <TaskForm taskData={command} onClose={() => setActionModal(null)} />
+        );
+        break;
+
+      case "create_goal":
+        console.log("Creating goal:", command);
+        setActionModal(
+          <GoalForm goalData={command} onClose={() => setActionModal(null)} />
+        );
+        break;
+
+      case "create_itinerary":
+        console.log("Creating itinerary:", command);
+        setActionModal(
+          <ItineraryForm
+            itineraryData={command}
+            onClose={() => setActionModal(null)}
+          />
+        );
+        break;
+
+      case "create_character":
+        console.log("Creating character:", command);
+        setActionModal(
+          <CharacterForm
+            character={command}
+            onAdd={(id: string) => routerPush(`/characters/${id}`)}
+            onUpdate={() => setActionModal(null)}
+            onCancel={() => setActionModal(null)}
+          />
         );
         break;
 

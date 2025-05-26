@@ -175,9 +175,9 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
             {isSubmitting ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                {chapter ? "Updating..." : "Creating..."}
+                {chapter?.id ? "Updating..." : "Creating..."}
               </>
-            ) : chapter ? (
+            ) : chapter?.id ? (
               "Update Chapter"
             ) : (
               "Create Chapter"
