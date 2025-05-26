@@ -189,9 +189,9 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             {isSubmitting ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                {character ? "Updating..." : "Creating..."}
+                {character?.id ? "Updating..." : "Creating..."}
               </>
-            ) : character ? (
+            ) : character?.id ? (
               "Update Character"
             ) : (
               "Create Character"

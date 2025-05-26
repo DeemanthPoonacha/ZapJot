@@ -13,6 +13,7 @@ import {
 } from "firebase/messaging"; // Import getMessaging and rename isSupported
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { AI_SYSTEM_PROMPT } from "../constants";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -74,6 +75,9 @@ if (typeof window !== "undefined") {
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
 // Create a `GenerativeModel` instance with a model that supports your use case
-const model = getGenerativeModel(ai, { model: "gemini-2.0-flash" });
+const model = getGenerativeModel(ai, {
+  model: "gemini-2.0-flash",
+  systemInstruction: AI_SYSTEM_PROMPT,
+});
 
 export { db, app, auth, messaging, analytics, ai, model }; // Export the analytics instance!

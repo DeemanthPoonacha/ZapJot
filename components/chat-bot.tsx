@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAiResponse } from "@/lib/hooks/useAiResponse";
@@ -22,113 +22,14 @@ export default function ChatBotUI() {
     USER = "user",
     AI = "ai",
   }
+  const [showInput, setShowInput] = useState(true);
 
   const [messages, setMessages] = useState<{ role: ChatRole; text: string }[]>(
     []
   );
 
-  const [actionModal, setActionModal] = useState<React.ReactElement | null>(
-    null
-  );
   const { mutate: askAI, isPending } = useAiResponse();
   const { routerPush } = useNProgressRouter();
-
-  function tryParseCommand(rawText: string) {
-    const json = rawText
-      .replace(/^```json/, "") // remove opening ```json
-      .replace(/^```/, "") // in case it uses ``` instead
-      .replace(/```$/, "") // remove closing ```
-      .trim();
-    try {
-      const result = JSON.parse(json);
-      return result;
-    } catch {
-      // not valid JSON
-      console.error("Failed to parse JSON:", json);
-    }
-    return null;
-  }
-  function executeAICommand(command: any) {
-    switch (command.action) {
-      case "create_chapter":
-        console.log("Creating chapter:", command);
-        setActionModal(
-          <ChapterForm
-            chapter={command}
-            onAdd={(id: string) => {
-              routerPush(`/chapters/${id}`);
-              setActionModal(null);
-            }}
-            onUpdate={() => setActionModal(null)}
-            onCancel={() => setActionModal(null)}
-          />
-        );
-        break;
-
-      case "create_journal":
-        console.log("Creating journal:", command);
-        setActionModal(
-          <JournalForm
-            journal={command}
-            chapterId={DEFAULT_CHAPTER_ID}
-            onFinish={(id: string, chapterId?: string) => {
-              routerPush(
-                `/chapters/${chapterId || DEFAULT_CHAPTER_ID}/journals/${id}`
-              );
-              setActionModal(null);
-            }}
-            onCancel={() => setActionModal(null)}
-          />
-        );
-        break;
-
-      case "create_event":
-        console.log("Creating event:", command);
-        setActionModal(
-          <EventForm eventData={command} onClose={() => setActionModal(null)} />
-        );
-        break;
-
-      case "create_task":
-        console.log("Creating task:", command);
-        setActionModal(
-          <TaskForm taskData={command} onClose={() => setActionModal(null)} />
-        );
-        break;
-
-      case "create_goal":
-        console.log("Creating goal:", command);
-        setActionModal(
-          <GoalForm goalData={command} onClose={() => setActionModal(null)} />
-        );
-        break;
-
-      case "create_itinerary":
-        console.log("Creating itinerary:", command);
-        setActionModal(
-          <ItineraryForm
-            itineraryData={command}
-            onClose={() => setActionModal(null)}
-          />
-        );
-        break;
-
-      case "create_character":
-        console.log("Creating character:", command);
-        setActionModal(
-          <CharacterForm
-            character={command}
-            onAdd={(id: string) => routerPush(`/characters/${id}`)}
-            onUpdate={() => setActionModal(null)}
-            onCancel={() => setActionModal(null)}
-          />
-        );
-        break;
-
-      default:
-        console.warn("Unknown action:", command.action);
-    }
-  }
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -149,6 +50,174 @@ export default function ChatBotUI() {
       },
     });
   };
+
+  const defaultActions = [
+    {
+      action: "create_journal",
+      item: "Journal",
+      message: "Create a new journal entry",
+    },
+    {
+      action: "create_chapter",
+      item: "Chapter",
+      message: "Create a new chapter",
+    },
+    {
+      action: "create_character",
+      item: "Character",
+      message: "Create a new character",
+    },
+    {
+      action: "create_task",
+      item: "Task",
+      message: "Create a new task",
+    },
+    {
+      action: "create_event",
+      item: "Event",
+      message: "Create a new event",
+    },
+    {
+      action: "create_goal",
+      item: "Goal",
+      message: "Create a new goal",
+    },
+    {
+      action: "create_itinerary",
+      item: "Itinerary",
+      message: "Create a new itinerary",
+    },
+  ];
+
+  const defaultCreate = (
+    <>
+      <div className="flex gap-2 flex-wrap">
+        {defaultActions.map((action, index) => (
+          <Button
+            size={"sm"}
+            key={index}
+            className="rounded-full"
+            onClick={() => {
+              executeAICommand(action);
+              setMessages((prev) => [
+                ...prev,
+                { role: ChatRole.USER, text: action.message },
+              ]);
+            }}
+          >
+            <Plus />
+            {action.item}
+          </Button>
+        ))}
+      </div>
+    </>
+  );
+
+  const [actionModal, setActionModal] = useState<React.ReactElement | null>(
+    defaultCreate
+  );
+
+  const resetModal = () => {
+    setActionModal(defaultCreate);
+    setShowInput(true);
+  };
+  function tryParseCommand(rawText: string) {
+    const json = rawText
+      .replace(/^```json/, "") // remove opening ```json
+      .replace(/^```/, "") // in case it uses ``` instead
+      .replace(/```$/, "") // remove closing ```
+      .trim();
+    try {
+      const result = JSON.parse(json);
+      return result;
+    } catch {
+      // not valid JSON
+      console.error("Failed to parse JSON:", json);
+    }
+    return null;
+  }
+  function executeAICommand(command: any) {
+    setShowInput(false);
+    switch (command.action) {
+      case "create_chapter":
+        console.log("Creating chapter:", command);
+        setActionModal(
+          <ChapterForm
+            chapter={command}
+            onAdd={(id: string) => {
+              routerPush(`/chapters/${id}`);
+              resetModal();
+            }}
+            onUpdate={() => resetModal()}
+            onCancel={() => resetModal()}
+          />
+        );
+        break;
+
+      case "create_journal":
+        console.log("Creating journal:", command);
+        setActionModal(
+          <JournalForm
+            journal={command}
+            chapterId={DEFAULT_CHAPTER_ID}
+            onFinish={(id: string, chapterId?: string) => {
+              routerPush(
+                `/chapters/${chapterId || DEFAULT_CHAPTER_ID}/journals/${id}`
+              );
+              resetModal();
+            }}
+            onCancel={() => resetModal()}
+          />
+        );
+        break;
+
+      case "create_event":
+        console.log("Creating event:", command);
+        setActionModal(
+          <EventForm eventData={command} onClose={() => resetModal()} />
+        );
+        break;
+
+      case "create_task":
+        console.log("Creating task:", command);
+        setActionModal(
+          <TaskForm taskData={command} onClose={() => resetModal()} />
+        );
+        break;
+
+      case "create_goal":
+        console.log("Creating goal:", command);
+        setActionModal(
+          <GoalForm goalData={command} onClose={() => resetModal()} />
+        );
+        break;
+
+      case "create_itinerary":
+        console.log("Creating itinerary:", command);
+        setActionModal(
+          <ItineraryForm itineraryData={command} onClose={() => resetModal()} />
+        );
+        break;
+
+      case "create_character":
+        console.log("Creating character:", command);
+        setActionModal(
+          <CharacterForm
+            character={command}
+            onAdd={(id: string) => routerPush(`/characters/${id}`)}
+            onUpdate={() => resetModal()}
+            onCancel={() => resetModal()}
+          />
+        );
+        break;
+
+      default:
+        console.warn("Unknown action:", command.action);
+        setActionModal(defaultCreate);
+        setShowInput(true);
+        break;
+    }
+  }
 
   return (
     <>
@@ -200,7 +269,8 @@ export default function ChatBotUI() {
               )}
             </div>
 
-            {actionModal || (
+            {!isPending && actionModal}
+            {showInput && (
               <>
                 <textarea
                   rows={2}
