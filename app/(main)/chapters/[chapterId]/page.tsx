@@ -15,6 +15,7 @@ import { PenLine } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
+import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
 
 const NotFound = () => <p>Chapter not found</p>;
 
@@ -65,6 +66,8 @@ const ChapterPage = () => {
   };
 
   const isNewChapter = chapterId === "new";
+  const isDefaultChapter = chapterId === DEFAULT_CHAPTER_ID;
+
   const [isEditing, setIsEditing] = useState(isNewChapter);
 
   if (isLoading) return <CustomLoader />;
@@ -82,7 +85,7 @@ const ChapterPage = () => {
           chapter?.id &&
           (isMoving ? (
             <Button onClick={handleMoveChapter}>Move Here</Button>
-          ) : (
+          ) : isDefaultChapter ? null : (
             <DeleteConfirm
               itemName="Chapter"
               description="Are you sure you want to delete this chapter? All journals in this chapter will be deleted. This action cannot be undone."

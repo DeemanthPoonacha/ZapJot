@@ -29,7 +29,7 @@ import UploadAvatar from "../ui/upload-avatar";
 interface CharacterFormProps {
   character?: Character | null;
   onUpdate?: () => void;
-  onAdd?: (id: string) => void;
+  onAdd?: (id: string, name?: string) => void;
   onCancel?: () => void;
 }
 
@@ -76,7 +76,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           lowercaseName: data.name.toLowerCase(),
         });
         toast.success("Character created successfully");
-        onAdd?.(result.id);
+        onAdd?.(result.id, result.name);
       }
     } catch (error) {
       console.error("Error saving character", error);

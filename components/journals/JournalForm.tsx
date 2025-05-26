@@ -32,7 +32,7 @@ import WysiwygEditor from "../ui/wysiwyg";
 interface JournalFormProps {
   chapterId: string;
   journal?: Journal;
-  onFinish?: (id: string, chId?: string) => void;
+  onFinish?: (id: string, chId?: string, name?: string) => void;
   onCancel?: () => void;
   defaultCamOpen?: boolean;
 }
@@ -93,6 +93,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
     console.log("🚀 ~ onSubmit ~ data:", data);
     try {
       let jId = journal?.id;
+      let jName = journal?.title || data.title;
       const chId = data.chapterId || chapterId;
 
       if (journal?.id) {
@@ -101,10 +102,11 @@ const JournalForm: React.FC<JournalFormProps> = ({
       } else {
         const result = await addMutation.mutateAsync(data);
         jId = result.id;
+        jName = result.title;
         toast.success("Journal created successfully");
       }
 
-      onFinish?.(jId!, chId);
+      onFinish?.(jId!, chId, jName);
     } catch (error) {
       console.error("Error saving journal", error);
       toast.error("Failed to save journal");

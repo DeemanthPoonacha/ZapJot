@@ -8,34 +8,31 @@ import { useAiChat } from "@/lib/hooks/useAiChat";
 import EventForm from "./planner/events/EventForm";
 import TaskForm from "./planner/tasks/TaskForm";
 import CharacterForm from "./characters/CharacterForm";
-import { useNProgressRouter } from "./layout/link/CustomLink";
 import GoalForm from "./planner/goals/GoalForm";
 import ChapterForm from "./chapters/ChapterForm";
 import JournalForm from "./journals/JournalForm";
 import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
 import ItineraryForm from "./planner/itineraries/ItineraryForm";
+import { ChatRole } from "@/types/ai-chat";
 
 export default function ChatBotUI() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  enum ChatRole {
-    USER = "user",
-    AI = "ai",
-  }
-  const [showInput, setShowInput] = useState(true);
-
-  const [messages, setMessages] = useState<{ role: ChatRole; text: string }[]>(
-    []
-  );
 
   // Updated to use the new chat hook
-  const { sendMessage: askAI, resetSession, isSessionActive } = useAiChat();
-  const { routerPush } = useNProgressRouter();
+  const {
+    sendMessage: askAI,
+    resetSession,
+    isSessionActive,
+    messages,
+    addMessage,
+    clearMessages,
+  } = useAiChat();
 
   const sendMessage = () => {
     if (!input.trim()) return;
     const userMessage = { role: ChatRole.USER, text: input.trim() };
-    setMessages((prev) => [...prev, userMessage]);
+    addMessage(userMessage);
     setInput("");
 
     askAI.mutate(input, {
@@ -44,20 +41,18 @@ export default function ChatBotUI() {
         if (command?.action) {
           executeAICommand(command);
         }
-        setMessages((prev) => [
-          ...prev,
-          { role: ChatRole.AI, text: command?.message || responseText },
-        ]);
+
+        addMessage({
+          role: ChatRole.AI,
+          text: command?.message || responseText,
+        });
       },
       onError: (error) => {
         console.error("AI Error:", error);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: ChatRole.AI,
-            text: "Sorry, I encountered an error. Please try again.",
-          },
-        ]);
+        addMessage({
+          role: ChatRole.AI,
+          text: "Sorry, I encountered an error. Please try again.",
+        });
       },
     });
   };
@@ -110,10 +105,10 @@ export default function ChatBotUI() {
             className="rounded-full"
             onClick={() => {
               executeAICommand(action);
-              setMessages((prev) => [
-                ...prev,
-                { role: ChatRole.USER, text: action.message },
-              ]);
+              addMessage({
+                role: ChatRole.USER,
+                text: action.message,
+              });
             }}
           >
             <Plus />
@@ -130,13 +125,12 @@ export default function ChatBotUI() {
 
   const resetModal = () => {
     setActionModal(defaultCreate);
-    setShowInput(true);
   };
 
   // Added session reset handler
   const handleResetSession = () => {
     resetSession();
-    setMessages([]);
+    clearMessages();
     resetModal();
   };
 
@@ -157,15 +151,20 @@ export default function ChatBotUI() {
   }
 
   function executeAICommand(command: any) {
-    setShowInput(false);
     switch (command.action) {
       case "create_chapter":
         console.log("Creating chapter:", command);
         setActionModal(
           <ChapterForm
             chapter={command}
-            onAdd={(id: string) => {
-              routerPush(`/chapters/${id}`);
+            onAdd={(id: string, name?: string) => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Chapter created: <a class="underline text-primary" href="/chapters/${id}">${
+                  name || command.title || "New Chapter"
+                }</a>`,
+              });
+              // routerPush(`/chapters/${id}`);
               resetModal();
             }}
             onUpdate={() => resetModal()}
@@ -180,10 +179,15 @@ export default function ChatBotUI() {
           <JournalForm
             journal={command}
             chapterId={DEFAULT_CHAPTER_ID}
-            onFinish={(id: string, chapterId?: string) => {
-              routerPush(
-                `/chapters/${chapterId || DEFAULT_CHAPTER_ID}/journals/${id}`
-              );
+            onFinish={(id: string, chapterId?: string, name?: string) => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Journal created: <a class="underline text-primary" href="/chapters/${
+                  chapterId || DEFAULT_CHAPTER_ID
+                }/journals/${id}">${
+                  name || command.title || "New Journal"
+                }</a>`,
+              });
               resetModal();
             }}
             onCancel={() => resetModal()}
@@ -224,7 +228,15 @@ export default function ChatBotUI() {
         setActionModal(
           <CharacterForm
             character={command}
-            onAdd={(id: string) => routerPush(`/characters/${id}`)}
+            onAdd={(id: string, name?: string) => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Character created: <a class="underline text-primary" href="/characters/${id}">${
+                  name || command.name || "New Character"
+                }</a>`,
+              });
+              resetModal();
+            }}
             onUpdate={() => resetModal()}
             onCancel={() => resetModal()}
           />
@@ -234,7 +246,6 @@ export default function ChatBotUI() {
       default:
         console.warn("Unknown action:", command.action);
         setActionModal(defaultCreate);
-        setShowInput(true);
         break;
     }
   }
@@ -310,7 +321,10 @@ export default function ChatBotUI() {
                       : "bg-secondary"
                   }`}
                 >
-                  <span className="whitespace-pre-wrap">{msg.text}</span>
+                  <span
+                    className="whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{ __html: msg.text as string }}
+                  />
                 </div>
               ))}
               {askAI.isPending && (

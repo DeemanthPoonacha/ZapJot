@@ -22,7 +22,7 @@ import { useState } from "react";
 
 interface ChapterFormProps {
   chapter?: Chapter;
-  onAdd?: (id: string) => void;
+  onAdd?: (id: string, name?: string) => void;
   onUpdate?: () => void;
   onCancel?: () => void;
 }
@@ -72,7 +72,7 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
         const result = await addMutation.mutateAsync(data);
         console.log("🚀 ~ onSubmit ~ result:", result);
         toast.success("Chapter created successfully");
-        onAdd?.(result.id);
+        onAdd?.(result.id, result.title);
       }
     } catch (error) {
       console.error("Error saving chapter", error);

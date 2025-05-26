@@ -1,11 +1,31 @@
-import { useState, useRef, useCallback } from "react";
+import { useRef, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { model } from "../services/firebase";
 import { ChatSession } from "firebase/ai";
+import { ChatMessage } from "@/types/ai-chat";
+import { useGlobalState } from "./global-state";
 
 export function useAiChat() {
+  const [messages, setMessages, resetMessages, updateMessages] = useGlobalState<
+    ChatMessage[]
+  >("messages", []);
+
+  const clearMessages = () => {
+    resetMessages();
+  };
+
+  const addMessage = (message: ChatMessage) => {
+    updateMessages((prevMessages) => {
+      const updatedMessages = [...prevMessages, message];
+      return updatedMessages;
+    });
+  };
+
   const chatSessionRef = useRef<ChatSession | null>(null);
-  const [isSessionActive, setIsSessionActive] = useState(false);
+  const [isSessionActive, setIsSessionActive] = useGlobalState(
+    "ai-chat-session-active",
+    false
+  );
 
   const initializeSession = useCallback(async () => {
     if (!chatSessionRef.current) {
@@ -23,7 +43,8 @@ export function useAiChat() {
       const chat = await initializeSession();
 
       const result = await chat.sendMessage(userPrompt);
-      console.log("🚀 ~ mutationFn: ~ result:", result);
+      console.log(`Tokens: ${result.response.usageMetadata?.totalTokenCount}`);
+
       const response = result.response;
 
       return response.text();
@@ -42,5 +63,10 @@ export function useAiChat() {
     sendMessage,
     resetSession,
     isSessionActive,
+    messages,
+    setMessages,
+    updateMessages,
+    clearMessages,
+    addMessage,
   };
 }
