@@ -59,14 +59,19 @@ isAnalyticsSupported().then((supported) => {
   }
 });
 
-// Add this after initializing `app`
-initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider(
-    process.env.NEXT_PUBLIC_RECAPTCHA_V3_KEY || ""
-  ),
-  isTokenAutoRefreshEnabled: true,
-});
-
+if (typeof window !== "undefined") {
+  try {
+    // Add this after initializing `app`
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(
+        process.env.NEXT_PUBLIC_RECAPTCHA_V3_KEY || ""
+      ),
+      isTokenAutoRefreshEnabled: true,
+    });
+  } catch (error) {
+    console.error("Error initializing Firebase App Check:", error);
+  }
+}
 // Initialize the Gemini Developer API backend service
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
