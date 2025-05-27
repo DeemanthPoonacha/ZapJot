@@ -307,7 +307,7 @@ export default function ChatBotUI() {
       {/* Floating Toggle Button */}
       <Button
         onClick={() => {
-          isMobile && setIsMaximized(true);
+          if (isMobile) setIsMaximized(true);
           setOpen(!open);
         }}
         className="pointer-events-auto absolute bottom-22 lg:bottom-12 right-8 lg:right-12 xl:right-20 2xl:right-8 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-all hover:bg-primary/90"
