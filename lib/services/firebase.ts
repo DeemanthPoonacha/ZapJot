@@ -81,7 +81,7 @@ const model = getGenerativeModel(ai, {
     temperature: 0.7, // Adjust creativity level
     topK: 40,
     topP: 0.95,
-    maxOutputTokens: 2048, // Limit response length
+    // maxOutputTokens: 2048, // Limit response length
   },
 });
 

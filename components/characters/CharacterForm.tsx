@@ -172,7 +172,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           </div>
         )}
 
-        <div className="flex gap-4 pt-4">
+        <div className="flex @max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {

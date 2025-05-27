@@ -651,3 +651,24 @@ textarea.jodit-ui-text-area__input,
   }
   @apply h-full flex flex-col container py-24 px-4 mx-auto lg:max-w-5xl lg:py-10;
 }
+
+/* Webkit (Chrome, Safari, newer versions of Opera) */
+::-webkit-scrollbar {
+  width: 4px; /* Width of the entire scrollbar */
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-muted); /* Color of the tracking area */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted-foreground); /* Color of the scroll thumb */
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary); /* Color when hovering over scroll thumb */
+}

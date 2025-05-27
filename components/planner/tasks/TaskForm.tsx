@@ -26,7 +26,7 @@ import {
   SelectItem,
   SelectContent,
 } from "@/components/ui/select";
-import { Trash2, Plus, Save } from "lucide-react";
+import { Trash2, Plus, Save, Ban } from "lucide-react";
 
 const TaskForm = ({
   taskData,
@@ -263,11 +263,12 @@ const TaskForm = ({
           )}
           <div className="flex gap-2">
             <Button variant="outline" type="button" onClick={onClose}>
+              <Ban />
               Cancel
             </Button>
             <Button type="submit">
-              <Save className="h-4 w-4 mr-1" />
-              {isEditing ? "Update" : "Create"}
+              <Save />
+              Save
             </Button>
           </div>
         </div>

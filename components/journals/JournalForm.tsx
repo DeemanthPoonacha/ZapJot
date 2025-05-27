@@ -138,7 +138,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           setIsImageUploading={setIsImageUploading}
         />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 @md:grid-cols-2">
           <FormField
             control={form.control}
             name="date"
@@ -220,7 +220,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           )}
         />
 
-        <div className="flex max-md:flex-col gap-4 pt-4">
+        <div className="flex @max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {

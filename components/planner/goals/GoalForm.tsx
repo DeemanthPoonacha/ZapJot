@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import DeleteConfirm from "../../ui/delete-confirm";
-import { Save } from "lucide-react";
+import { Ban, Save } from "lucide-react";
 
 const GoalForm = ({
   onClose,
@@ -204,11 +204,12 @@ const GoalForm = ({
           )}
           <div className="flex gap-2">
             <Button variant="outline" type="button" onClick={onClose}>
+              <Ban />
               Cancel
             </Button>
             <Button type="submit">
-              <Save className="h-4 w-4 mr-1" />
-              {isEditing ? "Update" : "Create"}
+              <Save />
+              Save
             </Button>
           </div>
         </div>

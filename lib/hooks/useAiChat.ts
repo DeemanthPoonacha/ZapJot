@@ -2,13 +2,15 @@ import { useRef, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { model } from "../services/firebase";
 import { ChatSession } from "firebase/ai";
-import { ChatMessage } from "@/types/ai-chat";
+import { ChatMessage, ChatRole } from "@/types/ai-chat";
 import { useGlobalState } from "./global-state";
 
 export function useAiChat() {
   const [messages, setMessages, resetMessages, updateMessages] = useGlobalState<
     ChatMessage[]
-  >("messages", []);
+  >("messages", [
+    { role: ChatRole.AI, text: "Hello, how can I help you today?" },
+  ]);
 
   const clearMessages = () => {
     resetMessages();

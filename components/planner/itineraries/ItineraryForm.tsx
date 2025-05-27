@@ -6,7 +6,7 @@ import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 // UI Components
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Save, PlusCircle } from "lucide-react";
+import { Plus, Trash2, Save, PlusCircle, Ban } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -359,11 +359,12 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
           )}
           <div className="flex gap-2">
             <Button variant="outline" type="button" onClick={onClose}>
+              <Ban />
               Cancel
             </Button>
             <Button type="submit">
-              <Save className="h-4 w-4 mr-1" />
-              {isEditing ? "Update" : "Create"}
+              <Save />
+              Save
             </Button>
           </div>
         </div>

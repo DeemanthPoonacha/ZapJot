@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { MessageCircle, Plus, X, RotateCcw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  MessageCircle,
+  Plus,
+  X,
+  RotateCcw,
+  ArrowDown,
+  SendHorizonal,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAiChat } from "@/lib/hooks/useAiChat";
@@ -14,8 +23,14 @@ import JournalForm from "./journals/JournalForm";
 import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
 import ItineraryForm from "./planner/itineraries/ItineraryForm";
 import { ChatRole } from "@/types/ai-chat";
+import { Textarea } from "./ui/textarea";
+import { cn } from "@/lib/utils";
+import { useMediaQuery } from "react-responsive";
 
 export default function ChatBotUI() {
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // Adjust breakpoint as needed
+
+  const [isMaximized, setIsMaximized] = useState(isMobile);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
 
@@ -126,6 +141,43 @@ export default function ChatBotUI() {
   const resetModal = () => {
     setActionModal(defaultCreate);
   };
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showBottomButton, setShowBottomButton] = useState(false);
+
+  const checkIfAtBottom = () => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const isAtBottom = el.scrollHeight - el.scrollTop - 50 <= el.clientHeight;
+    console.log("🚀 ~ checkIfAtBottom ~ isAtBottom:", isAtBottom);
+    setShowBottomButton(!isAtBottom);
+  };
+
+  const scrollToBottom = () => {
+    const el = containerRef.current;
+    if (el) {
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    // Run initially
+    checkIfAtBottom();
+
+    // Add scroll listener
+    el.addEventListener("scroll", checkIfAtBottom);
+    return () => el.removeEventListener("scroll", checkIfAtBottom);
+  }, [open, isMaximized]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [open, messages]);
 
   // Added session reset handler
   const handleResetSession = () => {
@@ -254,11 +306,16 @@ export default function ChatBotUI() {
     <>
       {/* Floating Toggle Button */}
       <Button
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          isMobile && setIsMaximized(true);
+          setOpen(!open);
+        }}
         className="pointer-events-auto absolute bottom-22 lg:bottom-12 right-8 lg:right-12 xl:right-20 2xl:right-8 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-all hover:bg-primary/90"
         variant="default"
       >
         <MessageCircle size={24} />
+        <span className="hidden sm:inline">Zappy</span>
+
         {/* Session indicator */}
         {isSessionActive && (
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-white" />
@@ -273,11 +330,17 @@ export default function ChatBotUI() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="pointer-events-auto absolute bottom-32 lg:bottom-22 right-8 lg:right-12 xl:right-20 2xl:right-8 z-50 w-[90vw] max-w-sm bg-background rounded-2xl shadow-xl border p-4 space-y-4"
+            // className=
+            className={cn(
+              "pointer-events-auto bg-background flex flex-col z-50 p-4 space-y-4 w-full min-h-[500px]",
+              isMaximized
+                ? "max-w-screen fixed md:absolute top-0 left-0 h-full pb-24"
+                : "absolute max-h-[80vh] bottom-32 lg:bottom-22 right-8 lg:right-12 xl:right-20 2xl:right-8 max-w-sm bg-background rounded-xl shadow-xl border"
+            )}
           >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center border-b pb-2">
               <div className="flex items-center gap-2">
-                <div className="text-sm font-semibold">ZapJot Assistant</div>
+                <div className="text-sm font-semibold">Zappy</div>
                 {/* Session status indicator */}
                 <div
                   className={`text-xs px-2 py-1 rounded-full ${
@@ -290,6 +353,17 @@ export default function ChatBotUI() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                {/* Maximize/Minimize button */}
+                {!isMobile && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsMaximized(!isMaximized)}
+                    title={isMaximized ? "Minimize" : "Maximize"}
+                  >
+                    {isMaximized ? <Minimize2 /> : <Maximize2 />}
+                  </Button>
+                )}
                 {/* Reset session button */}
                 {isSessionActive && (
                   <Button
@@ -311,47 +385,68 @@ export default function ChatBotUI() {
               </div>
             </div>
 
-            <div className="max-h-60 overflow-y-auto space-y-2 text-sm">
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`p-2 rounded-md ${
-                    msg.role === ChatRole.USER
-                      ? "bg-primary self-end"
-                      : "bg-secondary"
-                  }`}
+            <div
+              className="mt-auto overflow-y-auto space-y-2 text-sm"
+              ref={containerRef}
+            >
+              <div className="flex flex-col gap-2">
+                {messages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`p-2 rounded-md max-w-sm ${
+                      msg.role === ChatRole.USER
+                        ? "bg-primary text-primary-foreground self-end ms-4"
+                        : "bg-secondary text-secondary-foreground self-start me-4"
+                    }`}
+                  >
+                    <span
+                      className="whitespace-pre-wrap"
+                      dangerouslySetInnerHTML={{ __html: msg.text as string }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t py-4 @container">
+                {askAI.isPending ? (
+                  <div className="text-gray-400 italic">Thinking...</div>
+                ) : (
+                  actionModal
+                )}
+              </div>
+
+              {showBottomButton && (
+                <Button
+                  onClick={scrollToBottom}
+                  className={cn(
+                    "absolute right-6 z-50 rounded-full p-2 shadow-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground",
+                    isMaximized ? "bottom-48" : "bottom-28"
+                  )}
                 >
-                  <span
-                    className="whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{ __html: msg.text as string }}
-                  />
-                </div>
-              ))}
-              {askAI.isPending && (
-                <div className="text-gray-400 italic">Thinking...</div>
+                  <ArrowDown size={20} />
+                </Button>
               )}
             </div>
 
-            {!askAI.isPending && actionModal}
-
-            {
-              <>
-                <textarea
-                  rows={2}
+            <div className="border-t pt-2">
+              <div className="border rounded-4xl p-2 flex items-end gap-2">
+                <Textarea
+                  rows={1}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask something..."
-                  className="w-full border rounded-md p-2 text-sm resize-none"
+                  className="w-full rounded-l-4xl p-2 text-sm min-h-9 max-h-64 border-0"
                 />
                 <Button
+                  className="rounded-full"
                   onClick={sendMessage}
                   disabled={askAI.isPending || !input.trim()}
-                  className="w-full"
                 >
-                  Send
+                  <span className="hidden sm:inline">Send</span>
+                  <SendHorizonal />
                 </Button>
-              </>
-            }
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
