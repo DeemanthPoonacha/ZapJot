@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import {
   MessageCircle,
@@ -52,6 +51,13 @@ export default function ChatBotUI() {
 
     askAI.mutate(input, {
       onSuccess: (responseText) => {
+        if (!responseText) {
+          addMessage({
+            role: ChatRole.AI,
+            text: "Sorry, I encountered an error. Please try again.",
+          });
+          return;
+        }
         const command = tryParseCommand(responseText);
         if (command?.action) {
           executeAICommand(command);

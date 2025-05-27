@@ -31,6 +31,10 @@ export function useAiChat() {
 
   const initializeSession = useCallback(async () => {
     if (!chatSessionRef.current) {
+      if (!model) {
+        console.error("AI model not initialized");
+        return null;
+      }
       chatSessionRef.current = model.startChat({
         history: [],
       });
@@ -43,6 +47,10 @@ export function useAiChat() {
   const sendMessage = useMutation({
     mutationFn: async (userPrompt: string) => {
       const chat = await initializeSession();
+      if (!chat) {
+        console.error("Chat session not initialized");
+        return null;
+      }
 
       const result = await chat.sendMessage(userPrompt);
       console.log(`Tokens: ${result.response.usageMetadata?.totalTokenCount}`);

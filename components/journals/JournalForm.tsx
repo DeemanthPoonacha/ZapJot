@@ -27,7 +27,11 @@ import {
 import { toast } from "../ui/sonner";
 import DatePicker from "../ui/date-picker";
 import UploadImage from "../ui/upload-image";
-import WysiwygEditor from "../ui/wysiwyg";
+import dynamic from "next/dynamic";
+
+const WysiwygEditor = dynamic(() => import("@/components/ui/wysiwyg"), {
+  ssr: false,
+});
 
 interface JournalFormProps {
   chapterId: string;
