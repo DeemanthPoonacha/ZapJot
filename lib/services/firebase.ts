@@ -1,12 +1,20 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import {
+  Analytics,
+  getAnalytics,
+  isSupported as isAnalyticsSupported,
+} from "firebase/analytics";
+import {
+  getMessaging,
+  isSupported as isMessagingSupported,
+  Messaging,
+} from "firebase/messaging";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { AI_SYSTEM_PROMPT } from "../constants";
-import { Messaging } from "firebase/messaging";
-import { Analytics } from "firebase/analytics";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -17,15 +25,52 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize app
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// AI
+// Initialize Messaging with support check
+let messaging: Messaging | null = null;
+isMessagingSupported().then((supported) => {
+  if (supported) {
+    try {
+      messaging = getMessaging(app);
+      console.log("Firebase messaging initialized.");
+    } catch (e) {
+      console.error("Error initializing Firebase messaging:", e);
+    }
+  } else {
+    console.warn("Firebase messaging is not supported in this environment.");
+  }
+});
+
+// Initialize Analytics with support check
+let analytics: Analytics | null = null;
+isAnalyticsSupported().then((supported) => {
+  if (supported) {
+    try {
+      analytics = getAnalytics(app);
+      console.log("Firebase Analytics initialized.");
+    } catch (e) {
+      console.error("Error initializing Firebase Analytics:", e);
+    }
+  } else {
+    console.warn("Firebase Analytics is not supported in this environment.");
+  }
+});
+
+// Add this after initializing `app`
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider(
+    process.env.NEXT_PUBLIC_RECAPTCHA_V3_KEY || ""
+  ),
+  isTokenAutoRefreshEnabled: true,
+});
+
+// Initialize the Gemini Developer API backend service
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
-// Create a `GenerativeModel` instance
+// Create a `GenerativeModel` instance with enhanced configuration
 const model = getGenerativeModel(ai, {
   model: "gemini-2.0-flash",
   systemInstruction: AI_SYSTEM_PROMPT,
@@ -34,43 +79,8 @@ const model = getGenerativeModel(ai, {
     temperature: 0.7, // Adjust creativity level
     topK: 40,
     topP: 0.95,
+    // maxOutputTokens: 2048, // Limit response length
   },
 });
-
-// Lazy-initialize browser-only features
-let messaging: Messaging | null = null;
-let analytics: Analytics | null = null;
-
-if (window && typeof window !== "undefined") {
-  // Only import these in the browser
-  import("firebase/messaging").then(({ getMessaging, isSupported }) => {
-    isSupported().then((supported) => {
-      if (supported) {
-        messaging = getMessaging(app);
-        console.log("Firebase Messaging initialized.");
-      }
-    });
-  });
-
-  import("firebase/analytics").then(({ getAnalytics, isSupported }) => {
-    isSupported().then((supported) => {
-      if (supported) {
-        analytics = getAnalytics(app);
-        console.log("Firebase Analytics initialized.");
-      }
-    });
-  });
-
-  import("firebase/app-check").then(
-    ({ initializeAppCheck, ReCaptchaV3Provider }) => {
-      initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(
-          process.env.NEXT_PUBLIC_RECAPTCHA_V3_KEY || ""
-        ),
-        isTokenAutoRefreshEnabled: true,
-      });
-    }
-  );
-}
 
 export { db, app, auth, messaging, analytics, ai, model };
