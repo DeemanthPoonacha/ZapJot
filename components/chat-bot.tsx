@@ -25,6 +25,7 @@ import { ChatRole } from "@/types/ai-chat";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "react-responsive";
+import ThemedCanvasImage from "./layout/themed-image";
 
 export default function ChatBotUI() {
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Adjust breakpoint as needed
@@ -155,7 +156,6 @@ export default function ChatBotUI() {
     if (!el) return;
 
     const isAtBottom = el.scrollHeight - el.scrollTop - 50 <= el.clientHeight;
-    console.log("🚀 ~ checkIfAtBottom ~ isAtBottom:", isAtBottom);
     setShowBottomButton(!isAtBottom);
   };
 
@@ -308,6 +308,15 @@ export default function ChatBotUI() {
     }
   }
 
+  const icon = (size = 32) => (
+    <ThemedCanvasImage
+      src="/z_icon.webp"
+      alt="Zappy Logo"
+      width={size}
+      height={size}
+    />
+  );
+
   return (
     <>
       {/* Floating Toggle Button */}
@@ -316,15 +325,15 @@ export default function ChatBotUI() {
           if (isMobile) setIsMaximized(true);
           setOpen(!open);
         }}
-        className="pointer-events-auto absolute bottom-22 lg:bottom-12 right-8 lg:right-12 xl:right-20 2xl:right-8 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-all hover:bg-primary/90"
-        variant="default"
+        size={"icon"}
+        className="pointer-events-auto absolute bottom-22 lg:bottom-12 right-8 lg:right-12 xl:right-20 2xl:right-8 z-60 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-all hover:bg-primary/90 h-14 w-14"
+        title="Open Zappy Chat"
+        variant="secondary"
       >
-        <MessageCircle size={24} />
-        <span className="hidden sm:inline">Zappy</span>
-
+        {icon(40)}
         {/* Session indicator */}
         {isSessionActive && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-white" />
+          <div className="absolute top-0.5 right-0.5 w-3 h-3 bg-green-500 rounded-full border border-white" />
         )}
       </Button>
 
@@ -332,20 +341,31 @@ export default function ChatBotUI() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            initial={{
+              opacity: 0,
+              x: isMaximized ? 420 : 180,
+              y: isMaximized ? 500 : 300,
+              scale: 0.05,
+            }}
+            animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+            exit={{
+              opacity: 0,
+              x: isMaximized ? 420 : 180,
+              y: isMaximized ? 500 : 300,
+              scale: 0.05,
+            }}
+            transition={{ duration: 0.5 }}
             // className=
             className={cn(
               "pointer-events-auto bg-background flex flex-col z-50 p-4 space-y-4 w-full min-h-[500px]",
               isMaximized
-                ? "max-w-screen fixed md:absolute top-0 left-0 h-full pb-24"
-                : "absolute max-h-[80vh] bottom-32 lg:bottom-22 right-8 lg:right-12 xl:right-20 2xl:right-8 max-w-sm bg-background rounded-xl shadow-xl border"
+                ? "max-w-screen fixed md:absolute top-0 left-0 h-full pb-24 z-60"
+                : "absolute max-h-[80vh] bottom-38 lg:bottom-28 right-8 lg:right-12 xl:right-20 2xl:right-8 max-w-sm bg-background rounded-xl shadow-xl border"
             )}
           >
             <div className="flex justify-between items-center border-b pb-2">
               <div className="flex items-center gap-2">
+                {icon()}
                 <div className="text-sm font-semibold">Zappy</div>
                 {/* Session status indicator */}
                 <div
@@ -397,25 +417,56 @@ export default function ChatBotUI() {
             >
               <div className="flex flex-col gap-2">
                 {messages.map((msg, i) => (
-                  <div
+                  <motion.div
                     key={i}
-                    className={`p-2 rounded-md max-w-sm ${
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className={`flex ${
                       msg.role === ChatRole.USER
-                        ? "bg-primary text-primary-foreground self-end ms-4"
-                        : "bg-secondary text-secondary-foreground self-start me-4"
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
-                    <span
-                      className="whitespace-pre-wrap"
-                      dangerouslySetInnerHTML={{ __html: msg.text as string }}
-                    />
-                  </div>
+                    <div
+                      className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
+                        msg.role === ChatRole.USER
+                          ? "bg-primary text-primary-foreground self-end ms-4 rounded-br-md"
+                          : "bg-secondary text-secondary-foreground self-start me-4 rounded-bl-md"
+                      }`}
+                    >
+                      <span
+                        className="whitespace-pre-wrap"
+                        dangerouslySetInnerHTML={{ __html: msg.text as string }}
+                      />
+                    </div>
+                  </motion.div>
                 ))}
               </div>
 
               <div className="border-t py-4 @container">
                 {askAI.isPending ? (
-                  <div className="text-gray-400 italic">Thinking...</div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex justify-start"
+                  >
+                    <div className="max-w-[80%] p-3 rounded-2xl rounded-bl-md bg-secondary text-gray-400 border text-sm shadow-sm">
+                      <div className="flex items-center gap-2">
+                        {[0, 0.2, 0.4].map((delay, i) => (
+                          <motion.div
+                            key={i}
+                            animate={{ scale: [1, 1.5, 1] }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 1,
+                              delay,
+                            }}
+                            className="w-2 h-2 bg-gray-400 rounded-full"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
                 ) : (
                   actionModal
                 )}
@@ -435,13 +486,19 @@ export default function ChatBotUI() {
             </div>
 
             <div className="border-t pt-2">
-              <div className="border rounded-4xl p-2 flex items-end gap-2">
+              <div className="border rounded-4xl p-1 flex items-end gap-2 focus-within:ring-2 focus-within:ring-ring focus-within:border-border transition-all">
                 <Textarea
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
                   rows={1}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask something..."
-                  className="w-full rounded-l-4xl p-2 text-sm min-h-9 max-h-64 border-0"
+                  className="w-full rounded-l-4xl p-2 text-sm min-h-9 max-h-64 border-0 ring-0 focus:ring-0 focus:border-0 focus:outline-none shadow-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none "
                 />
                 <Button
                   className="rounded-full"
