@@ -1,9 +1,9 @@
 "use client";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { Link } from "../layout/link/CustomLink";
-import { CTAButton } from "./cta-section";
 import { useEffect } from "react";
 import { useSettings } from "@/lib/hooks/useSettings";
+import { CTAButton } from "./cta-button";
 
 export default function HeaderAction() {
   const { user } = useAuth();

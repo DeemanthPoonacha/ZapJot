@@ -1,12 +1,12 @@
 import { Header } from "@/components/landing-page/header";
 import { Hero } from "@/components/landing-page/hero";
-import { Features } from "@/components/landing-page/features";
+import { Features } from "@/components/landing-page/features/features";
 import { Testimonials } from "../components/landing-page/testimonials";
-import { HowItWorks } from "../components/landing-page/how-it-works";
+import { HowItWorks } from "../components/landing-page/app-preview/how-it-works";
 import { Footer } from "../components/landing-page/footer";
 import { CTASection } from "@/components/landing-page/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
-import Contact from "@/components/landing-page/contact";
+import { Contact } from "@/components/landing-page/contact/contact";
 
 export default function LandingPage() {
   return (

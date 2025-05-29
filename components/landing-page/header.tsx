@@ -3,7 +3,7 @@ import { Logo } from "@/components/landing-page/Logo";
 import dynamic from "next/dynamic";
 import { Link } from "../layout/link/CustomLink";
 
-const HeaderAction = dynamic(() => import("./HeaderAction"), {});
+const HeaderAction = dynamic(() => import("./header-action"), {});
 
 export function Header() {
   return (
