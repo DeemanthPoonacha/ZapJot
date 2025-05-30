@@ -5,12 +5,10 @@ import { features } from "../data";
 export function Features() {
   return (
     <section className="relative py-24 md:py-32" id="features">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-2000"></div>
-      </div>
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30" />
+      <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
       <article className="relative container px-4 md:px-6">
         <div className="mx-auto text-center md:max-w-4xl mb-20">

@@ -1,4 +1,5 @@
 import { CheckSquare, Sparkles, ArrowRight, Play } from "lucide-react";
+import ZapJotAnimation from "@/components/landing-page/hero-animation";
 
 const appVersion = process.env.APP_VERSION || "1.0.0";
 
@@ -34,27 +35,6 @@ function FeaturesList() {
         </span>
       </div>
     </div>
-  );
-}
-
-// Server Component - Static Background Elements
-function HeroBackground() {
-  return (
-    <>
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] opacity-25"></div>
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/50" />
-      <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-40 right-32 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-400/5 rounded-full blur-3xl animate-pulse delay-2000" />
-      </div>
-      {/* Animated background gradients */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse"></div>
-      <div className="absolute top-40 right-10 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse delay-1000"></div>
-      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse delay-2000"></div>
-    </>
   );
 }
 
@@ -120,8 +100,6 @@ function AnimatedImage() {
 export function Hero() {
   return (
     <section className="relative  py-24 md:py-32 px-4 md:px-6">
-      <HeroBackground />
-
       <article className="relative container mx-auto">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-20 items-center">
           {/* Content Column */}
@@ -175,7 +153,7 @@ export function Hero() {
 
           {/* Image Column */}
           <div className="flex justify-center lg:justify-end">
-            <AnimatedImage />
+            <ZapJotAnimation />
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import { Link } from "../layout/link/CustomLink";
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <footer className="relative overflow-hidden border-t">
       {/* Decorative background elements */}
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
       <div className="absolute top-0 left-1/4 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl" />

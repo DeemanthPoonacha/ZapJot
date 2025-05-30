@@ -7,12 +7,13 @@ import { Footer } from "../components/landing-page/footer";
 import { CTASection } from "@/components/landing-page/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
 import { Contact } from "@/components/landing-page/contact/contact";
+import { Background } from "./Background";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center">
       <Header />
-
+      <Background />
       <main className="flex-1 container">
         {/* Hero Section */}
         <Hero />

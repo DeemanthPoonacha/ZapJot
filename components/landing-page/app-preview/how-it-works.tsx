@@ -4,15 +4,7 @@ import { steps } from "../data";
 
 export function HowItWorks() {
   return (
-    <section
-      id="how-it-works"
-      className="py-20 md:py-32 relative"
-    >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30" />
-      <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-
+    <section id="how-it-works" className="py-20 md:py-32 relative">
       <article className="container px-4 md:px-6 relative z-10">
         {/* Enhanced header section */}
         <div className="mx-auto text-center md:max-w-[58rem] mb-20">

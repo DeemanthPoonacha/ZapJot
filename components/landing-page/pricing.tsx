@@ -2,16 +2,7 @@ import { CheckSquare, Sparkles, Zap, Star, ArrowRight } from "lucide-react";
 
 export function Pricing() {
   return (
-    <section
-      id="pricing"
-      className="relative py-20 md:py-32 px-4 md:px-6 "
-    >
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50"></div>
-      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-      <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000"></div>
-      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-500"></div>
-
+    <section id="pricing" className="relative py-20 md:py-32 px-4 md:px-6 ">
       <article className="container relative z-10">
         {/* Header */}
         <div className="mx-auto text-center md:max-w-[58rem] animate-fade-in">
