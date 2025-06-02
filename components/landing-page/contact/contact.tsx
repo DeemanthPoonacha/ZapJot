@@ -27,8 +27,8 @@ export function Contact() {
             Get in Touch
           </h2>
           <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
-            Have questions, feedback, or just want to say hello? We'd love to
-            hear from you. Our team typically responds within 24 hours.
+            Have questions, feedback, or just want to say hello? We&apos;d love
+            to hear from you. Our team typically responds within 24 hours.
           </p>
         </div>
 
