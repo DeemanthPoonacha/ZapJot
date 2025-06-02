@@ -52,13 +52,8 @@ export function TestimonialsInteractive({
 
   return (
     <section id="testimonials" className="py-20 md:py-32 relative">
-      {/* Animated background */}
+      {/* background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/50" />
-      <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-40 right-32 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-400/5 rounded-full blur-3xl animate-pulse delay-2000" />
-      </div>
 
       <article className="container px-4 md:px-6 relative z-10">
         {/* Enhanced header */}

@@ -1,7 +1,6 @@
 import { Sparkles } from "lucide-react";
 import Image from "next/image";
 
-// Mock ImageFrame component since we don't have the original
 export function ImageFrame({
   data: { id, title, description, imageUrl },
   onClick,

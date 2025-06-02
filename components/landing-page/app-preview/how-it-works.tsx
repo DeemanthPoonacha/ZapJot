@@ -42,7 +42,7 @@ export function HowItWorks() {
               return (
                 <div
                   key={step.number}
-                  className={`relative group cursor-pointer transition-all duration-500 ${
+                  className={`relative group transition-all duration-500 ${
                     isActive ? "scale-105" : "hover:scale-102"
                   }`}
                   // onMouseEnter={() => setActiveStep(index)}
@@ -121,19 +121,10 @@ export function HowItWorks() {
                       </p>
 
                       {isActive && (
-                        <div className="mt-4 pt-4 border-t border-gray-200/50">
+                        <div className="mt-2 pt-4 border-t border-gray-200/50">
                           <p className="text-sm text-gray-600 italic">
                             {step.details}
                           </p>
-                        </div>
-                      )}
-
-                      {/* Completion checkmark */}
-                      {isActive && (
-                        <div className="absolute -top-2 -right-2">
-                          <CheckCircle
-                            className={`w-6 h-6 text-green-500 bg-white rounded-full`}
-                          />
                         </div>
                       )}
                     </div>

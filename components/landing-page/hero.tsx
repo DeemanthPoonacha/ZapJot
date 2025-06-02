@@ -21,7 +21,7 @@ function VersionBadge() {
 // Server Component - Static Features List
 function FeaturesList() {
   return (
-    <div className="flex flex-col sm:flex-row gap-6 text-sm">
+    <div className="flex flex-wrap gap-6 text-sm">
       <div className="flex items-center gap-2">
         <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500">
           <CheckSquare className="h-3 w-3 text-white" />
@@ -46,11 +46,11 @@ function FeaturesList() {
 function InteractiveButtons() {
   return (
     <div className="flex flex-col sm:flex-row gap-4">
-      <CTAButton className="h-15 rounded-xl" />
+      <CTAButton className="h-15 rounded-xl w-full" />
 
       {/* Secondary Button */}
-      <Link href="#how-it-works" className="w-full">
-        <button className="group flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white/80 backdrop-blur-sm px-8 py-4 font-semibold text-slate-700 shadow-sm hover:shadow-md hover:border-purple-200 hover:bg-purple-50/50 transition-all duration-300">
+      <Link href="#how-it-works">
+        <button className="w-full group flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white/80 backdrop-blur-sm px-8 py-4 font-semibold text-slate-700 shadow-sm hover:shadow-md hover:border-purple-200 hover:bg-purple-50/50 transition-all duration-300">
           <span>Learn More</span>
           <ArrowRight className="h-4 w-4 group-hover:scale-110 transition-transform" />
         </button>
@@ -64,13 +64,13 @@ export function Hero() {
   return (
     <section className="relative  py-24 md:py-32 px-4 md:px-6">
       <article className="relative container mx-auto">
-        <div className="grid gap-16 lg:grid-cols-2 lg:gap-20 items-center">
+        <div className="grid gap-16 lg:grid-cols-2 xl:gap-20 items-center">
           {/* Content Column */}
           <div className="space-y-8 lg:pr-8">
             <VersionBadge />
 
             <div className="space-y-6">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+              <h1 className="text-5xl xl:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                   Turn Moments Into{" "}
                 </span>
@@ -115,7 +115,7 @@ export function Hero() {
           </div>
 
           {/* Image Column */}
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end h-full order-first lg:order-last">
             <ZapJotAnimation />
           </div>
         </div>
