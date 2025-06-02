@@ -10,6 +10,7 @@ import {
   UserPlus,
   Settings,
   Play,
+  TrendingUp,
 } from "lucide-react";
 import { Testimonial } from "./testimonials";
 
@@ -232,33 +233,27 @@ export const steps = [
   {
     number: 1,
     icon: UserPlus,
-    title: "Create an account",
-    description:
-      "Sign up for free and set up your personal profile in seconds.",
-    details:
-      "Join thousands of users who've transformed their productivity with ZapJot.",
+    title: "Create Your Account",
+    description: "Sign up free in seconds.",
+    details: "Jump in instantly — no setup or onboarding required.",
     color: "from-blue-500 to-blue-600",
     bgColor: "from-blue-50 to-blue-100",
   },
   {
     number: 2,
-    icon: Settings,
-    title: "Customize your space",
-    description:
-      "Set up your journal, calendar, and task lists to match your workflow.",
-    details:
-      "Personalize every aspect of your digital workspace for maximum efficiency.",
+    icon: Play,
+    title: "Capture. Structure. Repeat.",
+    description: "Capture notes, tasks, and ideas.",
+    details: "Use it right away, then organize or customize as you go.",
     color: "from-purple-500 to-purple-600",
     bgColor: "from-purple-50 to-purple-100",
   },
   {
     number: 3,
-    icon: Play,
-    title: "Start capturing life",
-    description:
-      "Begin journaling, planning, and organizing your life all in one place.",
-    details:
-      "Watch your productivity soar as you capture every moment and achieve your goals.",
+    icon: TrendingUp,
+    title: "Build Your Flow",
+    description: "Stay consistent, stay productive.",
+    details: "Create your own system over time and make ZapJot truly yours.",
     color: "from-pink-500 to-pink-600",
     bgColor: "from-pink-50 to-pink-100",
   },

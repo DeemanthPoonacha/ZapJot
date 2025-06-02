@@ -121,18 +121,15 @@ export default function Slides() {
       <div className="absolute top-24 sm:top-16 left-1/2 transform -translate-x-1/2 text-center z-10">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-4">
           <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
-          <span className="text-sm font-medium text-gray-300 uppercase tracking-wider">
+          <span className="text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-wider bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
             App Showcase
           </span>
         </div>
-        <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
-          App Previews
-        </h3>
-        <div className="mt-2 h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto" />
+        {/* <div className="mt-2 h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto" /> */}
       </div>
 
       {/* Main carousel container */}
-      <div className="absolute top-1/2 -translate-y-1/2 w-screen max-w-7xl h-full overflow-hidden flex justify-center perspective-1000">
+      <div className="absolute top-1/2 -translate-y-1/2 w-screen max-w-7xl h-full overflow-hidden flex justify-center perspective-1000 mt-12">
         {/* Enhanced navigation buttons */}
         <button
           onClick={handlePrev}

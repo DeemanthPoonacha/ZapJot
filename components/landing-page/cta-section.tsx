@@ -1,6 +1,7 @@
 import { ArrowRight, Sparkles, Zap, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { CTAButton } from "./cta-button";
+import { Link } from "../layout/link/CustomLink";
 
 export function CTASection() {
   return (
@@ -93,14 +94,16 @@ export function CTASection() {
                 {/* CTA Buttons */}
                 <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center sm:gap-6">
                   <CTAButton />
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 px-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 hover:scale-105 transition-all duration-200 group"
-                  >
-                    <span>See How It Works</span>
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <Link href="#how-it-works">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="h-12 px-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 hover:scale-105 transition-all duration-200 group"
+                    >
+                      <span>See How It Works</span>
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </div>
 
                 {/* Trust indicators */}
@@ -112,12 +115,12 @@ export function CTASection() {
                   <div className="hidden sm:block w-1 h-1 bg-slate-300 dark:bg-slate-600 rounded-full" />
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-300" />
-                    <span>Setup in under 2 minutes</span>
+                    <span>Setup in under a minute</span>
                   </div>
                   <div className="hidden sm:block w-1 h-1 bg-slate-300 dark:bg-slate-600 rounded-full" />
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-500" />
-                    <span>Always free to use</span>
+                    <span>Free to use</span>
                   </div>
                 </div>
               </div>

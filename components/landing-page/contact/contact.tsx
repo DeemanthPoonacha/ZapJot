@@ -1,5 +1,13 @@
 import React from "react";
-import { Mail, MessageSquare, Sparkles, Heart, Star } from "lucide-react";
+import {
+  Mail,
+  MessageSquare,
+  Sparkles,
+  Heart,
+  Star,
+  Bell,
+  Zap,
+} from "lucide-react";
 import ContactForm from "./contact-form";
 
 export function Contact() {
@@ -48,16 +56,16 @@ export function Contact() {
                 highlight: "Quick Response",
               },
               {
-                icon: MessageSquare,
-                title: "Live Chat",
-                desc: "Chat with our support team",
-                highlight: "Coming Soon",
+                icon: Bell,
+                title: "Product Updates",
+                desc: "Stay in the loop as we grow",
+                highlight: "New Features Coming",
               },
               {
-                icon: Heart,
-                title: "Community",
-                desc: "Join our growing community",
-                highlight: "1000+ Users",
+                icon: Zap,
+                title: "Made for You",
+                desc: "Send ideas or feedback",
+                highlight: "We’re Listening",
               },
             ].map((item, index) => (
               <div key={index} className="group relative">

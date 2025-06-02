@@ -1,4 +1,6 @@
 import { CheckSquare, Sparkles, Zap, Star, ArrowRight } from "lucide-react";
+import { CTAButton } from "./cta-button";
+import { Link } from "../layout/link/CustomLink";
 
 export function Pricing() {
   return (
@@ -19,7 +21,7 @@ export function Pricing() {
         </div>
 
         {/* Hero Free Banner */}
-        <div className="mt-12 relative group cursor-pointer">
+        <div className="mt-12 relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
           <div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-center py-8 sm:py-16 rounded-2xl shadow-2xl">
             <div className="absolute top-4 left-4">
@@ -41,14 +43,13 @@ export function Pricing() {
                   completely free
                 </span>
               </p>
-              <div className="inline-flex items-center gap-2 mt-6 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full hover:bg-white/20 transition-colors">
-                <a
-                  href="/home"
-                  className="text-lg font-semibold flex items-center gap-2"
-                >
-                  Get started today! <ArrowRight className="w-5 h-5" />
-                </a>
-              </div>
+
+              <CTAButton
+                extraBefore={<Sparkles className="h-5 w-5" />}
+                // text="Get Started Now"
+                // textWhenLoggedIn="Jump Into My Workspace"
+                className="rounded-full h-14 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors mt-6"
+              />
             </div>
           </div>
         </div>
@@ -58,18 +59,18 @@ export function Pricing() {
           {[
             {
               icon: Zap,
-              title: "Lightning Fast",
-              desc: "Instant sync across all devices",
+              title: "Instant Capture",
+              desc: "Quickly jot down thoughts without delay",
             },
             {
               icon: CheckSquare,
-              title: "Full-Featured",
-              desc: "Everything you need, nothing you don't",
+              title: "Everything You Need",
+              desc: "Powerful features without the clutter",
             },
             {
               icon: Sparkles,
-              title: "Beautiful Design",
-              desc: "Crafted with attention to detail",
+              title: "Delightfully Minimal",
+              desc: "Simple, distraction-free design",
             },
           ].map((feature, index) => (
             <div key={index} className="group relative">
@@ -106,10 +107,12 @@ export function Pricing() {
                 next level.
               </p>
               <div className="mt-8">
-                <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
-                  <Zap className="w-5 h-5" />
-                  Notify Me
-                </button>
+                <Link href="#contact">
+                  <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <Zap className="w-5 h-5" />
+                    Contact Us for Updates
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -1,13 +1,14 @@
 import { Logo } from "@/components/landing-page/Logo";
 import { Link } from "../layout/link/CustomLink";
+import { CTAButton } from "./cta-button";
 
 export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
-      <div className="absolute top-0 left-1/4 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-pink-400/10 to-indigo-400/10 rounded-full blur-3xl" />
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/90 to-purple-50/90 -z-10" />
+      <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
       <div className="relative container px-4 py-16 md:px-6 md:py-20 lg:py-24">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
@@ -150,25 +151,12 @@ export function Footer() {
                 </h2>
               </div>
 
-              <a
-                href="/home"
-                className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl group"
-              >
-                Get started today!
-                <svg
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </a>
+              <CTAButton
+                // extraBefore={<Sparkles className="h-5 w-5" />}
+                // text="Get Started Now"
+                // textWhenLoggedIn="Jump Into My Workspace"
+                className="rounded-full h-14 bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-colors mt-6"
+              />
             </div>
           </div>
         </div>

@@ -1,4 +1,3 @@
-// "use client";
 import { JSX } from "react";
 import clsx from "clsx";
 
@@ -12,8 +11,6 @@ type Feature = {
 };
 
 export function FeatureCard({ feature }: { feature: Feature }) {
-  //   const [hovered, setHovered] = useState(false);
-
   return (
     <div
       className={clsx(
@@ -21,8 +18,6 @@ export function FeatureCard({ feature }: { feature: Feature }) {
         feature.shadow,
         "hover:shadow-xl"
       )}
-      //   onMouseEnter={() => setHovered(true)}
-      //   onMouseLeave={() => setHovered(false)}
     >
       {/* Hover gradient bg */}
       <div
@@ -54,29 +49,6 @@ export function FeatureCard({ feature }: { feature: Feature }) {
         <p className="mt-3 text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors">
           {feature.desc}
         </p>
-        <div className="mt-4 flex items-center text-sm font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-          <span
-            className={clsx(
-              `bg-gradient-to-r ${feature.gradient}`,
-              "bg-clip-text text-transparent"
-            )}
-          >
-            Learn more
-          </span>
-          <svg
-            className="ml-1 h-4 w-4 text-slate-400 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </div>
       </div>
 
       {

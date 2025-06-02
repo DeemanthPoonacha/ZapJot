@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 import { FeatureCard } from "./feature-card";
 import { features } from "../data";
+import { CTAButton } from "../cta-button";
 
 export function Features() {
   return (
@@ -41,23 +42,12 @@ export function Features() {
 
         {/* Call to action */}
         <div className="text-center mt-20">
-          <div className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
-            <Sparkles className="h-5 w-5" />
-            Get Started Today
-            <svg
-              className="h-5 w-5 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5-5 5M6 12h12"
-              />
-            </svg>
-          </div>
+          <CTAButton
+            extraBefore={<Sparkles className="h-5 w-5" />}
+            text="Explore the Features"
+            textWhenLoggedIn="Make the Most of Zapjot"
+            className="rounded-full h-16"
+          />
         </div>
       </article>
     </section>

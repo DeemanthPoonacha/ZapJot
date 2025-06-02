@@ -1,6 +1,7 @@
 import { Sparkles, CheckCircle, ArrowRight } from "lucide-react";
 import Slides from "./slides";
 import { steps } from "../data";
+import { CTAButton } from "../cta-button";
 
 export function HowItWorks() {
   return (
@@ -24,8 +25,10 @@ export function HowItWorks() {
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-6" />
 
           <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Getting started is easy. Here's how you can transform your
-            productivity in just a few simple steps.
+            Getting started is easy.
+            <br />
+            Here's how you can transform your productivity in just a few simple
+            steps.
           </p>
         </div>
 
@@ -142,12 +145,13 @@ export function HowItWorks() {
 
           {/* Call to action */}
           <div className="text-center mb-12">
-            <button className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-              <span>Get Started Now</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <CTAButton
+              text="See It in Action"
+              textWhenLoggedIn="Jump Into My Workspace"
+              className="rounded-full h-14  from-blue-600 to-purple-600"
+            />
             <p className="mt-3 text-sm text-gray-500">
-              Free forever • No credit card required
+              Free to use • No credit card required
             </p>
           </div>
 

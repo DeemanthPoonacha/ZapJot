@@ -1,5 +1,7 @@
 import { CheckSquare, Sparkles, ArrowRight, Play } from "lucide-react";
 import ZapJotAnimation from "@/components/landing-page/hero-animation";
+import { CTAButton } from "./cta-button";
+import { Link } from "../layout/link/CustomLink";
 
 const appVersion = process.env.APP_VERSION || "1.0.0";
 
@@ -42,56 +44,15 @@ function FeaturesList() {
 function InteractiveButtons() {
   return (
     <div className="flex flex-col sm:flex-row gap-4">
-      {/* Primary CTA Button */}
-      <button className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div className="relative flex items-center justify-center gap-2">
-          <span>Get Started Free</span>
-          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-        </div>
-      </button>
+      <CTAButton className="h-15 rounded-xl" />
 
       {/* Secondary Button */}
-      <button className="group flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white/80 backdrop-blur-sm px-8 py-4 font-semibold text-slate-700 shadow-sm hover:shadow-md hover:border-purple-200 hover:bg-purple-50/50 transition-all duration-300">
-        <Play className="h-4 w-4 group-hover:scale-110 transition-transform" />
-        <span>Watch Demo</span>
-      </button>
-    </div>
-  );
-}
-
-// Client Component - Animated Image
-function AnimatedImage() {
-  return (
-    <div className="relative group">
-      {/* Glow effect behind image */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 scale-110"></div>
-
-      {/* Main image container */}
-      <div className="relative bg-white rounded-3xl p-4 shadow-2xl border border-white/20 backdrop-blur-sm group-hover:scale-105 transition-transform duration-500">
-        <div className="w-96 h-96 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
-          {/* Mock app interface */}
-          <div className="w-80 h-80 bg-white rounded-xl shadow-lg p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg"></div>
-              <div className="h-4 bg-slate-200 rounded w-20"></div>
-            </div>
-            <div className="space-y-3">
-              <div className="h-3 bg-slate-100 rounded w-full"></div>
-              <div className="h-3 bg-slate-100 rounded w-4/5"></div>
-              <div className="h-3 bg-slate-100 rounded w-3/5"></div>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mt-6">
-              <div className="h-16 bg-purple-50 rounded-lg border border-purple-100"></div>
-              <div className="h-16 bg-pink-50 rounded-lg border border-pink-100"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Floating elements */}
-      <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-bounce delay-1000"></div>
-      <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-bounce delay-2000"></div>
+      <Link href="#how-it-works" className="w-full">
+        <button className="group flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white/80 backdrop-blur-sm px-8 py-4 font-semibold text-slate-700 shadow-sm hover:shadow-md hover:border-purple-200 hover:bg-purple-50/50 transition-all duration-300">
+          <span>Learn More</span>
+          <ArrowRight className="h-4 w-4 group-hover:scale-110 transition-transform" />
+        </button>
+      </Link>
     </div>
   );
 }

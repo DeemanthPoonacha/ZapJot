@@ -23,7 +23,12 @@ export default function HeaderAction() {
           Log in
         </Link>
       )}
-      <CTAButton size="default" className="" withArrow={false} />
+      <CTAButton
+        textWhenLoggedIn="My Workspace"
+        size="default"
+        className=""
+        extraAfter={null}
+      />
     </div>
   );
 }
