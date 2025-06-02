@@ -1,4 +1,4 @@
-import { CheckSquare, Sparkles, ArrowRight, Play } from "lucide-react";
+import { CheckSquare, Sparkles, ArrowRight } from "lucide-react";
 import ZapJotAnimation from "@/components/landing-page/hero-animation";
 import { CTAButton } from "./cta-button";
 import { Link } from "../layout/link/CustomLink";
@@ -26,7 +26,9 @@ function FeaturesList() {
         <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500">
           <CheckSquare className="h-3 w-3 text-white" />
         </div>
-        <span className="text-slate-600 font-medium">It's free to use</span>
+        <span className="text-slate-600 font-medium">
+          It&apos;s free to use
+        </span>
       </div>
       <div className="flex items-center gap-2">
         <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500">

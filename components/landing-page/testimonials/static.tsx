@@ -15,7 +15,7 @@ export function TestimonialsStatic({
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {testimonials.map((t) => (
           <div key={t.id} className="p-6 border rounded-xl bg-white shadow">
-            <p className="text-gray-700">"{t.quote}"</p>
+            <p className="text-gray-700">&quot;{t.quote}&quot;</p>
             <p className="mt-4 font-semibold">{t.name}</p>
             <p className="text-sm text-gray-500">{t.role}</p>
             <div className="flex mt-2">

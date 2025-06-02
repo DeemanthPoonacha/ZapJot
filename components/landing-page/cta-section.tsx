@@ -142,7 +142,7 @@ export function CTASection() {
               </div>
               <div className="text-left">
                 <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                  "Game-changing productivity tool!"
+                  &quot;Game-changing productivity tool!&quot;
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   - Sarah, Product Manager

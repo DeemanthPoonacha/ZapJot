@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Mail,
-  MessageSquare,
-  Sparkles,
-  Heart,
-  Star,
-  Bell,
-  Zap,
-} from "lucide-react";
+import { Mail, Sparkles, Heart, Star, Bell, Zap } from "lucide-react";
 import ContactForm from "./contact-form";
 
 export function Contact() {

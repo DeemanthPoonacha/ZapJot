@@ -8,7 +8,6 @@ import {
   Sparkles,
   ShieldCheck,
   UserPlus,
-  Settings,
   Play,
   TrendingUp,
 } from "lucide-react";

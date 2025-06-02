@@ -51,10 +51,7 @@ export function TestimonialsInteractive({
   };
 
   return (
-    <section
-      id="testimonials"
-      className="py-20 md:py-32 relative"
-    >
+    <section id="testimonials" className="py-20 md:py-32 relative">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/50" />
       <div className="absolute top-0 left-0 w-full h-full">
@@ -82,8 +79,8 @@ export function TestimonialsInteractive({
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-6" />
 
           <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our users have to say
-            about ZapJot.
+            Don&apos;t just take our word for it. Here&apos;s what our users
+            have to say about ZapJot.
           </p>
 
           {/* Stats */}
@@ -124,7 +121,7 @@ export function TestimonialsInteractive({
             />
 
             <blockquote className="text-xl md:text-2xl font-medium text-gray-800 leading-relaxed mb-8">
-              "{testimonials[activeTestimonial].quote}"
+              &quot;{testimonials[activeTestimonial].quote}&quot;
             </blockquote>
 
             <div className="flex items-center gap-4">
@@ -235,7 +232,7 @@ export function TestimonialsInteractive({
                 </div>
 
                 <blockquote className="text-gray-700 leading-relaxed">
-                  <p>"{testimonial.quote}"</p>
+                  <p>&quot;{testimonial.quote}&quot;</p>
                 </blockquote>
 
                 {/* Sparkle effect */}

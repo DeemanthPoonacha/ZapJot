@@ -1,4 +1,4 @@
-import { CheckSquare, Sparkles, Zap, Star, ArrowRight } from "lucide-react";
+import { CheckSquare, Sparkles, Zap, Star } from "lucide-react";
 import { CTAButton } from "./cta-button";
 import { Link } from "../layout/link/CustomLink";
 
@@ -101,7 +101,7 @@ export function Pricing() {
                 Looking for more?
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-                We're constantly improving ZapJot. Premium features with
+                We&apos;re constantly improving ZapJot. Premium features with
                 advanced capabilities are coming soon. Stay tuned for
                 subscription options that will take your productivity to the
                 next level.

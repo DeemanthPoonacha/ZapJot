@@ -1,4 +1,4 @@
-import { Sparkles, CheckCircle, ArrowRight } from "lucide-react";
+import { Sparkles, CheckCircle } from "lucide-react";
 import Slides from "./slides";
 import { steps } from "../data";
 import { CTAButton } from "../cta-button";
@@ -27,8 +27,8 @@ export function HowItWorks() {
           <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
             Getting started is easy.
             <br />
-            Here's how you can transform your productivity in just a few simple
-            steps.
+            Here&apos;s how you can transform your productivity in just a few
+            simple steps.
           </p>
         </div>
 

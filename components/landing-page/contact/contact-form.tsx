@@ -103,7 +103,7 @@ export default function ContactForm() {
                 Message Sent Successfully!
               </h3>
               <p className="text-gray-600 text-lg max-w-md leading-relaxed">
-                Thank you for reaching out. We'll get back to you within 24
+                Thank you for reaching out. We&apos;ll get back to you within 24
                 hours.
               </p>
               <div className="flex justify-center space-x-2 mt-6">
