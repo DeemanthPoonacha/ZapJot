@@ -170,8 +170,9 @@ export default function Slides() {
         {originalSlides.map((_, index) => (
           <button
             key={index}
+            title={`Slide ${index + 1}`}
             onClick={() => setSelectedProjectIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
               selectedProjectIndex % originalSlides.length === index
                 ? "bg-blue-400 w-8"
                 : "bg-white/30 hover:bg-white/50"

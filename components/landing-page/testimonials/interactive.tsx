@@ -148,8 +148,9 @@ export function TestimonialsInteractive({
             {/* Navigation */}
             <div className="flex items-center justify-between mt-8">
               <button
+                title="Previous testimonial"
                 onClick={prevTestimonial}
-                className="p-3 rounded-full bg-white/50 hover:bg-white/70 backdrop-blur-sm transition-all duration-300 group"
+                className="p-3 rounded-full bg-white/50 hover:bg-white/70 backdrop-blur-sm transition-all duration-300 group cursor-pointer hover:scale-110 hover:outline"
               >
                 <ChevronLeft className="w-5 h-5 text-gray-700 group-hover:scale-110 transition-transform" />
               </button>
@@ -158,11 +159,12 @@ export function TestimonialsInteractive({
                 {testimonials.map((_, index) => (
                   <button
                     key={index}
+                    title={`Testimonial ${index + 1}`}
                     onClick={() => {
                       setActiveTestimonial(index);
                       setIsAutoPlaying(false);
                     }}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
                       index === activeTestimonial
                         ? "bg-gray-700 w-8"
                         : "bg-gray-400 hover:bg-gray-500"
@@ -172,8 +174,9 @@ export function TestimonialsInteractive({
               </div>
 
               <button
+                title="Next testimonial"
                 onClick={nextTestimonial}
-                className="p-3 rounded-full bg-white/50 hover:bg-white/70 backdrop-blur-sm transition-all duration-300 group"
+                className="p-3 rounded-full bg-white/50 hover:bg-white/70 backdrop-blur-sm transition-all duration-300 group cursor-pointer hover:scale-110 hover:outline"
               >
                 <ChevronRight className="w-5 h-5 text-gray-700 group-hover:scale-110 transition-transform" />
               </button>
