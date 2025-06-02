@@ -1,4 +1,4 @@
-import { Sparkles, CheckCircle } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Slides from "./slides";
 import { steps } from "../data";
 import { CTAButton } from "../cta-button";
