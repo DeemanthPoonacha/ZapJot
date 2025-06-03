@@ -1,4 +1,3 @@
-import { Sparkles } from "lucide-react";
 import Image from "next/image";
 
 export function ImageFrame({
@@ -26,10 +25,10 @@ export function ImageFrame({
       {/* Floating title with gradient background */}
       <div className="relative z-10 mb-4">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/20">
-          <Sparkles className="w-4 h-4 text-yellow-400" />
-          <span className="font-bold text-lg bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            {title}
-          </span>
+          {isSelected && (
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping" />
+          )}
+          <span className="font-bold text-lg text-gray-50">{title}</span>
         </div>
       </div>
 

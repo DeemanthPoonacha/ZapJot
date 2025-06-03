@@ -109,19 +109,13 @@ export default function Slides() {
   return (
     <div className="my-8 relative w-full mx-auto min-h-[70rem] flex items-center justify-center pointer-events-auto overflow-hidden">
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
-        {/* Floating particles */}
-        <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-ping" />
-        <div className="absolute top-32 right-20 w-1 h-1 bg-purple-400 rounded-full animate-pulse delay-1000" />
-        <div className="absolute bottom-20 left-1/4 w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce delay-500" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900" />
 
       {/* Enhanced title section */}
       <div className="absolute top-24 sm:top-16 left-1/2 transform -translate-x-1/2 text-center z-10">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-4">
           <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
-          <span className="text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-wider bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
+          <span className="text-2xl font-bold uppercase tracking-wider bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
             App Showcase
           </span>
         </div>

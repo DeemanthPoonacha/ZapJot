@@ -8,7 +8,7 @@ export function CTASection() {
     <section className="relative bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950/30 py-20 md:py-32">
       {/* Floating particles */}
       <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-30 animate-float"
