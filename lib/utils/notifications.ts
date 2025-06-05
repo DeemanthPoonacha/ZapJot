@@ -1,5 +1,5 @@
 import { getToken } from "firebase/messaging";
-import { messaging } from "@/lib/services/firebase";
+import { messaging } from "@/lib/services/firebase/messaging";
 
 const FCM_VAPID_KEY = process.env.NEXT_PUBLIC_FCM_VAPID_KEY!;
 

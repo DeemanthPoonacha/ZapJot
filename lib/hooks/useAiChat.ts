@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { model } from "../services/firebase";
+import { model } from "../services/firebase/ai";
 import { ChatSession } from "firebase/ai";
 import { ChatMessage, ChatRole } from "@/types/ai-chat";
 import { useGlobalState } from "./global-state";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "@/lib/services/firebase"; // Adjust based on your setup
+import { auth } from "@/lib/services/firebase/base"; // Adjust based on your setup
 import { decryptUserKey } from "@/lib/utils/encryption";
 import { useGlobalState } from "./global-state";
 import { getUserKey } from "../services/encryption";

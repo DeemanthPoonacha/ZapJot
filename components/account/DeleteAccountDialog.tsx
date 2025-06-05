@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
 import { deleteAccount } from "@/lib/services/auth";
-import { analytics } from "@/lib/services/firebase";
+import { analytics } from "@/lib/services/firebase/analytics";
 import { logEvent } from "firebase/analytics";
 
 interface DeleteAccountDialogProps {

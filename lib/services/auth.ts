@@ -11,7 +11,7 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from "./firebase/base";
 import { deleteUserData } from "./user-config";
 
 export const signUp = async (email: string, password: string) => {

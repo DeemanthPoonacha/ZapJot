@@ -1,5 +1,6 @@
 import { GoogleAuthProvider, EmailAuthProvider } from "firebase/auth";
-import { analytics, auth } from "@/lib/services/firebase";
+import { auth } from "@/lib/services/firebase/base";
+import { analytics } from "@/lib/services/firebase/analytics";
 import StyledFirebaseAuth from "./StyledAuthUI";
 import Image from "next/image";
 import { Link } from "../layout/link/CustomLink";

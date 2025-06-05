@@ -1,4 +1,4 @@
-import { db } from "@/lib/services/firebase";
+import { db } from "@/lib/services/firebase/base";
 import { Task, TaskCreate, TaskFilter } from "@/types/tasks";
 import {
   collection,
