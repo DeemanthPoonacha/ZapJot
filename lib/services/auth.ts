@@ -1,4 +1,3 @@
-// @/lib/services/authService.ts
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -11,7 +10,7 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { auth } from "./firebase/base";
+import { auth } from "./firebase/auth";
 import { deleteUserData } from "./user-config";
 
 export const signUp = async (email: string, password: string) => {

@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let unsubscribe: () => void;
 
-    import("@/lib/services/firebase/base").then(({ auth }) => {
+    import("@/lib/services/firebase/auth").then(({ auth }) => {
       unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         setUser(currentUser);
         setLoading(false);
