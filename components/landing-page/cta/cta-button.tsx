@@ -1,9 +1,9 @@
 "use client";
 import { ArrowRight } from "lucide-react";
 import { Link } from "../../layout/link/CustomLink";
-import { useAuth } from "@/lib/context/AuthProvider";
 import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
 
 type CTAButtonProps = {
   className?: string;
@@ -14,6 +14,11 @@ type CTAButtonProps = {
   extraAfter?: React.ReactNode; // Optional prop for additional content after the button text
   extraBefore?: React.ReactNode; // Optional prop for additional content before the button text
 };
+
+const CTAButtonText = dynamic(() => import("./cta-button-text"), {
+  ssr: false,
+  loading: () => "Getting started Free",
+});
 
 export function CTAButton({
   className = "h-12 px-8 w-full sm:w-auto",
@@ -26,11 +31,6 @@ export function CTAButton({
     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
   ),
 }: CTAButtonProps) {
-  const { user } = useAuth();
-
-  // Determine final text
-  const label = user ? textWhenLoggedIn : text;
-
   return (
     <Link href={href} className="w-full sm:w-auto">
       <Button
@@ -42,7 +42,7 @@ export function CTAButton({
       >
         <span className="relative z-10 flex items-center gap-2">
           {extraBefore}
-          {label}
+          <CTAButtonText text={text} textWhenLoggedIn={textWhenLoggedIn} />
           {extraAfter}
         </span>
 
