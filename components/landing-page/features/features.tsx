@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 import { FeatureCard } from "./feature-card";
 import { features } from "../data";
-import { CTAButton } from "../cta-button";
+import { CTAButton } from "../cta/cta-button";
 
 export function Features() {
   return (

@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 import Slides from "./slides";
 import { steps } from "../data";
-import { CTAButton } from "../cta-button";
+import { CTAButton } from "../cta/cta-button";
 
 export function HowItWorks() {
   return (

@@ -1,8 +1,8 @@
 "use client";
 import { ArrowRight } from "lucide-react";
-import { Link } from "../layout/link/CustomLink";
+import { Link } from "../../layout/link/CustomLink";
 import { useAuth } from "@/lib/context/AuthProvider";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
 
 type CTAButtonProps = {

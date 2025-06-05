@@ -1,6 +1,6 @@
 import { Logo } from "@/components/landing-page/Logo";
 import { Link } from "../layout/link/CustomLink";
-import { CTAButton } from "./cta-button";
+import { CTAButton } from "./cta/cta-button";
 
 export function Footer() {
   return (

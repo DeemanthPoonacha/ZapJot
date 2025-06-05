@@ -1,10 +1,10 @@
-import { Header } from "@/components/landing-page/header";
-import { Hero } from "@/components/landing-page/hero";
+import { Header } from "@/components/landing-page/header/header";
+import { Hero } from "@/components/landing-page/hero/hero";
 import { Features } from "@/components/landing-page/features/features";
 import { Testimonials } from "../components/landing-page/testimonials";
 import { HowItWorks } from "../components/landing-page/app-preview/how-it-works";
 import { Footer } from "../components/landing-page/footer";
-import { CTASection } from "@/components/landing-page/cta-section";
+import { CTASection } from "@/components/landing-page/cta/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
 import { Contact } from "@/components/landing-page/contact/contact";
 import { Background } from "./Background";

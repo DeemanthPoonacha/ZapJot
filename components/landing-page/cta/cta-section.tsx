@@ -1,7 +1,7 @@
 import { ArrowRight, Sparkles, Zap, Users } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { CTAButton } from "./cta-button";
-import { Link } from "../layout/link/CustomLink";
+import { Link } from "../../layout/link/CustomLink";
 
 export function CTASection() {
   return (

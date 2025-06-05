@@ -1,7 +1,7 @@
 import { CheckSquare, Sparkles, ArrowRight } from "lucide-react";
-import ZapJotAnimation from "@/components/landing-page/hero-animation";
-import { CTAButton } from "./cta-button";
-import { Link } from "../layout/link/CustomLink";
+import ZapJotAnimation from "@/components/landing-page/hero/hero-animation";
+import { CTAButton } from "../cta/cta-button";
+import { Link } from "../../layout/link/CustomLink";
 
 const appVersion = process.env.APP_VERSION || "1.0.0";
 

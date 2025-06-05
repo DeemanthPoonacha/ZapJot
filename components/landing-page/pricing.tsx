@@ -1,5 +1,5 @@
 import { CheckSquare, Sparkles, Zap, Star } from "lucide-react";
-import { CTAButton } from "./cta-button";
+import { CTAButton } from "./cta/cta-button";
 import { Link } from "../layout/link/CustomLink";
 
 export function Pricing() {

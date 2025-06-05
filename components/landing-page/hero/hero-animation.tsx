@@ -14,6 +14,7 @@ const ZapJotAnimation: React.FC = () => {
             alt="zapjot"
             className="w-full h-full object-contain"
             priority
+            loading="eager"
           />
           <div className="absolute inset-0 overflow-hidden rounded-[8%] pointer-events-none">
             <div className="absolute w-[150%] h-[150%] bg-gradient-to-r from-white/20 to-transparent rotate-45 -translate-x-[150%] -translate-y-[150%] group-hover:translate-x-[150%] group-hover:translate-y-[150%] transition-transform duration-2700 ease-out" />
