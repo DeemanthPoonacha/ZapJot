@@ -1,6 +1,9 @@
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 import { app } from "./base";
 import { AI_SYSTEM_PROMPT } from "../../constants";
+import { initAppCheck } from "./appCheck";
+
+initAppCheck();
 
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
