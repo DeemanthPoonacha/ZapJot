@@ -17,7 +17,7 @@ type CTAButtonProps = {
 
 const CTAButtonText = dynamic(() => import("./cta-button-text"), {
   ssr: false,
-  loading: () => "Getting started Free",
+  loading: () => "Get Started Free",
 });
 
 export function CTAButton({

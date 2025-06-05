@@ -1,21 +1,18 @@
-// "use client";
-// import { useAuth } from "@/lib/context/AuthProvider";
-// import { Link } from "../../layout/link/CustomLink";
+"use client";
+import dynamic from "next/dynamic";
 import { CTAButton } from "../cta/cta-button";
 
-export default function HeaderAction() {
-  // const { user } = useAuth();
+const LoginButton = dynamic(() => import("./login-button"), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-4"></div>
+  ),
+});
 
+export default function HeaderAction() {
   return (
     <div className="flex items-center gap-4">
-      {/* {!user && (
-        <Link
-          href="/auth/sign-in"
-          className="hidden md:inline-flex text-sm font-medium hover:text-primary transition-colors w-16"
-        >
-          Log in
-        </Link>
-      )} */}
+      <LoginButton />
       <CTAButton
         textWhenLoggedIn="My Workspace"
         size="default"
