@@ -1,12 +1,20 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import ChatBotUI from "../chat-bot";
+import dynamic from "next/dynamic";
 
 export interface FloatingButtonProps {
   label?: string;
   onClick?: () => void;
   showChatBot?: boolean;
 }
+
+const ChatBotUI = dynamic(() => import("../chat-bot"), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-4"></div>
+  ),
+});
 
 export default function FloatingButton({
   label,

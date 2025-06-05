@@ -1,4 +1,3 @@
-// firebase/firebaseAuth.ts
 import { getAuth } from "firebase/auth";
 import { app } from "./base";
 
