@@ -1,6 +1,13 @@
 import React from "react";
 import { Mail, Sparkles, Heart, Star, Bell, Zap } from "lucide-react";
-import ContactForm from "./contact-form";
+import dynamic from "next/dynamic";
+
+const ContactForm = dynamic(() => import("./contact-form"), {
+  ssr: false,
+  loading: () => (
+    <div className="hidden md:inline-flex animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-4"></div>
+  ),
+});
 
 export function Contact() {
   return (
