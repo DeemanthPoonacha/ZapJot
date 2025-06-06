@@ -6,7 +6,7 @@ export const Background = () => (
     <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/30" />
 
     {/* Animated grid pattern */}
-    <div
+    {/* <div
       className="absolute inset-0 opacity-20"
       style={{
         backgroundImage: `
@@ -16,7 +16,7 @@ export const Background = () => (
         backgroundSize: "50px 50px",
         animation: "gridFloat 25s ease-in-out infinite",
       }}
-    />
+    /> */}
 
     {/* Primary floating orbs with dynamic movement */}
     <div className="absolute inset-0">
@@ -113,13 +113,12 @@ export const Background = () => (
         }}
       />
     </div>
-
     {/* Enhanced floating particles */}
-    <div className="absolute inset-0 overflow-hidden">
+    {/* <div className="absolute inset-0 overflow-hidden">
       {[...Array(15)].map((_, i) => (
         <div
           key={i}
-          className="absolute w-2 h-2 bg-white/20 rounded-full"
+          className="absolute w-2 h-2 bg-purple-400 rounded-full"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -130,7 +129,7 @@ export const Background = () => (
           }}
         />
       ))}
-    </div>
+    </div> */}
 
     {/* Subtle noise texture overlay */}
     <div
