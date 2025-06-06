@@ -1,5 +1,5 @@
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "./firebase/base";
+import { db } from "./firebase/db";
 import { generateEncryptedUserKey } from "../utils/encryption";
 import { UserInDb } from "@/types/user";
 import { getDeviceId } from "../utils";

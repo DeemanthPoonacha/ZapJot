@@ -9,7 +9,7 @@ import {
   getDocs,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "./firebase/base";
+import { db } from "./firebase/db";
 
 webpush.setVapidDetails(
   "mailto:dev.deemanth@gmail.com",

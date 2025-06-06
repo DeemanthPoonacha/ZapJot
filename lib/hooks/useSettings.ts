@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../services/firebase/base";
+import { db } from "../services/firebase/db";
 import { NotificationsSettingsUpdate, SettingsUpdate } from "@/types/settings";
 import { UserInDb } from "@/types/user";
 import { DEFAULT_THEME } from "../constants";
