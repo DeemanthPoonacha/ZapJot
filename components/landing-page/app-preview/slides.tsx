@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { ImageFrame } from "./ImageFrame";
 import { originalSlides } from "../data";
+import "./app-preview.css";
 
 export default function Slides() {
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);

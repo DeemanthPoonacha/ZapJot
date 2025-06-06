@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, EmailAuthProvider } from "firebase/auth";
 import { auth } from "@/lib/services/firebase/auth";
-import { analytics } from "@/lib/services/firebase/analytics";
+import { initAnalytics } from "@/lib/services/firebase/analytics";
 import StyledFirebaseAuth from "./StyledAuthUI";
 import Image from "next/image";
 import { Link } from "../layout/link/CustomLink";
@@ -34,12 +34,15 @@ export default function FirebaseAuthUI() {
           eventName = "sign_up"; // Change event name to sign_up
         }
 
-        if (analytics) {
-          logEvent(analytics, eventName, {
-            method: authResult.additionalUserInfo?.providerId,
-          });
-          console.log("Logged event for sign-in:", eventName);
-        }
+        initAnalytics().then((analytics) => {
+          if (analytics) {
+            logEvent(analytics, eventName, {
+              method: authResult.additionalUserInfo?.providerId,
+            });
+            console.log("Logged event for sign-in:", eventName);
+          }
+        });
+
         return false; // Prevents redirect to signInSuccessUrl
       },
     },

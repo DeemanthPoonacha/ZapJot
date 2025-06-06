@@ -1,4 +1,5 @@
 import Image from "next/image";
+import "./app-preview.css"; // Assuming you have some custom styles
 
 export function ImageFrame({
   data: { id, title, description, imageUrl },
@@ -72,25 +73,6 @@ export function ImageFrame({
           {description}
         </p>
       </div>
-      <style jsx>{`
-        .preserve-3d {
-          transform-style: preserve-3d;
-        }
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-        .animate-shimmer {
-          animation: shimmer 2s infinite;
-        }
-      `}</style>
     </div>
   );
 }

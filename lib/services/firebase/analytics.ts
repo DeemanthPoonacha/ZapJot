@@ -10,5 +10,3 @@ export async function initAnalytics() {
     return null;
   }
 }
-
-export const analytics = await initAnalytics();

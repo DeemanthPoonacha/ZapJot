@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import AppProviders from "@/lib/context/AppProviders";
-import { Toaster } from "@/components/ui/sonner";
 import { NProgressDone } from "@/components/layout/link/CustomLink";
 import { Suspense } from "react";
 import { CustomLoader } from "@/components/layout/CustomLoader";
@@ -84,7 +83,6 @@ export default function RootLayout({
             <Suspense fallback={<CustomLoader />}>
               <NProgressDone />
             </Suspense>
-            <Toaster />
           </main>
         </AppProviders>
       </body>
