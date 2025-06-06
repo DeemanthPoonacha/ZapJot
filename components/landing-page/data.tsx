@@ -145,6 +145,13 @@ export const originalSlides = [
     description: "Customize your experience and tailor your preferences.",
     imageUrl: "/screenshots/settings.webp",
   },
+  {
+    id: 11,
+    title: "Zappy (AI Chatbot)",
+    description:
+      "Your AI assistant for creating journals, tasks, events, and more — just ask.",
+    imageUrl: "/screenshots/zappy.webp", // Replace with actual image path
+  },
 ];
 
 export const testimonials: Testimonial[] = [

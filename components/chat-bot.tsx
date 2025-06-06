@@ -325,7 +325,7 @@ export default function ChatBotUI() {
           setOpen(!open);
         }}
         size={"icon"}
-        className="pointer-events-auto absolute bottom-22 lg:bottom-12 right-8 lg:right-12 xl:right-20 2xl:right-8 z-60 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-all hover:bg-primary/90 h-14 w-14"
+        className="border border-primary pointer-events-auto absolute bottom-22 lg:bottom-12 right-8 lg:right-12 xl:right-20 2xl:right-8 z-60 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:bg-primary/90 h-14 w-14"
         title="Open Zappy Chat"
         variant="secondary"
       >
@@ -358,7 +358,7 @@ export default function ChatBotUI() {
             className={cn(
               "pointer-events-auto bg-background flex flex-col z-50 p-4 space-y-4 w-full min-h-[500px]",
               isMaximized
-                ? "max-w-screen fixed md:absolute top-0 left-0 h-full pb-24 z-60"
+                ? "max-w-[98vw] fixed md:absolute top-0 left-0 h-full pb-24 z-60"
                 : "absolute max-h-[80vh] bottom-38 lg:bottom-28 right-8 lg:right-12 xl:right-20 2xl:right-8 max-w-sm bg-background rounded-xl shadow-xl border"
             )}
           >

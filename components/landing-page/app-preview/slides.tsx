@@ -108,7 +108,7 @@ export default function Slides() {
   };
 
   return (
-    <div className="my-8 relative w-full mx-auto min-h-[70rem] flex items-center justify-center pointer-events-auto overflow-hidden">
+    <div className="my-8 relative w-full mx-auto min-h-[70rem] flex items-center justify-center pointer-events-auto overflow-hidden shadow-2xl">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900" />
 
@@ -151,7 +151,15 @@ export default function Slides() {
               className="w-5/6 md:w-1/3 pt-40 preserve-3d"
             >
               <ImageFrame
-                onClick={() => setSelectedProjectIndex(index)}
+                onClick={() => {
+                  if (selectedProjectIndex === index)
+                    return window.open(
+                      project.imageUrl,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  setSelectedProjectIndex(index);
+                }}
                 data={project}
                 isSelected={selectedProjectIndex === index}
               />
@@ -162,10 +170,10 @@ export default function Slides() {
 
       {/* Progress indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-        {originalSlides.map((_, index) => (
+        {originalSlides.map(({ title }, index) => (
           <button
             key={index}
-            title={`Slide ${index + 1}`}
+            title={title}
             onClick={() => setSelectedProjectIndex(index)}
             className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
               selectedProjectIndex % originalSlides.length === index
