@@ -5,7 +5,7 @@ import { CTAButton } from "../cta/cta-button";
 const LoginButton = dynamic(() => import("./login-button"), {
   ssr: false,
   loading: () => (
-    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-4"></div>
+    <div className="hidden md:inline-flex animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-4"></div>
   ),
 });
 

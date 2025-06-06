@@ -24,19 +24,19 @@ const ZapJotAnimation: React.FC = () => {
         {/* Floating icons - anchored to center with wrapper divs for positioning */}
         <div
           className="absolute top-1/2 left-1/2"
-          style={{ transform: "translate(-50%, -50%) translate(-200%, -230%)" }}
+          style={{ transform: "translate(-50%, -50%) translate(-250%, -275%)" }}
         >
           <Image
             src="/icons/heart.png"
-            width={120}
-            height={120}
+            width={100}
+            height={100}
             alt="heart"
             className="hover:scale-110 transition-transform animate-floatTopLeft object-contain"
             style={{
-              width: "15vw",
-              height: "15vw",
-              maxWidth: "120px",
-              maxHeight: "120px",
+              width: "13vw",
+              height: "13vw",
+              maxWidth: "100px",
+              maxHeight: "100px",
             }}
           />
         </div>

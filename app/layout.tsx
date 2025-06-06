@@ -1,21 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppProviders from "@/lib/context/AppProviders";
 import { Toaster } from "@/components/ui/sonner";
 import { NProgressDone } from "@/components/layout/link/CustomLink";
 import { Suspense } from "react";
 import { CustomLoader } from "@/components/layout/CustomLoader";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const viewport: Viewport = {
   themeColor: "#2e0f42",
@@ -71,9 +60,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={` antialiased`}>
         {/* Structured Data for SEO */}
         <script
           type="application/ld+json"

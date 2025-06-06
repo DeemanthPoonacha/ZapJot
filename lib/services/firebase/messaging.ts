@@ -10,5 +10,3 @@ export async function initMessaging() {
     return null;
   }
 }
-
-export const messaging = await initMessaging();

@@ -112,10 +112,10 @@ export default function Slides() {
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900" />
 
       {/* Enhanced title section */}
-      <div className="absolute top-24 sm:top-16 left-1/2 transform -translate-x-1/2 text-center z-10">
+      <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center z-10">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-4">
           <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
-          <span className="text-2xl font-bold uppercase tracking-wider bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
+          <span className="text-2xl font-bold uppercase tracking-wider bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight text-nowrap">
             App Showcase
           </span>
         </div>
