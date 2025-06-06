@@ -29,7 +29,7 @@ import DatePicker from "../ui/date-picker";
 import UploadImage from "../ui/upload-image";
 import dynamic from "next/dynamic";
 
-const WysiwygEditor = dynamic(() => import("@/components/ui/wysiwyg"), {
+const WysiwygEditor = dynamic(() => import("@/components/wysiwyg/editor"), {
   ssr: false,
 });
 

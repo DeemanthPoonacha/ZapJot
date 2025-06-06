@@ -7,7 +7,8 @@ import { Footer } from "../components/landing-page/footer";
 import { CTASection } from "@/components/landing-page/cta/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
 import { Contact } from "@/components/landing-page/contact/contact";
-import { Background } from "./Background";
+import { Background } from "../components/landing-page/bg/Background";
+import "./landing-page.css";
 
 export default function LandingPage() {
   return (

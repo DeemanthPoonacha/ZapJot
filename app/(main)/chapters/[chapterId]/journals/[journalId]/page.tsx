@@ -21,7 +21,7 @@ import CloudinaryMediaModal from "@/components/MediaPreviewModal";
 import { useSearchParams } from "next/navigation";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import { CustomLoader } from "@/components/layout/CustomLoader";
-import { WysiwygViewer } from "@/components/ui/wysiwyg";
+import { WysiwygViewer } from "@/components/wysiwyg/viewer";
 
 const JournalPage = () => {
   const searchParams = useSearchParams();

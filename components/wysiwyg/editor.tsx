@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import JoditEditor from "jodit-react";
+import "./wysiwyg.css";
 
 type Props = {
   initialValue?: string;
@@ -32,7 +33,3 @@ const WysiwygEditor: React.FC<Props> = ({ initialValue = "", onChange }) => {
 };
 
 export default WysiwygEditor;
-
-export const WysiwygViewer = ({ html }: { html: string }) => {
-  return <div className="content" dangerouslySetInnerHTML={{ __html: html }} />;
-};
