@@ -13,7 +13,7 @@ import ThemedCanvasImage from "@/components/layout/themed-image";
 
 export default function HomePage() {
   return (
-    <PageLayout>
+    <PageLayout floatingButtonProps={{ showChatBot: true }}>
       <PageHeader
         icon={
           <ThemedCanvasImage

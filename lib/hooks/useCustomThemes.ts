@@ -11,7 +11,7 @@ import {
 import { Theme, ThemeCreate, ThemeUpdate } from "@/types/themes";
 import { defaultThemes } from "@/lib/constants";
 import { useAuth } from "../context/AuthProvider";
-import { db } from "../services/firebase";
+import { db } from "../services/firebase/db";
 import {
   addCustomCssVariables,
   removeCustomCssVariables,

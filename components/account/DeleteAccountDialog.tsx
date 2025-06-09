@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
 import { deleteAccount } from "@/lib/services/auth";
-import { analytics } from "@/lib/services/firebase";
+import { initAnalytics } from "@/lib/services/firebase/analytics";
 import { logEvent } from "firebase/analytics";
 
 interface DeleteAccountDialogProps {
@@ -44,6 +44,8 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
       setIsLoading(true);
       const data = isPasswordProvider ? { email, password } : undefined;
       await deleteAccount(data);
+
+      const analytics = await initAnalytics();
 
       if (analytics) {
         logEvent(analytics, "delete_account", {

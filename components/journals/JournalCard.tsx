@@ -1,4 +1,4 @@
-import { GridCardWithOverlay } from "@/components/ui/card";
+import { GridCardWithOverlay } from "@/components/ui/GridCardWithOverlay";
 import { Journal } from "@/types/journals";
 
 function JournalCard({

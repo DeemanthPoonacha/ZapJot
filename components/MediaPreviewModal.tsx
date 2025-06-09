@@ -1,4 +1,3 @@
-// components/CloudinaryMediaModal.jsx
 import { CldImage, CldVideoPlayer } from "next-cloudinary";
 import {
   Dialog,

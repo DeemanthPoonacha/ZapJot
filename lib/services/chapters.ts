@@ -1,4 +1,4 @@
-import { db } from "@/lib/services/firebase";
+import { db } from "./firebase/db";
 import { Chapter, ChapterCreate, ChapterUpdate } from "@/types/chapters";
 import {
   collection,

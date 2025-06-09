@@ -11,10 +11,17 @@ import { useChapter, useChapterMutations } from "@/lib/hooks/useChapters";
 import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
 import CloudinaryMediaModal from "@/components/MediaPreviewModal";
-import { PenLine } from "lucide-react";
+import { EllipsisVertical, SquarePen, Trash2 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
+import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NotFound = () => <p>Chapter not found</p>;
 
@@ -65,9 +72,42 @@ const ChapterPage = () => {
   };
 
   const isNewChapter = chapterId === "new";
+  const isDefaultChapter = chapterId === DEFAULT_CHAPTER_ID;
+
   const [isEditing, setIsEditing] = useState(isNewChapter);
 
   if (isLoading) return <CustomLoader />;
+
+  const menu = (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="cursor-pointer p-2">
+        <EllipsisVertical size={20} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {!isEditing && (
+          <DropdownMenuItem onClick={() => setIsEditing(true)}>
+            <SquarePen size={16} />
+            Edit
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem
+          onSelect={(e) => e.preventDefault()} // Prevents menu from closing too soon
+        >
+          <DeleteConfirm
+            description="Are you sure you want to delete this chapter? All journals in this chapter will be deleted. This action cannot be undone."
+            itemName="Chapter"
+            handleDelete={handleDelete}
+            trigger={
+              <span className="w-full flex gap-2">
+                <Trash2 size={16} />
+                Delete
+              </span>
+            }
+          />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   return (
     <PageLayout
@@ -82,12 +122,8 @@ const ChapterPage = () => {
           chapter?.id &&
           (isMoving ? (
             <Button onClick={handleMoveChapter}>Move Here</Button>
-          ) : (
-            <DeleteConfirm
-              itemName="Chapter"
-              description="Are you sure you want to delete this chapter? All journals in this chapter will be deleted. This action cannot be undone."
-              handleDelete={handleDelete}
-            />
+          ) : isDefaultChapter ? null : (
+            menu
           )),
       }}
       {...(!isNewChapter && {
@@ -114,15 +150,6 @@ const ChapterPage = () => {
               }
               className="min-h-96"
               chapter={chapter}
-              extra={
-                <Button
-                  variant={"outline"}
-                  size="icon"
-                  onClick={() => setIsEditing(true)}
-                >
-                  <PenLine className="h-4 w-4" />
-                </Button>
-              }
             />
             {chapter?.description && (
               <p className="mt-2 px-4 break-words">{chapter.description}</p>

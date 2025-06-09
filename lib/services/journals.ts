@@ -1,4 +1,4 @@
-import { db } from "@/lib/services/firebase";
+import { db } from "./firebase/db";
 import { Journal, JournalCreate, JournalUpdate } from "@/types/journals";
 import {
   collection,

@@ -1,21 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppProviders from "@/lib/context/AppProviders";
-import { Toaster } from "@/components/ui/sonner";
 import { NProgressDone } from "@/components/layout/link/CustomLink";
 import { Suspense } from "react";
 import { CustomLoader } from "@/components/layout/CustomLoader";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const viewport: Viewport = {
   themeColor: "#2e0f42",
@@ -70,11 +58,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head></head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className="purple">
+      <body className={` antialiased`}>
         {/* Structured Data for SEO */}
         <script
           type="application/ld+json"
@@ -98,7 +83,6 @@ export default function RootLayout({
             <Suspense fallback={<CustomLoader />}>
               <NProgressDone />
             </Suspense>
-            <Toaster />
           </main>
         </AppProviders>
       </body>

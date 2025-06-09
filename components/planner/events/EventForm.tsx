@@ -37,6 +37,7 @@ import MultipleSelector from "../../ui/multi-select";
 import { searchByName } from "@/lib/services/characters";
 import { useAuth } from "@/lib/context/AuthProvider";
 import DeleteConfirm from "../../ui/delete-confirm";
+import { Ban, Save } from "lucide-react";
 
 type EventFormProps = {
   eventData?: Event;
@@ -284,7 +285,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
           )}
         />
 
-        <div className="flex gap-2 items-end">
+        <div className="flex gap-2 items-end flex-wrap">
           {repeatType === "weekly" && (
             <FormField
               control={form.control}
@@ -408,11 +409,15 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
           {eventData?.id && (
             <DeleteConfirm itemName="Event" handleDelete={handleDelete} />
           )}
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button variant="ghost" type="button" onClick={onClose}>
+          <div className="flex gap-2">
+            <Button variant="outline" type="button" onClick={onClose}>
+              <Ban />
               Cancel
             </Button>
-            <Button type="submit">Save</Button>
+            <Button type="submit">
+              <Save />
+              Save
+            </Button>
           </div>
         </div>
       </form>

@@ -1,126 +1,139 @@
+import { CheckSquare, Sparkles, Zap, Star } from "lucide-react";
+import { CTAButton } from "./cta/cta-button";
+import { Link } from "../layout/link/CustomLink";
+
 export function Pricing() {
   return (
-    <section id="pricing" className="py-20 md:py-32 px-4 md:px-6">
-      <article className="container">
-        <div className="mx-auto text-center md:max-w-[58rem]">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+    <section id="pricing" className="relative py-20 md:py-32 px-4 md:px-6 ">
+      <article className="container relative z-10">
+        {/* Header */}
+        <div className="mx-auto text-center md:max-w-[58rem] animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-sm font-medium mb-6 shadow-sm">
+            <Sparkles className="w-4 h-4" />
+            Pricing Plans
+          </div>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 bg-clip-text text-transparent">
             Simple, Transparent Pricing
           </h2>
-          <p className="mt-4 text-muted-foreground md:text-xl">
+          <p className="mt-6 text-xl text-gray-600 leading-relaxed">
             Start for free and unlock the full potential of your productivity.
           </p>
         </div>
-        <div className="mt-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-center py-4 sm:py-12 rounded-md shadow-md">
-          <p className="text-sm sm:text-2xl font-semibold">
-            🎉 ZapJot is{" "}
-            <span className="underline underline-offset-2 font-bold">
-              completely free
-            </span>{" "}
-            —{" "}
-            <a href="/home" className="hover:underline font-bold">
-              Get started today!
-            </a>
-          </p>
+
+        {/* Hero Free Banner */}
+        <div className="mt-12 relative group">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+          <div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-center py-8 sm:py-16 rounded-2xl shadow-2xl">
+            <div className="absolute top-4 left-4">
+              <div className="flex space-x-1">
+                <div className="w-3 h-3 bg-white/20 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-white/20 rounded-full animate-pulse delay-100"></div>
+                <div className="w-3 h-3 bg-white/20 rounded-full animate-pulse delay-200"></div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 mb-4">
+                <Star className="w-6 h-6 text-yellow-300" />
+                <Star className="w-6 h-6 text-yellow-300" />
+                <Star className="w-6 h-6 text-yellow-300" />
+              </div>
+              <p className="text-xl sm:text-3xl font-bold mb-2">
+                🎉 ZapJot is{" "}
+                <span className="underline underline-offset-4 decoration-yellow-300 decoration-2 font-black">
+                  completely free
+                </span>
+              </p>
+
+              <CTAButton
+                extraBefore={<Sparkles className="h-5 w-5" />}
+                // text="Get Started Now"
+                // textWhenLoggedIn="Jump Into My Workspace"
+                className="rounded-full h-14 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors mt-6"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Pricing Cards */}
-        {/* <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2">
-            <div className="flex flex-col rounded-xl border-2 border-primary/20 bg-background p-8 shadow-lg">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-2xl font-bold">Free</h3>
-                  <p className="text-muted-foreground">
-                    Everything you need to get started
-                  </p>
+        {/* Feature Grid */}
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {[
+            {
+              icon: Zap,
+              title: "Instant Capture",
+              desc: "Quickly jot down thoughts without delay",
+            },
+            {
+              icon: CheckSquare,
+              title: "Everything You Need",
+              desc: "Powerful features without the clutter",
+            },
+            {
+              icon: Sparkles,
+              title: "Delightfully Minimal",
+              desc: "Simple, distraction-free design",
+            },
+          ].map((feature, index) => (
+            <div key={index} className="group relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
+              <div className="relative bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl mb-4">
+                  <feature.icon className="w-6 h-6 text-white" />
                 </div>
-                <div className="text-right">
-                  <div className="text-4xl font-bold">$0</div>
-                  <p className="text-sm text-muted-foreground">Free</p>
-                </div>
-              </div>
-              <div className="mt-8 grid gap-4">
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Journals and entries</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Basic task management</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Calendar integration</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Character tracking</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Basic reminders</span>
-                </div>
-              </div>
-              <div className="mt-8">
-                <Button size="lg" className="w-full">
-                  Get Started
-                </Button>
-              </div>
-              <p className="mt-4 text-center text-sm text-muted-foreground">
-                No credit card required
-              </p>
-            </div>
-            <div className="relative flex flex-col rounded-xl border-2 border-primary bg-background p-8 shadow-lg">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-sm font-medium text-primary-foreground">
-                Popular
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-2xl font-bold">Premium</h3>
-                  <p className="text-muted-foreground">For power users</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-4xl font-bold">$X</div>
-                  <p className="text-sm text-muted-foreground">per month</p>
-                </div>
-              </div>
-              <div className="mt-8 grid gap-4">
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Everything in Free</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Advanced feature 1</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Advanced feature 2</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Advanced feature 3</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckSquare className="h-5 w-5 text-primary" />
-                  <span>Advanced feature 4</span>
-                </div>
-              </div>
-              <div className="mt-8">
-                <Button size="lg" className="w-full">
-                  Coming Soon
-                </Button>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">{feature.desc}</p>
               </div>
             </div>
-          </div> */}
+          ))}
+        </div>
 
-        {/* More Info Section */}
-        <div className="mx-auto mt-16 max-w-3xl rounded-lg border bg-muted/50 p-8">
-          <h3 className="text-xl font-bold">Looking for more?</h3>
-          <p className="mt-2 text-muted-foreground">
-            We&apos;re constantly improving ZapJot. Premium features with
-            advanced capabilities are coming soon. Stay tuned for subscription
-            options that will take your productivity to the next level.
+        {/* Coming Soon Section */}
+        <div className="mx-auto mt-20 max-w-4xl relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+          <div className="relative bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-10 shadow-xl">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 text-sm font-medium mb-6">
+                <Sparkles className="w-4 h-4 animate-spin" />
+                Coming Soon
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Looking for more?
+              </h3>
+              <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+                We&apos;re constantly improving ZapJot. Premium features with
+                advanced capabilities are coming soon. Stay tuned for
+                subscription options that will take your productivity to the
+                next level.
+              </p>
+              <div className="mt-8">
+                <Link href="#contact">
+                  <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <Zap className="w-5 h-5" />
+                    Contact Us for Updates
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center mt-16">
+          <p className="text-gray-500 mb-6">
+            Join thousands of productive users today
           </p>
+          <div className="flex justify-center items-center space-x-2">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-sm font-bold animate-bounce"
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                {i + 1}
+              </div>
+            ))}
+          </div>
         </div>
       </article>
     </section>

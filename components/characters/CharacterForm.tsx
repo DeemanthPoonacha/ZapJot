@@ -29,13 +29,15 @@ import UploadAvatar from "../ui/upload-avatar";
 interface CharacterFormProps {
   character?: Character | null;
   onUpdate?: () => void;
-  onAdd?: (id: string) => void;
+  onAdd?: (id: string, name?: string) => void;
+  onCancel?: () => void;
 }
 
 const CharacterForm: React.FC<CharacterFormProps> = ({
   character,
   onUpdate,
   onAdd,
+  onCancel,
 }) => {
   const { user } = useAuth();
   const userId = user?.uid;
@@ -74,7 +76,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           lowercaseName: data.name.toLowerCase(),
         });
         toast.success("Character created successfully");
-        onAdd?.(result.id);
+        onAdd?.(result.id, result.name);
       }
     } catch (error) {
       console.error("Error saving character", error);
@@ -153,7 +155,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           />
         </div>
 
-        {!!character && (
+        {!!character?.id && (
           <div className="space-y-2">
             <FormLabel className="block mb-2">Events/Reminders</FormLabel>
             <EventsList
@@ -170,12 +172,12 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           </div>
         )}
 
-        <div className="flex gap-4 pt-4">
+        <div className="flex @max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {
               form.reset();
-              onUpdate?.();
+              onCancel?.();
             }}
             variant="outline"
             disabled={isSubmitting}
@@ -187,9 +189,9 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             {isSubmitting ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                {character ? "Updating..." : "Creating..."}
+                {character?.id ? "Updating..." : "Creating..."}
               </>
-            ) : character ? (
+            ) : character?.id ? (
               "Update Character"
             ) : (
               "Create Character"

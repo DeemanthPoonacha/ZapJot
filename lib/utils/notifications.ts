@@ -1,5 +1,5 @@
 import { getToken } from "firebase/messaging";
-import { messaging } from "@/lib/services/firebase";
+import { initMessaging } from "@/lib/services/firebase/messaging";
 
 const FCM_VAPID_KEY = process.env.NEXT_PUBLIC_FCM_VAPID_KEY!;
 
@@ -10,6 +10,7 @@ export const getFcmToken = async (): Promise<string | null> => {
       "/firebase-messaging-sw.js"
     );
     console.log("🚀 ~ getFcmToken ~ registration:", registration);
+    const messaging = await initMessaging();
 
     if (!messaging) {
       console.error("Firebase messaging is not supported.");

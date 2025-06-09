@@ -1,5 +1,5 @@
 import { Footer } from "@/components/landing-page/footer";
-import { Header } from "@/components/landing-page/header";
+import { Header } from "@/components/landing-page/header/header";
 import React from "react";
 
 const Layout = ({

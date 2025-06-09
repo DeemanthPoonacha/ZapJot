@@ -27,12 +27,16 @@ import {
 import { toast } from "../ui/sonner";
 import DatePicker from "../ui/date-picker";
 import UploadImage from "../ui/upload-image";
-import WysiwygEditor from "../ui/wysiwyg";
+import dynamic from "next/dynamic";
+
+const WysiwygEditor = dynamic(() => import("@/components/wysiwyg/editor"), {
+  ssr: false,
+});
 
 interface JournalFormProps {
   chapterId: string;
   journal?: Journal;
-  onFinish?: (id: string, chId?: string) => void;
+  onFinish?: (id: string, chId?: string, name?: string) => void;
   onCancel?: () => void;
   defaultCamOpen?: boolean;
 }
@@ -93,6 +97,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
     console.log("🚀 ~ onSubmit ~ data:", data);
     try {
       let jId = journal?.id;
+      let jName = journal?.title || data.title;
       const chId = data.chapterId || chapterId;
 
       if (journal?.id) {
@@ -101,10 +106,11 @@ const JournalForm: React.FC<JournalFormProps> = ({
       } else {
         const result = await addMutation.mutateAsync(data);
         jId = result.id;
+        jName = result.title;
         toast.success("Journal created successfully");
       }
 
-      onFinish?.(jId!, chId);
+      onFinish?.(jId!, chId, jName);
     } catch (error) {
       console.error("Error saving journal", error);
       toast.error("Failed to save journal");
@@ -136,7 +142,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           setIsImageUploading={setIsImageUploading}
         />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 @md:grid-cols-2">
           <FormField
             control={form.control}
             name="date"
@@ -218,7 +224,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           )}
         />
 
-        <div className="flex max-md:flex-col gap-4 pt-4">
+        <div className="flex @max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {

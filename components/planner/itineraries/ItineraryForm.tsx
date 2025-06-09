@@ -6,7 +6,7 @@ import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 // UI Components
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Save, PlusCircle } from "lucide-react";
+import { Plus, Trash2, Save, PlusCircle, Ban } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -273,29 +273,34 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
             <Accordion
               type="multiple"
               // defaultValue={dayFields.map((day) => day.id)}
-              className="w-full overflow-auto max-h-96"
+              className="w-full overflow-auto max-h-[500px]"
             >
               {dayFields.map((day, dayIndex) => (
                 <AccordionItem key={day.id} value={day.id}>
-                  <div className="flex items-center justify-between">
-                    <AccordionTrigger className="flex-1 text-left">
+                  <div className="flex items-center justify-between sticky top-0 z-10 bg-background/90">
+                    <AccordionTrigger className="flex-1 text-left sticky top-0">
                       <span className="font-medium">
                         {form.watch(`days.${dayIndex}.title`) ||
                           `Day ${dayIndex + 1}`}
                       </span>
                     </AccordionTrigger>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 ml-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeDay(dayIndex);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="space-x-2">
+                      <span className="text-sm text-muted-foreground">
+                        Budget: ${form.watch(`days.${dayIndex}.budget`) || 0}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 ml-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeDay(dayIndex);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
 
                   <AccordionContent>
@@ -359,11 +364,12 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
           )}
           <div className="flex gap-2">
             <Button variant="outline" type="button" onClick={onClose}>
+              <Ban />
               Cancel
             </Button>
             <Button type="submit">
-              <Save className="h-4 w-4 mr-1" />
-              {isEditing ? "Update" : "Create"}
+              <Save />
+              Save
             </Button>
           </div>
         </div>

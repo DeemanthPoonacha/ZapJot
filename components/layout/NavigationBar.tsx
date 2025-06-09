@@ -19,7 +19,6 @@ export function NavigationBar() {
   const pathname = usePathname();
   const isTab = useMediaQuery({ maxWidth: 1024 }); // Adjust breakpoint as needed
 
-  console.log("🚀 ~ NavigationBar ~ isTab:", isTab);
   if (isTab) {
     // Smaller screen navigation (bottom bar)
     return (

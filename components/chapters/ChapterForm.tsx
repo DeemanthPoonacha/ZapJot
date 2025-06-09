@@ -22,7 +22,7 @@ import { useState } from "react";
 
 interface ChapterFormProps {
   chapter?: Chapter;
-  onAdd?: (id: string) => void;
+  onAdd?: (id: string, name?: string) => void;
   onUpdate?: () => void;
   onCancel?: () => void;
 }
@@ -72,7 +72,7 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
         const result = await addMutation.mutateAsync(data);
         console.log("🚀 ~ onSubmit ~ result:", result);
         toast.success("Chapter created successfully");
-        onAdd?.(result.id);
+        onAdd?.(result.id, result.title);
       }
     } catch (error) {
       console.error("Error saving chapter", error);
@@ -158,7 +158,7 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
           setIsImageUploading={setIsImageUploading}
         />
 
-        <div className="flex max-md:flex-col gap-4 pt-4">
+        <div className="flex @max-md:flex-col gap-4 pt-4">
           <Button
             type="button"
             onClick={() => {
@@ -175,9 +175,9 @@ const ChapterForm: React.FC<ChapterFormProps> = ({
             {isSubmitting ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                {chapter ? "Updating..." : "Creating..."}
+                {chapter?.id ? "Updating..." : "Creating..."}
               </>
-            ) : chapter ? (
+            ) : chapter?.id ? (
               "Update Chapter"
             ) : (
               "Create Chapter"

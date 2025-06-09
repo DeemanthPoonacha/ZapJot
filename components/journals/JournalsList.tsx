@@ -1,6 +1,6 @@
 import { useJournals } from "@/lib/hooks/useJournals";
 import { useNProgressRouter } from "../layout/link/CustomLink";
-import { GridCardWithOverlay } from "@/components/ui/card";
+import { GridCardWithOverlay } from "@/components/ui/GridCardWithOverlay";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import Empty from "../Empty";
