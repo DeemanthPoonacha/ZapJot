@@ -57,7 +57,7 @@ export default function UserAvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none">
-        <Avatar className="h-8 w-8 cursor-pointer">
+        <Avatar className="h-11 w-11 cursor-pointer">
           <AvatarImage
             key={user.photoURL} // Force re-render when photoURL changes
             src={user.photoURL || ""}

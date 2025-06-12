@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "ZapJot",
     description:
       "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
-    start_url: "/",
+    start_url: "/home",
     display: "standalone",
     orientation: "portrait",
     theme_color: "#2e0f42",

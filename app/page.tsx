@@ -13,8 +13,8 @@ import "./landing-page.css";
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center">
-      <Header />
       <Background />
+      <Header />
       <main className="flex-1 container">
         {/* Hero Section */}
         <Hero />
