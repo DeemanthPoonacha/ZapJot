@@ -9,22 +9,12 @@ import PageLayout from "@/components/layout/PageLayout";
 import { PendingTasks } from "@/components/home/pending-tasks";
 import { JotDown } from "@/components/home/jot-down";
 // import Image from "next/image";
-import ThemedCanvasImage from "@/components/layout/themed-image";
+import { Logo } from "@/components/layout/Logo";
 
 export default function HomePage() {
   return (
     <PageLayout floatingButtonProps={{ showChatBot: true }}>
-      <PageHeader
-        icon={
-          <ThemedCanvasImage
-            src="/greyed_out_logo_md.svg"
-            width={42}
-            height={44}
-            alt="logo"
-          />
-        }
-        title="ZapJot"
-      />
+      <PageHeader icon={<Logo />} />
       <div className="space-y-6">
         <HomeHeader />
         <QuickActions />

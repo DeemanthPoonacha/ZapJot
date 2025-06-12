@@ -64,5 +64,7 @@ export default function ThemedCanvasImage({
     };
   }, [src, targetHSL]);
 
-  return <canvas ref={canvasRef} style={{ width, height }} />;
+  return (
+    <canvas ref={canvasRef} style={{ width, height }} className="shadow-md" />
+  );
 }

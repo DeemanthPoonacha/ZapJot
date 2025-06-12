@@ -17,7 +17,7 @@ export interface PageHeaderProps {
 
 export function PageHeader({
   backLink,
-  title = "Welcome",
+  title,
   subtitle,
   extra,
   icon,

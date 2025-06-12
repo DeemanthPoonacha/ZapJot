@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@/components/layout/link/CustomLink";
-import ThemedCanvasImage from "./themed-image";
+import { Logo } from "./Logo";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/home" },
@@ -49,13 +49,7 @@ export function NavigationBar() {
   // Desktop navigation (sidebar)
   return (
     <nav className="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex-col lg:border-r lg:bg-background lg:p-4">
-      <Link
-        href="/"
-        className="flex h-14 items-center px-4 font-semibold text-lg mb-6 py-4 border-b gap-2"
-      >
-        <ThemedCanvasImage src="/logo.webp" width={42} height={42} alt="logo" />
-        ZapJot
-      </Link>
+      <Logo className="border-b mb-6 p-4" />
       <div className="space-y-2 px-2">
         {allRoutes.map((route) => (
           <Link
