@@ -60,9 +60,11 @@ const JournalPage = () => {
   const extra = (
     <DropdownMenuItem
       onSelect={() => {
-        setSelectedId(journal?.id!);
-        setSelectedParentId(chapterId! as string);
-        routerPush(`/chapters?operation=move`);
+        if (journal?.id && chapterId) {
+          setSelectedId(journal.id || "");
+          setSelectedParentId((chapterId as string) || "");
+          routerPush(`/chapters?operation=move`);
+        }
       }}
     >
       <MoveRight size={16} />

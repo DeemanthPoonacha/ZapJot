@@ -147,18 +147,14 @@ function GroupedEvents({
   events,
   toggleDialog,
   newButton,
-  handleClose,
   query,
   emptyPrompt,
-  selectedEventId,
 }: {
   events?: Event[];
   query?: EventsFilter;
   newButton: React.ReactNode;
   emptyPrompt: React.ReactNode;
   toggleDialog: (dialogId: string | null) => void;
-  handleClose: () => void;
-  selectedEventId?: string | null;
 }) {
   const groupedEvents = !!events?.length
     ? groupEventsByDate(events!, query?.dateRange?.start, query?.dateRange?.end)
