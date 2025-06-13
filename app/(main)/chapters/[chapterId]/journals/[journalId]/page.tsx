@@ -1,19 +1,12 @@
 "use client";
 import JournalForm from "@/components/journals/JournalForm";
 import PageLayout from "@/components/layout/PageLayout";
-import DeleteConfirm from "@/components/ui/delete-confirm";
 import { useJournal, useJournalMutations } from "@/lib/hooks/useJournals";
 import { Journal } from "@/types/journals";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
-import { EllipsisVertical, MoveRight, SquarePen, Trash2 } from "lucide-react";
+import { MoveRight } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
 import useOperations from "@/lib/hooks/useOperations";
 import { toast } from "@/components/ui/sonner";
@@ -22,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { WysiwygViewer } from "@/components/wysiwyg/viewer";
+import MenuDropdown from "@/components/MenuDropdown";
 
 const JournalPage = () => {
   const searchParams = useSearchParams();
@@ -63,48 +57,19 @@ const JournalPage = () => {
     routerPush(`/chapters/${chId || chapterId}/journals/${id}`);
     setIsEditing(false);
   };
-
-  const menu = (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="cursor-pointer p-2">
-        <EllipsisVertical size={20} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {!isEditing && (
-          <DropdownMenuItem onClick={() => setIsEditing(true)}>
-            <SquarePen size={16} />
-            Edit
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuItem
-          onSelect={(e) => e.preventDefault()} // Prevents menu from closing too soon
-        >
-          <DeleteConfirm
-            itemName="Journal"
-            handleDelete={handleDelete}
-            trigger={
-              <span className="w-full flex gap-2">
-                <Trash2 size={16} />
-                Delete
-              </span>
-            }
-          />
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {journal?.id && (
-          <DropdownMenuItem
-            onSelect={() => {
-              setSelectedId(journal.id);
-              setSelectedParentId(chapterId! as string);
-              routerPush(`/chapters?operation=move`);
-            }}
-          >
-            <MoveRight size={16} />
-            Move to chapter
-          </DropdownMenuItem>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+  const extra = (
+    <DropdownMenuItem
+      onSelect={() => {
+        if (journal?.id && chapterId) {
+          setSelectedId(journal.id || "");
+          setSelectedParentId((chapterId as string) || "");
+          routerPush(`/chapters?operation=move`);
+        }
+      }}
+    >
+      <MoveRight size={16} />
+      Move to chapter
+    </DropdownMenuItem>
   );
 
   return (
@@ -112,7 +77,15 @@ const JournalPage = () => {
       headerProps={{
         title: journal?.title || "New Journal",
         backLink: `/chapters/${chapterId}`,
-        extra: journal?.id && menu,
+        extra: journal?.id && (
+          <MenuDropdown
+            extra={extra}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            handleDelete={handleDelete}
+            deleteItemName="Journal"
+          />
+        ),
       }}
     >
       {!isEditing ? (

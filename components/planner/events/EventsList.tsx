@@ -19,26 +19,28 @@ const EventList = ({
   addNewButton,
   defaultNewEvent,
   showDefault,
+  groupByDate = true,
 }: {
   showDefault?: boolean;
   query?: EventsFilter;
   addNewButton?: React.ReactNode;
   defaultNewEvent?: Partial<Event>;
+  groupByDate?: boolean;
 }) => {
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
+  const selectedEvent =
+    !!selectedEventId &&
+    (selectedEventId === "new"
+      ? (defaultNewEvent as Event)
+      : events?.find((event) => event.id === selectedEventId));
 
   const { mutateAsync: refreshOccurrences, isPending: isRefreshPending } =
     useEventsOccurrenceMutations().updateMutation;
 
-  const isDialogOpen = (dialogId: string) => selectedEventId === dialogId;
   const toggleDialog = (dialogId: string | null) => {
     setSelectedEventId(selectedEventId === dialogId ? null : dialogId);
   };
-
-  const groupedEvents = !!events?.length
-    ? groupEventsByDate(events!, query?.dateRange?.start, query?.dateRange?.end)
-    : {};
 
   const handleClose = () => {
     setSelectedEventId(null);
@@ -51,6 +53,27 @@ const EventList = ({
   const handleRefresh = () => {
     refreshOccurrences();
   };
+
+  const newButton = !!addNewButton && (
+    <div className="flex justify-between items-center gap-2">
+      <span className="text-lg font-semibold">
+        Events/Reminders - {events?.length}
+      </span>
+      <Button type="button" onClick={() => toggleDialog("new")}>
+        {addNewButton}
+      </Button>
+    </div>
+  );
+
+  const emptyPrompt = (
+    <Empty
+      icon={<CalendarClock className="emptyIcon" />}
+      handleCreateClick={() => toggleDialog("new")}
+      title="No events yet"
+      subtitle="Add events to keep track of important dates and milestones"
+      buttonTitle="Create First Event"
+    />
+  );
 
   return (
     <div className="py-6">
@@ -71,83 +94,45 @@ const EventList = ({
           Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-36 w-full" />
           ))
-        ) : !Object.keys(groupedEvents)?.length ? (
-          <Empty
-            icon={<CalendarClock className="emptyIcon" />}
-            handleCreateClick={() => toggleDialog("new")}
-            title="No events yet"
-            subtitle="Add events to keep track of important dates and milestones"
-            buttonTitle="Create First Event"
+        ) : groupByDate ? (
+          <GroupedEvents
+            {...{
+              events,
+              toggleDialog,
+              newButton,
+              handleClose,
+              query,
+              emptyPrompt,
+              selectedEventId,
+            }}
           />
         ) : (
           <>
-            {!!addNewButton && (
-              <Button
-                type="button"
-                className="w-full"
-                onClick={() => toggleDialog("new")}
-              >
-                {addNewButton}
-              </Button>
-            )}
-            {Object.entries(groupedEvents)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([date, events]) => (
-                <div key={date} className="mb-8 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-xl">
-                      {dayjs(date).format("ddd, MMMM D, YYYY")}
-                    </h2>
-                    {`${events.length} ${getPluralWord(
-                      "Event",
-                      events.length
-                    )}`}
+            {newButton}
+            {!events?.length ? (
+              emptyPrompt
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                {events.map((event) => (
+                  <div key={event.id}>
+                    <EventCard
+                      key={event.id}
+                      event={event}
+                      onClick={() => toggleDialog(event.id)}
+                    />
                   </div>
-                  {!events.length ? (
-                    <p className="text-muted-foreground mb-6 text-center py-4">
-                      No Events Found
-                    </p>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
-                      {events
-                        ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
-                        .map((event) => (
-                          <div key={event.id}>
-                            <EventCard
-                              onClick={() => toggleDialog(event.id)}
-                              event={event}
-                            />
-                            {isDialogOpen(event.id) && (
-                              <ResponsiveDialogDrawer
-                                content={
-                                  <EventForm
-                                    onClose={handleClose}
-                                    eventData={event}
-                                  />
-                                }
-                                title={event.title}
-                                handleClose={handleClose}
-                              />
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
+            )}
           </>
         )}
 
-        {/* Add Event Dialog */}
-        {isDialogOpen("new") && (
+        {selectedEvent && (
           <ResponsiveDialogDrawer
             content={
-              <EventForm
-                onClose={handleClose}
-                eventData={defaultNewEvent as Event}
-              />
+              <EventForm onClose={handleClose} eventData={selectedEvent} />
             }
-            title="New Event"
+            title={selectedEvent.title || "New Event"}
             handleClose={handleClose}
           />
         )}
@@ -157,3 +142,59 @@ const EventList = ({
 };
 
 export default EventList;
+
+function GroupedEvents({
+  events,
+  toggleDialog,
+  newButton,
+  query,
+  emptyPrompt,
+}: {
+  events?: Event[];
+  query?: EventsFilter;
+  newButton: React.ReactNode;
+  emptyPrompt: React.ReactNode;
+  toggleDialog: (dialogId: string | null) => void;
+}) {
+  const groupedEvents = !!events?.length
+    ? groupEventsByDate(events!, query?.dateRange?.start, query?.dateRange?.end)
+    : {};
+
+  return !Object.keys(groupedEvents)?.length ? (
+    emptyPrompt
+  ) : (
+    <>
+      {newButton}
+      {Object.entries(groupedEvents)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, events]) => (
+          <div key={date} className="mb-8 space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl">
+                {dayjs(date).format("ddd, MMMM D, YYYY")}
+              </h2>
+              {`${events.length} ${getPluralWord("Event", events.length)}`}
+            </div>
+            {!events.length ? (
+              <p className="text-muted-foreground mb-6 text-center py-4">
+                No Events Found
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                {events
+                  ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
+                  .map((event) => (
+                    <div key={event.id}>
+                      <EventCard
+                        onClick={() => toggleDialog(event.id)}
+                        event={event}
+                      />
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        ))}
+    </>
+  );
+}

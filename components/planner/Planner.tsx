@@ -52,6 +52,9 @@ export default function PlannerPage() {
         />
         <EventsList
           showDefault={selectedDate === undefined}
+          defaultNewEvent={{
+            title: "",
+          }}
           query={{
             dateRange: {
               start: dayjs(selectedDate).startOf("day").toDate(),

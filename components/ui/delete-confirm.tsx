@@ -5,7 +5,7 @@ import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 const DeleteConfirm = ({
-  itemName,
+  itemName = "Item",
   handleDelete,
   trigger,
   buttonVariant = "outline",

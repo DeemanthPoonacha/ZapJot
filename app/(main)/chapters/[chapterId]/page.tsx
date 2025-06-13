@@ -5,23 +5,16 @@ import { CustomLoader } from "@/components/layout/CustomLoader";
 import JournalsList from "@/components/journals/JournalsList";
 import PageLayout from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/button";
-import DeleteConfirm from "@/components/ui/delete-confirm";
 import { toast } from "@/components/ui/sonner";
 import { useChapter, useChapterMutations } from "@/lib/hooks/useChapters";
 import useOperations from "@/lib/hooks/useOperations";
 import { Chapter } from "@/types/chapters";
 import CloudinaryMediaModal from "@/components/MediaPreviewModal";
-import { EllipsisVertical, SquarePen, Trash2 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import MenuDropdown from "@/components/MenuDropdown";
 
 const NotFound = () => <p>Chapter not found</p>;
 
@@ -78,37 +71,6 @@ const ChapterPage = () => {
 
   if (isLoading) return <CustomLoader />;
 
-  const menu = (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="cursor-pointer p-2">
-        <EllipsisVertical size={20} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {!isEditing && (
-          <DropdownMenuItem onClick={() => setIsEditing(true)}>
-            <SquarePen size={16} />
-            Edit
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuItem
-          onSelect={(e) => e.preventDefault()} // Prevents menu from closing too soon
-        >
-          <DeleteConfirm
-            description="Are you sure you want to delete this chapter? All journals in this chapter will be deleted. This action cannot be undone."
-            itemName="Chapter"
-            handleDelete={handleDelete}
-            trigger={
-              <span className="w-full flex gap-2">
-                <Trash2 size={16} />
-                Delete
-              </span>
-            }
-          />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-
   return (
     <PageLayout
       headerProps={{
@@ -123,7 +85,13 @@ const ChapterPage = () => {
           (isMoving ? (
             <Button onClick={handleMoveChapter}>Move Here</Button>
           ) : isDefaultChapter ? null : (
-            menu
+            <MenuDropdown
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              handleDelete={handleDelete}
+              deleteItemName={chapter.title}
+              deleteDescription="Are you sure you want to delete this chapter? All journals in this chapter will be deleted. This action cannot be undone."
+            />
           )),
       }}
       {...(!isNewChapter && {
@@ -151,8 +119,13 @@ const ChapterPage = () => {
               className="min-h-96"
               chapter={chapter}
             />
+
             {chapter?.description && (
               <p className="mt-2 px-4 break-words">{chapter.description}</p>
+            )}
+
+            {chapter?.id && (
+              <JournalsList className="mt-4" chapterId={chapterId! as string} />
             )}
           </>
         )
@@ -177,9 +150,6 @@ const ChapterPage = () => {
             setIsEditing(false);
           }}
         />
-      )}
-      {chapter?.id && (
-        <JournalsList className="mt-4" chapterId={chapterId! as string} />
       )}
       {!!selectedMedia?.src && (
         <CloudinaryMediaModal
