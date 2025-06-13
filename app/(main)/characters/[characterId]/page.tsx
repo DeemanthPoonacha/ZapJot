@@ -1,19 +1,25 @@
 "use client";
+import CharacterCard from "@/components/characters/CharacterCard";
 import CharacterForm from "@/components/characters/CharacterForm";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { useNProgressRouter } from "@/components/layout/link/CustomLink";
 import PageLayout from "@/components/layout/PageLayout";
-import DeleteConfirm from "@/components/ui/delete-confirm";
+import MenuDropdown from "@/components/MenuDropdown";
+import EventsList from "@/components/planner/events/EventsList";
 import { toast } from "@/components/ui/sonner";
 import { useCharacter, useCharacterMutations } from "@/lib/hooks/useCharacters";
+import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
-const Chapter = () => {
+const Character = () => {
   const { characterId } = useParams();
   const { routerPush } = useNProgressRouter();
 
   const { data: character, isLoading } = useCharacter(characterId! as string);
+
+  const isNewCharacter = characterId === "new";
+  const [isEditing, setIsEditing] = useState(isNewCharacter);
 
   const { deleteMutation } = useCharacterMutations();
   const handleDelete = async () => {
@@ -37,18 +43,48 @@ const Chapter = () => {
         title: character?.name || "Character",
         backLink: "/characters",
         extra: character?.id && (
-          <DeleteConfirm itemName="Character" handleDelete={handleDelete} />
+          <MenuDropdown
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            handleDelete={handleDelete}
+            deleteItemName="Character"
+          />
         ),
       }}
     >
-      <CharacterForm
-        character={character}
-        onUpdate={() => routerPush(`/characters`)}
-        onCancel={() => routerPush(`/characters`)}
-        onAdd={(id: string) => routerPush(`/characters/${id}`)}
-      />
+      {isEditing ? (
+        <CharacterForm
+          character={character}
+          // onUpdate={() => routerPush(`/characters`)}
+          onCancel={() => setIsEditing(false)}
+          onAdd={(id: string) => routerPush(`/characters/${id}`)}
+        />
+      ) : character ? (
+        <>
+          <CharacterCard character={character} vertical />
+          {!!character?.reminders && (
+            <EventsList
+              key={character.reminders.length}
+              query={{ eventIds: character?.reminders || [] }}
+              addNewButton={
+                <>
+                  <Plus /> Add New
+                </>
+              }
+              defaultNewEvent={{
+                participants: [{ label: character.name, value: character.id }],
+              }}
+              groupByDate={false}
+            />
+          )}
+        </>
+      ) : (
+        <div className="flex h-[80vh] items-center justify-center">
+          Could not load character data
+        </div>
+      )}
     </PageLayout>
   );
 };
 
-export default Chapter;
+export default Character;

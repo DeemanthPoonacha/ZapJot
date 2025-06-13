@@ -6,6 +6,7 @@ import { Event, RepeatType } from "@/types/events";
 import dayjs from "dayjs";
 import { ALL_MONTHS, WEEK_DAYS } from "@/lib/constants";
 import { Timestamp } from "firebase/firestore";
+import { Link } from "@/components/layout/link/CustomLink";
 
 export function EventCard({
   event,
@@ -87,7 +88,21 @@ export function EventCard({
               <p className="text-sm text-muted-foreground flex gap-1 items-center">
                 <Users className="h-4 w-4" />
                 <span className="truncate max-w-32">
-                  {event.participants.map((p) => p.label).join(", ")}
+                  {event.participants.map((p, i, arr) =>
+                    p.value ? (
+                      <Link
+                        key={p.value}
+                        href={`/characters/${p.value}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="hover:underline"
+                      >
+                        {p.label}
+                        {i < arr.length - 1 && ", "}
+                      </Link>
+                    ) : (
+                      p.label
+                    )
+                  )}
                 </span>
               </p>
             )}

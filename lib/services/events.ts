@@ -57,6 +57,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
   }
 
   if (filter?.eventIds) {
+    if (!filter.eventIds.length) return [];
     constraints.push(where("id", "in", filter.eventIds));
   }
 
@@ -96,7 +97,9 @@ export const addEvent = async (userId: string, data: EventCreate) => {
       await addReminder(userId, participant.value, eventRef.id);
     }
   });
-  await setDoc(eventRef, { ...data, id: eventRef.id });
+  const newEvent = { ...data, id: eventRef.id };
+  await setDoc(eventRef, newEvent);
+  return newEvent;
 };
 
 // export const addMultipleTest = (userId: string) => {
@@ -160,6 +163,7 @@ export const updateEvent = async (
   });
 
   await updateDoc(eventRef, data);
+  return { participants: [...participantsToAdd, ...participantsToRemove] };
 };
 
 export const deleteEvent = async (

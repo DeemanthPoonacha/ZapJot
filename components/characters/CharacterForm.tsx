@@ -12,8 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import EventsList from "../planner/events/EventsList";
 import {
   Form,
   FormControl,
@@ -154,23 +152,6 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             )}
           />
         </div>
-
-        {!!character?.id && (
-          <div className="space-y-2">
-            <FormLabel className="block mb-2">Events/Reminders</FormLabel>
-            <EventsList
-              query={{ eventIds: character?.reminders || [] }}
-              addNewButton={
-                <>
-                  <Plus className="mr-2 h-4 w-4" /> Add Event/Reminder
-                </>
-              }
-              defaultNewEvent={{
-                participants: [{ label: character.name, value: character.id }],
-              }}
-            />
-          </div>
-        )}
 
         <div className="flex @max-md:flex-col gap-4 pt-4">
           <Button

@@ -10,18 +10,35 @@ import { User, Bell } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Character } from "@/types/characters";
+import { cn } from "@/lib/utils";
 
-const CharacterCard = ({ character }: { character: Character }) => {
+const CharacterCard = ({
+  character,
+  vertical,
+}: {
+  character: Character;
+  vertical?: boolean;
+}) => {
   return (
     <Link
       href={`/characters/${character.id}`}
       key={character.id}
       // className="transition-transform hover:scale-[1.02] focus:outline-none rounded-lg"
+      className={vertical ? "pointer-events-none" : ""}
     >
-      <ListCard>
+      <ListCard
+        className={cn("mx-auto", vertical && "max-w-96 pointer-events-none")}
+      >
         <CardContent className="p-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border-2 border-background">
+          <div
+            className={cn("flex items-center gap-4", vertical && "flex-col")}
+          >
+            <Avatar
+              className={cn(
+                "h-16 w-16 border-2 border-background",
+                vertical && "w-48 h-48"
+              )}
+            >
               <AvatarImage
                 src={character.image}
                 alt={character.name}
@@ -32,13 +49,18 @@ const CharacterCard = ({ character }: { character: Character }) => {
               </AvatarFallback>
             </Avatar>
 
-            <div className="flex flex-col w-full overflow-hidden">
+            <div
+              className={cn(
+                "flex flex-col w-full overflow-hidden",
+                vertical && "w-full justify-center items-center"
+              )}
+            >
               <div className="flex items-center justify-between gap-2">
                 <h2 className="font-semibold text-xl truncate">
                   {character.name}
                 </h2>
 
-                {character.reminders?.length > 0 && (
+                {!vertical && character.reminders?.length > 0 && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>

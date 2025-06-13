@@ -10,7 +10,7 @@ import {
 import { useAuth } from "@/lib/context/AuthProvider";
 
 import { EventCreate, EventsFilter, EventUpdate } from "@/types/events";
-import { useCharacters } from "./useCharacters";
+import { CHARACTER_QUERY_KEY, useCharacters } from "./useCharacters";
 import { updateEventOccurrence } from "../utils/events";
 import { useSettings } from "./useSettings";
 
@@ -69,8 +69,14 @@ export const useEventMutations = () => {
       updateEventOccurrence(data, minutesBefore);
       return addEvent(userId!, data);
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
+    onSuccess: (event) => {
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });
+      event.participants?.map((participant) => {
+        queryClient.invalidateQueries({
+          queryKey: [CHARACTER_QUERY_KEY, userId, participant.value],
+        });
+      });
+    },
   });
 
   const updateMutation = useMutation({
@@ -78,8 +84,15 @@ export const useEventMutations = () => {
       updateEventOccurrence(data, minutesBefore);
       return updateEvent(userId!, id, data);
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
+    onSuccess: (event) => {
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });
+      event.participants?.map((participant) => {
+        console.log("🚀 ~ event.participants?.map ~ participant:", participant);
+        queryClient.invalidateQueries({
+          queryKey: [CHARACTER_QUERY_KEY, userId, participant.value],
+        });
+      });
+    },
   });
 
   const deleteMutation = useMutation({

@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/context/AuthProvider";
 import { CharacterCreate, CharacterUpdate } from "@/types/characters";
 
 // Query Key
-const CHARACTER_QUERY_KEY = "characters";
+export const CHARACTER_QUERY_KEY = "characters";
 
 /** Fetch all characters for the logged-in user */
 export const useCharacters = () => {
@@ -29,7 +29,7 @@ export const useCharacter = (id?: string) => {
   const { user } = useAuth();
   const userId = user?.uid;
   return useQuery({
-    queryKey: [CHARACTER_QUERY_KEY, id],
+    queryKey: [CHARACTER_QUERY_KEY, userId, id],
     queryFn: () =>
       userId && id ? getCharacterById(userId, id) : Promise.resolve(null),
     enabled: !!id,

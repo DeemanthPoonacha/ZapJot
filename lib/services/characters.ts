@@ -91,6 +91,7 @@ export const updateCharacter = async (
   console.log("🚀 ~ character:", character);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
   await updateDoc(docRef, character);
+  return characterId;
 };
 
 /**
