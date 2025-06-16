@@ -13,6 +13,7 @@ export function Logo({ className }: { className?: string }) {
         width={46.7}
         height={48.7}
         alt="logo"
+        className={"shadow-md rounded-[18%]"}
       />
       <span className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] via-primary/30 to-[var(--primary)] drop-shadow-[0_1px_1px_var(--foreground)] tracking-tight">
         ZapJot

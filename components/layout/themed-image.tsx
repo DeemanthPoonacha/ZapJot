@@ -9,12 +9,14 @@ export default function ThemedCanvasImage({
   height,
   alt,
   color,
+  className,
 }: {
   src: string;
   width?: number;
   height?: number;
   alt?: string;
   color?: string;
+  className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { currentTheme, allThemes } = useSettings();
@@ -65,6 +67,6 @@ export default function ThemedCanvasImage({
   }, [src, targetHSL]);
 
   return (
-    <canvas ref={canvasRef} style={{ width, height }} className="shadow-md" />
+    <canvas ref={canvasRef} style={{ width, height }} className={className} />
   );
 }

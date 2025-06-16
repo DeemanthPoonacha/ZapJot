@@ -46,6 +46,7 @@ export function ThemeCard({
             height={44}
             alt="logo"
             color={colors.primary}
+            className={"shadow-md rounded-[18%]"}
           />
           <span>{theme.name}</span>
         </div>
