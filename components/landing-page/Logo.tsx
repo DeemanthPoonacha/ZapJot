@@ -10,7 +10,7 @@ export const Logo = () => (
       alt=""
       className="shadow-md rounded-[18%]"
     />
-    <span className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[hsl(272,60%,50%)] via-[hsl(272,60%,50%)]/30 to-[hsl(272,60%,50%)] drop-shadow-[0_1px_1px_hsl(272,40%,16%)] tracking-tight">
+    <span className="text-4xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
       ZapJot
     </span>
   </Link>
