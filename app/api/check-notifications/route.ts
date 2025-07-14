@@ -68,6 +68,7 @@ export async function GET(request: Request) {
 
           await admin.messaging().send(payload);
           sentCount++;
+          console.log(`Notification ${event.title} sent to ${deviceId}`);
         } catch (sendError) {
           console.error(`Failed to send to ${deviceId}`, sendError);
         }
