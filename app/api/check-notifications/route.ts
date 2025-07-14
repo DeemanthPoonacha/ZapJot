@@ -6,7 +6,7 @@ import { UserInDb } from "@/types/user";
 
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(
-    process.env.GOOGLE_SERVICE_ACCOUNT_JSON!
+    process.env.GOOGLE_SERVICE_ACCOUNT_JSON || ""
   ) as admin.ServiceAccount;
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
