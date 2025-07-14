@@ -1,12 +1,13 @@
 import { getFirestore } from "firebase-admin/firestore";
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
-import serviceAccountJson from "@/service_key.json";
 import { getMinutesRelative } from "@/lib/utils/date-time";
 import { UserInDb } from "@/types/user";
 
 if (!admin.apps.length) {
-  const serviceAccount = serviceAccountJson as admin.ServiceAccount;
+  const serviceAccount = JSON.parse(
+    process.env.GOOGLE_SERVICE_ACCOUNT_JSON!
+  ) as admin.ServiceAccount;
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
