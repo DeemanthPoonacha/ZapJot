@@ -26,7 +26,7 @@ export default function LandingPage() {
         <HowItWorks />
 
         {/* Testimonials Section */}
-        <Testimonials />
+        {/* <Testimonials /> */}
 
         {/* Pricing Section */}
         <Pricing />

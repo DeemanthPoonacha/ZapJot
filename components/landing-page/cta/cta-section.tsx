@@ -30,7 +30,8 @@ export function CTASection() {
               <div className="flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20 dark:border-slate-700/20">
                 <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  10K+ Users
+                  {/* 10K+ Users */}
+                  User-Friendly
                 </span>
               </div>
               <div className="flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20 dark:border-slate-700/20">
@@ -138,7 +139,7 @@ export function CTASection() {
                   &quot;Game-changing productivity tool!&quot;
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  - Sarah, Product Manager
+                  - Beta User
                 </p>
               </div>
             </div>

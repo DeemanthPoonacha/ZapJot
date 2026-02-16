@@ -1,4 +1,4 @@
-import { CheckSquare, Sparkles, ArrowRight } from "lucide-react";
+import { CheckSquare, Sparkles, ArrowRight, Shield, MegaphoneOff, Star } from "lucide-react";
 import ZapJotAnimation from "@/components/landing-page/hero/hero-animation";
 import { CTAButton } from "../cta/cta-button";
 import { Link } from "../../layout/link/CustomLink";
@@ -98,18 +98,30 @@ export function Hero() {
             <FeaturesList />
 
             {/* Social proof or stats */}
-            <div className="flex items-center gap-8 pt-4">
-              <div className="text-center">
+            <div className="flex items-center max-sm:justify-center gap-8 pt-4">
+              {/* <div className="flex flex-col justify-center items-center">
                 <div className="text-2xl font-bold text-slate-900">10k+</div>
                 <div className="text-sm text-slate-600">Happy Users</div>
               </div>
-              <div className="text-center">
+              <div className="flex flex-col justify-center items-center">
                 <div className="text-2xl font-bold text-slate-900">4.9</div>
                 <div className="text-sm text-slate-600">App Rating</div>
               </div>
-              <div className="text-center">
+              <div className="flex flex-col justify-center items-center">
                 <div className="text-2xl font-bold text-slate-900">50k+</div>
                 <div className="text-sm text-slate-600">Memories Captured</div>
+              </div> */}
+              <div className="flex flex-col justify-center items-center">
+                <div className="text-2xl font-bold text-slate-900 mb-1"><Shield size={28} strokeWidth={2.5} /></div>
+                <div className="text-sm text-slate-600">Secure & Private</div>
+              </div>
+              <div className="flex flex-col justify-center items-center">
+                <div className="text-2xl font-bold text-slate-900 mb-1"><MegaphoneOff size={28} strokeWidth={2.5} /></div>
+                <div className="text-sm text-slate-600">Ads Free</div>
+              </div>
+              <div className="flex flex-col justify-center items-center">
+                <div className="text-2xl font-bold text-slate-900 mb-1"><Star size={28} strokeWidth={2.5} /></div>
+                <div className="text-sm text-slate-600">User Friendly</div>
               </div>
             </div>
           </div>
