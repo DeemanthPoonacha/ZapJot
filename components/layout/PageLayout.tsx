@@ -12,9 +12,9 @@ const PageLayout = ({
   floatingButtonProps?: FloatingButtonProps;
 }>) => {
   return (
-    <div className="h-full flex flex-col container pb-24 px-4 mx-auto lg:max-w-5xl lg:pl-72 xl:pl-48 2xl:pl-4 lg:pb-10">
+    <div className="h-full min-h-screen flex flex-col pb-24 px-4 md:px-8 lg:pl-[300px] lg:pr-8 mx-auto w-full max-w-6xl lg:pb-10 pt-4">
       {!!headerProps && <PageHeader {...headerProps} />}
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 mt-2">{children}</div>
       {floatingButtonProps && <FloatingButton {...floatingButtonProps} />}
     </div>
   );

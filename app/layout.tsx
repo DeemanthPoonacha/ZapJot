@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="purple">
+    <html lang="en" className="crimson">
       <body className={` antialiased`}>
         {/* Structured Data for SEO */}
         <script

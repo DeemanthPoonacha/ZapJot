@@ -26,7 +26,7 @@ export function PageHeader({
   onSearchClick,
 }: PageHeaderProps) {
   return (
-    <div className={cn("flex flex-col gap-1 py-4 border-b mb-6", className)}>
+    <div className={cn("sticky top-0 z-30 flex flex-col gap-1.5 py-4 bg-background/80 backdrop-blur-xl mb-4 mx-[-1rem] px-[1rem] md:mx-[-2rem] md:px-[2rem] rounded-b-2xl border-b border-border/40 shadow-[0_4px_24px_rgba(0,0,0,0.02)]", className)}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 flex-1 min-w-0">
           {backLink && (

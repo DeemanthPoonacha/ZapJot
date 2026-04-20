@@ -56,22 +56,19 @@ export function JotDown() {
   };
 
   return (
-    <Card className="p-4">
+    <Card className="p-1 max-w-full overflow-hidden transition-all duration-300 focus-within:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:focus-within:shadow-[0_8px_30px_rgba(255,255,255,0.03)] focus-within:ring-1 focus-within:ring-primary/20 backdrop-blur-xl bg-background/50 dark:bg-slate-900/40">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col relative w-full">
           <FormField
             disabled={isPending}
             control={form.control}
             name="content"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-semibold text-base mb-4">
-                  Jot something down...
-                </FormLabel>
+              <FormItem className="space-y-0 w-full relative">
                 <FormControl>
                   <Textarea
-                    placeholder="What's on your mind?"
-                    className="max-h-96"
+                    placeholder="Jot something down..."
+                    className="min-h-[120px] max-h-96 resize-none w-full border-none shadow-none focus-visible:ring-0 p-5 pb-16 text-lg placeholder:text-muted-foreground/60 bg-transparent rounded-2xl"
                     required
                     {...field}
                   />
@@ -79,25 +76,27 @@ export function JotDown() {
                 {/* <FormDescription>
                   You can <span>@mention</span> other users and organizations.
                 </FormDescription> */}
-                <FormMessage />
+                <FormMessage className="absolute bottom-4 left-4" />
               </FormItem>
             )}
           />
-          <div className="w-full flex gap-2 flex-col sm:flex-row justify-end">
+          <div className="absolute bottom-3 right-3 flex gap-2 justify-end">
             <Button
               disabled={isPending}
               type="reset"
-              variant="outline"
-              className="max-sm:w-full"
+              variant="ghost"
+              size="sm"
+              className="text-xs text-muted-foreground hover:bg-muted/50 rounded-xl px-3"
             >
-              Reset
+              Clear
             </Button>
             <Button
               disabled={isPending}
               type="submit"
-              className="max-sm:w-full"
+              size="sm"
+              className="rounded-xl px-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
             >
-              Submit
+              Save
             </Button>
           </div>
         </form>

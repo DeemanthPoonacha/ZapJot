@@ -11,28 +11,28 @@ export function RecentActivity() {
   ];
 
   return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-semibold">Recent Activity</h2>
-        <Button variant="ghost" size="sm" asChild>
+    <Card className="p-5 glass-panel shadow-sm">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="font-semibold text-lg tracking-tight">Recent Activity</h2>
+        <Button variant="ghost" size="sm" asChild className="group text-muted-foreground hover:text-foreground">
           <Link href="/" className="flex items-center !gap-1">
-            Explore More <ChevronRight className="h-4 w-4" />
+            Explore <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-1">
         {!activities?.length ? (
-          <p className="text-sm text-muted-foreground text center">
+          <p className="text-sm text-muted-foreground text-center py-4">
             No activities found
           </p>
         ) : (
           activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex justify-between items-center"
+              className="group flex justify-between items-center p-3 -mx-3 rounded-xl hover:bg-muted/40 transition-colors"
             >
-              <span>{activity.text}</span>
-              <span className="text-sm text-muted-foreground">
+              <span className="font-medium text-sm text-foreground/90">{activity.text}</span>
+              <span className="text-xs font-medium text-muted-foreground">
                 {activity.time}
               </span>
             </div>

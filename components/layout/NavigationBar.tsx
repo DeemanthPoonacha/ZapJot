@@ -20,51 +20,52 @@ export function NavigationBar() {
   const isTab = useMediaQuery({ maxWidth: 1024 }); // Adjust breakpoint as needed
 
   if (isTab) {
-    // Smaller screen navigation (bottom bar)
+    // Smaller screen navigation (bottom dock)
     return (
-      <nav className="fixed bottom-0 w-full border-t bg-background p-2 z-50 lg:hidden">
-        <div className="mx-auto grid grid-cols-5 container px-4">
-          {allRoutes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                "relative flex flex-col items-center gap-1 p-2 text-muted-foreground transition-transform duration-200 hover:text-primary",
-                pathname.includes(route.href) &&
-                  "text-primary-foreground transform scale-110 transition-transform duration-200 bg-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl"
-              )}
-            >
-              {/* {isActive && (
-          <div className="absolute w-16 h-16 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary rounded-full -z-10 transition-transform duration-200 scale-110" />
-        )} */}
-              <route.icon className="h-5 w-5" />
-              <span className="text-xs">{route.label}</span>
-            </Link>
-          ))}
+      <nav className="fixed bottom-6 left-6 right-6 rounded-2xl border border-border/50 bg-background/80 backdrop-blur-xl p-2 z-50 lg:hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(255,255,255,0.03)] glass-panel transition-all">
+        <div className="mx-auto flex justify-between items-center px-1 max-w-sm">
+          {allRoutes.map((route) => {
+            const isActive = pathname.includes(route.href);
+            return (
+              <Link
+                key={route.href}
+                href={route.href}
+                className={cn(
+                  "relative flex flex-col items-center justify-center w-14 h-12 gap-1 rounded-xl text-muted-foreground transition-all duration-300 hover:text-primary hover:bg-muted/30 active:scale-95",
+                  isActive && "text-primary bg-primary/10 hover:bg-primary/15"
+                )}
+              >
+                <route.icon className={cn("h-5 w-5 transition-transform", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[10px] sm:text-xs font-medium sr-only sm:not-sr-only md:sr-only">{route.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </nav>
     );
   }
 
-  // Desktop navigation (sidebar)
+  // Desktop navigation (floating glass sidebar)
   return (
-    <nav className="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex-col lg:border-r lg:bg-background lg:p-4">
-      <Logo className="border-b mb-6 p-4" />
-      <div className="space-y-2 px-2">
-        {allRoutes.map((route) => (
-          <Link
-            key={route.href}
-            href={route.href}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:text-primary hover:bg-accent",
-              pathname.includes(route.href) &&
-                "text-primary-foreground bg-primary hover:bg-primary/90 hover:text-primary-foreground"
-            )}
-          >
-            <route.icon className="h-5 w-5" />
-            <span>{route.label}</span>
-          </Link>
-        ))}
+    <nav className="hidden lg:flex lg:fixed lg:left-6 lg:top-6 lg:h-[calc(100vh-3rem)] lg:w-64 lg:flex-col lg:rounded-[2rem] lg:border lg:border-border/50 lg:bg-background/80 lg:backdrop-blur-xl lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] lg:p-4 z-40 glass-panel transition-all">
+      <Logo className="mb-8 p-2" />
+      <div className="space-y-1.5 px-2">
+        {allRoutes.map((route) => {
+          const isActive = pathname.includes(route.href);
+          return (
+            <Link
+              key={route.href}
+              href={route.href}
+              className={cn(
+                "group flex items-center gap-3 rounded-2xl px-4 py-3 text-muted-foreground transition-all duration-200 hover:text-foreground hover:bg-muted/50 active:scale-[0.98]",
+                isActive && "text-primary font-medium bg-primary/10 hover:bg-primary/15 hover:text-primary shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]"
+              )}
+            >
+              <route.icon className={cn("h-[18px] w-[18px] transition-transform group-hover:scale-110", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-sm tracking-wide">{route.label}</span>
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

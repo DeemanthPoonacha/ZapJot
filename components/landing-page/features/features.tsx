@@ -12,15 +12,15 @@ export function Features() {
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
       <article className="relative container px-4 md:px-6">
-        <div className="mx-auto text-center md:max-w-4xl mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-sm font-medium text-purple-700 mb-6">
-            <Sparkles className="h-4 w-4" />
+        <div className="mx-auto text-center md:max-w-4xl mb-24">
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-slate-800 dark:text-slate-200 mb-8 shadow-sm">
+            <Sparkles className="h-4 w-4 text-purple-500" />
             Everything you need in one place
           </div>
 
-          <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 bg-clip-text text-transparent leading-tight">
+          <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight tracking-tight">
             Your life.{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">
               Organized.
             </span>
           </h2>

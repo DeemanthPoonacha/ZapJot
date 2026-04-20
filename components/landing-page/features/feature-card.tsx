@@ -14,9 +14,9 @@ export function FeatureCard({ feature }: { feature: Feature }) {
   return (
     <div
       className={clsx(
-        "group relative overflow-hidden rounded-3xl border border-white/20 bg-white/80 backdrop-blur-sm p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer",
+        "group relative overflow-hidden rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl p-8 transition-all duration-500 hover:-translate-y-1 cursor-pointer",
         feature.shadow,
-        "hover:shadow-xl"
+        "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.02)] shadow-sm"
       )}
     >
       {/* Hover gradient bg */}

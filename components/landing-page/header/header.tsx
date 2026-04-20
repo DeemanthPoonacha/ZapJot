@@ -7,46 +7,37 @@ const HeaderAction = dynamic(() => import("./header-action"), {});
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full h-16 border-b container flex items-center justify-between px-4 md:px-6">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/90 to-purple-50/90 -z-10" />
-      <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-
-      <Logo />
-      <nav className="hidden md:flex gap-6 text-slate-800">
-        <Link
-          href="/#features"
-          className="text-sm font-medium hover:text-primary transition-colors"
-        >
-          Features
-        </Link>
-        <Link
-          href="/#how-it-works"
-          className="text-sm font-medium hover:text-primary transition-colors"
-        >
-          How It Works
-        </Link>
-        <Link
-          href="/#testimonials"
-          className="text-sm font-medium hover:text-primary transition-colors"
-        >
-          Testimonials
-        </Link>
-        <Link
-          href="/#pricing"
-          className="text-sm font-medium hover:text-primary transition-colors"
-        >
-          Pricing
-        </Link>
-        <Link
-          href="/#contact"
-          className="text-sm font-medium hover:text-primary transition-colors"
-        >
-          Contact
-        </Link>
-      </nav>
-      <HeaderAction />
-    </header>
+    <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
+      <header className="w-full max-w-5xl h-14 rounded-full border border-border/40 bg-background/70 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] px-6 flex items-center justify-between transition-all">
+        <Logo />
+        <nav className="hidden md:flex gap-8 text-slate-700 dark:text-slate-300">
+          <Link
+            href="/#features"
+            className="text-sm font-medium hover:text-primary transition-colors hover:scale-105 active:scale-95"
+          >
+            Features
+          </Link>
+          <Link
+            href="/#how-it-works"
+            className="text-sm font-medium hover:text-primary transition-colors hover:scale-105 active:scale-95"
+          >
+            How It Works
+          </Link>
+          <Link
+            href="/#pricing"
+            className="text-sm font-medium hover:text-primary transition-colors hover:scale-105 active:scale-95"
+          >
+            Pricing
+          </Link>
+          <Link
+            href="/#contact"
+            className="text-sm font-medium hover:text-primary transition-colors hover:scale-105 active:scale-95"
+          >
+            Contact
+          </Link>
+        </nav>
+        <HeaderAction />
+      </header>
+    </div>
   );
 }

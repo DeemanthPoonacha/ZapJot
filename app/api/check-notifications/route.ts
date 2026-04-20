@@ -5,12 +5,17 @@ import { getMinutesRelative } from "@/lib/utils/date-time";
 import { UserInDb } from "@/types/user";
 
 if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(
-    process.env.GOOGLE_SERVICE_ACCOUNT_JSON || ""
-  ) as admin.ServiceAccount;
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  try {
+    const serviceAccountStr = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+    if (serviceAccountStr) {
+      const serviceAccount = JSON.parse(serviceAccountStr) as admin.ServiceAccount;
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+      });
+    }
+  } catch (error) {
+    console.error("Firebase admin init failed (likely during build):", error);
+  }
 }
 
 export async function GET(request: Request) {

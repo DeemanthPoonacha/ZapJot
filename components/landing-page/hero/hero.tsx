@@ -64,31 +64,34 @@ export function Hero() {
   return (
     <section className="relative  py-24 md:py-32 px-4 md:px-6">
       <article className="relative container mx-auto">
-        <div className="grid gap-16 lg:grid-cols-2 xl:gap-20 items-center">
+        <div className="grid gap-16 lg:grid-cols-2 xl:gap-24 items-center">
           {/* Content Column */}
-          <div className="space-y-8 lg:pr-8">
-            <VersionBadge />
+          <div className="space-y-10 lg:pr-8 mx-auto text-center lg:text-left">
+            <div className="flex justify-center lg:justify-start">
+              <VersionBadge />
+            </div>
 
             <div className="space-y-6">
-              <h1 className="text-5xl xl:text-7xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              <h1 className="text-6xl xl:text-[5.5rem] font-extrabold leading-[1.1] tracking-tight">
+                <span className="text-slate-900 dark:text-slate-100">
                   Turn Moments Into{" "}
                 </span>
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                   Memories
                 </span>
-                <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                <br className="hidden md:block"/>
+                <span className="text-slate-900 dark:text-slate-100">
                   , Ideas Into{" "}
                 </span>
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                   Actions
                 </span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-slate-600 leading-relaxed max-w-2xl">
+              <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
                 Journal your life, plan events, manage tasks, and keep track of
                 important people and moments — all in one{" "}
-                <span className="font-semibold text-slate-800">beautiful</span>{" "}
+                <span className="font-semibold text-slate-900 dark:text-slate-200">beautiful</span>{" "}
                 place.
               </p>
             </div>
