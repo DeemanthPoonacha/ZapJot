@@ -192,6 +192,9 @@ export default function ChatBotUI() {
   };
 
   function tryParseCommand(rawText: string) {
+    if (!rawText || (!rawText.trim().startsWith('{') && !rawText.includes('```json'))) {
+        return null;
+    }
     const json = rawText
       .replace(/^```json/, "") // remove opening ```json
       .replace(/^```/, "") // in case it uses ``` instead
@@ -202,7 +205,6 @@ export default function ChatBotUI() {
       return result;
     } catch {
       // not valid JSON
-      console.error("Failed to parse JSON:", json);
     }
     return null;
   }
