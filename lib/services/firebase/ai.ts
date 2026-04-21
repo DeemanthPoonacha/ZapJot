@@ -12,6 +12,7 @@ import { createTaskSchema } from "../../../types/tasks";
 import { createGoalSchema } from "../../../types/goals";
 import { createCharacterSchema } from "../../../types/characters";
 import { createItinerarySchema } from "../../../types/itineraries";
+import { brainDumpSchema } from "../../../types/brain-dump";
 
 initAppCheck();
 
@@ -108,6 +109,12 @@ const tools = [
             updatedAt: true,
           }),
         ),
+      },
+      {
+        name: "brain_dump",
+        description:
+          "Extract multiple items (tasks, goals, itineraries, characters, journals) from a bulk of unstructured text.",
+        parameters: zodToGeminiSchema(brainDumpSchema),
       },
     ],
   },

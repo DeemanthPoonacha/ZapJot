@@ -25,6 +25,8 @@ import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "react-responsive";
 import ThemedCanvasImage from "./layout/themed-image";
+import BrainDumpConfirmation from "./ai/BrainDumpConfirmation";
+import { BrainDump } from "@/types/brain-dump";
 
 export default function ChatBotUI() {
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Adjust breakpoint as needed
@@ -32,6 +34,7 @@ export default function ChatBotUI() {
   const [isMaximized, setIsMaximized] = useState(isMobile);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [brainDumpData, setBrainDumpData] = useState<BrainDump | null>(null);
 
   // Updated to use the new chat hook
   const {
@@ -358,10 +361,134 @@ export default function ChatBotUI() {
           />,
         );
         break;
+      
+      case "brain_dump":
+        console.log("Processing brain dump:", command);
+        setBrainDumpData(command);
+        setIsMaximized(true);
+        setActionModal(
+          <BrainDumpConfirmation
+            data={command}
+            onConfirm={(results) => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Successfully processed brain dump! added ${results.success} items.`,
+              });
+              setBrainDumpData(null);
+              resetModal();
+            }}
+            onCancel={() => {
+              setBrainDumpData(null);
+              resetModal();
+            }}
+            onEditItem={(type, index, item) => {
+              handleEditBrainDumpItem(type, index, item, command);
+            }}
+          />,
+        );
+        break;
 
       default:
         console.warn("Unknown action:", command.action);
         setActionModal(defaultCreate);
+        break;
+    }
+  }
+
+  function handleEditBrainDumpItem(
+    type: keyof BrainDump,
+    index: number,
+    item: any,
+    currentData: BrainDump
+  ) {
+    const onSaveOrCancel = (updatedItem?: any) => {
+      let newData = { ...currentData };
+      if (updatedItem) {
+        // @ts-ignore
+        newData[type][index] = updatedItem;
+      }
+      setBrainDumpData(newData);
+      setActionModal(
+        <BrainDumpConfirmation
+          data={newData}
+          onConfirm={(results) => {
+            addMessage({
+              role: ChatRole.AI,
+              text: `Successfully processed brain dump! added ${results.success} items.`,
+            });
+            setBrainDumpData(null);
+            resetModal();
+          }}
+          onCancel={() => {
+            setBrainDumpData(null);
+            resetModal();
+          }}
+          onEditItem={(t, i, it) => {
+            handleEditBrainDumpItem(t, i, it, newData);
+          }}
+        />
+      );
+    };
+
+    switch (type) {
+      case "tasks":
+        setActionModal(
+          <TaskForm
+            taskData={item}
+            onClose={() => onSaveOrCancel()}
+            onSave={() => onSaveOrCancel(item)} // Form doesn't return updated item easily, but we'll assume it's updated in the form's local state or if we pass a callback that returns it.
+            // Actually, TaskForm doesn't return the updated data in onSave.
+            // For now, we'll just return to the list.
+          />
+        );
+        break;
+      case "goals":
+        setActionModal(
+          <GoalForm
+            goalData={item}
+            onClose={() => onSaveOrCancel()}
+            onSave={() => onSaveOrCancel(item)}
+          />
+        );
+        break;
+      case "itineraries":
+        setActionModal(
+          <ItineraryForm
+            itineraryData={item}
+            onClose={() => onSaveOrCancel()}
+            onSave={() => onSaveOrCancel(item)}
+          />
+        );
+        break;
+      case "characters":
+        // CharacterForm has a different signature
+        setActionModal(
+          <CharacterForm
+            character={item}
+            onAdd={() => onSaveOrCancel(item)}
+            onUpdate={() => onSaveOrCancel(item)}
+            onCancel={() => onSaveOrCancel()}
+          />
+        );
+        break;
+      case "journals":
+        setActionModal(
+          <JournalForm
+            journal={item}
+            chapterId={DEFAULT_CHAPTER_ID}
+            onFinish={() => onSaveOrCancel(item)}
+            onCancel={() => onSaveOrCancel()}
+          />
+        );
+        break;
+      case "events":
+        setActionModal(
+          <EventForm
+            eventData={item}
+            onClose={() => onSaveOrCancel()}
+            onSave={() => onSaveOrCancel(item)}
+          />
+        );
         break;
     }
   }

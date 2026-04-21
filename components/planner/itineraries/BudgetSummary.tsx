@@ -54,7 +54,7 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
           </CardHeader>
           <CardContent className="px-4 py-2">
             <p className="text-3xl font-bold">
-              ${itinerary.budget.toLocaleString()}
+              ${itinerary.budget?.toLocaleString()}
             </p>
           </CardContent>
         </Card>
@@ -74,7 +74,7 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
                   className="p-1 "
                 />
               ) : (
-                `${itinerary.actualCost.toLocaleString()}`
+                `${itinerary.actualCost?.toLocaleString()}`
               )}
               {isEditing ? (
                 <>
@@ -124,7 +124,7 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
 
       <h3 className="text-lg font-semibold mt-6">Daily Budget Breakdown</h3>
       <div className="space-y-3">
-        {itinerary.days.map((day: ItineraryDayType, index: number) => (
+        {itinerary.days?.map((day: ItineraryDayType, index: number) => (
           <div
             key={day.id}
             className="flex items-center justify-between p-3 rounded-md border"
@@ -144,9 +144,9 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
           <p className="font-semibold">
             $
             {itinerary.days
-              .reduce(
+              ?.reduce(
                 (acc: number, day: ItineraryDayType) => acc + day.budget,
-                0
+                0,
               )
               .toLocaleString()}
           </p>

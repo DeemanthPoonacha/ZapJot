@@ -78,7 +78,7 @@ export function TaskCard({
             </Button>
           </span>
         </div>
-        {!!task.subtasks.length && (
+        {!!task.subtasks?.length && (
           <div className="ml-6 mt-2 space-y-2">
             {task.subtasks.map((subtask) => (
               <div key={subtask.id} className="flex items-center space-x-2">

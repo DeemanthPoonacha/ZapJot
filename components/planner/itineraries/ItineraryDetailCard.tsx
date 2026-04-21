@@ -67,7 +67,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
     //       [currentDay.id]: true,
     //     }
     //   :
-    {}
+    {},
   );
 
   const handleDelete = async () => {
@@ -93,7 +93,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   const expandAllDays = () => {
     const expanded: Record<string, boolean> = {};
-    itinerary.days.forEach((day: ItineraryDayType) => {
+    itinerary.days?.forEach((day: ItineraryDayType) => {
       expanded[day.id] = true;
     });
     setExpandedDays(expanded);
@@ -104,14 +104,14 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   };
 
   // Calculate completed tasks
-  const totalTasks = itinerary.days.reduce(
+  const totalTasks = itinerary.days?.reduce(
     (acc: number, day: ItineraryDayType) => acc + day.tasks.length,
-    0
+    0,
   );
-  const completedTasks = itinerary.days.reduce(
+  const completedTasks = itinerary.days?.reduce(
     (acc: number, day: ItineraryDayType) =>
       acc + day.tasks.filter((task: ItineraryTask) => task.completed).length,
-    0
+    0,
   );
 
   const remainingTasks = totalTasks - completedTasks;
@@ -137,7 +137,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   const toggleExpand = () => {
     setSelectedItineraryId(
-      selectedItineraryId === itinerary.id ? null : itinerary.id
+      selectedItineraryId === itinerary.id ? null : itinerary.id,
     );
   };
 
@@ -198,8 +198,8 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
               {!tripStarted
                 ? "Upcoming"
                 : tripEnded
-                ? "Completed"
-                : "In Progress"}
+                  ? "Completed"
+                  : "In Progress"}
             </Badge>
           </span>
           <span className="flex items-center gap-1">
@@ -246,7 +246,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                           <div>
                             <p className="text-sm font-medium">Budget</p>
                             <p className="text-sm">
-                              ${itinerary.budget.toLocaleString()}
+                              ${itinerary.budget?.toLocaleString()}
                             </p>
                           </div>
                         </div>
@@ -256,7 +256,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                           <div>
                             <p className="text-sm font-medium">Actual Cost</p>
                             <p className="text-sm">
-                              ${itinerary.actualCost.toLocaleString()}
+                              ${itinerary.actualCost?.toLocaleString()}
                             </p>
                           </div>
                         </div>
@@ -288,7 +288,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                           <p className="text-sm font-medium">Budget Usage</p>
                           <p className="text-sm">
                             {Math.round(
-                              (itinerary.actualCost / itinerary.budget) * 100
+                              (itinerary.actualCost / itinerary.budget) * 100,
                             )}
                             %
                           </p>
@@ -301,8 +301,8 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         />
                         <p className="text-xs text-muted-foreground mt-1 flex justify-between">
                           <span>
-                            ${itinerary.actualCost.toLocaleString()} of $
-                            {itinerary.budget.toLocaleString()} used
+                            ${itinerary.actualCost?.toLocaleString()} of $
+                            {itinerary.budget?.toLocaleString()} used
                           </span>
                           <span>
                             $
@@ -356,7 +356,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                   </div>
 
                   <div className="space-y-3">
-                    {itinerary.days.map((day, index) => (
+                    {itinerary.days?.map((day, index) => (
                       <ItineraryDay
                         key={day.id}
                         day={day}
