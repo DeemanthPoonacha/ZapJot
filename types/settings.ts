@@ -1,3 +1,4 @@
+import { AVAILABLE_MODELS } from "@/lib/services/firebase/ai";
 import { z } from "zod";
 
 export const deviceSchema = z.record(
@@ -29,7 +30,7 @@ export const aiSchema = z.object({
     .describe("Confirm AI actions before executing"),
   preferredModel: z
     .string()
-    .default("gemini-3.1-flash")
+    .default(AVAILABLE_MODELS[0])
     .describe("Preferred AI model for AI actions"),
 });
 

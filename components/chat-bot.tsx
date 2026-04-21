@@ -44,6 +44,7 @@ export default function ChatBotUI() {
     messages,
     addMessage,
     clearMessages,
+    aiStatus,
   } = useAiChat();
 
   const sendMessage = () => {
@@ -767,20 +768,30 @@ export default function ChatBotUI() {
                     animate={{ opacity: 1, y: 0 }}
                     className="flex justify-start"
                   >
-                    <div className="max-w-[80%] p-3 rounded-2xl rounded-bl-md bg-secondary text-gray-400 border text-sm shadow-sm">
-                      <div className="flex items-center gap-2">
-                        {[0, 0.2, 0.4].map((delay, i) => (
-                          <motion.div
-                            key={i}
-                            animate={{ scale: [1, 1.5, 1] }}
-                            transition={{
-                              repeat: Infinity,
-                              duration: 1,
-                              delay,
-                            }}
-                            className="w-2 h-2 bg-gray-400 rounded-full"
-                          />
-                        ))}
+                    <div className="max-w-[80%] p-3 px-4 rounded-2xl rounded-bl-md bg-secondary text-gray-400 border text-sm shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <motion.span
+                          key={aiStatus || "thinking"}
+                          initial={{ opacity: 0, x: -5 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="font-medium animate-pulse"
+                        >
+                          {aiStatus || "Thinking..."}
+                        </motion.span>
+                        <div className="flex items-center gap-1">
+                          {[0, 0.2, 0.4].map((delay, i) => (
+                            <motion.div
+                              key={i}
+                              animate={{ opacity: [0.3, 1, 0.3] }}
+                              transition={{
+                                repeat: Infinity,
+                                duration: 1.5,
+                                delay,
+                              }}
+                              className="w-1.5 h-1.5 bg-primary/60 rounded-full"
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </motion.div>

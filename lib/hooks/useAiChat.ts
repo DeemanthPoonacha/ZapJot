@@ -18,6 +18,11 @@ export function useAiChat() {
     0,
   );
 
+  const [aiStatus, setAiStatus] = useGlobalState<string | null>(
+    "ai-current-status",
+    null,
+  );
+
   const clearMessages = () => {
     resetMessages();
   };
@@ -84,6 +89,8 @@ export function useAiChat() {
         // Reset seen items for a new user prompt
         if (retryCount === 0) seenItemsRef.current.clear();
 
+        setAiStatus("Thinking");
+
         try {
           const chat = await initializeSession(modelIdx);
           if (!chat) throw new Error("Chat session not initialized");
@@ -105,6 +112,10 @@ export function useAiChat() {
             const args = call.args as any;
             console.group(`🛠️ Tool Call: ${call.name}`);
             console.log("Arguments:", args);
+
+            // Update status based on tool call
+            const statusMessage = getStatusFromTool(call.name, args);
+            if (statusMessage) setAiStatus(statusMessage);
 
             // --- UTILITY TOOLS ---
 
@@ -323,39 +334,51 @@ export function useAiChat() {
 
                 // --- UPDATE TOOLS ---
                 case "update_chapter": {
-                  const { getChapterById } = await import("../services/chapters");
+                  const { getChapterById } =
+                    await import("../services/chapters");
                   const current = await getChapterById(uid, args.chapterId);
-                  
+
                   // If AI hasn't seen current data yet, return it to AI for merging
                   if (current && !seenItemsRef.current.has(args.chapterId)) {
                     seenItemsRef.current.add(args.chapterId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     // AI has seen it or it doesn't exist, proceed to UI command
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_chapter", 
-                        args: { ...current, ...args.data, id: args.chapterId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_chapter",
+                        args: { ...current, ...args.data, id: args.chapterId },
+                      },
                     } as any;
                   }
                   break;
                 }
                 case "update_character": {
-                  const { getCharacterById } = await import("../services/characters");
+                  const { getCharacterById } =
+                    await import("../services/characters");
                   const current = await getCharacterById(uid, args.characterId);
-                  
+
                   if (current && !seenItemsRef.current.has(args.characterId)) {
                     seenItemsRef.current.add(args.characterId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_character", 
-                        args: { ...current, ...args.data, id: args.characterId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_character",
+                        args: {
+                          ...current,
+                          ...args.data,
+                          id: args.characterId,
+                        },
+                      },
                     } as any;
                   }
                   break;
@@ -363,17 +386,20 @@ export function useAiChat() {
                 case "update_event": {
                   const { getEventById } = await import("../services/events");
                   const current = await getEventById(uid, args.eventId);
-                  
+
                   if (current && !seenItemsRef.current.has(args.eventId)) {
                     seenItemsRef.current.add(args.eventId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_event", 
-                        args: { ...current, ...args.data, id: args.eventId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_event",
+                        args: { ...current, ...args.data, id: args.eventId },
+                      },
                     } as any;
                   }
                   break;
@@ -381,53 +407,77 @@ export function useAiChat() {
                 case "update_goal": {
                   const { getGoalById } = await import("../services/goals");
                   const current = await getGoalById(uid, args.goalId);
-                  
+
                   if (current && !seenItemsRef.current.has(args.goalId)) {
                     seenItemsRef.current.add(args.goalId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_goal", 
-                        args: { ...current, ...args.data, id: args.goalId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_goal",
+                        args: { ...current, ...args.data, id: args.goalId },
+                      },
                     } as any;
                   }
                   break;
                 }
                 case "update_itinerary": {
-                  const { getItineraryById } = await import("../services/itineraries");
+                  const { getItineraryById } =
+                    await import("../services/itineraries");
                   const current = await getItineraryById(uid, args.itineraryId);
-                  
+
                   if (current && !seenItemsRef.current.has(args.itineraryId)) {
                     seenItemsRef.current.add(args.itineraryId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_itinerary", 
-                        args: { ...current, ...args.data, id: args.itineraryId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_itinerary",
+                        args: {
+                          ...current,
+                          ...args.data,
+                          id: args.itineraryId,
+                        },
+                      },
                     } as any;
                   }
                   break;
                 }
                 case "update_journal": {
-                  const { getJournalById } = await import("../services/journals");
-                  const current = await getJournalById(uid, args.chapterId, args.journalId);
-                  
+                  const { getJournalById } =
+                    await import("../services/journals");
+                  const current = await getJournalById(
+                    uid,
+                    args.chapterId,
+                    args.journalId,
+                  );
+
                   if (current && !seenItemsRef.current.has(args.journalId)) {
                     seenItemsRef.current.add(args.journalId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_journal", 
-                        args: { ...current, ...args.data, id: args.journalId, chapterId: args.chapterId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_journal",
+                        args: {
+                          ...current,
+                          ...args.data,
+                          id: args.journalId,
+                          chapterId: args.chapterId,
+                        },
+                      },
                     } as any;
                   }
                   break;
@@ -435,17 +485,20 @@ export function useAiChat() {
                 case "update_task": {
                   const { getTaskById } = await import("../services/tasks");
                   const current = await getTaskById(uid, args.taskId);
-                  
+
                   if (current && !seenItemsRef.current.has(args.taskId)) {
                     seenItemsRef.current.add(args.taskId);
-                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
+                    toolResponse = {
+                      status: "EXISTING_DATA_RETURNED",
+                      currentData: current,
+                    };
                   } else {
                     toolResponse = null;
-                    functionCallPart = { 
-                      functionCall: { 
-                        name: "update_task", 
-                        args: { ...current, ...args.data, id: args.taskId } 
-                      } 
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_task",
+                        args: { ...current, ...args.data, id: args.taskId },
+                      },
                     } as any;
                   }
                   break;
@@ -453,25 +506,38 @@ export function useAiChat() {
 
                 // --- CREATION TOOLS (with existence check) ---
                 case "create_character": {
-                  const { getCharacters } = await import("../services/characters");
+                  const { getCharacters } =
+                    await import("../services/characters");
                   const all = await getCharacters(uid);
-                  const existing = all.find(c => c.name.toLowerCase() === args.name?.toLowerCase());
+                  const existing = all.find(
+                    (c) => c.name.toLowerCase() === args.name?.toLowerCase(),
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "A character with this name already exists.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message: "A character with this name already exists.",
+                      existingData: existing,
+                    };
                   } else {
                     // Fall back to UI command for fresh creation
-                    break; 
+                    break;
                   }
                   break;
                 }
                 case "create_chapter": {
                   const { getChapters } = await import("../services/chapters");
                   const all = await getChapters(uid);
-                  const existing = all.find(c => c.title.toLowerCase() === args.title?.toLowerCase());
+                  const existing = all.find(
+                    (c) => c.title.toLowerCase() === args.title?.toLowerCase(),
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "A chapter with this title already exists.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message: "A chapter with this title already exists.",
+                      existingData: existing,
+                    };
                   } else {
                     break;
                   }
@@ -480,10 +546,18 @@ export function useAiChat() {
                 case "create_task": {
                   const { getTasks } = await import("../services/tasks");
                   const all = await getTasks(uid);
-                  const existing = all.find(t => t.title.toLowerCase() === args.title?.toLowerCase() && t.status !== 'completed');
+                  const existing = all.find(
+                    (t) =>
+                      t.title.toLowerCase() === args.title?.toLowerCase() &&
+                      t.status !== "completed",
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "A similar active task already exists.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message: "A similar active task already exists.",
+                      existingData: existing,
+                    };
                   } else {
                     break;
                   }
@@ -492,10 +566,16 @@ export function useAiChat() {
                 case "create_goal": {
                   const { getGoals } = await import("../services/goals");
                   const all = await getGoals(uid);
-                  const existing = all.find(g => g.title.toLowerCase() === args.title?.toLowerCase());
+                  const existing = all.find(
+                    (g) => g.title.toLowerCase() === args.title?.toLowerCase(),
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "A goal with this title already exists.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message: "A goal with this title already exists.",
+                      existingData: existing,
+                    };
                   } else {
                     break;
                   }
@@ -504,22 +584,35 @@ export function useAiChat() {
                 case "create_event": {
                   const { getEvents } = await import("../services/events");
                   const all = await getEvents(uid);
-                  const existing = all.find(e => e.title.toLowerCase() === args.title?.toLowerCase());
+                  const existing = all.find(
+                    (e) => e.title.toLowerCase() === args.title?.toLowerCase(),
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "An event with this title already exists.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message: "An event with this title already exists.",
+                      existingData: existing,
+                    };
                   } else {
                     break;
                   }
                   break;
                 }
                 case "create_itinerary": {
-                  const { getItineraries } = await import("../services/itineraries");
+                  const { getItineraries } =
+                    await import("../services/itineraries");
                   const all = await getItineraries(uid);
-                  const existing = all.find(i => i.title.toLowerCase() === args.title?.toLowerCase());
+                  const existing = all.find(
+                    (i) => i.title.toLowerCase() === args.title?.toLowerCase(),
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "An itinerary with this title already exists.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message: "An itinerary with this title already exists.",
+                      existingData: existing,
+                    };
                   } else {
                     break;
                   }
@@ -529,10 +622,17 @@ export function useAiChat() {
                   const { getJournals } = await import("../services/journals");
                   const chapterId = args.chapterId || "others";
                   const all = await getJournals(uid, chapterId);
-                  const existing = all.find(j => j.title.toLowerCase() === args.title?.toLowerCase());
+                  const existing = all.find(
+                    (j) => j.title.toLowerCase() === args.title?.toLowerCase(),
+                  );
                   if (existing) {
                     seenItemsRef.current.add(existing.id);
-                    toolResponse = { status: "DUPLICATE_FOUND", message: "A journal entry with this title already exists in this chapter.", existingData: existing };
+                    toolResponse = {
+                      status: "DUPLICATE_FOUND",
+                      message:
+                        "A journal entry with this title already exists in this chapter.",
+                      existingData: existing,
+                    };
                   } else {
                     break;
                   }
@@ -540,9 +640,11 @@ export function useAiChat() {
                 }
 
                 default:
-                  // Handle other tools (Creation tools) via UI command logic below
                   break;
               }
+
+              // After each tool, go back to thinking while processing result
+              setAiStatus("Thinking");
 
               if (toolResponse !== null) {
                 console.log(`Tool ${call.name} response:`, toolResponse);
@@ -605,6 +707,7 @@ export function useAiChat() {
             console.groupEnd(); // Close Tool Call group
             console.groupEnd(); // Close AI Interaction group
 
+            setAiStatus("Preparing");
             return JSON.stringify(command);
           }
 
@@ -612,8 +715,10 @@ export function useAiChat() {
           console.log("Final AI Response:", finalResponse);
           console.groupEnd();
 
+          setAiStatus("Done! Please wait for the response to load.");
           return finalResponse;
         } catch (error: any) {
+          setAiStatus(null);
           const isRateLimit =
             error.message?.includes("429") || error.status === 429;
 
@@ -671,6 +776,31 @@ export function useAiChat() {
     updateMessages,
     clearMessages,
     addMessage,
+    aiStatus,
     currentModel: AVAILABLE_MODELS[currentModelIndex],
   };
+}
+
+function getStatusFromTool(toolName: string, args: any): string {
+  const parts = toolName.split("_");
+  const action = parts[0]; // get, search, create, update, brain
+  const type = parts.slice(1).join(" "); // character, characters, task, etc
+
+  if (toolName === "brain_dump") return "Analyzing brain dump";
+  if (toolName === "get_current_time") return "Checking time";
+  if (toolName === "get_user_info") return "Fetching user profile";
+
+  const friendlyType = type || "data";
+
+  switch (action) {
+    case "get":
+    case "search":
+      return `Searching for ${friendlyType}...`;
+    case "create":
+      return `Preparing to create ${friendlyType}...`;
+    case "update":
+      return `Preparing to update ${friendlyType}...`;
+    default:
+      return "Processing";
+  }
 }

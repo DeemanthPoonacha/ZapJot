@@ -5,6 +5,7 @@ import { UserInDb } from "@/types/user";
 import { getDeviceId } from "../utils";
 import { DEFAULT_CHAPTER_ID, DEFAULT_THEME } from "../constants";
 import { checkAndCreateNewChapter } from "./journals";
+import { AVAILABLE_MODELS } from "./firebase/ai";
 
 export async function setUpUser(userId: string, email: string) {
   try {
@@ -20,6 +21,10 @@ export async function setUpUser(userId: string, email: string) {
         createdAt: timestamp,
         updatedAt: timestamp,
         theme: DEFAULT_THEME,
+        ai: {
+          confirmAiActions: true,
+          preferredModel: AVAILABLE_MODELS[0],
+        },
         notifications: {
           devices: {
             [deviceId]: {
