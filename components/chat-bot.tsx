@@ -490,6 +490,16 @@ export default function ChatBotUI() {
           />
         );
         break;
+      case "chapters":
+        setActionModal(
+          <ChapterForm
+            chapter={item}
+            onAdd={() => onSaveOrCancel(item)}
+            onUpdate={() => onSaveOrCancel(item)}
+            onCancel={() => onSaveOrCancel()}
+          />
+        );
+        break;
     }
   }
 

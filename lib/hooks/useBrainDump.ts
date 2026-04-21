@@ -4,6 +4,7 @@ import { useItineraryMutations } from "./useItineraries";
 import { useCharacterMutations } from "./useCharacters";
 import { useJournalMutations } from "./useJournals";
 import { useEventMutations } from "./useEvents";
+import { useChapterMutations } from "./useChapters";
 import { BrainDump } from "@/types/brain-dump";
 import { DEFAULT_CHAPTER_ID } from "../constants";
 import { toast } from "@/components/ui/sonner";
@@ -16,6 +17,7 @@ export const useBrainDump = () => {
   const { addMutation: addCharacter } = useCharacterMutations();
   const { addMutation: addJournal } = useJournalMutations(DEFAULT_CHAPTER_ID);
   const { addMutation: addEvent } = useEventMutations();
+  const { addMutation: addChapter } = useChapterMutations();
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -112,6 +114,20 @@ export const useBrainDump = () => {
             results.success++;
           } catch (e) {
             console.error("Failed to add event", event, e);
+          }
+        }
+      }
+
+      // Process Chapters
+      if (data.chapters && selectedIndices.chapters) {
+        for (const index of selectedIndices.chapters) {
+          const chapter = data.chapters[index];
+          results.total++;
+          try {
+            await addChapter.mutateAsync(chapter as any);
+            results.success++;
+          } catch (e) {
+            console.error("Failed to add chapter", chapter, e);
           }
         }
       }

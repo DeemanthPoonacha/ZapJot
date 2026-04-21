@@ -67,11 +67,24 @@ export function useAiChat() {
         modelIdx: number,
         retryCount = 0,
       ): Promise<string | null> => {
+        const modelName = AVAILABLE_MODELS[modelIdx];
+        const interactionId = Math.random().toString(36).substring(7);
+        
+        console.groupCollapsed(`🤖 AI Interaction [${interactionId}] - ${modelName}`);
+        console.log("Prompt:", prompt);
+        console.log("Model:", modelName);
+        console.log("Retry Count:", retryCount);
+
         try {
           const chat = await initializeSession(modelIdx);
           if (!chat) throw new Error("Chat session not initialized");
 
+          const startTime = performance.now();
           let result = await chat.sendMessage(prompt);
+          const endTime = performance.now();
+          const initialLatency = (endTime - startTime).toFixed(2);
+
+          console.log(`Response received in ${initialLatency}ms`);
 
           let functionCallPart =
             result.response.candidates?.[0]?.content?.parts?.find(
@@ -80,17 +93,27 @@ export function useAiChat() {
 
           while (functionCallPart?.functionCall) {
             const call = functionCallPart.functionCall;
+            console.group(`🛠️ Tool Call: ${call.name}`);
+            console.log("Arguments:", call.args);
 
             if (call.name === "get_current_time") {
               const timeInfo = {
                 time: new Date().toLocaleTimeString(),
                 date: new Date().toLocaleDateString(),
               };
+              console.log("Tool Output:", timeInfo);
+              
+              const toolStartTime = performance.now();
               result = await chat.sendMessage([
                 {
                   functionResponse: { name: call.name, response: timeInfo },
                 },
               ]);
+              const toolEndTime = performance.now();
+              console.log(`AI Response after tool in ${(toolEndTime - toolStartTime).toFixed(2)}ms`);
+
+              console.groupEnd();
+              
               functionCallPart =
                 result.response.candidates?.[0]?.content?.parts?.find(
                   (p) => p.functionCall,
@@ -107,37 +130,57 @@ export function useAiChat() {
                 ? { name: user.displayName, email: user.email }
                 : { note: "User is not logged in / anonymous" };
 
+              console.log("Tool Output:", userInfo);
+
+              const toolStartTime = performance.now();
               result = await chat.sendMessage([
                 {
                   functionResponse: { name: call.name, response: userInfo },
                 },
               ]);
+              const toolEndTime = performance.now();
+              console.log(`AI Response after tool in ${(toolEndTime - toolStartTime).toFixed(2)}ms`);
+
+              console.groupEnd();
+
               functionCallPart =
                 result.response.candidates?.[0]?.content?.parts?.find(
                   (p) => p.functionCall,
                 );
               continue;
             }
+            
+            // For other tools that we handle in the UI
             const actionType =
               call.name.split("_").slice(1).join(" ") || "item";
             const friendlyName =
               actionType.charAt(0).toUpperCase() + actionType.slice(1);
 
-            return JSON.stringify({
+            const command = {
               action: call.name,
               ...call.args,
               message: `Sure! I've prepared that ${friendlyName} for you. Please review and complete the details:`,
-            });
+            };
+            
+            console.log("Command Prepared for UI:", command);
+            console.groupEnd(); // Close Tool Call group
+            console.groupEnd(); // Close AI Interaction group
+            
+            return JSON.stringify(command);
           }
 
-          return result.response.text();
+          const finalResponse = result.response.text();
+          console.log("Final AI Response:", finalResponse);
+          console.groupEnd();
+          
+          return finalResponse;
         } catch (error: any) {
           const isRateLimit =
             error.message?.includes("429") || error.status === 429;
 
           if (isRateLimit) {
             console.warn(
-              `Rate limit hit on model: ${AVAILABLE_MODELS[modelIdx]}`,
+              `Rate limit hit on model: ${modelName}`,
             );
 
             // Try fallback if available
@@ -158,9 +201,13 @@ export function useAiChat() {
                 setTimeout(res, 1000 * Math.pow(2, retryCount)),
               );
 
+              console.groupEnd(); // End current (failed) group before retry
               return executeWithRetry(prompt, nextIdx, retryCount + 1);
             }
           }
+          
+          console.error("AI Error in executeWithRetry:", error);
+          console.groupEnd();
           throw error;
         }
       };

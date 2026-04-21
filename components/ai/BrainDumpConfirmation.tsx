@@ -29,6 +29,7 @@ interface SelectionState {
   characters: number[];
   journals: number[];
   events: number[];
+  chapters: number[];
 }
 
 export default function BrainDumpConfirmation({
@@ -51,6 +52,7 @@ export default function BrainDumpConfirmation({
     characters: data.characters?.map((_, i) => i) || [],
     journals: data.journals?.map((_, i) => i) || [],
     events: data.events?.map((_, i) => i) || [],
+    chapters: data.chapters?.map((_, i) => i) || [],
   });
 
   const toggleSelection = (type: keyof SelectionState, index: number) => {
@@ -81,6 +83,7 @@ export default function BrainDumpConfirmation({
       characters: <UserIcon className="h-4 w-4" />,
       journals: <BookOpen className="h-4 w-4" />,
       events: <Calendar className="h-4 w-4" />,
+      chapters: <BookOpen className="h-4 w-4" />,
     };
 
     const typeLabels = {
@@ -90,6 +93,7 @@ export default function BrainDumpConfirmation({
       characters: "Character",
       journals: "Journal",
       events: "Event",
+      chapters: "Chapter",
     };
 
     return (
@@ -183,6 +187,7 @@ export default function BrainDumpConfirmation({
           {data.characters?.map((item, i) => renderCard("characters", item, i))}
           {data.journals?.map((item, i) => renderCard("journals", item, i))}
           {data.events?.map((item, i) => renderCard("events", item, i))}
+          {data.chapters?.map((item, i) => renderCard("chapters", item, i))}
         </AnimatePresence>
       </div>
 
