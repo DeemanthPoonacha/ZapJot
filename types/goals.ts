@@ -2,13 +2,22 @@ import { z } from "zod";
 
 // Goal creation schema
 export const createGoalSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-  deadline: z.string().optional(),
-  priority: z.enum(["low", "medium", "high"]).default("medium"),
-  progress: z.number().default(0),
-  objective: z.number().default(100),
-  unit: z.string().default("%"),
+  title: z.string().min(1, "Title is required").describe("Title of the goal"),
+  description: z.string().optional().describe("Description of the goal"),
+  deadline: z
+    .string()
+    .optional()
+    .describe("Deadline of the goal in YYYY-MM-DD format"),
+  priority: z
+    .enum(["low", "medium", "high"])
+    .default("medium")
+    .describe("Priority of the goal"),
+  progress: z.number().default(0).describe("Progress of the goal"),
+  objective: z.number().default(100).describe("Objective of the goal"),
+  unit: z
+    .string()
+    .default("%")
+    .describe("Unit of the goal, e.g., %, $, kg, lbs, km etc."),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -20,7 +29,7 @@ export const updateGoalSchema = createGoalSchema.partial().extend({
 
 // Full goal schema (includes Firestore ID)
 export const goalSchema = createGoalSchema.extend({
-  id: z.string(),
+  id: z.string().describe("ID of the goal"),
 });
 
 // Type inference

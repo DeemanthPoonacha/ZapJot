@@ -2,11 +2,15 @@ import { z } from "zod";
 
 // Theme Schema
 export const createThemeSchema = z.object({
-  name: z.string().min(1, "Theme name is required"),
+  name: z
+    .string()
+    .min(1, "Theme name is required")
+    .describe("Name of the theme"),
   colors: z.object({
     background: z
       .string()
-      .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
+      .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color")
+      .describe("Background color of the theme"),
     foreground: z
       .string()
       .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),

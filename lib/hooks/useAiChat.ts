@@ -4,6 +4,7 @@ import { getModel, AVAILABLE_MODELS } from "../services/firebase/ai";
 import { ChatSession } from "firebase/ai";
 import { ChatMessage, ChatRole } from "@/types/ai-chat";
 import { useGlobalState } from "./global-state";
+import { useSettings } from "./useSettings";
 
 export function useAiChat() {
   const [messages, setMessages, resetMessages, updateMessages] = useGlobalState<
@@ -59,6 +60,8 @@ export function useAiChat() {
     },
     [currentModelIndex, messages],
   );
+
+  const { settings } = useSettings();
 
   const sendMessage = useMutation({
     mutationFn: async (userPrompt: string) => {
@@ -316,75 +319,234 @@ export function useAiChat() {
 
                 // --- UPDATE TOOLS ---
                 case "update_chapter": {
-                  const { updateChapter } =
+                  const { getChapterById, updateChapter } =
                     await import("../services/chapters");
-                  await updateChapter(uid, args.chapterId, args.data);
-                  toolResponse = {
-                    success: true,
-                    message: `Chapter ${args.chapterId} updated successfully.`,
-                  };
+                  const current = await getChapterById(uid, args.chapterId);
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        description: mergeText(
+                          current?.description,
+                          args.data.description,
+                        ),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null; // We'll handle this via UI command logic
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_chapter",
+                        args: { ...current, ...mergedData, id: args.chapterId },
+                      },
+                    } as any;
+                  } else {
+                    await updateChapter(uid, args.chapterId, mergedData);
+                    toolResponse = {
+                      success: true,
+                      message: `Chapter updated successfully.`,
+                    };
+                  }
                   break;
                 }
                 case "update_character": {
-                  const { updateCharacter } =
+                  const { getCharacterById, updateCharacter } =
                     await import("../services/characters");
-                  await updateCharacter(uid, args.characterId, args.data);
-                  toolResponse = {
-                    success: true,
-                    message: `Character ${args.characterId} updated successfully.`,
-                  };
+                  const current = await getCharacterById(uid, args.characterId);
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        notes: mergeText(current?.notes, args.data.notes),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null;
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_character",
+                        args: {
+                          ...current,
+                          ...mergedData,
+                          id: args.characterId,
+                        },
+                      },
+                    } as any;
+                  } else {
+                    await updateCharacter(uid, args.characterId, mergedData);
+                    toolResponse = {
+                      success: true,
+                      message: `Character updated successfully.`,
+                    };
+                  }
                   break;
                 }
                 case "update_event": {
-                  const { updateEvent } = await import("../services/events");
-                  await updateEvent(uid, args.eventId, args.data);
-                  toolResponse = {
-                    success: true,
-                    message: `Event ${args.eventId} updated successfully.`,
-                  };
+                  const { getEventById, updateEvent } =
+                    await import("../services/events");
+                  const current = await getEventById(uid, args.eventId);
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        notes: mergeText(current?.notes, args.data.notes),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null;
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_event",
+                        args: { ...current, ...mergedData, id: args.eventId },
+                      },
+                    } as any;
+                  } else {
+                    await updateEvent(uid, args.eventId, mergedData);
+                    toolResponse = {
+                      success: true,
+                      message: `Event updated successfully.`,
+                    };
+                  }
                   break;
                 }
                 case "update_goal": {
-                  const { updateGoal } = await import("../services/goals");
-                  await updateGoal(uid, args.goalId, args.data);
-                  toolResponse = {
-                    success: true,
-                    message: `Goal ${args.goalId} updated successfully.`,
-                  };
+                  const { getGoalById, updateGoal } =
+                    await import("../services/goals");
+                  const current = await getGoalById(uid, args.goalId);
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        description: mergeText(
+                          current?.description,
+                          args.data.description,
+                        ),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null;
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_goal",
+                        args: { ...current, ...mergedData, id: args.goalId },
+                      },
+                    } as any;
+                  } else {
+                    await updateGoal(uid, args.goalId, mergedData);
+                    toolResponse = {
+                      success: true,
+                      message: `Goal updated successfully.`,
+                    };
+                  }
                   break;
                 }
                 case "update_itinerary": {
-                  const { updateItinerary } =
+                  const { getItineraryById, updateItinerary } =
                     await import("../services/itineraries");
-                  await updateItinerary(uid, args.itineraryId, args.data);
-                  toolResponse = {
-                    success: true,
-                    message: `Itinerary ${args.itineraryId} updated successfully.`,
-                  };
+                  const current = await getItineraryById(uid, args.itineraryId);
+                  // Itineraries have complex nesting, for now just merged description if it exists
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        description: mergeText(
+                          current?.description,
+                          args.data.description,
+                        ),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null;
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_itinerary",
+                        args: {
+                          ...current,
+                          ...mergedData,
+                          id: args.itineraryId,
+                        },
+                      },
+                    } as any;
+                  } else {
+                    await updateItinerary(uid, args.itineraryId, mergedData);
+                    toolResponse = {
+                      success: true,
+                      message: `Itinerary updated successfully.`,
+                    };
+                  }
                   break;
                 }
                 case "update_journal": {
-                  const { updateJournal } =
+                  const { getJournalById, updateJournal } =
                     await import("../services/journals");
-                  await updateJournal(
+                  const current = await getJournalById(
                     uid,
                     args.chapterId,
                     args.journalId,
-                    args.data,
                   );
-                  toolResponse = {
-                    success: true,
-                    message: `Journal ${args.journalId} in chapter ${args.chapterId} updated successfully.`,
-                  };
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        content: mergeText(current?.content, args.data.content),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null;
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_journal",
+                        args: {
+                          ...current,
+                          ...mergedData,
+                          id: args.journalId,
+                          chapterId: args.chapterId,
+                        },
+                      },
+                    } as any;
+                  } else {
+                    await updateJournal(
+                      uid,
+                      args.chapterId,
+                      args.journalId,
+                      mergedData,
+                    );
+                    toolResponse = {
+                      success: true,
+                      message: `Journal updated successfully.`,
+                    };
+                  }
                   break;
                 }
                 case "update_task": {
-                  const { updateTask } = await import("../services/tasks");
-                  await updateTask(uid, args.taskId, args.data);
-                  toolResponse = {
-                    success: true,
-                    message: `Task ${args.taskId} updated successfully.`,
-                  };
+                  const { getTaskById, updateTask } =
+                    await import("../services/tasks");
+                  const current = await getTaskById(uid, args.taskId);
+                  const mergedData = settings?.ai?.autoMergeNotes
+                    ? {
+                        ...args.data,
+                        description: mergeText(
+                          current?.description,
+                          args.data.description,
+                        ),
+                      }
+                    : args.data;
+
+                  if (settings?.ai?.confirmAiActions) {
+                    toolResponse = null;
+                    functionCallPart = {
+                      functionCall: {
+                        name: "update_task",
+                        args: { ...current, ...mergedData, id: args.taskId },
+                      },
+                    } as any;
+                  } else {
+                    await updateTask(uid, args.taskId, mergedData);
+                    toolResponse = {
+                      success: true,
+                      message: `Task updated successfully.`,
+                    };
+                  }
                   break;
                 }
 
@@ -522,4 +684,21 @@ export function useAiChat() {
     addMessage,
     currentModel: AVAILABLE_MODELS[currentModelIndex],
   };
+}
+
+function mergeText(current?: string, update?: string): string {
+  if (!update) return current || "";
+  if (!current) return update;
+  if (current.includes(update)) return current;
+
+  // Smart merge: if the update is not already in current, append it.
+  const trimmedCurrent = current.trim();
+  const separator =
+    trimmedCurrent.endsWith(".") ||
+    trimmedCurrent.endsWith("!") ||
+    trimmedCurrent.endsWith("?")
+      ? " "
+      : ". ";
+
+  return `${trimmedCurrent}${separator}${update}`;
 }

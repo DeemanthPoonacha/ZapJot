@@ -2,30 +2,42 @@ import { z } from "zod";
 
 // Task schema for itinerary days
 const itineraryTaskSchema = z.object({
-  id: z.string(), // Unique task ID
-  title: z.string().min(1, "Task title is required"),
-  time: z.string().optional(), // "10:00 PM", "3:00 PM", etc.
-  completed: z.boolean().default(false),
+  id: z.string().describe("ID of the task"),
+  title: z
+    .string()
+    .min(1, "Task title is required")
+    .describe("Title of the task"),
+  time: z.string().optional().describe("Time of the task in HH:mm format"),
+  completed: z
+    .boolean()
+    .default(false)
+    .describe("Whether the task is completed"),
 });
 
 // Day schema within the itinerary
 export const itineraryDaySchema = z.object({
-  id: z.string(), // Unique day ID
-  title: z.string().min(1, "Day title is required"),
-  budget: z.number().default(0),
-  tasks: z.array(itineraryTaskSchema).default([]),
+  id: z.string().describe("ID of the day"),
+  title: z
+    .string()
+    .min(1, "Day title is required")
+    .describe("Title of the day. e.g., Arrival, Day 3, Beach day, etc."),
+  budget: z.number().default(0).describe("Budget for the day"),
+  tasks: z.array(itineraryTaskSchema).default([]).describe("Tasks for the day"),
 });
 
 // Schema for creating a new itinerary
 export const createItinerarySchema = z.object({
   title: z.string().min(1, "Title is required"),
-  destination: z.string().optional(),
-  startDate: z.string(),
-  endDate: z.string(),
-  totalDays: z.number(),
-  budget: z.number().default(0),
-  actualCost: z.number().default(0),
-  days: z.array(itineraryDaySchema).default([]),
+  destination: z.string().optional().describe("Destination of the itinerary"),
+  startDate: z.string().describe("Start date of the itinerary"),
+  endDate: z.string().describe("End date of the itinerary"),
+  totalDays: z.number().describe("Total number of days in the itinerary"),
+  budget: z.number().default(0).describe("Budget for the itinerary"),
+  actualCost: z.number().default(0).describe("Actual cost of the itinerary"),
+  days: z
+    .array(itineraryDaySchema)
+    .default([])
+    .describe("Array of days of the itinerary"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -35,7 +47,7 @@ export const updateItinerarySchema = createItinerarySchema.partial().extend({});
 
 // Full itinerary schema (extends creation schema)
 export const itinerarySchema = createItinerarySchema.extend({
-  id: z.string(), // Firestore ID
+  id: z.string().describe("ID of the itinerary"), // Firestore ID
 });
 
 // Type inference

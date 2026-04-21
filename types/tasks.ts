@@ -1,19 +1,31 @@
 import { z } from "zod";
 
 export const subTasks = z.object({
-  id: z.string(),
-  title: z.string(),
-  status: z.enum(["pending", "in-progress", "completed"]).default("pending"),
+  id: z.string().describe("ID of the subtask"),
+  title: z.string().describe("Title of the subtask"),
+  status: z
+    .enum(["pending", "in-progress", "completed"])
+    .default("pending")
+    .describe("Status of the subtask"),
 });
 
 // Task creation schema
 export const createTaskSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-  dueDate: z.string().optional(), // ISO date format
-  highPriority: z.boolean().default(false),
-  status: z.enum(["pending", "in-progress", "completed"]).default("pending"),
-  subtasks: z.array(subTasks).default([]),
+  title: z.string().min(1, "Title is required").describe("Title of the task"),
+  description: z.string().optional().describe("Description of the task"),
+  dueDate: z
+    .string()
+    .optional()
+    .describe("Due date of the task in YYYY-MM-DD format"), // ISO date format
+  highPriority: z
+    .boolean()
+    .default(false)
+    .describe("High priority of the task"),
+  status: z
+    .enum(["pending", "in-progress", "completed"])
+    .default("pending")
+    .describe("Status of the task"),
+  subtasks: z.array(subTasks).default([]).describe("Subtasks of the task"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -25,7 +37,7 @@ export const updateTaskSchema = createTaskSchema.partial().extend({
 
 // Full task schema
 export const taskSchema = createTaskSchema.extend({
-  id: z.string(), // Firestore ID
+  id: z.string().describe("ID of the task"), // Firestore ID
 });
 
 // Type inference

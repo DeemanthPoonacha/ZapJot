@@ -2,13 +2,22 @@ import { z } from "zod";
 
 // Character Schema
 export const createCharacterSchema = z.object({
-  userId: z.string(),
-  image: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
-  lowercaseName: z.string().optional(),
-  title: z.string().optional(), // Relationship or nickname
-  reminders: z.array(z.string()).default([]), // Special dates like birthdays
-  notes: z.string().optional(),
+  userId: z.string().describe("User ID of the Auth user, not the character"),
+  image: z.string().optional().describe("Image URL of the character"),
+  name: z.string().min(1, "Name is required").describe("Name of the character"),
+  lowercaseName: z
+    .string()
+    .optional()
+    .describe("Lowercase name of the character for searching"),
+  title: z
+    .string()
+    .optional()
+    .describe("Title or nickname or relationship of the character"),
+  reminders: z
+    .array(z.string())
+    .default([])
+    .describe("Special dates like birthdays, anniversaries, etc."),
+  notes: z.string().optional().describe("Notes about the character"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -18,7 +27,7 @@ export const updateCharacterSchema = createCharacterSchema.partial().extend({
 });
 
 export const characterSchema = createCharacterSchema.extend({
-  id: z.string(),
+  id: z.string().describe("ID of the character"),
 });
 
 // Type Inference

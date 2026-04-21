@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -55,7 +56,7 @@ export function NotificationSettings() {
     }
     console.log(
       "🚀 ~ useEffect ~ settings.notifications.notifyMinsBefore :",
-      settings?.notifications.notifyMinsBefore
+      settings?.notifications.notifyMinsBefore,
     );
   }, [settings, form]);
 

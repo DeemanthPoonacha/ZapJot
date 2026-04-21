@@ -251,6 +251,23 @@ export default function ChatBotUI() {
           />,
         );
         break;
+      
+      case "update_chapter":
+        console.log("Updating chapter:", command);
+        setActionModal(
+          <ChapterForm
+            chapter={command}
+            onUpdate={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Chapter updated: <a class="underline text-primary" href="/chapters/${command.id}">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+            onCancel={() => resetModal()}
+          />
+        );
+        break;
 
       case "create_journal":
         console.log("Creating journal:", command);
@@ -274,6 +291,26 @@ export default function ChatBotUI() {
         );
         break;
 
+      case "update_journal":
+        console.log("Updating journal:", command);
+        setActionModal(
+          <JournalForm
+            journal={command}
+            chapterId={command.chapterId || DEFAULT_CHAPTER_ID}
+            onFinish={(id, chId, name) => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Journal updated: <a class="underline text-primary" href="/chapters/${
+                  chId || DEFAULT_CHAPTER_ID
+                }/journals/${id}">${name || command.title}</a>`,
+              });
+              resetModal();
+            }}
+            onCancel={() => resetModal()}
+          />
+        );
+        break;
+
       case "create_event":
         console.log("Creating event:", command);
         setActionModal(
@@ -288,6 +325,23 @@ export default function ChatBotUI() {
               resetModal();
             }}
           />,
+        );
+        break;
+
+      case "update_event":
+        console.log("Updating event:", command);
+        setActionModal(
+          <EventForm
+            eventData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Event updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />
         );
         break;
 
@@ -308,6 +362,23 @@ export default function ChatBotUI() {
         );
         break;
 
+      case "update_task":
+        console.log("Updating task:", command);
+        setActionModal(
+          <TaskForm
+            taskData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Task updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />
+        );
+        break;
+
       case "create_goal":
         console.log("Creating goal:", command);
         setActionModal(
@@ -325,6 +396,23 @@ export default function ChatBotUI() {
         );
         break;
 
+      case "update_goal":
+        console.log("Updating goal:", command);
+        setActionModal(
+          <GoalForm
+            goalData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Goal updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />
+        );
+        break;
+
       case "create_itinerary":
         console.log("Creating itinerary:", command);
         setActionModal(
@@ -339,6 +427,23 @@ export default function ChatBotUI() {
               resetModal();
             }}
           />,
+        );
+        break;
+
+      case "update_itinerary":
+        console.log("Updating itinerary:", command);
+        setActionModal(
+          <ItineraryForm
+            itineraryData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Itinerary updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />
         );
         break;
 
@@ -362,6 +467,23 @@ export default function ChatBotUI() {
         );
         break;
       
+      case "update_character":
+        console.log("Updating character:", command);
+        setActionModal(
+          <CharacterForm
+            character={command}
+            onUpdate={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Character updated: <a class="underline text-primary" href="/characters/${command.id}">${command.name}</a>`,
+              });
+              resetModal();
+            }}
+            onCancel={() => resetModal()}
+          />
+        );
+        break;
+
       case "brain_dump":
         console.log("Processing brain dump:", command);
         setBrainDumpData(command);

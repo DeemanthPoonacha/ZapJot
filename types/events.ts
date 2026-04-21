@@ -15,21 +15,42 @@ export const participants = z.object({
   value: z.string(),
 });
 export const TimestampType = z.custom<Timestamp>(
-  (value) => value instanceof Timestamp
+  (value) => value instanceof Timestamp,
 );
 
 // Base schema for event creation
 export const createEventSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  notes: z.string().optional(),
-  date: z.string().optional(),
-  nextOccurrence: TimestampType.or(z.date()),
-  time: z.string(),
-  repeat: z.enum(RepeatTypes as any).default("none"),
-  repeatDays: z.array(z.string()).default([]),
-  location: z.string().optional(),
-  nextNotificationAt: TimestampType.or(z.date()).nullable().default(null),
-  participants: z.array(participants).optional(),
+  title: z.string().min(1, "Title is required").describe("Title of the event"),
+  notes: z.string().optional().describe("Notes for the event"),
+  date: z
+    .string()
+    .optional()
+    .describe(
+      "Daate of the event in YYYY-MM-DD format, Only for non-repeating events",
+    ),
+  nextOccurrence: TimestampType.or(z.date()).describe(
+    "Next occurrence of the event",
+  ),
+  time: z.string().describe("Time of the event in HH:mm format"),
+  repeat: z
+    .enum(RepeatTypes as any)
+    .default("none")
+    .describe("Repeat type of the event"),
+  repeatDays: z
+    .array(z.string())
+    .default([])
+    .describe(
+      "Repeat days of the event in 0-6 format for weekly events, 1-31 for monthly events, MM-DD format for yearly events",
+    ),
+  location: z.string().optional().describe("Location of the event"),
+  nextNotificationAt: TimestampType.or(z.date())
+    .nullable()
+    .default(null)
+    .describe("Next notification time of the event"),
+  participants: z
+    .array(participants)
+    .optional()
+    .describe("Participants of the event"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
@@ -40,7 +61,7 @@ export const updateEventSchema = createEventSchema.partial().extend({
 
 // Full event schema
 export const eventSchema = createEventSchema.extend({
-  id: z.string(),
+  id: z.string().describe("ID of the event"),
 });
 
 // Type inference
