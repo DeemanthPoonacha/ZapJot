@@ -52,7 +52,11 @@ export async function searchByName(userId: string, searchString: string) {
   );
 
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    name: doc.data().name,
+    ...doc.data(),
+  }));
 }
 /**
  * Get a single character by ID.

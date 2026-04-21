@@ -16,7 +16,9 @@ export const createCharacterSchema = z.object({
   reminders: z
     .array(z.string())
     .default([])
-    .describe("Special dates like birthdays, anniversaries, etc."),
+    .describe(
+      "Array of IDs of reminders or special dates like birthdays, anniversaries, etc.",
+    ),
   notes: z.string().optional().describe("Notes about the character"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),

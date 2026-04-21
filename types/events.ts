@@ -11,9 +11,10 @@ export enum RepeatType {
 const RepeatTypes = Object.values(RepeatType);
 
 export const participants = z.object({
-  label: z.string(),
-  value: z.string(),
+  label: z.string().describe("Name of the participant"),
+  value: z.string().describe("ID of the participant"),
 });
+
 export const TimestampType = z.custom<Timestamp>(
   (value) => value instanceof Timestamp,
 );

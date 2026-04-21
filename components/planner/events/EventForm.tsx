@@ -180,8 +180,9 @@ export default function EventForm({
 
   // eslint-disable-next-line
   const renderYearlySelector = (field: any) => {
-    const monthValue = field.value[0]?.split("-")[0] || "";
-    const dayValue = field.value[0]?.split("-")[1] || "";
+    const monthValue =
+      parseInt(field.value[0])?.toString()?.split("-")[0] || "";
+    const dayValue = field.value[0]?.toString()?.split("-")[1] || "";
 
     const handleMonthChange = (value: string) => {
       field.onChange([`${value}-${dayValue || "1"}`]);
