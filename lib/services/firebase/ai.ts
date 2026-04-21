@@ -2,6 +2,16 @@ import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 import { app } from "./base";
 import { AI_SYSTEM_PROMPT } from "../../constants";
 import { initAppCheck } from "./appCheck";
+import { zodToGeminiSchema } from "./schema-utils";
+
+// Schema Imports
+import { createChapterSchema } from "../../../types/chapters";
+import { createJournalSchema } from "../../../types/journals";
+import { createEventSchema } from "../../../types/events";
+import { createTaskSchema } from "../../../types/tasks";
+import { createGoalSchema } from "../../../types/goals";
+import { createCharacterSchema } from "../../../types/characters";
+import { createItinerarySchema } from "../../../types/itineraries";
 
 initAppCheck();
 
@@ -24,174 +34,84 @@ const tools = [
       {
         name: "create_chapter",
         description: "Create a new chapter for a journal or trip.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            subtitle: { type: "STRING" },
-            description: { type: "STRING" },
-            date: { type: "STRING", description: "ISO-8601 formatted date" },
-            image: { type: "STRING", description: "URL or base64 of the cover image" },
-          },
-          required: ["title", "description"],
-        },
+        parameters: zodToGeminiSchema(
+          createChapterSchema.omit({
+            userId: true,
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
       {
         name: "create_journal",
         description: "Create a new journal entry.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            location: { type: "STRING" },
-            date: { type: "STRING", description: "ISO-8601 formatted date" },
-            content: { type: "STRING" },
-            coverImage: { type: "STRING" },
-            gallery: { 
-              type: "ARRAY", 
-              items: { type: "STRING" }, 
-              description: "List of image URLs" 
-            },
-          },
-          required: ["title", "content"],
-        },
+        parameters: zodToGeminiSchema(
+          createJournalSchema.omit({
+            iv: true,
+            chapterId: true,
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
       {
         name: "create_event",
         description: "Create a new event or reminder.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            time: { type: "STRING", description: "Time of day like 12:00" },
-            date: { type: "STRING", description: "Date YYYY-MM-DD" },
-            repeat: {
-              type: "STRING",
-              description: "One of: none, daily, weekly, monthly, yearly",
-            },
-            repeatDays: { type: "ARRAY", items: { type: "STRING" } },
-            location: { type: "STRING" },
-            notes: { type: "STRING" },
-            participants: {
-              type: "ARRAY",
-              items: {
-                type: "OBJECT",
-                properties: {
-                  label: { type: "STRING" },
-                  value: { type: "STRING", description: "Character ID" },
-                },
-              },
-            },
-          },
-          required: ["title", "repeat"],
-        },
+        parameters: zodToGeminiSchema(
+          createEventSchema.omit({
+            nextOccurrence: true,
+            nextNotificationAt: true,
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
       {
         name: "create_task",
         description: "Create a to-do task.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            description: { type: "STRING" },
-            status: {
-              type: "STRING",
-              description: "One of: pending, in-progress, completed",
-            },
-            highPriority: { type: "BOOLEAN" },
-            dueDate: { type: "STRING", description: "YYYY-MM-DD" },
-            subtasks: {
-              type: "ARRAY",
-              items: {
-                type: "OBJECT",
-                properties: {
-                  id: { type: "STRING" },
-                  title: { type: "STRING" },
-                  status: { type: "STRING" },
-                },
-              },
-            },
-          },
-          required: ["title", "status"],
-        },
+        parameters: zodToGeminiSchema(
+          createTaskSchema.omit({
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
       {
         name: "create_goal",
         description: "Create a goal with an objective.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            description: { type: "STRING" },
-            objective: { type: "INTEGER" },
-            progress: { type: "INTEGER" },
-            deadline: { type: "STRING", description: "YYYY-MM-DD" },
-            unit: { type: "STRING" },
-            priority: { 
-              type: "STRING",
-              description: "One of: low, medium, high"
-            },
-          },
-          required: ["title", "objective", "deadline"],
-        },
+        parameters: zodToGeminiSchema(
+          createGoalSchema.omit({
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
       {
         name: "create_character",
         description: "Create a character or person profile.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            name: { type: "STRING" },
-            title: { type: "STRING", description: "Relationship or role" },
-            notes: { type: "STRING" },
-            image: { type: "STRING" },
-            reminders: { type: "ARRAY", items: { type: "STRING" } },
-          },
-          required: ["name"],
-        },
+        parameters: zodToGeminiSchema(
+          createCharacterSchema.omit({
+            userId: true,
+            lowercaseName: true,
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
       {
         name: "create_itinerary",
         description: "Create a multi-day itinerary.",
-        parameters: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            destination: { type: "STRING" },
-            startDate: { type: "STRING" },
-            endDate: { type: "STRING" },
-            budget: { type: "INTEGER" },
-            totalDays: { type: "INTEGER" },
-            days: {
-              type: "ARRAY",
-              items: {
-                type: "OBJECT",
-                properties: {
-                  id: { type: "STRING" },
-                  title: { type: "STRING" },
-                  budget: { type: "INTEGER" },
-                  tasks: {
-                    type: "ARRAY",
-                    items: {
-                      type: "OBJECT",
-                      properties: {
-                        id: { type: "STRING" },
-                        title: { type: "STRING" },
-                        time: { type: "STRING" },
-                        completed: { type: "BOOLEAN" },
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          required: ["title"],
-        },
+        parameters: zodToGeminiSchema(
+          createItinerarySchema.omit({
+            actualCost: true,
+            createdAt: true,
+            updatedAt: true,
+          }),
+        ),
       },
     ],
   },
-] as any; // Typecast to ignore strict SchemaType enums
+] as any;
 
 export const AVAILABLE_MODELS = [
   "gemini-3.1-pro-preview", // Cutting edge default
