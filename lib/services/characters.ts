@@ -18,7 +18,7 @@ import { Character, CharacterCreate } from "@/types/characters";
  * Get all characters for a user.
  */
 export const getCharacters = async (
-  userId: string
+  userId: string,
   // filter?: CharactersFilter,
   // fields?: string[]
 ): Promise<Character[]> => {
@@ -35,7 +35,7 @@ export const getCharacters = async (
   const charactersRef = collection(db, `users/${userId}/characters`);
   const snapshot = await getDocs(charactersRef);
   return snapshot.docs.map(
-    (doc) => ({ id: doc.id, ...doc.data() } as Character)
+    (doc) => ({ id: doc.id, ...doc.data() }) as Character,
   );
 };
 
@@ -48,18 +48,18 @@ export async function searchByName(userId: string, searchString: string) {
   const q = query(
     collection(db, `users/${userId}/characters`),
     where("lowercaseName", ">=", searchLower),
-    where("lowercaseName", "<", endString)
+    where("lowercaseName", "<", endString),
   );
 
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name }));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 /**
  * Get a single character by ID.
  */
 export const getCharacterById = async (
   userId: string,
-  characterId: string
+  characterId: string,
 ): Promise<Character | null> => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
   const docSnap = await getDoc(docRef);
@@ -73,7 +73,7 @@ export const getCharacterById = async (
  */
 export const addCharacter = async (
   userId: string,
-  character: CharacterCreate
+  character: CharacterCreate,
 ) => {
   const charactersRef = collection(db, `users/${userId}/characters`);
   const docRef = await addDoc(charactersRef, character);
@@ -86,7 +86,7 @@ export const addCharacter = async (
 export const updateCharacter = async (
   userId: string,
   characterId: string,
-  character: Partial<Character>
+  character: Partial<Character>,
 ) => {
   console.log("🚀 ~ character:", character);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
@@ -108,7 +108,7 @@ export const deleteCharacter = async (userId: string, characterId: string) => {
 export const addReminder = async (
   userId: string,
   characterId: string,
-  reminderId: string
+  reminderId: string,
 ) => {
   console.log("🚀 Adding reminder:", characterId, reminderId);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
@@ -123,7 +123,7 @@ export const addReminder = async (
 export const removeReminder = async (
   userId: string,
   characterId: string,
-  reminderId: string
+  reminderId: string,
 ) => {
   console.log("🚀 Removing reminder:", characterId, reminderId);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);

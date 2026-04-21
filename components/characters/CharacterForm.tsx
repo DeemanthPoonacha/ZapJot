@@ -40,6 +40,8 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
   const { user } = useAuth();
   const userId = user?.uid;
   const [isImageUploading, setIsImageUploading] = useState(false);
+  console.log(character);
+  
 
   const form = useForm<CharacterCreate>({
     resolver: zodResolver(createCharacterSchema),

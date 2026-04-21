@@ -16,10 +16,13 @@ const tools = [
   },
 ] as any;
 
+export const PAID_AVAILABLE_MODELS = [
+  "gemini-3.1-pro-preview", // Paid - Cutting edge default
+];
 
 export const AVAILABLE_MODELS = [
-  "gemini-3.1-pro-preview", // Cutting edge default
-  "gemini-3.1-flash-lite-preview", // Stable, fast fallback
+  "gemini-3.1-flash-lite-preview", // ULTRA FAST
+  "gemini-3-flash-preview", // FAST AND INTELLIGENT
   "gemini-2.5-pro", // High intelligence fallback
   "gemini-2.5-flash", // Reliable pro fallback
   "gemini-2.5-flash-lite", // Very fast, light

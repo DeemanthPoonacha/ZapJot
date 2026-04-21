@@ -251,7 +251,7 @@ export default function ChatBotUI() {
           />,
         );
         break;
-      
+
       case "update_chapter":
         console.log("Updating chapter:", command);
         setActionModal(
@@ -265,7 +265,7 @@ export default function ChatBotUI() {
               resetModal();
             }}
             onCancel={() => resetModal()}
-          />
+          />,
         );
         break;
 
@@ -307,7 +307,7 @@ export default function ChatBotUI() {
               resetModal();
             }}
             onCancel={() => resetModal()}
-          />
+          />,
         );
         break;
 
@@ -341,7 +341,7 @@ export default function ChatBotUI() {
               });
               resetModal();
             }}
-          />
+          />,
         );
         break;
 
@@ -375,7 +375,7 @@ export default function ChatBotUI() {
               });
               resetModal();
             }}
-          />
+          />,
         );
         break;
 
@@ -409,7 +409,7 @@ export default function ChatBotUI() {
               });
               resetModal();
             }}
-          />
+          />,
         );
         break;
 
@@ -443,7 +443,7 @@ export default function ChatBotUI() {
               });
               resetModal();
             }}
-          />
+          />,
         );
         break;
 
@@ -466,21 +466,21 @@ export default function ChatBotUI() {
           />,
         );
         break;
-      
+
       case "update_character":
         console.log("Updating character:", command);
         setActionModal(
           <CharacterForm
-            character={command}
+            character={{ id: command.characterId, ...command.data }}
             onUpdate={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Character updated: <a class="underline text-primary" href="/characters/${command.id}">${command.name}</a>`,
+                text: `Character updated: <a class="underline text-primary" href="/characters/${command.characterId}">${command.data.name}</a>`,
               });
               resetModal();
             }}
             onCancel={() => resetModal()}
-          />
+          />,
         );
         break;
 
@@ -521,7 +521,7 @@ export default function ChatBotUI() {
     type: keyof BrainDump,
     index: number,
     item: any,
-    currentData: BrainDump
+    currentData: BrainDump,
   ) {
     const onSaveOrCancel = (updatedItem?: any) => {
       let newData = { ...currentData };
@@ -548,7 +548,7 @@ export default function ChatBotUI() {
           onEditItem={(t, i, it) => {
             handleEditBrainDumpItem(t, i, it, newData);
           }}
-        />
+        />,
       );
     };
 
@@ -561,7 +561,7 @@ export default function ChatBotUI() {
             onSave={() => onSaveOrCancel(item)} // Form doesn't return updated item easily, but we'll assume it's updated in the form's local state or if we pass a callback that returns it.
             // Actually, TaskForm doesn't return the updated data in onSave.
             // For now, we'll just return to the list.
-          />
+          />,
         );
         break;
       case "goals":
@@ -570,7 +570,7 @@ export default function ChatBotUI() {
             goalData={item}
             onClose={() => onSaveOrCancel()}
             onSave={() => onSaveOrCancel(item)}
-          />
+          />,
         );
         break;
       case "itineraries":
@@ -579,7 +579,7 @@ export default function ChatBotUI() {
             itineraryData={item}
             onClose={() => onSaveOrCancel()}
             onSave={() => onSaveOrCancel(item)}
-          />
+          />,
         );
         break;
       case "characters":
@@ -590,7 +590,7 @@ export default function ChatBotUI() {
             onAdd={() => onSaveOrCancel(item)}
             onUpdate={() => onSaveOrCancel(item)}
             onCancel={() => onSaveOrCancel()}
-          />
+          />,
         );
         break;
       case "journals":
@@ -600,7 +600,7 @@ export default function ChatBotUI() {
             chapterId={DEFAULT_CHAPTER_ID}
             onFinish={() => onSaveOrCancel(item)}
             onCancel={() => onSaveOrCancel()}
-          />
+          />,
         );
         break;
       case "events":
@@ -609,7 +609,7 @@ export default function ChatBotUI() {
             eventData={item}
             onClose={() => onSaveOrCancel()}
             onSave={() => onSaveOrCancel(item)}
-          />
+          />,
         );
         break;
       case "chapters":
@@ -619,7 +619,7 @@ export default function ChatBotUI() {
             onAdd={() => onSaveOrCancel(item)}
             onUpdate={() => onSaveOrCancel(item)}
             onCancel={() => onSaveOrCancel()}
-          />
+          />,
         );
         break;
     }

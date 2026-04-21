@@ -62,6 +62,7 @@ export function useAiChat() {
   );
 
   const { settings } = useSettings();
+  const seenItemsRef = useRef<Set<string>>(new Set());
 
   const sendMessage = useMutation({
     mutationFn: async (userPrompt: string) => {
@@ -79,6 +80,9 @@ export function useAiChat() {
         console.log("Prompt:", prompt);
         console.log("Model:", modelName);
         console.log("Retry Count:", retryCount);
+
+        // Reset seen items for a new user prompt
+        if (retryCount === 0) seenItemsRef.current.clear();
 
         try {
           const chat = await initializeSession(modelIdx);
@@ -319,233 +323,218 @@ export function useAiChat() {
 
                 // --- UPDATE TOOLS ---
                 case "update_chapter": {
-                  const { getChapterById, updateChapter } =
-                    await import("../services/chapters");
+                  const { getChapterById } = await import("../services/chapters");
                   const current = await getChapterById(uid, args.chapterId);
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        description: mergeText(
-                          current?.description,
-                          args.data.description,
-                        ),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null; // We'll handle this via UI command logic
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_chapter",
-                        args: { ...current, ...mergedData, id: args.chapterId },
-                      },
-                    } as any;
+                  
+                  // If AI hasn't seen current data yet, return it to AI for merging
+                  if (current && !seenItemsRef.current.has(args.chapterId)) {
+                    seenItemsRef.current.add(args.chapterId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateChapter(uid, args.chapterId, mergedData);
-                    toolResponse = {
-                      success: true,
-                      message: `Chapter updated successfully.`,
-                    };
+                    // AI has seen it or it doesn't exist, proceed to UI command
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_chapter", 
+                        args: { ...current, ...args.data, id: args.chapterId } 
+                      } 
+                    } as any;
                   }
                   break;
                 }
                 case "update_character": {
-                  const { getCharacterById, updateCharacter } =
-                    await import("../services/characters");
+                  const { getCharacterById } = await import("../services/characters");
                   const current = await getCharacterById(uid, args.characterId);
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        notes: mergeText(current?.notes, args.data.notes),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null;
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_character",
-                        args: {
-                          ...current,
-                          ...mergedData,
-                          id: args.characterId,
-                        },
-                      },
-                    } as any;
+                  
+                  if (current && !seenItemsRef.current.has(args.characterId)) {
+                    seenItemsRef.current.add(args.characterId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateCharacter(uid, args.characterId, mergedData);
-                    toolResponse = {
-                      success: true,
-                      message: `Character updated successfully.`,
-                    };
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_character", 
+                        args: { ...current, ...args.data, id: args.characterId } 
+                      } 
+                    } as any;
                   }
                   break;
                 }
                 case "update_event": {
-                  const { getEventById, updateEvent } =
-                    await import("../services/events");
+                  const { getEventById } = await import("../services/events");
                   const current = await getEventById(uid, args.eventId);
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        notes: mergeText(current?.notes, args.data.notes),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null;
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_event",
-                        args: { ...current, ...mergedData, id: args.eventId },
-                      },
-                    } as any;
+                  
+                  if (current && !seenItemsRef.current.has(args.eventId)) {
+                    seenItemsRef.current.add(args.eventId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateEvent(uid, args.eventId, mergedData);
-                    toolResponse = {
-                      success: true,
-                      message: `Event updated successfully.`,
-                    };
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_event", 
+                        args: { ...current, ...args.data, id: args.eventId } 
+                      } 
+                    } as any;
                   }
                   break;
                 }
                 case "update_goal": {
-                  const { getGoalById, updateGoal } =
-                    await import("../services/goals");
+                  const { getGoalById } = await import("../services/goals");
                   const current = await getGoalById(uid, args.goalId);
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        description: mergeText(
-                          current?.description,
-                          args.data.description,
-                        ),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null;
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_goal",
-                        args: { ...current, ...mergedData, id: args.goalId },
-                      },
-                    } as any;
+                  
+                  if (current && !seenItemsRef.current.has(args.goalId)) {
+                    seenItemsRef.current.add(args.goalId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateGoal(uid, args.goalId, mergedData);
-                    toolResponse = {
-                      success: true,
-                      message: `Goal updated successfully.`,
-                    };
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_goal", 
+                        args: { ...current, ...args.data, id: args.goalId } 
+                      } 
+                    } as any;
                   }
                   break;
                 }
                 case "update_itinerary": {
-                  const { getItineraryById, updateItinerary } =
-                    await import("../services/itineraries");
+                  const { getItineraryById } = await import("../services/itineraries");
                   const current = await getItineraryById(uid, args.itineraryId);
-                  // Itineraries have complex nesting, for now just merged description if it exists
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        description: mergeText(
-                          current?.description,
-                          args.data.description,
-                        ),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null;
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_itinerary",
-                        args: {
-                          ...current,
-                          ...mergedData,
-                          id: args.itineraryId,
-                        },
-                      },
-                    } as any;
+                  
+                  if (current && !seenItemsRef.current.has(args.itineraryId)) {
+                    seenItemsRef.current.add(args.itineraryId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateItinerary(uid, args.itineraryId, mergedData);
-                    toolResponse = {
-                      success: true,
-                      message: `Itinerary updated successfully.`,
-                    };
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_itinerary", 
+                        args: { ...current, ...args.data, id: args.itineraryId } 
+                      } 
+                    } as any;
                   }
                   break;
                 }
                 case "update_journal": {
-                  const { getJournalById, updateJournal } =
-                    await import("../services/journals");
-                  const current = await getJournalById(
-                    uid,
-                    args.chapterId,
-                    args.journalId,
-                  );
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        content: mergeText(current?.content, args.data.content),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null;
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_journal",
-                        args: {
-                          ...current,
-                          ...mergedData,
-                          id: args.journalId,
-                          chapterId: args.chapterId,
-                        },
-                      },
-                    } as any;
+                  const { getJournalById } = await import("../services/journals");
+                  const current = await getJournalById(uid, args.chapterId, args.journalId);
+                  
+                  if (current && !seenItemsRef.current.has(args.journalId)) {
+                    seenItemsRef.current.add(args.journalId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateJournal(
-                      uid,
-                      args.chapterId,
-                      args.journalId,
-                      mergedData,
-                    );
-                    toolResponse = {
-                      success: true,
-                      message: `Journal updated successfully.`,
-                    };
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_journal", 
+                        args: { ...current, ...args.data, id: args.journalId, chapterId: args.chapterId } 
+                      } 
+                    } as any;
                   }
                   break;
                 }
                 case "update_task": {
-                  const { getTaskById, updateTask } =
-                    await import("../services/tasks");
+                  const { getTaskById } = await import("../services/tasks");
                   const current = await getTaskById(uid, args.taskId);
-                  const mergedData = settings?.ai?.autoMergeNotes
-                    ? {
-                        ...args.data,
-                        description: mergeText(
-                          current?.description,
-                          args.data.description,
-                        ),
-                      }
-                    : args.data;
-
-                  if (settings?.ai?.confirmAiActions) {
-                    toolResponse = null;
-                    functionCallPart = {
-                      functionCall: {
-                        name: "update_task",
-                        args: { ...current, ...mergedData, id: args.taskId },
-                      },
-                    } as any;
+                  
+                  if (current && !seenItemsRef.current.has(args.taskId)) {
+                    seenItemsRef.current.add(args.taskId);
+                    toolResponse = { status: "EXISTING_DATA_RETURNED", currentData: current };
                   } else {
-                    await updateTask(uid, args.taskId, mergedData);
-                    toolResponse = {
-                      success: true,
-                      message: `Task updated successfully.`,
-                    };
+                    toolResponse = null;
+                    functionCallPart = { 
+                      functionCall: { 
+                        name: "update_task", 
+                        args: { ...current, ...args.data, id: args.taskId } 
+                      } 
+                    } as any;
+                  }
+                  break;
+                }
+
+                // --- CREATION TOOLS (with existence check) ---
+                case "create_character": {
+                  const { getCharacters } = await import("../services/characters");
+                  const all = await getCharacters(uid);
+                  const existing = all.find(c => c.name.toLowerCase() === args.name?.toLowerCase());
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "A character with this name already exists.", existingData: existing };
+                  } else {
+                    // Fall back to UI command for fresh creation
+                    break; 
+                  }
+                  break;
+                }
+                case "create_chapter": {
+                  const { getChapters } = await import("../services/chapters");
+                  const all = await getChapters(uid);
+                  const existing = all.find(c => c.title.toLowerCase() === args.title?.toLowerCase());
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "A chapter with this title already exists.", existingData: existing };
+                  } else {
+                    break;
+                  }
+                  break;
+                }
+                case "create_task": {
+                  const { getTasks } = await import("../services/tasks");
+                  const all = await getTasks(uid);
+                  const existing = all.find(t => t.title.toLowerCase() === args.title?.toLowerCase() && t.status !== 'completed');
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "A similar active task already exists.", existingData: existing };
+                  } else {
+                    break;
+                  }
+                  break;
+                }
+                case "create_goal": {
+                  const { getGoals } = await import("../services/goals");
+                  const all = await getGoals(uid);
+                  const existing = all.find(g => g.title.toLowerCase() === args.title?.toLowerCase());
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "A goal with this title already exists.", existingData: existing };
+                  } else {
+                    break;
+                  }
+                  break;
+                }
+                case "create_event": {
+                  const { getEvents } = await import("../services/events");
+                  const all = await getEvents(uid);
+                  const existing = all.find(e => e.title.toLowerCase() === args.title?.toLowerCase());
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "An event with this title already exists.", existingData: existing };
+                  } else {
+                    break;
+                  }
+                  break;
+                }
+                case "create_itinerary": {
+                  const { getItineraries } = await import("../services/itineraries");
+                  const all = await getItineraries(uid);
+                  const existing = all.find(i => i.title.toLowerCase() === args.title?.toLowerCase());
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "An itinerary with this title already exists.", existingData: existing };
+                  } else {
+                    break;
+                  }
+                  break;
+                }
+                case "create_journal": {
+                  const { getJournals } = await import("../services/journals");
+                  const chapterId = args.chapterId || "others";
+                  const all = await getJournals(uid, chapterId);
+                  const existing = all.find(j => j.title.toLowerCase() === args.title?.toLowerCase());
+                  if (existing) {
+                    seenItemsRef.current.add(existing.id);
+                    toolResponse = { status: "DUPLICATE_FOUND", message: "A journal entry with this title already exists in this chapter.", existingData: existing };
+                  } else {
+                    break;
                   }
                   break;
                 }
@@ -684,21 +673,4 @@ export function useAiChat() {
     addMessage,
     currentModel: AVAILABLE_MODELS[currentModelIndex],
   };
-}
-
-function mergeText(current?: string, update?: string): string {
-  if (!update) return current || "";
-  if (!current) return update;
-  if (current.includes(update)) return current;
-
-  // Smart merge: if the update is not already in current, append it.
-  const trimmedCurrent = current.trim();
-  const separator =
-    trimmedCurrent.endsWith(".") ||
-    trimmedCurrent.endsWith("!") ||
-    trimmedCurrent.endsWith("?")
-      ? " "
-      : ". ";
-
-  return `${trimmedCurrent}${separator}${update}`;
 }

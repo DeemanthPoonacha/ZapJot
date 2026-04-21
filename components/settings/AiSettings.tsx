@@ -25,7 +25,6 @@ import { Bot, Brain, CheckCircle2, Zap } from "lucide-react";
 
 const AiSettingsFormSchema = z.object({
   confirmAiActions: z.boolean().default(true),
-  autoMergeNotes: z.boolean().default(true),
   preferredModel: z.string().default("gemini-1.5-flash"),
 });
 
@@ -38,7 +37,6 @@ export function AiSettings() {
     resolver: zodResolver(AiSettingsFormSchema),
     defaultValues: {
       confirmAiActions: settings?.ai?.confirmAiActions ?? true,
-      autoMergeNotes: settings?.ai?.autoMergeNotes ?? true,
       preferredModel: settings?.ai?.preferredModel ?? "gemini-1.5-flash",
     },
   });
@@ -47,7 +45,6 @@ export function AiSettings() {
     if (settings?.ai) {
       form.reset({
         confirmAiActions: settings.ai.confirmAiActions ?? true,
-        autoMergeNotes: settings.ai.autoMergeNotes ?? true,
         preferredModel: settings.ai.preferredModel ?? "gemini-1.5-flash",
       });
     }
@@ -63,15 +60,6 @@ export function AiSettings() {
     }
   }
 
-  async function onToggleMerge(checked: boolean) {
-    try {
-      await updateAiSettings({ autoMergeNotes: checked });
-      toast.success(checked ? "Smart merging enabled" : "Smart merging disabled");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update AI settings");
-    }
-  }
 
   async function onModelChange(value: string) {
     try {
@@ -123,35 +111,6 @@ export function AiSettings() {
           )}
         />
 
-        {/* Auto Merge Notes */}
-        <FormField
-          control={form.control}
-          name="autoMergeNotes"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200 hover:bg-muted/50">
-              <div className="flex items-center gap-3">
-                <Brain className="h-5 w-5 text-primary" />
-                <div className="space-y-1">
-                  <FormLabel className="text-base font-semibold">
-                    Smart Merge Notes
-                  </FormLabel>
-                  <FormDescription className="text-sm">
-                    Intelligently combine new information with existing notes instead of overwriting.
-                  </FormDescription>
-                </div>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={(checked) => {
-                    field.onChange(checked);
-                    onToggleMerge(checked);
-                  }}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
 
         {/* AI Model Selection */}
         <FormField
