@@ -93,8 +93,11 @@ export function useAiChat() {
 
           while (functionCallPart?.functionCall) {
             const call = functionCallPart.functionCall;
+            const args = call.args as any;
             console.group(`🛠️ Tool Call: ${call.name}`);
-            console.log("Arguments:", call.args);
+            console.log("Arguments:", args);
+
+            // --- UTILITY TOOLS ---
 
             if (call.name === "get_current_time") {
               const timeInfo = {
@@ -106,7 +109,7 @@ export function useAiChat() {
               const toolStartTime = performance.now();
               result = await chat.sendMessage([
                 {
-                  functionResponse: { name: call.name, response: timeInfo },
+                  functionResponse: { name: call.name, response: { result: timeInfo } },
                 },
               ]);
               const toolEndTime = performance.now();
@@ -127,7 +130,7 @@ export function useAiChat() {
               const auth = getAuth(app);
               const user = auth.currentUser;
               const userInfo = user
-                ? { name: user.displayName, email: user.email }
+                ? { name: user.displayName, email: user.email, uid: user.uid }
                 : { note: "User is not logged in / anonymous" };
 
               console.log("Tool Output:", userInfo);
@@ -135,7 +138,7 @@ export function useAiChat() {
               const toolStartTime = performance.now();
               result = await chat.sendMessage([
                 {
-                  functionResponse: { name: call.name, response: userInfo },
+                  functionResponse: { name: call.name, response: { result: userInfo } },
                 },
               ]);
               const toolEndTime = performance.now();
@@ -149,6 +152,148 @@ export function useAiChat() {
                 );
               continue;
             }
+
+            // --- DATA FETCHING TOOLS ---
+
+            const { getAuth } = await import("firebase/auth");
+            const { app } = await import("../services/firebase/base");
+            const auth = getAuth(app);
+            const user = auth.currentUser;
+            const uid = user?.uid;
+
+            if (!uid) {
+              const errorResponse = { error: "User not authenticated. Please log in to access data." };
+              result = await chat.sendMessage([{ functionResponse: { name: call.name, response: { result: errorResponse } } }]);
+              functionCallPart = result.response.candidates?.[0]?.content?.parts?.find((p) => p.functionCall);
+              continue;
+            }
+
+            let toolResponse: any = null;
+
+            try {
+              switch (call.name) {
+                // Chapters
+                case "get_chapters": {
+                  const { getChapters } = await import("../services/chapters");
+                  toolResponse = await getChapters(uid);
+                  break;
+                }
+                case "get_chapter_by_id": {
+                  const { getChapterById } = await import("../services/chapters");
+                  toolResponse = await getChapterById(uid, args.chapterId as string);
+                  break;
+                }
+
+                // Characters
+                case "get_characters": {
+                  const { getCharacters } = await import("../services/characters");
+                  toolResponse = await getCharacters(uid);
+                  break;
+                }
+                case "get_character_by_id": {
+                  const { getCharacterById } = await import("../services/characters");
+                  toolResponse = await getCharacterById(uid, args.characterId as string);
+                  break;
+                }
+                case "search_characters": {
+                  const { searchByName } = await import("../services/characters");
+                  toolResponse = await searchByName(uid, args.searchString as string);
+                  break;
+                }
+
+                // Events
+                case "get_events": {
+                  const { getEvents } = await import("../services/events");
+                  toolResponse = await getEvents(uid, args.filter as any);
+                  break;
+                }
+                case "get_event_by_id": {
+                  const { getEventById } = await import("../services/events");
+                  toolResponse = await getEventById(uid, args.eventId as string);
+                  break;
+                }
+
+                // Goals
+                case "get_goals": {
+                  const { getGoals } = await import("../services/goals");
+                  toolResponse = await getGoals(uid);
+                  break;
+                }
+                case "get_goal_by_id": {
+                  const { getGoalById } = await import("../services/goals");
+                  toolResponse = await getGoalById(uid, args.goalId as string);
+                  break;
+                }
+
+                // Itineraries
+                case "get_itineraries": {
+                  const { getItineraries } = await import("../services/itineraries");
+                  toolResponse = await getItineraries(uid);
+                  break;
+                }
+                case "get_itinerary_by_id": {
+                  const { getItineraryById } = await import("../services/itineraries");
+                  toolResponse = await getItineraryById(uid, args.itineraryId as string);
+                  break;
+                }
+
+                // Journals
+                case "get_journals": {
+                  const { getJournals } = await import("../services/journals");
+                  toolResponse = await getJournals(uid, args.chapterId as string);
+                  break;
+                }
+                case "get_journal_by_id": {
+                  const { getJournalById } = await import("../services/journals");
+                  toolResponse = await getJournalById(uid, args.chapterId as string, args.journalId as string);
+                  break;
+                }
+
+                // Tasks
+                case "get_tasks": {
+                  const { getTasks } = await import("../services/tasks");
+                  toolResponse = await getTasks(uid, args.filter as any);
+                  break;
+                }
+                case "get_task_by_id": {
+                  const { getTaskById } = await import("../services/tasks");
+                  toolResponse = await getTaskById(uid, args.taskId as string);
+                  break;
+                }
+
+                default:
+                  // Handle other tools (Creation tools) via UI command logic below
+                  break;
+              }
+
+
+              if (toolResponse !== null) {
+                console.log(`Tool ${call.name} response:`, toolResponse);
+                const toolStartTime = performance.now();
+                result = await chat.sendMessage([
+                  {
+                    functionResponse: { name: call.name, response: { result: toolResponse } },
+                  },
+                ]);
+                const toolEndTime = performance.now();
+                console.log(`AI Response after ${call.name} in ${(toolEndTime - toolStartTime).toFixed(2)}ms`);
+                console.groupEnd();
+                
+                functionCallPart =
+                  result.response.candidates?.[0]?.content?.parts?.find(
+                    (p) => p.functionCall,
+                  );
+                continue;
+              }
+            } catch (err: any) {
+              console.error(`Error executing tool ${call.name}:`, err);
+              const errorResponse = { error: err.message || "Unknown error occurred while fetching data." };
+              result = await chat.sendMessage([{ functionResponse: { name: call.name, response: { result: errorResponse } } }]);
+              functionCallPart = result.response.candidates?.[0]?.content?.parts?.find((p) => p.functionCall);
+              console.groupEnd();
+              continue;
+            }
+
             
             // For other tools that we handle in the UI
             const actionType =
