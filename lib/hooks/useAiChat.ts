@@ -69,8 +69,10 @@ export function useAiChat() {
       ): Promise<string | null> => {
         const modelName = AVAILABLE_MODELS[modelIdx];
         const interactionId = Math.random().toString(36).substring(7);
-        
-        console.groupCollapsed(`🤖 AI Interaction [${interactionId}] - ${modelName}`);
+
+        console.groupCollapsed(
+          `🤖 AI Interaction [${interactionId}] - ${modelName}`,
+        );
         console.log("Prompt:", prompt);
         console.log("Model:", modelName);
         console.log("Retry Count:", retryCount);
@@ -105,18 +107,23 @@ export function useAiChat() {
                 date: new Date().toLocaleDateString(),
               };
               console.log("Tool Output:", timeInfo);
-              
+
               const toolStartTime = performance.now();
               result = await chat.sendMessage([
                 {
-                  functionResponse: { name: call.name, response: { result: timeInfo } },
+                  functionResponse: {
+                    name: call.name,
+                    response: { result: timeInfo },
+                  },
                 },
               ]);
               const toolEndTime = performance.now();
-              console.log(`AI Response after tool in ${(toolEndTime - toolStartTime).toFixed(2)}ms`);
+              console.log(
+                `AI Response after tool in ${(toolEndTime - toolStartTime).toFixed(2)}ms`,
+              );
 
               console.groupEnd();
-              
+
               functionCallPart =
                 result.response.candidates?.[0]?.content?.parts?.find(
                   (p) => p.functionCall,
@@ -138,11 +145,16 @@ export function useAiChat() {
               const toolStartTime = performance.now();
               result = await chat.sendMessage([
                 {
-                  functionResponse: { name: call.name, response: { result: userInfo } },
+                  functionResponse: {
+                    name: call.name,
+                    response: { result: userInfo },
+                  },
                 },
               ]);
               const toolEndTime = performance.now();
-              console.log(`AI Response after tool in ${(toolEndTime - toolStartTime).toFixed(2)}ms`);
+              console.log(
+                `AI Response after tool in ${(toolEndTime - toolStartTime).toFixed(2)}ms`,
+              );
 
               console.groupEnd();
 
@@ -162,9 +174,21 @@ export function useAiChat() {
             const uid = user?.uid;
 
             if (!uid) {
-              const errorResponse = { error: "User not authenticated. Please log in to access data." };
-              result = await chat.sendMessage([{ functionResponse: { name: call.name, response: { result: errorResponse } } }]);
-              functionCallPart = result.response.candidates?.[0]?.content?.parts?.find((p) => p.functionCall);
+              const errorResponse = {
+                error: "User not authenticated. Please log in to access data.",
+              };
+              result = await chat.sendMessage([
+                {
+                  functionResponse: {
+                    name: call.name,
+                    response: { result: errorResponse },
+                  },
+                },
+              ]);
+              functionCallPart =
+                result.response.candidates?.[0]?.content?.parts?.find(
+                  (p) => p.functionCall,
+                );
               continue;
             }
 
@@ -179,25 +203,38 @@ export function useAiChat() {
                   break;
                 }
                 case "get_chapter_by_id": {
-                  const { getChapterById } = await import("../services/chapters");
-                  toolResponse = await getChapterById(uid, args.chapterId as string);
+                  const { getChapterById } =
+                    await import("../services/chapters");
+                  toolResponse = await getChapterById(
+                    uid,
+                    args.chapterId as string,
+                  );
                   break;
                 }
 
                 // Characters
                 case "get_characters": {
-                  const { getCharacters } = await import("../services/characters");
+                  const { getCharacters } =
+                    await import("../services/characters");
                   toolResponse = await getCharacters(uid);
                   break;
                 }
                 case "get_character_by_id": {
-                  const { getCharacterById } = await import("../services/characters");
-                  toolResponse = await getCharacterById(uid, args.characterId as string);
+                  const { getCharacterById } =
+                    await import("../services/characters");
+                  toolResponse = await getCharacterById(
+                    uid,
+                    args.characterId as string,
+                  );
                   break;
                 }
                 case "search_characters": {
-                  const { searchByName } = await import("../services/characters");
-                  toolResponse = await searchByName(uid, args.searchString as string);
+                  const { searchByName } =
+                    await import("../services/characters");
+                  toolResponse = await searchByName(
+                    uid,
+                    args.searchString as string,
+                  );
                   break;
                 }
 
@@ -209,7 +246,10 @@ export function useAiChat() {
                 }
                 case "get_event_by_id": {
                   const { getEventById } = await import("../services/events");
-                  toolResponse = await getEventById(uid, args.eventId as string);
+                  toolResponse = await getEventById(
+                    uid,
+                    args.eventId as string,
+                  );
                   break;
                 }
 
@@ -227,25 +267,38 @@ export function useAiChat() {
 
                 // Itineraries
                 case "get_itineraries": {
-                  const { getItineraries } = await import("../services/itineraries");
+                  const { getItineraries } =
+                    await import("../services/itineraries");
                   toolResponse = await getItineraries(uid);
                   break;
                 }
                 case "get_itinerary_by_id": {
-                  const { getItineraryById } = await import("../services/itineraries");
-                  toolResponse = await getItineraryById(uid, args.itineraryId as string);
+                  const { getItineraryById } =
+                    await import("../services/itineraries");
+                  toolResponse = await getItineraryById(
+                    uid,
+                    args.itineraryId as string,
+                  );
                   break;
                 }
 
                 // Journals
                 case "get_journals": {
                   const { getJournals } = await import("../services/journals");
-                  toolResponse = await getJournals(uid, args.chapterId as string);
+                  toolResponse = await getJournals(
+                    uid,
+                    args.chapterId as string,
+                  );
                   break;
                 }
                 case "get_journal_by_id": {
-                  const { getJournalById } = await import("../services/journals");
-                  toolResponse = await getJournalById(uid, args.chapterId as string, args.journalId as string);
+                  const { getJournalById } =
+                    await import("../services/journals");
+                  toolResponse = await getJournalById(
+                    uid,
+                    args.chapterId as string,
+                    args.journalId as string,
+                  );
                   break;
                 }
 
@@ -261,24 +314,102 @@ export function useAiChat() {
                   break;
                 }
 
+                // --- UPDATE TOOLS ---
+                case "update_chapter": {
+                  const { updateChapter } =
+                    await import("../services/chapters");
+                  await updateChapter(uid, args.chapterId, args.data);
+                  toolResponse = {
+                    success: true,
+                    message: `Chapter ${args.chapterId} updated successfully.`,
+                  };
+                  break;
+                }
+                case "update_character": {
+                  const { updateCharacter } =
+                    await import("../services/characters");
+                  await updateCharacter(uid, args.characterId, args.data);
+                  toolResponse = {
+                    success: true,
+                    message: `Character ${args.characterId} updated successfully.`,
+                  };
+                  break;
+                }
+                case "update_event": {
+                  const { updateEvent } = await import("../services/events");
+                  await updateEvent(uid, args.eventId, args.data);
+                  toolResponse = {
+                    success: true,
+                    message: `Event ${args.eventId} updated successfully.`,
+                  };
+                  break;
+                }
+                case "update_goal": {
+                  const { updateGoal } = await import("../services/goals");
+                  await updateGoal(uid, args.goalId, args.data);
+                  toolResponse = {
+                    success: true,
+                    message: `Goal ${args.goalId} updated successfully.`,
+                  };
+                  break;
+                }
+                case "update_itinerary": {
+                  const { updateItinerary } =
+                    await import("../services/itineraries");
+                  await updateItinerary(uid, args.itineraryId, args.data);
+                  toolResponse = {
+                    success: true,
+                    message: `Itinerary ${args.itineraryId} updated successfully.`,
+                  };
+                  break;
+                }
+                case "update_journal": {
+                  const { updateJournal } =
+                    await import("../services/journals");
+                  await updateJournal(
+                    uid,
+                    args.chapterId,
+                    args.journalId,
+                    args.data,
+                  );
+                  toolResponse = {
+                    success: true,
+                    message: `Journal ${args.journalId} in chapter ${args.chapterId} updated successfully.`,
+                  };
+                  break;
+                }
+                case "update_task": {
+                  const { updateTask } = await import("../services/tasks");
+                  await updateTask(uid, args.taskId, args.data);
+                  toolResponse = {
+                    success: true,
+                    message: `Task ${args.taskId} updated successfully.`,
+                  };
+                  break;
+                }
+
                 default:
                   // Handle other tools (Creation tools) via UI command logic below
                   break;
               }
-
 
               if (toolResponse !== null) {
                 console.log(`Tool ${call.name} response:`, toolResponse);
                 const toolStartTime = performance.now();
                 result = await chat.sendMessage([
                   {
-                    functionResponse: { name: call.name, response: { result: toolResponse } },
+                    functionResponse: {
+                      name: call.name,
+                      response: { result: toolResponse },
+                    },
                   },
                 ]);
                 const toolEndTime = performance.now();
-                console.log(`AI Response after ${call.name} in ${(toolEndTime - toolStartTime).toFixed(2)}ms`);
+                console.log(
+                  `AI Response after ${call.name} in ${(toolEndTime - toolStartTime).toFixed(2)}ms`,
+                );
                 console.groupEnd();
-                
+
                 functionCallPart =
                   result.response.candidates?.[0]?.content?.parts?.find(
                     (p) => p.functionCall,
@@ -287,14 +418,26 @@ export function useAiChat() {
               }
             } catch (err: any) {
               console.error(`Error executing tool ${call.name}:`, err);
-              const errorResponse = { error: err.message || "Unknown error occurred while fetching data." };
-              result = await chat.sendMessage([{ functionResponse: { name: call.name, response: { result: errorResponse } } }]);
-              functionCallPart = result.response.candidates?.[0]?.content?.parts?.find((p) => p.functionCall);
+              const errorResponse = {
+                error:
+                  err.message || "Unknown error occurred while fetching data.",
+              };
+              result = await chat.sendMessage([
+                {
+                  functionResponse: {
+                    name: call.name,
+                    response: { result: errorResponse },
+                  },
+                },
+              ]);
+              functionCallPart =
+                result.response.candidates?.[0]?.content?.parts?.find(
+                  (p) => p.functionCall,
+                );
               console.groupEnd();
               continue;
             }
 
-            
             // For other tools that we handle in the UI
             const actionType =
               call.name.split("_").slice(1).join(" ") || "item";
@@ -306,27 +449,25 @@ export function useAiChat() {
               ...call.args,
               message: `Sure! I've prepared that ${friendlyName} for you. Please review and complete the details:`,
             };
-            
+
             console.log("Command Prepared for UI:", command);
             console.groupEnd(); // Close Tool Call group
             console.groupEnd(); // Close AI Interaction group
-            
+
             return JSON.stringify(command);
           }
 
           const finalResponse = result.response.text();
           console.log("Final AI Response:", finalResponse);
           console.groupEnd();
-          
+
           return finalResponse;
         } catch (error: any) {
           const isRateLimit =
             error.message?.includes("429") || error.status === 429;
 
           if (isRateLimit) {
-            console.warn(
-              `Rate limit hit on model: ${modelName}`,
-            );
+            console.warn(`Rate limit hit on model: ${modelName}`);
 
             // Try fallback if available
             if (modelIdx < AVAILABLE_MODELS.length - 1) {
@@ -350,7 +491,7 @@ export function useAiChat() {
               return executeWithRetry(prompt, nextIdx, retryCount + 1);
             }
           }
-          
+
           console.error("AI Error in executeWithRetry:", error);
           console.groupEnd();
           throw error;

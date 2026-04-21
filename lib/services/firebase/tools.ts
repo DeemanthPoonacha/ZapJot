@@ -2,13 +2,25 @@ import { z } from "zod";
 import { zodToGeminiSchema } from "./schema-utils";
 
 // Schema Imports for tool parameters
-import { createChapterSchema } from "../../../types/chapters";
-import { createJournalSchema } from "../../../types/journals";
-import { createEventSchema } from "../../../types/events";
-import { createTaskSchema } from "../../../types/tasks";
-import { createGoalSchema } from "../../../types/goals";
-import { createCharacterSchema } from "../../../types/characters";
-import { createItinerarySchema } from "../../../types/itineraries";
+import {
+  createChapterSchema,
+  updateChapterSchema,
+} from "../../../types/chapters";
+import {
+  createJournalSchema,
+  updateJournalSchema,
+} from "../../../types/journals";
+import { createEventSchema, updateEventSchema } from "../../../types/events";
+import { createTaskSchema, updateTaskSchema } from "../../../types/tasks";
+import { createGoalSchema, updateGoalSchema } from "../../../types/goals";
+import {
+  createCharacterSchema,
+  updateCharacterSchema,
+} from "../../../types/characters";
+import {
+  createItinerarySchema,
+  updateItinerarySchema,
+} from "../../../types/itineraries";
 import { brainDumpSchema } from "../../../types/brain-dump";
 
 export const toolDeclarations = [
@@ -38,13 +50,17 @@ export const toolDeclarations = [
   {
     name: "get_events",
     description: "Fetch events/reminders with optional filters.",
-    parameters: zodToGeminiSchema(z.object({
-      filter: z.object({
-        onlyUpcoming: z.boolean().optional(),
-        participants: z.array(z.string()).optional(),
-        limit: z.number().optional(),
-      }).optional()
-    }))
+    parameters: zodToGeminiSchema(
+      z.object({
+        filter: z
+          .object({
+            onlyUpcoming: z.boolean().optional(),
+            participants: z.array(z.string()).optional(),
+            limit: z.number().optional(),
+          })
+          .optional(),
+      }),
+    ),
   },
   {
     name: "get_goals",
@@ -59,59 +75,162 @@ export const toolDeclarations = [
   {
     name: "get_tasks",
     description: "Fetch to-do tasks with optional filters.",
-    parameters: zodToGeminiSchema(z.object({
-      filter: z.object({
-        status: z.enum(["pending", "in-progress", "completed"]).optional(),
-        limit: z.number().optional(),
-      }).optional()
-    }))
+    parameters: zodToGeminiSchema(
+      z.object({
+        filter: z
+          .object({
+            status: z.enum(["pending", "in-progress", "completed"]).optional(),
+            limit: z.number().optional(),
+          })
+          .optional(),
+      }),
+    ),
   },
 
   // --- DATA FETCHING TOOLS (BY ID) ---
   {
     name: "get_chapter_by_id",
     description: "Fetch a specific chapter by its ID.",
-    parameters: zodToGeminiSchema(z.object({ chapterId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ chapterId: z.string() })),
   },
   {
     name: "get_character_by_id",
     description: "Fetch a specific character profile by its ID.",
-    parameters: zodToGeminiSchema(z.object({ characterId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ characterId: z.string() })),
   },
   {
     name: "get_event_by_id",
     description: "Fetch a specific event by its ID.",
-    parameters: zodToGeminiSchema(z.object({ eventId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ eventId: z.string() })),
   },
   {
     name: "get_goal_by_id",
     description: "Fetch a specific goal by its ID.",
-    parameters: zodToGeminiSchema(z.object({ goalId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ goalId: z.string() })),
   },
   {
     name: "get_itinerary_by_id",
     description: "Fetch a specific itinerary by its ID.",
-    parameters: zodToGeminiSchema(z.object({ itineraryId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ itineraryId: z.string() })),
   },
   {
     name: "get_task_by_id",
     description: "Fetch a specific task by its ID.",
-    parameters: zodToGeminiSchema(z.object({ taskId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ taskId: z.string() })),
   },
   {
     name: "get_journals",
     description: "Fetch all journals within a specific chapter.",
-    parameters: zodToGeminiSchema(z.object({ chapterId: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ chapterId: z.string() })),
   },
   {
     name: "get_journal_by_id",
-    description: "Fetch a specific journal entry by its ID. Requires both chapterId and journalId.",
-    parameters: zodToGeminiSchema(z.object({ chapterId: z.string(), journalId: z.string() }))
+    description:
+      "Fetch a specific journal entry by its ID. Requires both chapterId and journalId.",
+    parameters: zodToGeminiSchema(
+      z.object({ chapterId: z.string(), journalId: z.string() }),
+    ),
   },
   {
     name: "search_characters",
     description: "Search for characters by name.",
-    parameters: zodToGeminiSchema(z.object({ searchString: z.string() }))
+    parameters: zodToGeminiSchema(z.object({ searchString: z.string() })),
+  },
+
+  // --- UPDATE TOOLS ---
+  {
+    name: "update_chapter",
+    description: "Update an existing chapter.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        chapterId: z.string(),
+        data: updateChapterSchema.omit({
+          userId: true,
+          createdAt: true,
+          updatedAt: true,
+        }),
+      }),
+    ),
+  },
+  {
+    name: "update_journal",
+    description: "Update an existing journal entry.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        chapterId: z.string(),
+        journalId: z.string(),
+        data: updateJournalSchema.omit({
+          iv: true,
+          chapterId: true,
+          createdAt: true,
+          updatedAt: true,
+        }),
+      }),
+    ),
+  },
+  {
+    name: "update_event",
+    description: "Update an existing event or reminder.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        eventId: z.string(),
+        data: updateEventSchema.omit({
+          nextOccurrence: true,
+          nextNotificationAt: true,
+          createdAt: true,
+          updatedAt: true,
+        }),
+      }),
+    ),
+  },
+  {
+    name: "update_task",
+    description: "Update an existing to-do task.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        taskId: z.string(),
+        data: updateTaskSchema.omit({ createdAt: true, updatedAt: true }),
+      }),
+    ),
+  },
+  {
+    name: "update_goal",
+    description: "Update an existing goal.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        goalId: z.string(),
+        data: updateGoalSchema.omit({ createdAt: true, updatedAt: true }),
+      }),
+    ),
+  },
+  {
+    name: "update_character",
+    description: "Update an existing character or person profile.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        characterId: z.string(),
+        data: updateCharacterSchema.omit({
+          userId: true,
+          lowercaseName: true,
+          createdAt: true,
+          updatedAt: true,
+        }),
+      }),
+    ),
+  },
+  {
+    name: "update_itinerary",
+    description: "Update an existing multi-day itinerary.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        itineraryId: z.string(),
+        data: updateItinerarySchema.omit({
+          actualCost: true,
+          createdAt: true,
+          updatedAt: true,
+        }),
+      }),
+    ),
   },
 
   // --- CREATION TOOLS ---
