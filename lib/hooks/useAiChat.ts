@@ -719,11 +719,14 @@ export function useAiChat() {
           return finalResponse;
         } catch (error: any) {
           setAiStatus(null);
-          const isRateLimit =
-            error.message?.includes("429") || error.status === 429;
+          const errorMessage = error.message || "";
+          const errorStatus = error.status || 0;
+          
+          const isRateLimit = errorMessage.includes("429") || errorStatus === 429;
+          const isHighDemand = errorMessage.includes("high demand") || errorStatus === 500 || errorStatus === 503;
 
-          if (isRateLimit) {
-            console.warn(`Rate limit hit on model: ${modelName}`);
+          if (isRateLimit || isHighDemand) {
+            console.warn(`${isRateLimit ? "Rate limit" : "High demand"} hit on model: ${modelName}`);
 
             // Try fallback if available
             if (modelIdx < AVAILABLE_MODELS.length - 1) {
