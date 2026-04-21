@@ -141,7 +141,7 @@ export default function ChatBotUI() {
   );
 
   const [actionModal, setActionModal] = useState<React.ReactElement | null>(
-    defaultCreate
+    defaultCreate,
   );
 
   const resetModal = () => {
@@ -192,20 +192,37 @@ export default function ChatBotUI() {
   };
 
   function tryParseCommand(rawText: string) {
-    if (!rawText || (!rawText.trim().startsWith('{') && !rawText.includes('```json'))) {
-        return null;
+    if (!rawText) return null;
+
+    // Look for JSON anywhere in the text
+    const startIdx = rawText.indexOf("{");
+    const endIdx = rawText.lastIndexOf("}");
+
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      const jsonCandidate = rawText.substring(startIdx, endIdx + 1);
+      try {
+        const result = JSON.parse(jsonCandidate);
+        // Basic check that it's a command
+        if (result && result.action) return result;
+      } catch {
+        // Not valid JSON, continue to fallback
+      }
     }
-    const json = rawText
-      .replace(/^```json/, "") // remove opening ```json
-      .replace(/^```/, "") // in case it uses ``` instead
-      .replace(/```$/, "") // remove closing ```
+
+    // Fallback cleaning for markdown blocks
+    const fallbackCleaned = rawText
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
       .trim();
-    try {
-      const result = JSON.parse(json);
-      return result;
-    } catch {
-      // not valid JSON
+
+    if (fallbackCleaned.startsWith("{") && fallbackCleaned.endsWith("}")) {
+      try {
+        return JSON.parse(fallbackCleaned);
+      } catch {
+        return null;
+      }
     }
+
     return null;
   }
 
@@ -228,7 +245,7 @@ export default function ChatBotUI() {
             }}
             onUpdate={() => resetModal()}
             onCancel={() => resetModal()}
-          />
+          />,
         );
         break;
 
@@ -250,35 +267,75 @@ export default function ChatBotUI() {
               resetModal();
             }}
             onCancel={() => resetModal()}
-          />
+          />,
         );
         break;
 
       case "create_event":
         console.log("Creating event:", command);
         setActionModal(
-          <EventForm eventData={command} onClose={() => resetModal()} />
+          <EventForm
+            eventData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Event created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />,
         );
         break;
 
       case "create_task":
         console.log("Creating task:", command);
         setActionModal(
-          <TaskForm taskData={command} onClose={() => resetModal()} />
+          <TaskForm
+            taskData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Task created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />,
         );
         break;
 
       case "create_goal":
         console.log("Creating goal:", command);
         setActionModal(
-          <GoalForm goalData={command} onClose={() => resetModal()} />
+          <GoalForm
+            goalData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Goal created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />,
         );
         break;
 
       case "create_itinerary":
         console.log("Creating itinerary:", command);
         setActionModal(
-          <ItineraryForm itineraryData={command} onClose={() => resetModal()} />
+          <ItineraryForm
+            itineraryData={command}
+            onClose={() => resetModal()}
+            onSave={() => {
+              addMessage({
+                role: ChatRole.AI,
+                text: `Itinerary created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+              });
+              resetModal();
+            }}
+          />,
         );
         break;
 
@@ -298,7 +355,7 @@ export default function ChatBotUI() {
             }}
             onUpdate={() => resetModal()}
             onCancel={() => resetModal()}
-          />
+          />,
         );
         break;
 
@@ -361,7 +418,7 @@ export default function ChatBotUI() {
               "pointer-events-auto bg-background flex flex-col z-50 p-4 space-y-4 w-full min-h-[500px]",
               isMaximized
                 ? "max-w-[98vw] fixed md:absolute top-0 left-0 h-full pb-24 z-60"
-                : "absolute max-h-[80vh] bottom-38 lg:bottom-28 right-8 lg:right-12 xl:right-20 2xl:right-8 max-w-sm bg-background rounded-xl shadow-xl border"
+                : "absolute max-h-[80vh] bottom-38 lg:bottom-28 right-8 lg:right-12 xl:right-20 2xl:right-8 max-w-sm bg-background rounded-xl shadow-xl border",
             )}
           >
             <div className="flex justify-between items-center border-b pb-2">
@@ -478,7 +535,7 @@ export default function ChatBotUI() {
                   onClick={scrollToBottom}
                   className={cn(
                     "absolute right-6 z-50 rounded-full p-2 shadow-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground",
-                    isMaximized ? "bottom-48" : "bottom-28"
+                    isMaximized ? "bottom-48" : "bottom-28",
                   )}
                 >
                   <ArrowDown size={20} />

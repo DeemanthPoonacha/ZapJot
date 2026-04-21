@@ -14,7 +14,7 @@ export function useAiChat() {
 
   const [currentModelIndex, setCurrentModelIndex] = useGlobalState(
     "ai-current-model-index",
-    0
+    0,
   );
 
   const clearMessages = () => {
@@ -31,96 +31,133 @@ export function useAiChat() {
   const chatSessionRef = useRef<ChatSession | null>(null);
   const [isSessionActive, setIsSessionActive] = useGlobalState(
     "ai-chat-session-active",
-    false
+    false,
   );
 
-  const initializeSession = useCallback(async (modelIdx = currentModelIndex) => {
-    if (!chatSessionRef.current) {
-      const model = getModel(AVAILABLE_MODELS[modelIdx]);
-      if (!model) {
-        console.error("AI model not initialized");
-        return null;
+  const initializeSession = useCallback(
+    async (modelIdx = currentModelIndex) => {
+      if (!chatSessionRef.current) {
+        const model = getModel(AVAILABLE_MODELS[modelIdx]);
+        if (!model) {
+          console.error("AI model not initialized");
+          return null;
+        }
+
+        // Convert UI messages to history format if recovering a session
+        const history = messages.slice(1).map((m) => ({
+          role: m.role === ChatRole.USER ? "user" : "model",
+          parts: [{ text: m.text }],
+        }));
+
+        chatSessionRef.current = model.startChat({
+          history: history as any,
+        });
+
+        setIsSessionActive(true);
       }
-      
-      // Convert UI messages to history format if recovering a session
-      const history = messages.slice(1).map(m => ({
-          role: m.role === ChatRole.USER ? 'user' : 'model',
-          parts: [{ text: m.text }]
-      }));
-
-      chatSessionRef.current = model.startChat({
-        history: history as any,
-      });
-
-      setIsSessionActive(true);
-    }
-    return chatSessionRef.current;
-  }, [currentModelIndex, messages]);
+      return chatSessionRef.current;
+    },
+    [currentModelIndex, messages],
+  );
 
   const sendMessage = useMutation({
     mutationFn: async (userPrompt: string) => {
-      const executeWithRetry = async (prompt: string, modelIdx: number, retryCount = 0): Promise<string | null> => {
+      const executeWithRetry = async (
+        prompt: string,
+        modelIdx: number,
+        retryCount = 0,
+      ): Promise<string | null> => {
         try {
           const chat = await initializeSession(modelIdx);
           if (!chat) throw new Error("Chat session not initialized");
 
           let result = await chat.sendMessage(prompt);
-          
-          let functionCallPart = result.response.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
-          
+
+          let functionCallPart =
+            result.response.candidates?.[0]?.content?.parts?.find(
+              (p) => p.functionCall,
+            );
+
           while (functionCallPart?.functionCall) {
             const call = functionCallPart.functionCall;
-            
+
             if (call.name === "get_current_time") {
-               const timeInfo = {
-                   time: new Date().toLocaleTimeString(),
-                   date: new Date().toLocaleDateString(),
-               };
-               result = await chat.sendMessage([{
-                   functionResponse: { name: call.name, response: timeInfo }
-               }]);
-               functionCallPart = result.response.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
-               continue;
+              const timeInfo = {
+                time: new Date().toLocaleTimeString(),
+                date: new Date().toLocaleDateString(),
+              };
+              result = await chat.sendMessage([
+                {
+                  functionResponse: { name: call.name, response: timeInfo },
+                },
+              ]);
+              functionCallPart =
+                result.response.candidates?.[0]?.content?.parts?.find(
+                  (p) => p.functionCall,
+                );
+              continue;
             }
-            
+
             if (call.name === "get_user_info") {
-               const { getAuth } = await import("firebase/auth");
-               const { app } = await import("../services/firebase/base");
-               const auth = getAuth(app);
-               const user = auth.currentUser;
-               const userInfo = user ? { name: user.displayName, email: user.email } : { note: "User is not logged in / anonymous" };
+              const { getAuth } = await import("firebase/auth");
+              const { app } = await import("../services/firebase/base");
+              const auth = getAuth(app);
+              const user = auth.currentUser;
+              const userInfo = user
+                ? { name: user.displayName, email: user.email }
+                : { note: "User is not logged in / anonymous" };
 
-               result = await chat.sendMessage([{
-                   functionResponse: { name: call.name, response: userInfo }
-               }]);
-               functionCallPart = result.response.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
-               continue;
+              result = await chat.sendMessage([
+                {
+                  functionResponse: { name: call.name, response: userInfo },
+                },
+              ]);
+              functionCallPart =
+                result.response.candidates?.[0]?.content?.parts?.find(
+                  (p) => p.functionCall,
+                );
+              continue;
             }
+            const actionType =
+              call.name.split("_").slice(1).join(" ") || "item";
+            const friendlyName =
+              actionType.charAt(0).toUpperCase() + actionType.slice(1);
 
-            return JSON.stringify({ action: call.name, ...call.args });
+            return JSON.stringify({
+              action: call.name,
+              ...call.args,
+              message: `Sure! I've prepared that ${friendlyName} for you. Please review and complete the details:`,
+            });
           }
 
           return result.response.text();
         } catch (error: any) {
-          const isRateLimit = error.message?.includes("429") || error.status === 429;
-          
+          const isRateLimit =
+            error.message?.includes("429") || error.status === 429;
+
           if (isRateLimit) {
-            console.warn(`Rate limit hit on model: ${AVAILABLE_MODELS[modelIdx]}`);
-            
+            console.warn(
+              `Rate limit hit on model: ${AVAILABLE_MODELS[modelIdx]}`,
+            );
+
             // Try fallback if available
             if (modelIdx < AVAILABLE_MODELS.length - 1) {
               const nextIdx = modelIdx + 1;
-              console.log(`Falling back to next model: ${AVAILABLE_MODELS[nextIdx]}`);
-              
+              console.log(
+                `Falling back to next model: ${AVAILABLE_MODELS[nextIdx]}`,
+              );
+
               // Increment global model index state
               setCurrentModelIndex(nextIdx);
-              
+
               // Force session re-initialization on next call
               chatSessionRef.current = null;
-              
+
               // Small wait before retry
-              await new Promise(res => setTimeout(res, 1000 * Math.pow(2, retryCount)));
-              
+              await new Promise((res) =>
+                setTimeout(res, 1000 * Math.pow(2, retryCount)),
+              );
+
               return executeWithRetry(prompt, nextIdx, retryCount + 1);
             }
           }
@@ -150,6 +187,6 @@ export function useAiChat() {
     updateMessages,
     clearMessages,
     addMessage,
-    currentModel: AVAILABLE_MODELS[currentModelIndex]
+    currentModel: AVAILABLE_MODELS[currentModelIndex],
   };
 }

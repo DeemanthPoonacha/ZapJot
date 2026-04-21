@@ -31,9 +31,11 @@ import { Trash2, Plus, Save, Ban } from "lucide-react";
 const TaskForm = ({
   taskData,
   onClose,
+  onSave,
 }: {
   taskData?: Task;
   onClose?: () => void;
+  onSave?: () => void;
 }) => {
   const { addMutation, updateMutation, deleteMutation } = useTaskMutations();
   const isEditing = !!taskData?.id;
@@ -88,6 +90,7 @@ const TaskForm = ({
         toast.success("Task created successfully");
       }
       form.reset();
+      onSave?.();
       onClose?.();
     } catch (error) {
       console.error("Error saving task", error);

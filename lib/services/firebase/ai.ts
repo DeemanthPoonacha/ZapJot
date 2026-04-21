@@ -33,7 +33,7 @@ const tools = [
       },
       {
         name: "create_chapter",
-        description: "Create a new chapter for a journal or trip.",
+        description: "Create a new chapter for organising journals.",
         parameters: zodToGeminiSchema(
           createChapterSchema.omit({
             userId: true,
