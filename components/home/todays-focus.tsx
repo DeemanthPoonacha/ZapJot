@@ -1,10 +1,25 @@
 import { Card } from "@/components/ui/card";
 
+const FALLBACK_QUOTE = {
+  q: "The secret of getting ahead is getting started.",
+  a: "Mark Twain",
+};
+
+async function getTodaysQuote() {
+  try {
+    const res = await fetch("https://zenquotes.io/api/today", {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) throw new Error("API non-OK");
+    const [data] = (await res.json()) as { q: string; a: string; h: string }[];
+    return data ?? FALLBACK_QUOTE;
+  } catch {
+    return FALLBACK_QUOTE;
+  }
+}
+
 export async function TodaysFocus() {
-  // Simulate fetching data
-  const [data] = (await fetch("https://zenquotes.io/api/today").then((res) =>
-    res.json()
-  )) as { q: string; a: string; h: string }[];
+  const data = await getTodaysQuote();
 
   return (
     <Card className="p-6 bg-gradient-to-br from-primary/20 to-primary/10 items-center">
