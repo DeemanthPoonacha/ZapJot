@@ -8,7 +8,7 @@ initAppCheck();
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
 export const model = getGenerativeModel(ai, {
-  model: "gemini-2.0-flash",
+  model: "gemini-3.1-flash-lite",
   systemInstruction: AI_SYSTEM_PROMPT,
   generationConfig: {
     responseMimeType: "application/json",
