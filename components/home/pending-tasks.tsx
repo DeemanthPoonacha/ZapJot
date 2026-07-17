@@ -54,8 +54,8 @@ export function PendingTasks() {
                   ? "High Priority"
                   : task.dueDate
                     ? `Due: ${task.dueDate}`
-                    : task.subtasks.length > 0
-                      ? `Subtasks: ${task.subtasks.length}`
+                    : task.subtasks?.length > 0
+                      ? `Subtasks: ${task.subtasks?.length}`
                       : task.createdAt
                         ? `Created: ${formatDate(task.createdAt)}`
                         : ""}

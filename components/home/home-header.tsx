@@ -65,19 +65,6 @@ export function HomeHeader() {
             Here&apos;s what&apos;s happening at a glance.
           </p>
         </div>
-
-        {/* Torn calendar-page date stamp — signature element */}
-        <div className="hidden sm:flex flex-col items-center justify-center rounded-lg text-card-foreground shadow-md px-4 py-2 rotate-2 shrink-0 border border-border/60">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-            {today.format("ddd")}
-          </span>
-          <span className="text-3xl font-serif leading-none">
-            {today.format("D")}
-          </span>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-            {today.format("MMM")}
-          </span>
-        </div>
       </div>
 
       <div className="flex flex-wrap gap-2 pt-1">

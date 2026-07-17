@@ -55,9 +55,9 @@ const EventList = ({
   };
 
   const newButton = !!addNewButton && (
-    <div className="flex justify-between items-center gap-2">
-      <span className="text-lg font-semibold">
-        Events/Reminders - {events?.length}
+    <div className="flex justify-between items-center gap-2 pb-3 mb-4 border-b border-border/60">
+      <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        Events/Reminders — {events?.length}
       </span>
       <Button type="button" onClick={() => toggleDialog("new")}>
         {addNewButton}
@@ -80,9 +80,13 @@ const EventList = ({
       <div className="space-y-4 mb-8">
         {showDefault && (
           <div className="flex justify-between items-center mb-8 border-b pb-4">
-            <span className="text-lg font-semibold">Upcoming Events</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Upcoming Events
+            </span>
             <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={handleRefresh}
               disabled={isRefreshPending}
             >
@@ -169,15 +173,17 @@ function GroupedEvents({
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([date, events]) => (
           <div key={date} className="mb-8 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl">
+            <div className="flex justify-between items-baseline pb-2 border-b border-dashed border-border/60">
+              <h2 className="text-base font-semibold">
                 {dayjs(date).format("ddd, MMMM D, YYYY")}
               </h2>
-              {`${events.length} ${getPluralWord("Event", events.length)}`}
+              <span className="text-sm text-muted-foreground">
+                {events.length} {getPluralWord("Event", events.length)}
+              </span>
             </div>
             {!events.length ? (
-              <p className="text-muted-foreground mb-6 text-center py-4">
-                No Events Found
+              <p className="text-muted-foreground mb-6 text-center py-4 text-sm">
+                No events found
               </p>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">

@@ -22,21 +22,30 @@ export default function PlannerPage() {
       onValueChange={onTabChange}
       className="w-full"
     >
-      <TabsList className="grid w-full grid-cols-4 bg-muted/50 md:h-16 mb-2">
-        <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="tasks">
-          <ListCheck /> Tasks
-        </TabsTrigger>
-        <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="events">
-          <CalendarCheck /> Events
-        </TabsTrigger>
-        <TabsTrigger className="md:flex-col md:h-12 md:gap-0" value="goals">
-          <Goal /> Goals
+      <TabsList className="grid w-full grid-cols-4 bg-muted/50 md:h-16 mb-2 gap-1 p-1">
+        <TabsTrigger
+          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          value="tasks"
+        >
+          <ListCheck className="h-4 w-4" /> Tasks
         </TabsTrigger>
         <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-0"
+          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          value="events"
+        >
+          <CalendarCheck className="h-4 w-4" /> Events
+        </TabsTrigger>
+        <TabsTrigger
+          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          value="goals"
+        >
+          <Goal className="h-4 w-4" /> Goals
+        </TabsTrigger>
+        <TabsTrigger
+          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
           value="itineraries"
         >
-          <LandPlot />
+          <LandPlot className="h-4 w-4" />
           Itineraries
         </TabsTrigger>
       </TabsList>
