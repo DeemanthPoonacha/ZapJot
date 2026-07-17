@@ -1,7 +1,7 @@
 "use client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ListChecks, Circle } from "lucide-react";
 import { Link } from "@/components/layout/link/CustomLink";
 import { useTasks } from "@/lib/hooks/useTasks";
 import { Skeleton } from "../ui/skeleton";
@@ -34,24 +34,31 @@ export function PendingTasks() {
         </Button>
       </div>
       {!tasks?.length ? (
-        <p className="text-sm text-muted-foreground text center">
-          No tasks found
-        </p>
+        <div className="flex flex-col items-center justify-center py-6 text-center gap-2">
+          <ListChecks className="h-8 w-8 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">
+            Nothing pending — you&apos;re all caught up.
+          </p>
+        </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-1">
           {tasks.map((task) => (
-            <div key={task.id} className="flex justify-between items-center">
-              <span className="line-clamp-1 max-w-2/3">{task.title}</span>
-              <span className="text-sm text-muted-foreground text-right">
+            <div
+              key={task.id}
+              className="flex items-center gap-3 py-2 border-b border-border/60 last:border-0"
+            >
+              <Circle className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
+              <span className="line-clamp-1 flex-1 text-sm">{task.title}</span>
+              <span className="text-xs text-muted-foreground text-right shrink-0">
                 {task.highPriority
                   ? "High Priority"
                   : task.dueDate
-                  ? `Due: ${task.dueDate}`
-                  : task.subtasks.length > 0
-                  ? `Subtasks: ${task.subtasks.length}`
-                  : task.createdAt
-                  ? `Created: ${formatDate(task.createdAt)}`
-                  : ""}
+                    ? `Due: ${task.dueDate}`
+                    : task.subtasks.length > 0
+                      ? `Subtasks: ${task.subtasks.length}`
+                      : task.createdAt
+                        ? `Created: ${formatDate(task.createdAt)}`
+                        : ""}
               </span>
             </div>
           ))}

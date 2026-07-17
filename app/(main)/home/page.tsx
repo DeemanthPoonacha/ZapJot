@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/layout/page-header";
 import { HomeHeader } from "@/components/home/home-header";
+import { DateCard } from "@/components/home/date-card";
 import { QuickActions } from "@/components/home/quick-actions";
 import { UpcomingEvents } from "@/components/home/upcoming-events";
 // import { RecentActivity } from "@/components/home/recent-activity";
@@ -25,6 +26,7 @@ export default function HomePage() {
         </div>
         <JotDown />
         {/* <MoodTracker /> */}
+        <DateCard />
         <TodaysFocus />
       </div>
     </PageLayout>

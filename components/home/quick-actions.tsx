@@ -6,15 +6,21 @@ import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
 export function QuickActions() {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Link href={`/chapters/${DEFAULT_CHAPTER_ID}/journals/new?isCamOpen=true`}>
-        <Card className="p-6 text-center hover:bg-accent transition-colors">
-          <Camera className="h-8 w-8 mx-auto mb-2" />
+      <Link
+        href={`/chapters/${DEFAULT_CHAPTER_ID}/journals/new?isCamOpen=true`}
+      >
+        <Card className="group p-6 text-center items-center gap-2 hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+          <span className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary p-3 group-hover:bg-primary/15 transition-colors">
+            <Camera className="h-6 w-6" />
+          </span>
           <span className="text-sm font-medium">Capture</span>
         </Card>
       </Link>
       <Link href={`/chapters/${DEFAULT_CHAPTER_ID}/journals/new`}>
-        <Card className="p-6 text-center hover:bg-accent transition-colors">
-          <FileEdit className="h-8 w-8 mx-auto mb-2" />
+        <Card className="group p-6 text-center items-center gap-2 hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+          <span className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary p-3 group-hover:bg-primary/15 transition-colors">
+            <FileEdit className="h-6 w-6" />
+          </span>
           <span className="text-sm font-medium">New Journal</span>
         </Card>
       </Link>
