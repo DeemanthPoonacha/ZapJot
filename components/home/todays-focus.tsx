@@ -30,10 +30,10 @@ export async function TodaysFocus() {
         &ldquo;
       </span>
       <h1 className="relative text-xl sm:text-2xl font-serif italic font-medium max-w-[580px] leading-snug">
-        {quote.q}
+        {data.q}
       </h1>
       <p className="text-xs uppercase tracking-widest text-muted-foreground pt-3">
-        — {quote.a}
+        — {data.a}
       </p>
     </Card>
   );
