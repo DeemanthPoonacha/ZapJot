@@ -12,6 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAiChat } from "@/lib/hooks/useAiChat";
+import { useAuth } from "@/lib/context/AuthProvider";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import EventForm from "./planner/events/EventForm";
 import TaskForm from "./planner/tasks/TaskForm";
 import CharacterForm from "./characters/CharacterForm";
@@ -29,14 +33,14 @@ import BrainDumpConfirmation from "./ai/BrainDumpConfirmation";
 import { BrainDump } from "@/types/brain-dump";
 
 export default function ChatBotUI() {
-  const isMobile = useMediaQuery({ maxWidth: 768 }); // Adjust breakpoint as needed
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const { user } = useAuth();
 
   const [isMaximized, setIsMaximized] = useState(isMobile);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [brainDumpData, setBrainDumpData] = useState<BrainDump | null>(null);
 
-  // Updated to use the new chat hook
   const {
     sendMessage: askAI,
     resetSession,
@@ -53,7 +57,7 @@ export default function ChatBotUI() {
     addMessage(userMessage);
     setInput("");
 
-    askAI.mutate(input, {
+    askAI.mutate(userMessage.text, {
       onSuccess: (responseText) => {
         if (!responseText) {
           addMessage({
@@ -66,11 +70,6 @@ export default function ChatBotUI() {
         if (command?.action) {
           executeAICommand(command);
         }
-
-        addMessage({
-          role: ChatRole.AI,
-          text: command?.message || responseText,
-        });
       },
       onError: (error) => {
         console.error("AI Error:", error);
@@ -82,75 +81,87 @@ export default function ChatBotUI() {
     });
   };
 
-  const defaultActions = [
-    {
-      action: "create_journal",
-      item: "Journal",
-      message: "Create a new journal entry",
-    },
-    {
-      action: "create_chapter",
-      item: "Chapter",
-      message: "Create a new chapter",
-    },
-    {
-      action: "create_character",
-      item: "Character",
-      message: "Create a new character",
-    },
-    {
-      action: "create_task",
-      item: "Task",
-      message: "Create a new task",
-    },
-    {
-      action: "create_event",
-      item: "Event",
-      message: "Create a new event",
-    },
-    {
-      action: "create_goal",
-      item: "Goal",
-      message: "Create a new goal",
-    },
-    {
-      action: "create_itinerary",
-      item: "Itinerary",
-      message: "Create a new itinerary",
-    },
-  ];
+  const getSuggestedPrompts = () => {
+    const hour = new Date().getHours();
+    const prompts = [];
 
-  const defaultCreate = (
-    <>
-      <div className="flex gap-2 flex-wrap">
-        {defaultActions.map((action, index) => (
+    if (hour >= 5 && hour < 12) {
+      prompts.push(
+        {
+          text: "☀️ Morning briefing?",
+          query: "How is my morning looking? Give me a daily briefing.",
+        },
+        { text: "🎯 Today's focus?", query: "What should I focus on today?" },
+      );
+    } else if (hour >= 12 && hour < 17) {
+      prompts.push(
+        {
+          text: "🌤️ What's next?",
+          query: "What events and tasks do I have left for today?",
+        },
+        {
+          text: "📊 Check goals",
+          query: "Show me my active goals and how I'm progressing.",
+        },
+      );
+    } else {
+      prompts.push(
+        {
+          text: "🌙 Summarize my day",
+          query:
+            "Help me summarize what I did today and write a journal entry.",
+        },
+        { text: "📝 Done today?", query: "What did I get done today?" },
+      );
+    }
+
+    prompts.push(
+      {
+        text: "💭 Quick Brain Dump",
+        query: "I want to do a brain dump of some thoughts.",
+      },
+      {
+        text: "🛫 Travel itineraries?",
+        query: "Show me my upcoming travel itineraries.",
+      },
+    );
+
+    return prompts;
+  };
+
+  const renderSuggestions = () => (
+    <div className="flex flex-col gap-2 w-full">
+      <p className="text-xs text-muted-foreground font-semibold px-1">
+        Suggested prompts:
+      </p>
+      <div className="flex gap-2 flex-wrap max-h-32 overflow-y-auto pr-1">
+        {getSuggestedPrompts().map((p, index) => (
           <Button
-            size={"sm"}
+            size="sm"
+            variant="outline"
             key={index}
-            className="rounded-full"
+            className="rounded-full text-xs py-1 px-3 border border-primary/20 hover:border-primary/50 transition-colors"
             onClick={() => {
-              executeAICommand(action);
-              addMessage({
-                role: ChatRole.USER,
-                text: action.message,
-              });
+              setInput(p.query);
             }}
           >
-            <Plus />
-            {action.item}
+            {p.text}
           </Button>
         ))}
       </div>
-    </>
+    </div>
   );
 
-  const [actionModal, setActionModal] = useState<React.ReactElement | null>(
-    defaultCreate,
-  );
+  const [actionModal, setActionModal] = useState<React.ReactElement | null>(null);
 
   const resetModal = () => {
-    setActionModal(defaultCreate);
+    setActionModal(renderSuggestions());
   };
+
+  useEffect(() => {
+    setActionModal(renderSuggestions());
+  }, [input]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [showBottomButton, setShowBottomButton] = useState(false);
 
@@ -176,19 +187,30 @@ export default function ChatBotUI() {
     const el = containerRef.current;
     if (!el) return;
 
-    // Run initially
     checkIfAtBottom();
-
-    // Add scroll listener
     el.addEventListener("scroll", checkIfAtBottom);
     return () => el.removeEventListener("scroll", checkIfAtBottom);
   }, [open, isMaximized]);
 
   useEffect(() => {
-    scrollToBottom();
+    const el = containerRef.current;
+    if (!el) return;
+
+    // Only scroll if the user is already near the bottom, or if this is the user's own message,
+    // or if it's the start of an AI stream response
+    const isNearBottom = el.scrollHeight - el.scrollTop - 150 <= el.clientHeight;
+    const lastMsg = messages[messages.length - 1];
+    const isUserLast = lastMsg?.role === ChatRole.USER;
+
+    if (isNearBottom || isUserLast) {
+      const isStreaming = lastMsg?.isStreaming;
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: isStreaming ? "auto" : "smooth",
+      });
+    }
   }, [open, messages]);
 
-  // Added session reset handler
   const handleResetSession = () => {
     resetSession();
     clearMessages();
@@ -198,7 +220,6 @@ export default function ChatBotUI() {
   function tryParseCommand(rawText: string) {
     if (!rawText) return null;
 
-    // Look for JSON anywhere in the text
     const startIdx = rawText.indexOf("{");
     const endIdx = rawText.lastIndexOf("}");
 
@@ -206,14 +227,10 @@ export default function ChatBotUI() {
       const jsonCandidate = rawText.substring(startIdx, endIdx + 1);
       try {
         const result = JSON.parse(jsonCandidate);
-        // Basic check that it's a command
         if (result && result.action) return result;
-      } catch {
-        // Not valid JSON, continue to fallback
-      }
+      } catch {}
     }
 
-    // Fallback cleaning for markdown blocks
     const fallbackCleaned = rawText
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -233,18 +250,14 @@ export default function ChatBotUI() {
   function executeAICommand(command: any) {
     switch (command.action) {
       case "create_chapter":
-        console.log("Creating chapter:", command);
         setActionModal(
           <ChapterForm
             chapter={command}
             onAdd={(id: string, name?: string) => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Chapter created: <a class="underline text-primary" href="/chapters/${id}">${
-                  name || command.title || "New Chapter"
-                }</a>`,
+                text: `Chapter created: [${name || command.title || "New Chapter"}](/chapters/${id})`,
               });
-              // routerPush(`/chapters/${id}`);
               resetModal();
             }}
             onUpdate={() => resetModal()}
@@ -254,14 +267,13 @@ export default function ChatBotUI() {
         break;
 
       case "update_chapter":
-        console.log("Updating chapter:", command);
         setActionModal(
           <ChapterForm
             chapter={command}
             onUpdate={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Chapter updated: <a class="underline text-primary" href="/chapters/${command.id}">${command.title}</a>`,
+                text: `Chapter updated: [${command.title}](/chapters/${command.id})`,
               });
               resetModal();
             }}
@@ -271,7 +283,6 @@ export default function ChatBotUI() {
         break;
 
       case "create_journal":
-        console.log("Creating journal:", command);
         setActionModal(
           <JournalForm
             journal={command}
@@ -279,11 +290,9 @@ export default function ChatBotUI() {
             onFinish={(id: string, chapterId?: string, name?: string) => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Journal created: <a class="underline text-primary" href="/chapters/${
+                text: `Journal created: [${name || command.title || "New Journal"}](/chapters/${
                   chapterId || DEFAULT_CHAPTER_ID
-                }/journals/${id}">${
-                  name || command.title || "New Journal"
-                }</a>`,
+                }/journals/${id})`,
               });
               resetModal();
             }}
@@ -293,7 +302,6 @@ export default function ChatBotUI() {
         break;
 
       case "update_journal":
-        console.log("Updating journal:", command);
         setActionModal(
           <JournalForm
             journal={command}
@@ -301,9 +309,9 @@ export default function ChatBotUI() {
             onFinish={(id, chId, name) => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Journal updated: <a class="underline text-primary" href="/chapters/${
+                text: `Journal updated: [${name || command.title}](/chapters/${
                   chId || DEFAULT_CHAPTER_ID
-                }/journals/${id}">${name || command.title}</a>`,
+                }/journals/${id})`,
               });
               resetModal();
             }}
@@ -313,7 +321,6 @@ export default function ChatBotUI() {
         break;
 
       case "create_event":
-        console.log("Creating event:", command);
         setActionModal(
           <EventForm
             eventData={command}
@@ -321,7 +328,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Event created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Event created: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -330,7 +337,6 @@ export default function ChatBotUI() {
         break;
 
       case "update_event":
-        console.log("Updating event:", command);
         setActionModal(
           <EventForm
             eventData={command}
@@ -338,7 +344,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Event updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Event updated: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -347,7 +353,6 @@ export default function ChatBotUI() {
         break;
 
       case "create_task":
-        console.log("Creating task:", command);
         setActionModal(
           <TaskForm
             taskData={command}
@@ -355,7 +360,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Task created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Task created: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -364,7 +369,6 @@ export default function ChatBotUI() {
         break;
 
       case "update_task":
-        console.log("Updating task:", command);
         setActionModal(
           <TaskForm
             taskData={command}
@@ -372,7 +376,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Task updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Task updated: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -381,7 +385,6 @@ export default function ChatBotUI() {
         break;
 
       case "create_goal":
-        console.log("Creating goal:", command);
         setActionModal(
           <GoalForm
             goalData={command}
@@ -389,7 +392,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Goal created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Goal created: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -398,7 +401,6 @@ export default function ChatBotUI() {
         break;
 
       case "update_goal":
-        console.log("Updating goal:", command);
         setActionModal(
           <GoalForm
             goalData={command}
@@ -406,7 +408,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Goal updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Goal updated: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -415,7 +417,6 @@ export default function ChatBotUI() {
         break;
 
       case "create_itinerary":
-        console.log("Creating itinerary:", command);
         setActionModal(
           <ItineraryForm
             itineraryData={command}
@@ -423,7 +424,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Itinerary created: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Itinerary created: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -432,7 +433,6 @@ export default function ChatBotUI() {
         break;
 
       case "update_itinerary":
-        console.log("Updating itinerary:", command);
         setActionModal(
           <ItineraryForm
             itineraryData={command}
@@ -440,7 +440,7 @@ export default function ChatBotUI() {
             onSave={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Itinerary updated: <a class="underline text-primary" href="/planner">${command.title}</a>`,
+                text: `Itinerary updated: [${command.title}](/planner)`,
               });
               resetModal();
             }}
@@ -449,16 +449,13 @@ export default function ChatBotUI() {
         break;
 
       case "create_character":
-        console.log("Creating character:", command);
         setActionModal(
           <CharacterForm
             character={command}
             onAdd={(id: string, name?: string) => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Character created: <a class="underline text-primary" href="/characters/${id}">${
-                  name || command.name || "New Character"
-                }</a>`,
+                text: `Character created: [${name || command.name || "New Character"}](/characters/${id})`,
               });
               resetModal();
             }}
@@ -469,14 +466,13 @@ export default function ChatBotUI() {
         break;
 
       case "update_character":
-        console.log("Updating character:", command);
         setActionModal(
           <CharacterForm
             character={{ id: command.characterId, ...command.data }}
             onUpdate={() => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Character updated: <a class="underline text-primary" href="/characters/${command.characterId}">${command.data.name}</a>`,
+                text: `Character updated: [${command.data.name}](/characters/${command.characterId})`,
               });
               resetModal();
             }}
@@ -485,8 +481,73 @@ export default function ChatBotUI() {
         );
         break;
 
+      case "confirm_delete":
+        setActionModal(
+          <div className="p-4 border rounded-xl bg-secondary/30 text-card-foreground flex flex-col gap-3">
+            <p className="text-sm font-medium">{command.message}</p>
+            <div className="flex gap-2 justify-end">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={resetModal}
+                className="rounded-full"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="rounded-full"
+                onClick={async () => {
+                  try {
+                    const uid = user?.uid;
+                    if (!uid) return;
+
+                    if (command.itemType === "task") {
+                      const { deleteTask } = await import("@/lib/services/tasks");
+                      await deleteTask(uid, command.itemId);
+                    } else if (command.itemType === "event") {
+                      const { deleteEvent } = await import("@/lib/services/events");
+                      await deleteEvent(uid, command.itemId, command.participantIds);
+                    } else if (command.itemType === "goal") {
+                      const { deleteGoal } = await import("@/lib/services/goals");
+                      await deleteGoal(uid, command.itemId);
+                    } else if (command.itemType === "chapter") {
+                      const { deleteChapter } = await import("@/lib/services/chapters");
+                      await deleteChapter(uid, command.itemId);
+                    } else if (command.itemType === "journal") {
+                      const { deleteJournal } = await import("@/lib/services/journals");
+                      await deleteJournal(uid, command.chapterId, command.itemId);
+                    } else if (command.itemType === "character") {
+                      const { deleteCharacter } = await import("@/lib/services/characters");
+                      await deleteCharacter(uid, command.itemId);
+                    } else if (command.itemType === "itinerary") {
+                      const { deleteItinerary } = await import("@/lib/services/itineraries");
+                      await deleteItinerary(uid, command.itemId);
+                    }
+
+                    addMessage({
+                      role: ChatRole.AI,
+                      text: `Successfully deleted the ${command.itemType}.`,
+                    });
+                  } catch (e) {
+                    console.error("Delete failed", e);
+                    addMessage({
+                      role: ChatRole.AI,
+                      text: `Failed to delete the ${command.itemType}.`,
+                    });
+                  }
+                  resetModal();
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        );
+        break;
+
       case "brain_dump":
-        console.log("Processing brain dump:", command);
         setBrainDumpData(command);
         setIsMaximized(true);
         setActionModal(
@@ -495,7 +556,7 @@ export default function ChatBotUI() {
             onConfirm={(results) => {
               addMessage({
                 role: ChatRole.AI,
-                text: `Successfully processed brain dump! added ${results.success} items.`,
+                text: `Successfully processed brain dump! Added ${results.success} items.`,
               });
               setBrainDumpData(null);
               resetModal();
@@ -513,7 +574,7 @@ export default function ChatBotUI() {
 
       default:
         console.warn("Unknown action:", command.action);
-        setActionModal(defaultCreate);
+        resetModal();
         break;
     }
   }
@@ -537,7 +598,7 @@ export default function ChatBotUI() {
           onConfirm={(results) => {
             addMessage({
               role: ChatRole.AI,
-              text: `Successfully processed brain dump! added ${results.success} items.`,
+              text: `Successfully processed brain dump! Added ${results.success} items.`,
             });
             setBrainDumpData(null);
             resetModal();
@@ -559,9 +620,7 @@ export default function ChatBotUI() {
           <TaskForm
             taskData={item}
             onClose={() => onSaveOrCancel()}
-            onSave={() => onSaveOrCancel(item)} // Form doesn't return updated item easily, but we'll assume it's updated in the form's local state or if we pass a callback that returns it.
-            // Actually, TaskForm doesn't return the updated data in onSave.
-            // For now, we'll just return to the list.
+            onSave={() => onSaveOrCancel(item)}
           />,
         );
         break;
@@ -584,7 +643,6 @@ export default function ChatBotUI() {
         );
         break;
       case "characters":
-        // CharacterForm has a different signature
         setActionModal(
           <CharacterForm
             character={item}
@@ -637,7 +695,6 @@ export default function ChatBotUI() {
 
   return (
     <>
-      {/* Floating Toggle Button */}
       <Button
         onClick={() => {
           if (isMobile) setIsMaximized(true);
@@ -649,13 +706,11 @@ export default function ChatBotUI() {
         variant="secondary"
       >
         {icon(40)}
-        {/* Session indicator */}
         {isSessionActive && (
           <div className="absolute top-0.5 right-0.5 w-3 h-3 bg-green-500 rounded-full border border-white" />
         )}
       </Button>
 
-      {/* Animated Chat Panel */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -673,7 +728,6 @@ export default function ChatBotUI() {
               scale: 0.05,
             }}
             transition={{ duration: 0.5 }}
-            // className=
             className={cn(
               "pointer-events-auto bg-background flex flex-col z-50 p-4 space-y-4 w-full min-h-[500px]",
               isMaximized
@@ -685,7 +739,6 @@ export default function ChatBotUI() {
               <div className="flex items-center gap-2">
                 {icon()}
                 <div className="text-sm font-semibold">Zappy</div>
-                {/* Session status indicator */}
                 <div
                   className={`text-xs px-2 py-1 rounded-full ${
                     isSessionActive
@@ -697,7 +750,6 @@ export default function ChatBotUI() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {/* Maximize/Minimize button */}
                 {!isMobile && (
                   <Button
                     variant="ghost"
@@ -708,7 +760,6 @@ export default function ChatBotUI() {
                     {isMaximized ? <Minimize2 /> : <Maximize2 />}
                   </Button>
                 )}
-                {/* Reset session button */}
                 {isSessionActive && (
                   <Button
                     variant="ghost"
@@ -740,9 +791,7 @@ export default function ChatBotUI() {
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     className={`flex ${
-                      msg.role === ChatRole.USER
-                        ? "justify-end"
-                        : "justify-start"
+                      msg.role === ChatRole.USER ? "justify-end" : "justify-start"
                     }`}
                   >
                     <div
@@ -752,17 +801,38 @@ export default function ChatBotUI() {
                           : "bg-secondary text-secondary-foreground self-start me-4 rounded-bl-md"
                       }`}
                     >
-                      <span
-                        className="whitespace-pre-wrap"
-                        dangerouslySetInnerHTML={{ __html: msg.text as string }}
-                      />
+                      {msg.role === ChatRole.USER ? (
+                        <span className="whitespace-pre-wrap">{msg.text}</span>
+                      ) : (
+                        <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 p-0">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              a: ({ href, children }) => (
+                                <a
+                                  href={href}
+                                  className="underline text-primary font-medium hover:text-primary/80 transition-colors"
+                                >
+                                  {children}
+                                </a>
+                              ),
+                            }}
+                          >
+                            {msg.text}
+                          </ReactMarkdown>
+                          {msg.isStreaming && (
+                            <span className="inline-block w-1.5 h-4 ml-1 bg-current animate-pulse align-middle" />
+                          )}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}
               </div>
 
               <div className="border-t py-4 @container">
-                {askAI.isPending ? (
+                {askAI.isPending &&
+                !messages[messages.length - 1]?.isStreaming ? (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

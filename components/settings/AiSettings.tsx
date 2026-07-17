@@ -22,10 +22,11 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Bot, Brain, CheckCircle2, Zap } from "lucide-react";
+import { AVAILABLE_MODELS } from "@/lib/services/firebase/ai";
 
 const AiSettingsFormSchema = z.object({
   confirmAiActions: z.boolean().default(true),
-  preferredModel: z.string().default("gemini-1.5-flash"),
+  preferredModel: z.string().default(AVAILABLE_MODELS[0]),
 });
 
 type AiSettingsFormValues = z.infer<typeof AiSettingsFormSchema>;
@@ -37,7 +38,7 @@ export function AiSettings() {
     resolver: zodResolver(AiSettingsFormSchema),
     defaultValues: {
       confirmAiActions: settings?.ai?.confirmAiActions ?? true,
-      preferredModel: settings?.ai?.preferredModel ?? "gemini-1.5-flash",
+      preferredModel: settings?.ai?.preferredModel ?? AVAILABLE_MODELS[0],
     },
   });
 
@@ -45,7 +46,7 @@ export function AiSettings() {
     if (settings?.ai) {
       form.reset({
         confirmAiActions: settings.ai.confirmAiActions ?? true,
-        preferredModel: settings.ai.preferredModel ?? "gemini-1.5-flash",
+        preferredModel: settings.ai.preferredModel ?? AVAILABLE_MODELS[0],
       });
     }
   }, [settings?.ai, form]);
@@ -143,9 +144,16 @@ export function AiSettings() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="gemini-1.5-flash">Flash (Fast & Steady)</SelectItem>
-                    <SelectItem value="gemini-1.5-pro">Pro (Advanced Reasoning)</SelectItem>
-                    <SelectItem value="gemini-2.0-flash-exp">v2 Flash Exp (Experimental)</SelectItem>
+                    {AVAILABLE_MODELS.map((model) => (
+                      <SelectItem key={model} value={model}>
+                        {model
+                          .replace("gemini-", "")
+                          .replace("-preview", "")
+                          .split("-")
+                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                          .join(" ")}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
