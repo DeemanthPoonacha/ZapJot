@@ -5,12 +5,19 @@ import { getMinutesRelative } from "@/lib/utils/date-time";
 import { UserInDb } from "@/types/user";
 
 if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(
-    process.env.GOOGLE_SERVICE_ACCOUNT_JSON || ""
-  ) as admin.ServiceAccount;
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (serviceAccountJson) {
+    try {
+      const serviceAccount = JSON.parse(serviceAccountJson) as admin.ServiceAccount;
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+      });
+    } catch (e) {
+      console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:", e);
+    }
+  } else {
+    console.warn("GOOGLE_SERVICE_ACCOUNT_JSON is not configured. Firebase admin SDK not initialized.");
+  }
 }
 
 export async function GET(request: Request) {
