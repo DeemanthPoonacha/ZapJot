@@ -45,11 +45,18 @@ export default function PlannerPage() {
       .map(([dateStr]) => dateStr)
   );
 
+  const isCurrentMonth = dayjs(currentMonth).isSame(dayjs(), "month");
+
   // Set default query range based on selectedDate or currentMonth
   const dateRange = selectedDate
     ? {
         start: dayjs(selectedDate).startOf("day").toDate(),
         end: dayjs(selectedDate).endOf("day").toDate(),
+      }
+    : isCurrentMonth
+    ? {
+        start: dayjs().startOf("day").toDate(),
+        end: dayjs(currentMonth).endOf("month").toDate(),
       }
     : {
         start: dayjs(currentMonth).startOf("month").toDate(),
@@ -117,7 +124,9 @@ export default function PlannerPage() {
           showDefault={selectedDate === undefined}
           title={
             selectedDate === undefined
-              ? `Events in ${dayjs(currentMonth).format("MMMM YYYY")}`
+              ? isCurrentMonth
+                ? "Upcoming Events"
+                : `Events in ${dayjs(currentMonth).format("MMMM YYYY")}`
               : undefined
           }
           defaultNewEvent={{

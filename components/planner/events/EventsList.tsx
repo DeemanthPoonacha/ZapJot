@@ -166,14 +166,23 @@ function GroupedEvents({
     ? groupEventsByDate(events!, query?.dateRange?.start, query?.dateRange?.end)
     : {};
 
-  return !Object.keys(groupedEvents)?.length ? (
+  // Check if query is for a single day
+  const isSingleDay =
+    query?.dateRange?.start &&
+    query?.dateRange?.end &&
+    dayjs(query.dateRange.start).isSame(dayjs(query.dateRange.end), "day");
+
+  // Filter out empty days if querying a larger range (like a month or upcoming events)
+  const filteredGroupedEvents = Object.entries(groupedEvents)
+    .filter(([_, dayEvents]) => isSingleDay || dayEvents.length > 0)
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  return !filteredGroupedEvents.length ? (
     emptyPrompt
   ) : (
     <>
       {newButton}
-      {Object.entries(groupedEvents)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([date, events]) => (
+      {filteredGroupedEvents.map(([date, events]) => (
           <div key={date} className="mb-8 space-y-4">
             <div className="flex justify-between items-baseline pb-2 border-b border-dashed border-border/60">
               <h2 className="text-base font-semibold">
