@@ -104,8 +104,15 @@ export function useAiChat() {
         }
 
         const history = completedMessages.slice(1).map((m) => ({
-          role: m.role === ChatRole.USER ? "user" : "model",
-          parts: [{ text: m.text }],
+          role: m.role === ChatRole.AI ? "model" : "user",
+          parts: [
+            {
+              text:
+                m.role === ChatRole.SYSTEM
+                  ? `[System Notification: ${m.text}]`
+                  : m.text,
+            },
+          ],
         }));
 
         chatSessionRef.current = model.startChat({

@@ -5,12 +5,12 @@ import { Timestamp } from "firebase/firestore";
 
 export function updateEventOccurrence(data: EventUpdate, minsBefore?: number) {
   const nextOccurrence = getNextOccurrence(data)?.toDate() || null;
-  if (nextOccurrence) data.nextOccurrence = nextOccurrence;
+  data.nextOccurrence = nextOccurrence as any;
   const nextNotificationAt = getNextNotificationTime(
     nextOccurrence,
     minsBefore
   );
-  if (nextNotificationAt) data.nextNotificationAt = nextNotificationAt;
+  data.nextNotificationAt = nextNotificationAt;
 }
 
 export function getNextNotificationTime(
@@ -182,7 +182,7 @@ function getDatesBetween(startDate: Dayjs, endDate: Dayjs) {
         date: dateStr,
         weekDay: currentDate.day().toString(),
         monthDay: currentDate.date().toString(),
-        yearDay: currentDate.format("M-D"),
+        yearDay: currentDate.format("MM-DD"),
       };
 
     currentDate = currentDate.add(1, "day");

@@ -90,14 +90,29 @@ export const getEventById = async (userId: string, eventId: string) => {
     : null;
 };
 
-export const addEvent = async (userId: string, data: EventCreate) => {
+export const addEvent = async (userId: string, data: EventCreate): Promise<Event> => {
   const eventRef = doc(collection(db, `users/${userId}/events`));
   data.participants?.map(async (participant: { value: string }) => {
     if (participant && eventRef.id) {
       await addReminder(userId, participant.value, eventRef.id);
     }
   });
-  const newEvent = { ...data, id: eventRef.id };
+  
+  const newEvent: Event = {
+    ...data,
+    repeat: data.repeat || "none",
+    repeatDays: data.repeatDays || [],
+    createdAt: data.createdAt || new Date().toISOString(),
+    updatedAt: data.updatedAt || new Date().toISOString(),
+    id: eventRef.id,
+  } as Event;
+
+  // Calculate nextOccurrence and nextNotificationAt if not already provided
+  if (!newEvent.nextOccurrence) {
+    const { updateEventOccurrence } = await import("@/lib/utils/events");
+    updateEventOccurrence(newEvent);
+  }
+
   await setDoc(eventRef, newEvent);
   return newEvent;
 };
@@ -187,7 +202,10 @@ export const updateOccurrences = async (
 
   data?.forEach(({ id, nextOccurrence, nextNotificationAt }) => {
     const ref = doc(db, `users/${userId}/events/${id}`);
-    batch.update(ref, { nextOccurrence, nextNotificationAt });
+    batch.update(ref, { 
+      nextOccurrence: nextOccurrence ?? null, 
+      nextNotificationAt: nextNotificationAt ?? null 
+    });
   });
 
   await batch.commit();

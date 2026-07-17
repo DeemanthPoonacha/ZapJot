@@ -10,11 +10,52 @@ import usePlanner from "@/lib/hooks/usePlanner";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { CalendarCheck, Goal, LandPlot, ListCheck } from "lucide-react";
+import { useEvents } from "@/lib/hooks/useEvents";
+import { groupEventsByDate } from "@/lib/utils/events";
 
 export default function PlannerPage() {
   const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const endDate = selectedDate ? dayjs(selectedDate) : dayjs().add(2, "days");
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+
+  const handleMonthChange = (newMonth: Date) => {
+    setCurrentMonth(newMonth);
+    setSelectedDate(undefined);
+  };
+
+  // Fetch events for the visible month to show calendar markers/dots
+  const { data: monthEvents } = useEvents({
+    dateRange: {
+      start: dayjs(currentMonth).startOf("month").toDate(),
+      end: dayjs(currentMonth).endOf("month").toDate(),
+    },
+  });
+
+  const groupedMonthEvents = monthEvents
+    ? groupEventsByDate(
+        monthEvents,
+        dayjs(currentMonth).startOf("month").toDate(),
+        dayjs(currentMonth).endOf("month").toDate()
+      )
+    : {};
+
+  const datesWithEvents = new Set(
+    Object.entries(groupedMonthEvents)
+      .filter(([_, evs]) => evs.length > 0)
+      .map(([dateStr]) => dateStr)
+  );
+
+  // Set default query range based on selectedDate or currentMonth
+  const dateRange = selectedDate
+    ? {
+        start: dayjs(selectedDate).startOf("day").toDate(),
+        end: dayjs(selectedDate).endOf("day").toDate(),
+      }
+    : {
+        start: dayjs(currentMonth).startOf("month").toDate(),
+        end: dayjs(currentMonth).endOf("month").toDate(),
+      };
+
   return (
     <Tabs
       tabValues={["tasks", "events", "goals", "itineraries"]}
@@ -57,18 +98,33 @@ export default function PlannerPage() {
           mode="single"
           className="rounded-md border w-full flex justify-center"
           selected={selectedDate}
-          onSelect={setSelectedDate}
+          onSelect={(date) => {
+            setSelectedDate(date);
+            if (date) {
+              setCurrentMonth(date);
+            }
+          }}
+          month={currentMonth}
+          onMonthChange={handleMonthChange}
+          modifiers={{
+            hasEvent: (date) => datesWithEvents.has(dayjs(date).format("YYYY-MM-DD")),
+          }}
+          modifiersClassNames={{
+            hasEvent: "relative after:absolute after:bottom-0.5 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full aria-selected:after:bg-primary-foreground",
+          }}
         />
         <EventsList
           showDefault={selectedDate === undefined}
+          title={
+            selectedDate === undefined
+              ? `Events in ${dayjs(currentMonth).format("MMMM YYYY")}`
+              : undefined
+          }
           defaultNewEvent={{
             title: "",
           }}
           query={{
-            dateRange: {
-              start: dayjs(selectedDate).startOf("day").toDate(),
-              end: endDate.endOf("day").toDate(),
-            },
+            dateRange,
           }}
         />
       </TabsContent>

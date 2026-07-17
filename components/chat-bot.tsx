@@ -558,12 +558,24 @@ export default function ChatBotUI() {
                 role: ChatRole.AI,
                 text: `Successfully processed brain dump! Added ${results.success} items.`,
               });
+              const systemMsg = `[System: The user has successfully saved the items from the brain dump. Results: ${results.success} items added.]`;
+              addMessage({
+                role: ChatRole.SYSTEM,
+                text: systemMsg,
+              });
               setBrainDumpData(null);
               resetModal();
+              askAI.mutate(systemMsg);
             }}
             onCancel={() => {
+              const systemMsg = `[System: The user has discarded the brain dump items.]`;
+              addMessage({
+                role: ChatRole.SYSTEM,
+                text: systemMsg,
+              });
               setBrainDumpData(null);
               resetModal();
+              askAI.mutate(systemMsg);
             }}
             onEditItem={(type, index, item) => {
               handleEditBrainDumpItem(type, index, item, command);
@@ -785,14 +797,16 @@ export default function ChatBotUI() {
               ref={containerRef}
             >
               <div className="flex flex-col gap-2">
-                {messages.map((msg, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className={`flex ${
-                      msg.role === ChatRole.USER ? "justify-end" : "justify-start"
-                    }`}
+                {messages
+                  .filter((msg) => msg.role !== ChatRole.SYSTEM)
+                  .map((msg, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className={`flex ${
+                        msg.role === ChatRole.USER ? "justify-end" : "justify-start"
+                      }`}
                   >
                     <div
                       className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${

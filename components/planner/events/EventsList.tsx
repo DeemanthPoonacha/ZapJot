@@ -20,12 +20,14 @@ const EventList = ({
   defaultNewEvent,
   showDefault,
   groupByDate = true,
+  title,
 }: {
   showDefault?: boolean;
   query?: EventsFilter;
   addNewButton?: React.ReactNode;
   defaultNewEvent?: Partial<Event>;
   groupByDate?: boolean;
+  title?: string;
 }) => {
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
@@ -81,7 +83,7 @@ const EventList = ({
         {showDefault && (
           <div className="flex justify-between items-center mb-8 border-b pb-4">
             <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Upcoming Events
+              {title || "Upcoming Events"}
             </span>
             <Button
               type="button"
