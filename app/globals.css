@@ -458,7 +458,7 @@ input[type="number"] {
   :where(*):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     color: var(--color-foreground);
   }
-  @apply h-full flex flex-col container py-24 px-4 mx-auto lg:max-w-5xl lg:py-10;
+  @apply h-full flex flex-col container mx-auto lg:max-w-5xl;
 }
 
 /* Webkit (Chrome, Safari, newer versions of Opera) */

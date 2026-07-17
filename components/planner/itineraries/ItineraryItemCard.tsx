@@ -67,6 +67,7 @@ export const ItineraryDay = ({
     dayTasksTotal > 0
       ? Math.round((dayTasksCompleted / dayTasksTotal) * 100)
       : 0;
+  const isDayComplete = dayCompletionPercent === 100;
 
   // Create a key for the form to force re-rendering when day changes
   const formKey = `day-form-${day.id}-${dayTasksCompleted}`;
@@ -93,7 +94,7 @@ export const ItineraryDay = ({
   const updateTask = async (
     dayId: string,
     taskId: string,
-    data: Partial<ItineraryTask>
+    data: Partial<ItineraryTask>,
   ) => {
     try {
       await taskMutate({ id: itineraryId, dayId, taskId, data });
@@ -202,8 +203,7 @@ export const ItineraryDay = ({
         <Card
           className="border-l-4 gap-0"
           style={{
-            borderLeftColor:
-              dayCompletionPercent === 100 ? "var(--primary)" : "var(--muted)",
+            borderLeftColor: isDayComplete ? "var(--primary)" : "var(--muted)",
           }}
         >
           <CardHeader
@@ -211,7 +211,14 @@ export const ItineraryDay = ({
             onClick={handleHeaderClick}
           >
             <div className="flex items-center">
-              <div className="bg-muted w-8 h-8 rounded-full flex items-center justify-center mr-3">
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center mr-3 transition-colors",
+                  isDayComplete
+                    ? "bg-primary/15 text-primary"
+                    : "bg-muted text-foreground",
+                )}
+              >
                 <span className="font-semibold text-sm">{index + 1}</span>
               </div>
               <div>
@@ -427,7 +434,7 @@ export const ItineraryDay = ({
                   day.tasks.map((task: ItineraryTask) => (
                     <div
                       key={task.id}
-                      className="flex rounded-md justify-between items-center px-2 py-1"
+                      className="flex rounded-md justify-between items-center px-2 py-1.5 hover:bg-muted/40 transition-colors"
                     >
                       <span className="flex items-center space-x-2">
                         <Checkbox
@@ -444,7 +451,7 @@ export const ItineraryDay = ({
                             "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer max-w-72 line-clamp-2",
                             task.completed
                               ? "line-through text-muted-foreground"
-                              : ""
+                              : "",
                           )}
                         >
                           {task.title}

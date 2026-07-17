@@ -8,6 +8,19 @@ import { TaskCard } from "./TaskCard";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
 
+function SectionHeader({ label, count }: { label: string; count: number }) {
+  return (
+    <div className="flex items-baseline justify-between pb-3 mb-4 border-b border-border/60">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </h2>
+      <span className="text-sm text-muted-foreground">
+        {count} {getPluralWord("Task", count)}
+      </span>
+    </div>
+  );
+}
+
 const TasksList = () => {
   const { data: tasks, isLoading } = useTasks();
   const { selectedTaskId, setSelectedTaskId } = usePlanner();
@@ -26,7 +39,7 @@ const TasksList = () => {
       task.status === "completed"
         ? [[...completed, task], pending]
         : [completed, [...pending, task]],
-    [[], []] as [typeof tasks, typeof tasks]
+    [[], []] as [typeof tasks, typeof tasks],
   ) || [[], []];
 
   return (
@@ -47,15 +60,9 @@ const TasksList = () => {
         />
       ) : (
         <>
-          {/* In-Progress Tasks */}
+          {/* Pending Tasks */}
           <div className="pb-8">
-            <div className="flex justify-between items-center pb-4">
-              <span className="text-lg font-semibold">Pending</span>
-              {`${pendingTasks?.length} ${getPluralWord(
-                "Task",
-                pendingTasks?.length
-              )}`}
-            </div>
+            <SectionHeader label="Pending" count={pendingTasks?.length ?? 0} />
             {pendingTasks?.length === 0 ? (
               <Empty
                 title="No tasks in progress"
@@ -89,16 +96,13 @@ const TasksList = () => {
 
           {/* Completed Tasks */}
           <div className="pb-8">
-            <div className="flex justify-between items-center pb-4">
-              <span className="text-lg font-semibold">Completed</span>
-              {`${completedTasks?.length} ${getPluralWord(
-                "Task",
-                completedTasks?.length
-              )}`}
-            </div>
+            <SectionHeader
+              label="Completed"
+              count={completedTasks?.length ?? 0}
+            />
             {completedTasks?.length === 0 ? (
-              <p className="text-muted-foreground mb-6 text-center py-4 md:py-12">
-                No Tasks completed yet
+              <p className="text-muted-foreground mb-6 text-center py-4 md:py-12 text-sm">
+                No tasks completed yet
               </p>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">

@@ -20,12 +20,14 @@ const EventList = ({
   defaultNewEvent,
   showDefault,
   groupByDate = true,
+  title,
 }: {
   showDefault?: boolean;
   query?: EventsFilter;
   addNewButton?: React.ReactNode;
   defaultNewEvent?: Partial<Event>;
   groupByDate?: boolean;
+  title?: string;
 }) => {
   const { data: events, isLoading } = useEvents(query);
   const { selectedEventId, setSelectedEventId } = usePlanner();
@@ -55,9 +57,9 @@ const EventList = ({
   };
 
   const newButton = !!addNewButton && (
-    <div className="flex justify-between items-center gap-2">
-      <span className="text-lg font-semibold">
-        Events/Reminders - {events?.length}
+    <div className="flex justify-between items-center gap-2 pb-3 mb-4 border-b border-border/60">
+      <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        Events/Reminders — {events?.length}
       </span>
       <Button type="button" onClick={() => toggleDialog("new")}>
         {addNewButton}
@@ -80,9 +82,13 @@ const EventList = ({
       <div className="space-y-4 mb-8">
         {showDefault && (
           <div className="flex justify-between items-center mb-8 border-b pb-4">
-            <span className="text-lg font-semibold">Upcoming Events</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              {title || "Upcoming Events"}
+            </span>
             <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={handleRefresh}
               disabled={isRefreshPending}
             >
@@ -160,24 +166,35 @@ function GroupedEvents({
     ? groupEventsByDate(events!, query?.dateRange?.start, query?.dateRange?.end)
     : {};
 
-  return !Object.keys(groupedEvents)?.length ? (
+  // Check if query is for a single day
+  const isSingleDay =
+    query?.dateRange?.start &&
+    query?.dateRange?.end &&
+    dayjs(query.dateRange.start).isSame(dayjs(query.dateRange.end), "day");
+
+  // Filter out empty days if querying a larger range (like a month or upcoming events)
+  const filteredGroupedEvents = Object.entries(groupedEvents)
+    .filter(([_, dayEvents]) => isSingleDay || dayEvents.length > 0)
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  return !filteredGroupedEvents.length ? (
     emptyPrompt
   ) : (
     <>
       {newButton}
-      {Object.entries(groupedEvents)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([date, events]) => (
+      {filteredGroupedEvents.map(([date, events]) => (
           <div key={date} className="mb-8 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl">
+            <div className="flex justify-between items-baseline pb-2 border-b border-dashed border-border/60">
+              <h2 className="text-base font-semibold">
                 {dayjs(date).format("ddd, MMMM D, YYYY")}
               </h2>
-              {`${events.length} ${getPluralWord("Event", events.length)}`}
+              <span className="text-sm text-muted-foreground">
+                {events.length} {getPluralWord("Event", events.length)}
+              </span>
             </div>
             {!events.length ? (
-              <p className="text-muted-foreground mb-6 text-center py-4">
-                No Events Found
+              <p className="text-muted-foreground mb-6 text-center py-4 text-sm">
+                No events found
               </p>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
