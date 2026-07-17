@@ -28,24 +28,24 @@ export const toolDeclarations = [
   {
     name: "get_current_time",
     description: "Get the current time and date in the user's local timezone.",
-    parameters: { type: "object", properties: {} },
+    parameters: zodToGeminiSchema(z.object({})),
   },
   {
     name: "get_user_info",
     description: "Get information about the currently logged in user.",
-    parameters: { type: "object", properties: {} },
+    parameters: zodToGeminiSchema(z.object({})),
   },
 
   // --- DATA FETCHING TOOLS (ALL) ---
   {
     name: "get_chapters",
     description: "Fetch all chapters (organisational categories for journals).",
-    parameters: { type: "object", properties: {} },
+    parameters: zodToGeminiSchema(z.object({})),
   },
   {
     name: "get_characters",
     description: "Fetch all characters or person profiles.",
-    parameters: { type: "object", properties: {} },
+    parameters: zodToGeminiSchema(z.object({})),
   },
   {
     name: "get_events",
@@ -65,12 +65,12 @@ export const toolDeclarations = [
   {
     name: "get_goals",
     description: "Fetch all user goals.",
-    parameters: { type: "object", properties: {} },
+    parameters: zodToGeminiSchema(z.object({})),
   },
   {
     name: "get_itineraries",
     description: "Fetch all multi-day itineraries.",
-    parameters: { type: "object", properties: {} },
+    parameters: zodToGeminiSchema(z.object({})),
   },
   {
     name: "get_tasks",
@@ -317,5 +317,61 @@ export const toolDeclarations = [
     description:
       "Extract multiple items (tasks, goals, itineraries, characters, journals, chapters) from a bulk of unstructured text.",
     parameters: zodToGeminiSchema(brainDumpSchema),
+  },
+
+  // --- DELETE TOOLS ---
+  {
+    name: "delete_task",
+    description: "Delete a to-do task by its ID.",
+    parameters: zodToGeminiSchema(z.object({ taskId: z.string() })),
+  },
+  {
+    name: "delete_event",
+    description: "Delete an event or reminder by its ID.",
+    parameters: zodToGeminiSchema(
+      z.object({
+        eventId: z.string(),
+        participantIds: z
+          .array(z.string())
+          .optional()
+          .describe("IDs of participants to clean up reminders for"),
+      }),
+    ),
+  },
+  {
+    name: "delete_goal",
+    description: "Delete a goal by its ID.",
+    parameters: zodToGeminiSchema(z.object({ goalId: z.string() })),
+  },
+  {
+    name: "delete_chapter",
+    description:
+      "Delete a chapter and all its journals by its ID. Use with caution.",
+    parameters: zodToGeminiSchema(z.object({ chapterId: z.string() })),
+  },
+  {
+    name: "delete_journal",
+    description: "Delete a journal entry by its chapter and journal ID.",
+    parameters: zodToGeminiSchema(
+      z.object({ chapterId: z.string(), journalId: z.string() }),
+    ),
+  },
+  {
+    name: "delete_character",
+    description: "Delete a character or person profile by its ID.",
+    parameters: zodToGeminiSchema(z.object({ characterId: z.string() })),
+  },
+  {
+    name: "delete_itinerary",
+    description: "Delete a multi-day itinerary by its ID.",
+    parameters: zodToGeminiSchema(z.object({ itineraryId: z.string() })),
+  },
+
+  // --- DAILY BRIEFING TOOL ---
+  {
+    name: "get_daily_briefing",
+    description:
+      "Fetch a comprehensive summary of the user's day: today's events, pending/overdue tasks, active goals with progress, and recent activity. Use this when the user asks about their day, wants a summary, or says hello.",
+    parameters: zodToGeminiSchema(z.object({})),
   },
 ];
