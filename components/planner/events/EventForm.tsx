@@ -42,9 +42,14 @@ import { Ban, Save } from "lucide-react";
 type EventFormProps = {
   eventData?: Event;
   onClose?: () => void;
+  onSave?: () => void;
 };
 
-export default function EventForm({ eventData, onClose }: EventFormProps) {
+export default function EventForm({
+  eventData,
+  onClose,
+  onSave,
+}: EventFormProps) {
   const [repeatType, setRepeatType] = useState(eventData?.repeat || "none");
 
   const { user } = useAuth();
@@ -106,6 +111,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
         await addMutation.mutateAsync(data);
         toast.success("Event created successfully");
       }
+      onSave?.();
       onClose?.();
     } catch (error) {
       toast.error("Error saving event");
@@ -174,8 +180,9 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
 
   // eslint-disable-next-line
   const renderYearlySelector = (field: any) => {
-    const monthValue = field.value[0]?.split("-")[0] || "";
-    const dayValue = field.value[0]?.split("-")[1] || "";
+    const monthValue =
+      parseInt(field.value[0])?.toString()?.split("-")[0] || "";
+    const dayValue = field.value[0]?.toString()?.split("-")[1] || "";
 
     const handleMonthChange = (value: string) => {
       field.onChange([`${value}-${dayValue || "1"}`]);
@@ -261,10 +268,10 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
                     value === "weekly"
                       ? [`${dayjs().day()}`]
                       : value === "monthly"
-                      ? [`${dayjs().date()}`]
-                      : value === "yearly"
-                      ? [`${dayjs().month() + 1}-${dayjs().date()}`]
-                      : [];
+                        ? [`${dayjs().date()}`]
+                        : value === "yearly"
+                          ? [`${dayjs().month() + 1}-${dayjs().date()}`]
+                          : [];
                   form.setValue("repeatDays", repeat);
                 }}
               >
@@ -403,7 +410,7 @@ export default function EventForm({ eventData, onClose }: EventFormProps) {
         <div
           className={cn(
             "flex w-full",
-            eventData?.id ? "justify-between" : "justify-end"
+            eventData?.id ? "justify-between" : "justify-end",
           )}
         >
           {eventData?.id && (

@@ -35,8 +35,12 @@ export default function GoalCard({
       <CardContent className="px-4 py-2">
         {/* Header section (always visible) */}
         <div className="flex justify-between items-center">
-          <div className="flex gap-2">
-            {!isComplete ? <Loader /> : <CircleCheckBig />}
+          <div className="flex gap-2 items-center">
+            {!isComplete ? (
+              <Loader className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <CircleCheckBig className="w-4 h-4 text-primary" />
+            )}
             <span className="font-semibold">{goal.title}</span>
           </div>
 

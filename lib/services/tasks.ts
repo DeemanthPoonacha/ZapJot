@@ -62,7 +62,15 @@ const getTaskById = async (
 
 const addTask = async (userId: string, taskData: TaskCreate): Promise<void> => {
   const tasksCollection = collection(db, `users/${userId}/tasks`);
-  await addDoc(tasksCollection, taskData);
+  const finalizedTask: TaskCreate = {
+    ...taskData,
+    status: taskData.status || "pending",
+    highPriority: taskData.highPriority !== undefined ? taskData.highPriority : false,
+    subtasks: taskData.subtasks || [],
+    createdAt: taskData.createdAt || new Date().toISOString(),
+    updatedAt: taskData.updatedAt || new Date().toISOString(),
+  };
+  await addDoc(tasksCollection, finalizedTask);
 };
 
 const updateTask = async (

@@ -6,7 +6,11 @@ import { useAuth } from "../context/AuthProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../services/firebase/db";
-import { NotificationsSettingsUpdate, SettingsUpdate } from "@/types/settings";
+import {
+  AiSettingsUpdate,
+  NotificationsSettingsUpdate,
+  SettingsUpdate,
+} from "@/types/settings";
 import { UserInDb } from "@/types/user";
 import { DEFAULT_THEME } from "../constants";
 
@@ -72,6 +76,15 @@ export const useSettings = () => {
     });
   };
 
+  const updateAiSettings = async (aiSettings: AiSettingsUpdate) => {
+    await updateSettings({
+      ai: {
+        ...userData?.settings?.ai,
+        ...aiSettings,
+      },
+    });
+  };
+
   const { theme, setTheme } = useTheme();
   const {
     allThemes,
@@ -116,6 +129,7 @@ export const useSettings = () => {
     settings: userData?.settings,
     updateSettings,
     updateNotificationSettings,
+    updateAiSettings,
     updateTheme,
     handleThemeChange,
     handleDeleteTheme,

@@ -23,9 +23,11 @@ import { Ban, Save } from "lucide-react";
 const GoalForm = ({
   onClose,
   goalData,
+  onSave,
 }: {
   onClose: () => void;
   goalData?: Goal;
+  onSave?: () => void;
 }) => {
   const { addMutation, updateMutation, deleteMutation } = useGoalMutations();
 
@@ -68,6 +70,7 @@ const GoalForm = ({
         toast.success("Goal created successfully");
       }
       form.reset();
+      onSave?.();
       onClose?.();
     } catch (error) {
       console.error("Error saving goal", error);

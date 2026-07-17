@@ -33,11 +33,13 @@ import DeleteConfirm from "../../ui/delete-confirm";
 interface ItineraryFormProps {
   itineraryData?: Itinerary;
   onClose?: () => void;
+  onSave?: () => void;
 }
 
 const ItineraryForm: React.FC<ItineraryFormProps> = ({
   itineraryData,
   onClose,
+  onSave,
 }) => {
   const { addMutation, updateMutation, deleteMutation } =
     useItineraryMutations();
@@ -107,6 +109,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
         toast.success("Itinerary created successfully");
         form.reset();
       }
+      onSave?.();
       onClose?.();
     } catch (error) {
       console.error("Error saving itinerary", error);
@@ -331,7 +334,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
                                   {...field}
                                   onChange={(e) =>
                                     field.onChange(
-                                      parseFloat(e.target.value) || 0
+                                      parseFloat(e.target.value) || 0,
                                     )
                                   }
                                   value={field.value}
@@ -356,7 +359,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
         <div
           className={cn(
             "flex w-full pt-4 border-t mt-6",
-            isEditing ? "justify-between" : "justify-end"
+            isEditing ? "justify-between" : "justify-end",
           )}
         >
           {isEditing && (

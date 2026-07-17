@@ -8,6 +8,19 @@ import { Skeleton } from "../../ui/skeleton";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
 
+function SectionHeader({ label, count }: { label: string; count: number }) {
+  return (
+    <div className="flex items-baseline justify-between pb-3 mb-4 border-b border-border/60">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </h2>
+      <span className="text-sm text-muted-foreground">
+        {count} {getPluralWord("Goal", count)}
+      </span>
+    </div>
+  );
+}
+
 const GoalsList = () => {
   const { data: goals, isLoading } = useGoals();
   const { selectedGoalId, setSelectedGoalId } = usePlanner();
@@ -26,7 +39,7 @@ const GoalsList = () => {
       goal.progress >= goal.objective
         ? [[...completed, goal], inProgress]
         : [completed, [...inProgress, goal]],
-    [[], []] as [typeof goals, typeof goals]
+    [[], []] as [typeof goals, typeof goals],
   ) || [[], []];
 
   return (
@@ -49,13 +62,10 @@ const GoalsList = () => {
         <>
           {/* In-Progress Goals */}
           <div className="pb-12">
-            <div className="flex justify-between items-center pb-4">
-              <span className="text-lg font-semibold">In-Progress</span>
-              {`${inProgressGoals?.length} ${getPluralWord(
-                "Goal",
-                inProgressGoals?.length
-              )}`}
-            </div>
+            <SectionHeader
+              label="In Progress"
+              count={inProgressGoals?.length ?? 0}
+            />
             {inProgressGoals?.length === 0 ? (
               <Empty
                 icon={<Goal className="emptyIcon" />}
@@ -89,16 +99,13 @@ const GoalsList = () => {
 
           {/* Completed Goals */}
           <div className="pb-12">
-            <div className="flex justify-between items-center pb-4">
-              <span className="text-lg font-semibold">Completed</span>
-              {`${completedGoals?.length} ${getPluralWord(
-                "Goal",
-                completedGoals?.length
-              )}`}
-            </div>
+            <SectionHeader
+              label="Completed"
+              count={completedGoals?.length ?? 0}
+            />
             {completedGoals?.length === 0 ? (
-              <p className="text-muted-foreground mb-6 text-center py-4 md:py-12">
-                No Goals completed yet
+              <p className="text-muted-foreground mb-6 text-center py-4 md:py-12 text-sm">
+                No goals completed yet
               </p>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">

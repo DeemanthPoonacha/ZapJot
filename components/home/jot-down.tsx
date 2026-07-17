@@ -21,6 +21,7 @@ import { useJournalMutations } from "@/lib/hooks/useJournals";
 import { GetDateTime } from "@/lib/utils/date-time";
 import { DEFAULT_CHAPTER_ID } from "@/lib/constants";
 import { useNProgressRouter } from "../layout/link/CustomLink";
+import { PenLine } from "lucide-react";
 
 export function JotDown() {
   const defaultValues = {
@@ -65,20 +66,29 @@ export function JotDown() {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-semibold text-base mb-4">
+                <FormLabel className="font-serif italic text-base mb-4 flex items-center gap-2">
+                  <PenLine className="h-4 w-4 not-italic text-primary" />
                   Jot something down...
                 </FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="What's on your mind?"
-                    className="max-h-96"
-                    required
-                    {...field}
-                  />
+                  {/* Ruled-paper texture — lines follow the theme's border color */}
+                  <div
+                    className="rounded-md border border-input relative"
+                    style={{
+                      backgroundImage:
+                        "repeating-linear-gradient(to bottom, transparent, transparent 27px, var(--border) 28px)",
+                      backgroundAttachment: "local",
+                    }}
+                  >
+                    <div className="absolute top-0 bottom-0 left-8 w-px bg-destructive/25 pointer-events-none" />
+                    <Textarea
+                      placeholder="What's on your mind?"
+                      className="max-h-96 min-h-32 leading-7 pl-10 bg-transparent border-0 shadow-none focus-visible:ring-1"
+                      required
+                      {...field}
+                    />
+                  </div>
                 </FormControl>
-                {/* <FormDescription>
-                  You can <span>@mention</span> other users and organizations.
-                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
