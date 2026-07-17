@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-07-17
+
+### Added
+- **Dynamic Calendar Empty State Filtering:** Hides empty day cards when displaying month-ranges or upcoming events list, returning a clean empty state panel instead.
+- **Save/Discard AI Reaction Context:** Appends system messages (`ChatRole.SYSTEM`) to the chatbot conversational history to ensure Gemini stays fully informed of user actions while keeping these operations hidden from the message bubbles UI.
+
+### Changed
+- **Default Upcoming Events View:** Shifted the calendar default listing to display events from today onwards up to the end of the month, falling back to a full-month view only when the month is changed.
+
+### Fixed
+- **Firestore Query Task Omission:** Pre-populated missing default task fields (`status`, `highPriority`, `subtasks`) during direct creation to prevent Firestore `orderBy("highPriority")` queries from omitting newly added items.
+- **Yearly Event Format Matching:** Corrected the date formatter helper inside calendar date ranges from `"M-D"` to `"MM-DD"` to align with the database schema and prevent yearly repeating events from hiding.
+- **Firebase Write Batch Safety:** Handled nullable fields directly (assigning `null` instead of leaving `undefined`) during batch updates to prevent Firestore SDK validation errors.
+- **Next.js Hydration Mismatch:** Resolved layout hydration warnings by using `suppressHydrationWarning` on the root layout component.
+- **Today's Focus Crash:** Wrapped third-party quotes API fetch in a try-catch block with a static fallback to prevent layout failures during offline/restricted environments.
+
 ## [1.3.0] - 2026-07-17
 
 ### Added
