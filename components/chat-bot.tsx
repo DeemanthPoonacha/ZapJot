@@ -8,6 +8,9 @@ import {
   SendHorizonal,
   Maximize2,
   Minimize2,
+  History,
+  MessageSquare,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +43,7 @@ export default function ChatBotUI() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [brainDumpData, setBrainDumpData] = useState<BrainDump | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   const {
     sendMessage: askAI,
@@ -49,6 +53,11 @@ export default function ChatBotUI() {
     addMessage,
     clearMessages,
     aiStatus,
+    sessions,
+    currentSessionId,
+    switchSession,
+    startNewSession,
+    deleteSession,
   } = useAiChat();
 
   const sendMessage = () => {
@@ -772,6 +781,15 @@ export default function ChatBotUI() {
                     {isMaximized ? <Minimize2 /> : <Maximize2 />}
                   </Button>
                 )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowHistory(!showHistory)}
+                  title={showHistory ? "Back to Chat" : "Chat History"}
+                  className={showHistory ? "text-primary hover:text-primary/80" : ""}
+                >
+                  <History size={16} />
+                </Button>
                 {isSessionActive && (
                   <Button
                     variant="ghost"
@@ -791,137 +809,195 @@ export default function ChatBotUI() {
                 </Button>
               </div>
             </div>
-
-            <div
-              className="mt-auto overflow-y-auto space-y-2 text-sm"
-              ref={containerRef}
-            >
-              <div className="flex flex-col gap-2">
-                {messages
-                  .filter((msg) => msg.role !== ChatRole.SYSTEM)
-                  .map((msg, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      className={`flex ${
-                        msg.role === ChatRole.USER ? "justify-end" : "justify-start"
-                      }`}
+            {showHistory ? (
+              <div className="flex flex-col flex-1 overflow-y-auto space-y-3 p-1">
+                <div className="flex justify-between items-center pb-2 border-b">
+                  <h3 className="font-semibold text-sm">Previous Chats</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 gap-1 text-xs"
+                    onClick={() => {
+                      startNewSession();
+                      setShowHistory(false);
+                    }}
                   >
+                    <Plus size={14} /> New Chat
+                  </Button>
+                </div>
+                <div className="flex-1 overflow-y-auto space-y-2 max-h-[350px] md:max-h-[500px]">
+                  {sessions.map((session) => (
                     <div
-                      className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
-                        msg.role === ChatRole.USER
-                          ? "bg-primary text-primary-foreground self-end ms-4 rounded-br-md"
-                          : "bg-secondary text-secondary-foreground self-start me-4 rounded-bl-md"
-                      }`}
-                    >
-                      {msg.role === ChatRole.USER ? (
-                        <span className="whitespace-pre-wrap">{msg.text}</span>
-                      ) : (
-                        <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 p-0">
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              a: ({ href, children }) => (
-                                <a
-                                  href={href}
-                                  className="underline text-primary font-medium hover:text-primary/80 transition-colors"
-                                >
-                                  {children}
-                                </a>
-                              ),
-                            }}
-                          >
-                            {msg.text}
-                          </ReactMarkdown>
-                          {msg.isStreaming && (
-                            <span className="inline-block w-1.5 h-4 ml-1 bg-current animate-pulse align-middle" />
-                          )}
-                        </div>
+                      key={session.id}
+                      className={cn(
+                        "group flex items-center justify-between p-2.5 rounded-lg border transition-colors hover:bg-accent/40 cursor-pointer",
+                        session.id === currentSessionId
+                          ? "bg-accent/50 border-primary/30"
+                          : "bg-card border-border"
                       )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="border-t py-4 @container">
-                {askAI.isPending &&
-                !messages[messages.length - 1]?.isStreaming ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-start"
-                  >
-                    <div className="max-w-[80%] p-3 px-4 rounded-2xl rounded-bl-md bg-secondary text-gray-400 border text-sm shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <motion.span
-                          key={aiStatus || "thinking"}
-                          initial={{ opacity: 0, x: -5 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="font-medium animate-pulse"
-                        >
-                          {aiStatus || "Thinking..."}
-                        </motion.span>
-                        <div className="flex items-center gap-1">
-                          {[0, 0.2, 0.4].map((delay, i) => (
-                            <motion.div
-                              key={i}
-                              animate={{ opacity: [0.3, 1, 0.3] }}
-                              transition={{
-                                repeat: Infinity,
-                                duration: 1.5,
-                                delay,
-                              }}
-                              className="w-1.5 h-1.5 bg-primary/60 rounded-full"
-                            />
-                          ))}
-                        </div>
+                      onClick={() => {
+                        switchSession(session.id);
+                        setShowHistory(false);
+                      }}
+                    >
+                      <div className="flex-1 min-w-0 pr-2">
+                        <p className="font-medium text-xs truncate">
+                          {session.title || "New Chat"}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          {new Date(session.updatedAt || session.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteSession(session.id);
+                        }}
+                        title="Delete chat history"
+                      >
+                        <Trash2 size={13} />
+                      </Button>
                     </div>
-                  </motion.div>
-                ) : (
-                  actionModal
-                )}
+                  ))}
+                </div>
               </div>
+            ) : (
+              <>
+                <div
+                  className="mt-auto overflow-y-auto space-y-2 text-sm"
+                  ref={containerRef}
+                >
+                  <div className="flex flex-col gap-2">
+                    {messages
+                      .filter((msg) => msg.role !== ChatRole.SYSTEM)
+                      .map((msg, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          className={`flex ${
+                            msg.role === ChatRole.USER ? "justify-end" : "justify-start"
+                          }`}
+                        >
+                          <div
+                            className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
+                              msg.role === ChatRole.USER
+                                ? "bg-primary text-primary-foreground self-end ms-4 rounded-br-md"
+                                : "bg-secondary text-secondary-foreground self-start me-4 rounded-bl-md"
+                            }`}
+                          >
+                            {msg.role === ChatRole.USER ? (
+                              <span className="whitespace-pre-wrap">{msg.text}</span>
+                            ) : (
+                              <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 p-0">
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkGfm]}
+                                  components={{
+                                    a: ({ href, children }) => (
+                                      <a
+                                        href={href}
+                                        className="underline text-primary font-medium hover:text-primary/80 transition-colors"
+                                      >
+                                        {children}
+                                      </a>
+                                    ),
+                                  }}
+                                >
+                                  {msg.text}
+                                </ReactMarkdown>
+                                {msg.isStreaming && (
+                                  <span className="inline-block w-1.5 h-4 ml-1 bg-current animate-pulse align-middle" />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
+                  </div>
 
-              {showBottomButton && (
-                <Button
-                  onClick={scrollToBottom}
-                  className={cn(
-                    "absolute right-6 z-50 rounded-full p-2 shadow-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground",
-                    isMaximized ? "bottom-48" : "bottom-28",
+                  <div className="border-t py-4 @container">
+                    {askAI.isPending &&
+                    !messages[messages.length - 1]?.isStreaming ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex justify-start"
+                      >
+                        <div className="max-w-[80%] p-3 px-4 rounded-2xl rounded-bl-md bg-secondary text-gray-400 border text-sm shadow-sm">
+                          <div className="flex items-center gap-3">
+                            <motion.span
+                              key={aiStatus || "thinking"}
+                              initial={{ opacity: 0, x: -5 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="font-medium animate-pulse"
+                            >
+                              {aiStatus || "Thinking..."}
+                            </motion.span>
+                            <div className="flex items-center gap-1">
+                              {[0, 0.2, 0.4].map((delay, i) => (
+                                <motion.div
+                                  key={i}
+                                  animate={{ opacity: [0.3, 1, 0.3] }}
+                                  transition={{
+                                    repeat: Infinity,
+                                    duration: 1.5,
+                                    delay,
+                                  }}
+                                  className="w-1.5 h-1.5 bg-primary/60 rounded-full"
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      actionModal
+                    )}
+                  </div>
+
+                  {showBottomButton && (
+                    <Button
+                      onClick={scrollToBottom}
+                      className={cn(
+                        "absolute right-6 z-50 rounded-full p-2 shadow-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground",
+                        isMaximized ? "bottom-48" : "bottom-28",
+                      )}
+                    >
+                      <ArrowDown size={20} />
+                    </Button>
                   )}
-                >
-                  <ArrowDown size={20} />
-                </Button>
-              )}
-            </div>
+                </div>
 
-            <div className="border-t pt-2">
-              <div className="border rounded-4xl p-1 flex items-end gap-2 focus-within:ring-2 focus-within:ring-ring focus-within:border-border transition-all">
-                <Textarea
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      sendMessage();
-                    }
-                  }}
-                  rows={1}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask something..."
-                  className="w-full rounded-l-4xl p-2 text-sm min-h-9 max-h-64 border-0 ring-0 focus:ring-0 focus:border-0 focus:outline-none shadow-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none "
-                />
-                <Button
-                  className="rounded-full"
-                  onClick={sendMessage}
-                  disabled={askAI.isPending || !input.trim()}
-                >
-                  <span className="hidden sm:inline">Send</span>
-                  <SendHorizonal />
-                </Button>
-              </div>
-            </div>
+                <div className="border-t pt-2">
+                  <div className="border rounded-4xl p-1 flex items-end gap-2 focus-within:ring-2 focus-within:ring-ring focus-within:border-border transition-all">
+                    <Textarea
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          sendMessage();
+                        }
+                      }}
+                      rows={1}
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Ask something..."
+                      className="w-full rounded-l-4xl p-2 text-sm min-h-9 max-h-64 border-0 ring-0 focus:ring-0 focus:border-0 focus:outline-none shadow-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none "
+                    />
+                    <Button
+                      className="rounded-full"
+                      onClick={sendMessage}
+                      disabled={askAI.isPending || !input.trim()}
+                    >
+                      <span className="hidden sm:inline">Send</span>
+                      <SendHorizonal />
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

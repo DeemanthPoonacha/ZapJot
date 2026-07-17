@@ -10,7 +10,7 @@ export function useGlobalState<T>(
   options?: UseQueryOptions<T | null | undefined>
 ): [
   T,
-  (data: T) => void,
+  (data: T | ((prev: T) => T)) => void,
   () => void,
   (updater: (prev: T) => T) => void,
   (data: Partial<T>) => void
@@ -35,8 +35,14 @@ export function useGlobalState<T>(
     });
   };
 
-  const setData = (newData: T): void => {
-    queryClient.setQueryData<T | undefined>([queryKey], newData);
+  const setData = (newData: T | ((prev: T) => T)): void => {
+    if (typeof newData === "function") {
+      queryClient.setQueryData<T | undefined>([queryKey], (prev) => {
+        return (newData as (prev: T) => T)(prev as T);
+      });
+    } else {
+      queryClient.setQueryData<T | undefined>([queryKey], newData);
+    }
   };
 
   const updateData = (updater: (prev: T) => T): void => {
