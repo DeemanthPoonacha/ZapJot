@@ -2,7 +2,7 @@ import { useRef, useCallback, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getModel, AVAILABLE_MODELS } from "../services/firebase/ai";
 import { ChatSession } from "firebase/ai";
-import { ChatMessage, ChatRole } from "@/types/ai-chat";
+import { ChatMessage, ChatRole, ChatSessionInfo } from "@/types/ai-chat";
 import { useGlobalState } from "./global-state";
 import { useSettings } from "./useSettings";
 
@@ -21,6 +21,16 @@ export function useAiChat() {
     { role: ChatRole.AI, text: "Hello, how can I help you today?" },
   ]);
 
+  const [sessions, setSessions] = useGlobalState<ChatSessionInfo[]>(
+    "ai-chat-sessions",
+    []
+  );
+
+  const [currentSessionId, setCurrentSessionId] = useGlobalState<string | null>(
+    "ai-chat-current-session-id",
+    null
+  );
+
   const [currentModelIndex, setCurrentModelIndex] = useGlobalState(
     "ai-current-model-index",
     0,
@@ -33,37 +43,166 @@ export function useAiChat() {
 
   const [hookAesKey] = useGlobalState<CryptoKey | null>(["encrypted-key"], null);
 
+  const chatSessionRef = useRef<ChatSession | null>(null);
+  const [isSessionActive, setIsSessionActive] = useGlobalState(
+    "ai-chat-session-active",
+    false,
+  );
+
   // Sync to/from localStorage for persistence
   useEffect(() => {
     if (typeof window === "undefined" || !userId) return;
     
-    // Only load from localStorage if the current cache has 1 or fewer messages
-    const currentMessages = queryClient.getQueryData<ChatMessage[]>(["messages"]) || [];
-    if (currentMessages.length <= 1) {
-      const key = `zapjot-ai-history-${userId}`;
-      const saved = localStorage.getItem(key);
-      if (saved) {
-        try {
-          setMessages(JSON.parse(saved));
-        } catch (e) {
-          console.error("Failed to parse saved chat history", e);
-        }
+    const sessionsKey = `zapjot-ai-sessions-${userId}`;
+    const activeKey = `zapjot-ai-active-session-${userId}`;
+    const savedSessions = localStorage.getItem(sessionsKey);
+    const savedActiveId = localStorage.getItem(activeKey);
+
+    let parsedSessions: ChatSessionInfo[] = [];
+    if (savedSessions) {
+      try {
+        parsedSessions = JSON.parse(savedSessions);
+        setSessions(parsedSessions);
+      } catch (e) {
+        console.error("Failed to parse saved chat sessions", e);
       }
     }
-  }, [userId, setMessages, queryClient]);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !userId) return;
-    const key = `zapjot-ai-history-${userId}`;
-    if (messages.length > 0) {
-      localStorage.setItem(key, JSON.stringify(messages));
+    if (parsedSessions.length > 0) {
+      const activeSession = parsedSessions.find((s) => s.id === savedActiveId) || parsedSessions[0];
+      setCurrentSessionId(activeSession.id);
+      setMessages(activeSession.messages);
+    } else {
+      const defaultSession: ChatSessionInfo = {
+        id: "session-default",
+        title: "New Chat",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        messages: [
+          { role: ChatRole.AI, text: "Hello, how can I help you today?" }
+        ]
+      };
+      setSessions([defaultSession]);
+      setCurrentSessionId(defaultSession.id);
+      setMessages(defaultSession.messages);
     }
-  }, [messages, userId]);
+  }, [userId]);
+
+  // Sync messages update to sessions list and localStorage
+  useEffect(() => {
+    if (typeof window === "undefined" || !userId || !currentSessionId) return;
+
+    setSessions((prevSessions) => {
+      const sessionIndex = prevSessions.findIndex((s) => s.id === currentSessionId);
+      if (sessionIndex === -1) return prevSessions;
+
+      const updatedSessions = [...prevSessions];
+      const currentSession = updatedSessions[sessionIndex];
+
+      // Auto-title based on the first user message if it's currently titled "New Chat"
+      let newTitle = currentSession.title;
+      if (newTitle === "New Chat") {
+        const firstUserMsg = messages.find((m) => m.role === ChatRole.USER);
+        if (firstUserMsg) {
+          newTitle = firstUserMsg.text.length > 30 
+            ? firstUserMsg.text.substring(0, 30) + "..." 
+            : firstUserMsg.text;
+        }
+      }
+
+      updatedSessions[sessionIndex] = {
+        ...currentSession,
+        title: newTitle,
+        messages,
+        updatedAt: new Date().toISOString(),
+      };
+
+      localStorage.setItem(`zapjot-ai-sessions-${userId}`, JSON.stringify(updatedSessions));
+      return updatedSessions;
+    });
+
+    localStorage.setItem(`zapjot-ai-active-session-${userId}`, currentSessionId);
+  }, [messages, currentSessionId, userId]);
+
+  const switchSession = useCallback((sessionId: string) => {
+    setSessions((prevSessions) => {
+      const session = prevSessions.find((s) => s.id === sessionId);
+      if (session) {
+        setCurrentSessionId(sessionId);
+        setMessages(session.messages);
+        chatSessionRef.current = null;
+        setIsSessionActive(false);
+      }
+      return prevSessions;
+    });
+  }, [setCurrentSessionId, setMessages, setIsSessionActive]);
+
+  const startNewSession = useCallback(() => {
+    const newSessionId = `session-${Math.random().toString(36).substring(7)}`;
+    const newSession: ChatSessionInfo = {
+      id: newSessionId,
+      title: "New Chat",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      messages: [
+        { role: ChatRole.AI, text: "Hello, how can I help you today?" }
+      ]
+    };
+
+    setSessions((prev) => [newSession, ...prev]);
+    setCurrentSessionId(newSessionId);
+    setMessages(newSession.messages);
+    chatSessionRef.current = null;
+    setIsSessionActive(false);
+  }, [setSessions, setCurrentSessionId, setMessages, setIsSessionActive]);
+
+  const deleteSession = useCallback((sessionId: string) => {
+    setSessions((prev) => {
+      const updated = prev.filter((s) => s.id !== sessionId);
+
+      if (updated.length === 0) {
+        const defaultSession: ChatSessionInfo = {
+          id: "session-default",
+          title: "New Chat",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          messages: [
+            { role: ChatRole.AI, text: "Hello, how can I help you today?" }
+          ]
+        };
+        setTimeout(() => {
+          setSessions([defaultSession]);
+          setCurrentSessionId(defaultSession.id);
+          setMessages(defaultSession.messages);
+          chatSessionRef.current = null;
+          setIsSessionActive(false);
+        }, 0);
+        return [];
+      }
+
+      if (sessionId === currentSessionId) {
+        const nextSession = updated[0];
+        setTimeout(() => {
+          setCurrentSessionId(nextSession.id);
+          setMessages(nextSession.messages);
+          chatSessionRef.current = null;
+          setIsSessionActive(false);
+        }, 0);
+      }
+
+      localStorage.setItem(`zapjot-ai-sessions-${userId}`, JSON.stringify(updated));
+      return updated;
+    });
+  }, [currentSessionId, userId, setSessions, setCurrentSessionId, setMessages, setIsSessionActive]);
 
   const clearMessages = () => {
     resetMessages();
-    if (typeof window !== "undefined" && userId) {
-      localStorage.removeItem(`zapjot-ai-history-${userId}`);
+    if (typeof window !== "undefined" && userId && currentSessionId) {
+      setMessages([
+        { role: ChatRole.AI, text: "Hello, how can I help you today?" }
+      ]);
+      chatSessionRef.current = null;
+      setIsSessionActive(false);
     }
   };
 
@@ -73,12 +212,6 @@ export function useAiChat() {
       return updatedMessages;
     });
   };
-
-  const chatSessionRef = useRef<ChatSession | null>(null);
-  const [isSessionActive, setIsSessionActive] = useGlobalState(
-    "ai-chat-session-active",
-    false,
-  );
 
   const initializeSession = useCallback(
     async (modelIdx = currentModelIndex) => {
@@ -1286,6 +1419,11 @@ export function useAiChat() {
     addMessage,
     aiStatus,
     currentModel: AVAILABLE_MODELS[currentModelIndex],
+    sessions,
+    currentSessionId,
+    switchSession,
+    startNewSession,
+    deleteSession,
   };
 }
 

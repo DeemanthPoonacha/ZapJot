@@ -14,3 +14,10 @@ export type ChatMessage = {
     args: Record<string, any>;
   };
 };
+export type ChatSessionInfo = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: ChatMessage[];
+};
