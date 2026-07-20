@@ -1,6 +1,10 @@
 # Database Production Readiness & Security Plan
 
-This plan details the implementation to make the database production-ready by introducing security rules, validation, user data deletion, and secure API routes.
+This plan details the implementation to make the database production-ready. The changes are submitted in **Pull Request [#16](https://github.com/DeemanthPoonacha/ZapJot/pull/16)** and address:
+- **Firestore Security Rules & Indexes** (resolves [#12](https://github.com/DeemanthPoonacha/ZapJot/issues/12))
+- **Service-Layer Schema Validation** (resolves [#13](https://github.com/DeemanthPoonacha/ZapJot/issues/13))
+- **Cascading GDPR User Deletion** (resolves [#14](https://github.com/DeemanthPoonacha/ZapJot/issues/14))
+- **Secure Image-Signing API Endpoint** (resolves [#15](https://github.com/DeemanthPoonacha/ZapJot/issues/15))
 
 ## Proposed Changes
 
@@ -16,6 +20,9 @@ This plan details the implementation to make the database production-ready by in
 #### `firebase.json`
 - Reference `firestore.rules` and `firestore.indexes.json` so they are correctly configured for deployment.
 
+#### [NEW] `lib/services/firebase/admin.ts`
+- Centralize Firebase Admin SDK initialization to prevent duplicate client initialization and manage credentials securely via environment variables.
+
 ---
 
 ### Service-Layer Zod Validation
@@ -28,6 +35,7 @@ We will integrate Zod validation (`.parse()`) at the service boundary before any
 #### `lib/services/events.ts`
 - Validate input using `createEventSchema` on `addEvent` and `updateEventSchema` on `updateEvent`.
 - Replace unstable async `.map(...)` loop with `Promise.all(...)` to fix participant reminder sync.
+- Refactor event filtering to query Firestore `documentId()` instead of an explicit `"id"` property.
 
 #### `lib/services/goals.ts`
 - Validate input using `createGoalSchema` on `addGoal` and `updateGoalSchema` on `updateGoal`.
@@ -46,6 +54,9 @@ We will integrate Zod validation (`.parse()`) at the service boundary before any
 #### `lib/services/itineraries.ts`
 - Validate input using `createItinerarySchema`/`updateItinerarySchema`.
 
+#### `components/planner/events/EventForm.tsx`
+- Standardize date input formats with padding to align with schema requirements.
+
 ---
 
 ### Account and Configuration
@@ -58,11 +69,15 @@ We will integrate Zod validation (`.parse()`) at the service boundary before any
 
 ---
 
-### API Authentication
+### API Authentication & Client Uploads
 
 #### `app/api/sign-image/route.ts`
-- Add authorization header check using Firebase Admin SDK (`auth().verifyIdToken()`).
+- Add authorization header check using the centralized Firebase Admin SDK.
 - Fallback/bypass in development only if config isn't set, but strictly enforce in production.
+
+#### `components/ui/upload-avatar.tsx` & `components/ui/upload-image.tsx`
+- Secure client signatures by calling `signatureEndpoint={`/api/sign-image?token=${token}`}`.
+- Prevent widget interaction prior to token load using custom loading states (`<CustomLoader />`).
 
 ---
 

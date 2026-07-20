@@ -8,17 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2026-07-20
 
 ### Added
-- **Firestore Security Rules:** Added `firestore.rules`, `firestore.indexes.json`, and `firebase.json` configs to enforce strict user-scoped tenancy isolation and configure composite/collection group indexes.
-- **GDPR Cascading User Deletion:** Implemented a recursive, chunked-batch cascade deletion in `deleteUserData()` to safely purge all collections under a user profile in chunks of 400 documents.
-- **Firebase Token Verification:** Secured `/api/sign-image` endpoint by extracting and validating Firebase ID tokens using the Admin SDK.
+- **Firestore Security Rules:** Added `firestore.rules`, `firestore.indexes.json`, and `firebase.json` configs to enforce strict user-scoped tenancy isolation and configure composite/collection group indexes. (#12)
+- **GDPR Cascading User Deletion:** Implemented a recursive, chunked-batch cascade deletion in `deleteUserData()` to safely purge all collections under a user profile in chunks of 400 documents. (#14)
+- **Firebase Token Verification:** Secured `/api/sign-image` endpoint by extracting and validating Firebase ID tokens using the Admin SDK. (#15)
+- **Firebase Admin Centralization:** Centralized Firebase Admin SDK initialization into `lib/services/firebase/admin.ts` to reuse the instance and streamline API route authentication. (#15)
+- **Auth-Gated Loading States:** Implemented token availability checks (`!token`) and `<CustomLoader />` rendering inside `upload-avatar.tsx` and `upload-image.tsx` to handle async Firebase Auth ID Token loading state smoothly before invoking `CldUploadWidget`. (#15)
 
 ### Changed
-- **Service-Layer Schema Validation:** Integrated Zod schemas (`create*Schema` and `update*Schema`) inside all write endpoints of `tasks`, `events`, `goals`, `characters`, `chapters`, `journals`, and `itineraries` services to prevent database corruption.
-- **Atomic Journal Moves:** Refactored `moveJournal` to run the write/delete operations atomically within a Firestore Transaction.
+- **Service-Layer Schema Validation:** Integrated Zod schemas (`create*Schema` and `update*Schema`) inside all write endpoints of `tasks`, `events`, `goals`, `characters`, `chapters`, `journals`, and `itineraries` services to prevent database corruption. (#13)
+- **Atomic Journal Moves:** Refactored `moveJournal` to run the write/delete operations atomically within a Firestore Transaction. (#13)
 
 ### Fixed
-- **Unawaited Participant Synchronization:** Resolved race conditions during event creation/updates by wrapping concurrent updates in `Promise.all()`.
-- **Inconsistent Timestamps:** Unified all updated/created timestamp writes to follow ISO 8601 strings.
+- **Unawaited Participant Synchronization:** Resolved race conditions during event creation/updates by wrapping concurrent updates in `Promise.all()`. (#13)
+- **Inconsistent Timestamps:** Unified all updated/created timestamp writes to follow ISO 8601 strings. (#13)
+- **Firestore documentId Queries:** Fixed event retrieval filters in `lib/services/events.ts` to query `documentId()` instead of matching against a string property `"id"`. (#13)
+- **Standardized EventForm Date Formatting:** Standardized MM/DD padding formats in `EventForm.tsx` to ensure proper matching with repeating event schemas. (#13)
 
 ## [1.3.1] - 2026-07-17
 
