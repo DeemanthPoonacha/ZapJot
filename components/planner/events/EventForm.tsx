@@ -177,15 +177,13 @@ export default function EventForm({
       </div>
     </FormItem>
   );
-
   // eslint-disable-next-line
   const renderYearlySelector = (field: any) => {
-    const monthValue =
-      parseInt(field.value[0])?.toString()?.split("-")[0] || "";
-    const dayValue = field.value[0]?.toString()?.split("-")[1] || "";
+    const value = field.value?.[0] || "";
+    const [monthValue = "", dayValue = ""] = value.split("-");
 
     const handleMonthChange = (value: string) => {
-      field.onChange([`${value}-${dayValue || "1"}`]);
+      field.onChange([`${value}-${dayValue || "01"}`]);
     };
 
     const handleDayChange = (value: string) => {
@@ -204,13 +202,17 @@ export default function EventForm({
             </FormControl>
             <SelectContent>
               {ALL_MONTHS.map((month, index) => (
-                <SelectItem key={index} value={(index + 1).toString()}>
+                <SelectItem
+                  key={index}
+                  value={(index + 1).toString().padStart(2, "0")}
+                >
                   {month}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </span>
+
         <span className="grid gap-2">
           <Label>Day</Label>
           <Select
@@ -224,8 +226,11 @@ export default function EventForm({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {getDates(parseInt(monthValue) || 1).map((day, index) => (
-                <SelectItem key={index} value={(index + 1).toString()}>
+              {getDates(parseInt(monthValue, 10) || 1).map((day, index) => (
+                <SelectItem
+                  key={index}
+                  value={(index + 1).toString().padStart(2, "0")}
+                >
                   {day}
                 </SelectItem>
               ))}
