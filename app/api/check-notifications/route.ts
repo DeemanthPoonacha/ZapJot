@@ -1,24 +1,8 @@
 import { getFirestore } from "firebase-admin/firestore";
-import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
 import { getMinutesRelative } from "@/lib/utils/date-time";
 import { UserInDb } from "@/types/user";
-
-if (!admin.apps.length) {
-  const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-  if (serviceAccountJson) {
-    try {
-      const serviceAccount = JSON.parse(serviceAccountJson) as admin.ServiceAccount;
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-      });
-    } catch (e) {
-      console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:", e);
-    }
-  } else {
-    console.warn("GOOGLE_SERVICE_ACCOUNT_JSON is not configured. Firebase admin SDK not initialized.");
-  }
-}
+import admin from "@/lib/services/firebase/admin";
 
 export async function GET(request: Request) {
   try {
@@ -92,7 +76,7 @@ export async function GET(request: Request) {
     console.error("Error sending notifications:", error);
     return Response.json(
       { error: "Failed to send notifications" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

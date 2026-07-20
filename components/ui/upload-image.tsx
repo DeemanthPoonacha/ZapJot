@@ -16,6 +16,7 @@ import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/context/AuthProvider";
+import { CustomLoader } from "../layout/CustomLoader";
 
 const UploadImage = ({
   form,
@@ -58,14 +59,24 @@ const UploadImage = ({
     }
   };
 
-  const openWidgetRef = useRef<(() => void) | null>(null);
+  const openWidgetRef = useRef<() => void>(null);
 
+  // This effect will run once the component mounts
   useEffect(() => {
-    if (defaultCamOpen && openWidgetRef.current) {
-      openWidgetRef.current();
-    }
-  }, [defaultCamOpen]);
+    // Check if the open function has been stored in the ref
+    if (openWidgetRef.current && defaultCamOpen) {
+      // Small delay to ensure the widget is properly initialized
+      const timer = setTimeout(() => {
+        openWidgetRef.current?.();
+      }, 100);
 
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  if (!token) {
+    return <CustomLoader />;
+  }
   return (
     <FormField
       control={form.control}
@@ -118,7 +129,7 @@ const UploadImage = ({
                     setIsImageUploading(true);
                   }}
                   onClose={() => setIsImageUploading(false)}
-                  signatureEndpoint={token ? `/api/sign-image?token=${token}` : undefined}
+                  signatureEndpoint={`/api/sign-image?token=${token}`}
                 >
                   {({ open }) => {
                     // Store the open function in ref for use in useEffect

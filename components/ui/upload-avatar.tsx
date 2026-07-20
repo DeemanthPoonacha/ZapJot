@@ -16,6 +16,7 @@ import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { useState, useEffect } from "react";
+import { CustomLoader } from "../layout/CustomLoader";
 
 const UploadAvatar = ({
   form,
@@ -55,6 +56,10 @@ const UploadAvatar = ({
       setIsImageUploading(false);
     }
   };
+
+  if (!token) {
+    return <CustomLoader />;
+  }
 
   return (
     <FormField
@@ -105,7 +110,7 @@ const UploadAvatar = ({
                   }}
                   onOpen={() => setIsImageUploading(true)}
                   onClose={() => setIsImageUploading(false)}
-                  signatureEndpoint={token ? `/api/sign-image?token=${token}` : undefined}
+                  signatureEndpoint={`/api/sign-image?token=${token}`}
                 >
                   {({ open }) => {
                     return (
