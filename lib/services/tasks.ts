@@ -1,5 +1,5 @@
 import { db } from "./firebase/db";
-import { Task, TaskCreate, TaskFilter } from "@/types/tasks";
+import { Task, TaskCreate, TaskFilter, createTaskSchema, updateTaskSchema } from "@/types/tasks";
 import {
   collection,
   doc,
@@ -20,8 +20,6 @@ const getTasks = async (
 ): Promise<Task[]> => {
   const tasksRef = collection(db, `users/${userId}/tasks`);
   const constraints = [];
-
-  console.log("filter", filter);
 
   constraints.push(orderBy("highPriority", "desc"));
 
@@ -58,11 +56,11 @@ const getTaskById = async (
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Task)
     : null;
-};
+    };
 
 const addTask = async (userId: string, taskData: TaskCreate): Promise<void> => {
   const tasksCollection = collection(db, `users/${userId}/tasks`);
-  const finalizedTask: TaskCreate = {
+  const finalizedTask = {
     ...taskData,
     status: taskData.status || "pending",
     highPriority: taskData.highPriority !== undefined ? taskData.highPriority : false,
@@ -70,7 +68,10 @@ const addTask = async (userId: string, taskData: TaskCreate): Promise<void> => {
     createdAt: taskData.createdAt || new Date().toISOString(),
     updatedAt: taskData.updatedAt || new Date().toISOString(),
   };
-  await addDoc(tasksCollection, finalizedTask);
+  
+  // Validate data before write
+  const validated = createTaskSchema.parse(finalizedTask);
+  await addDoc(tasksCollection, validated);
 };
 
 const updateTask = async (
@@ -79,7 +80,13 @@ const updateTask = async (
   taskData: Partial<TaskCreate>
 ): Promise<void> => {
   const taskRef = doc(db, `users/${userId}/tasks`, taskId);
-  await updateDoc(taskRef, taskData);
+  
+  // Validate update payload
+  const validated = updateTaskSchema.parse({
+    ...taskData,
+    updatedAt: new Date().toISOString(),
+  });
+  await updateDoc(taskRef, validated);
 };
 
 const deleteTask = async (userId: string, taskId: string): Promise<void> => {

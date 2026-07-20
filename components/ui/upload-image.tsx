@@ -14,7 +14,9 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { CloudinaryResult } from "@/types/general";
 import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/lib/context/AuthProvider";
+import { CustomLoader } from "../layout/CustomLoader";
 
 const UploadImage = ({
   form,
@@ -30,6 +32,15 @@ const UploadImage = ({
   setIsImageUploading: (isUploading: boolean) => void;
   defaultCamOpen?: boolean;
 }) => {
+  const { user } = useAuth();
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    if (user) {
+      user.getIdToken().then(setToken);
+    }
+  }, [user]);
+
   const handleImageUploadSuccess = async (result: CloudinaryResult) => {
     // Get the secure URL from the upload result
     const imageUrl = result.secure_url;
@@ -47,6 +58,7 @@ const UploadImage = ({
       setIsImageUploading(false);
     }
   };
+
   const openWidgetRef = useRef<() => void>(null);
 
   // This effect will run once the component mounts
@@ -62,6 +74,9 @@ const UploadImage = ({
     }
   }, []);
 
+  if (!token) {
+    return <CustomLoader />;
+  }
   return (
     <FormField
       control={form.control}
@@ -114,7 +129,7 @@ const UploadImage = ({
                     setIsImageUploading(true);
                   }}
                   onClose={() => setIsImageUploading(false)}
-                  signatureEndpoint="/api/sign-image"
+                  signatureEndpoint={`/api/sign-image?token=${token}`}
                 >
                   {({ open }) => {
                     // Store the open function in ref for use in useEffect
