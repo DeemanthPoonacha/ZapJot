@@ -257,6 +257,29 @@ export default function ChatBotUI() {
   }
 
   function executeAICommand(command: any) {
+    const deleteActionMap: Record<string, string> = {
+      delete_task: "task",
+      delete_event: "event",
+      delete_goal: "goal",
+      delete_chapter: "chapter",
+      delete_journal: "journal",
+      delete_character: "character",
+      delete_itinerary: "itinerary",
+    };
+
+    if (deleteActionMap[command.action]) {
+      const itemType = deleteActionMap[command.action];
+      const itemIdKey = `${itemType}Id`;
+      command = {
+        action: "confirm_delete",
+        itemType,
+        itemId: command[itemIdKey] || command.itemId,
+        participantIds: command.participantIds,
+        chapterId: command.chapterId,
+        message: `Are you sure you want to delete this ${itemType}?`,
+      };
+    }
+
     switch (command.action) {
       case "create_chapter":
         setActionModal(

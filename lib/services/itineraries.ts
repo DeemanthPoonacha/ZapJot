@@ -13,6 +13,8 @@ import {
   ItineraryUpdate,
   ItineraryTask,
   ItineraryDayType,
+  createItinerarySchema,
+  updateItinerarySchema,
 } from "@/types/itineraries";
 
 // **Collection Reference**
@@ -39,8 +41,16 @@ export const getItineraryById = async (userId: string, itineraryId: string) => {
 
 /** Create a new itinerary */
 export const addItinerary = async (userId: string, data: ItineraryCreate) => {
-  const docRef = await addDoc(getItineraryCollection(userId), data);
-  return { id: docRef.id, ...data };
+  const payload = {
+    ...data,
+    createdAt: data.createdAt || new Date().toISOString(),
+    updatedAt: data.updatedAt || new Date().toISOString(),
+  };
+
+  // Validate itinerary payload before addDoc
+  const validated = createItinerarySchema.parse(payload);
+  const docRef = await addDoc(getItineraryCollection(userId), validated);
+  return { id: docRef.id, ...validated };
 };
 
 /** Update an itinerary */
@@ -50,7 +60,14 @@ export const updateItinerary = async (
   data: ItineraryUpdate
 ) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
-  await updateDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
+  const payload = {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  };
+
+  // Validate itinerary update payload before updateDoc
+  const validated = updateItinerarySchema.parse(payload);
+  await updateDoc(docRef, validated);
 };
 
 export const updateItineraryCost = async (
@@ -59,10 +76,14 @@ export const updateItineraryCost = async (
   cost: number
 ) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
-  await updateDoc(docRef, {
+  const payload = {
     actualCost: cost,
     updatedAt: new Date().toISOString(),
-  });
+  };
+
+  // Validate itinerary cost update payload before updateDoc
+  const validated = updateItinerarySchema.parse(payload);
+  await updateDoc(docRef, validated);
 };
 
 /** Delete an itinerary */

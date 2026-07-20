@@ -1,5 +1,5 @@
 import { db } from "./firebase/db";
-import { Chapter, ChapterCreate, ChapterUpdate } from "@/types/chapters";
+import { Chapter, ChapterCreate, ChapterUpdate, createChapterSchema, updateChapterSchema } from "@/types/chapters";
 import {
   collection,
   doc,
@@ -36,11 +36,16 @@ export const getChapterById = async (
 // Add a new chapter
 export const addChapter = async (userId: string, data: ChapterCreate) => {
   const chaptersRef = collection(db, `users/${userId}/chapters`);
-  const docRef = await addDoc(chaptersRef, {
+  const payload = {
     ...data,
-    updatedAt: new Date().toISOString(),
-  });
-  return { id: docRef.id, ...data };
+    createdAt: data.createdAt || new Date().toISOString(),
+    updatedAt: data.updatedAt || new Date().toISOString(),
+  };
+
+  // Validate chapter payload before addDoc
+  const validated = createChapterSchema.parse(payload);
+  const docRef = await addDoc(chaptersRef, validated);
+  return { id: docRef.id, ...validated };
 };
 
 // Update an existing chapter
@@ -50,7 +55,13 @@ export const updateChapter = async (
   data: ChapterUpdate
 ) => {
   const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
-  await updateDoc(chapterRef, { ...data, updatedAt: new Date().toISOString() });
+  
+  // Validate chapter update payload before updateDoc
+  const validated = updateChapterSchema.parse({
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+  await updateDoc(chapterRef, validated);
 };
 
 // Delete a chapter
@@ -70,10 +81,15 @@ export const deleteJournalsInChapter = async (
   );
   const snapshot = await getDocs(journalsRef);
 
-  const batch = writeBatch(db);
-  snapshot.docs.forEach((docSnap) => {
-    batch.delete(docSnap.ref);
-  });
-
-  await batch.commit();
+  // Firestore batches are limited to 500 writes. We chunk deletions into batches of 400.
+  const docs = snapshot.docs;
+  const chunkSize = 400;
+  for (let i = 0; i < docs.length; i += chunkSize) {
+    const chunk = docs.slice(i, i + chunkSize);
+    const batch = writeBatch(db);
+    chunk.forEach((docSnap) => {
+      batch.delete(docSnap.ref);
+    });
+    await batch.commit();
+  }
 };
