@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-07-20
+
+### Added
+- **Firestore Security Rules:** Added `firestore.rules`, `firestore.indexes.json`, and `firebase.json` configs to enforce strict user-scoped tenancy isolation and configure composite/collection group indexes.
+- **GDPR Cascading User Deletion:** Implemented a recursive, chunked-batch cascade deletion in `deleteUserData()` to safely purge all collections under a user profile in chunks of 400 documents.
+- **Firebase Token Verification:** Secured `/api/sign-image` endpoint by extracting and validating Firebase ID tokens using the Admin SDK.
+
+### Changed
+- **Service-Layer Schema Validation:** Integrated Zod schemas (`create*Schema` and `update*Schema`) inside all write endpoints of `tasks`, `events`, `goals`, `characters`, `chapters`, `journals`, and `itineraries` services to prevent database corruption.
+- **Atomic Journal Moves:** Refactored `moveJournal` to run the write/delete operations atomically within a Firestore Transaction.
+
+### Fixed
+- **Unawaited Participant Synchronization:** Resolved race conditions during event creation/updates by wrapping concurrent updates in `Promise.all()`.
+- **Inconsistent Timestamps:** Unified all updated/created timestamp writes to follow ISO 8601 strings.
+
 ## [1.3.1] - 2026-07-17
 
 ### Added

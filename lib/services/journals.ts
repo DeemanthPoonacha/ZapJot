@@ -1,5 +1,5 @@
 import { db } from "./firebase/db";
-import { Journal, JournalCreate, JournalUpdate } from "@/types/journals";
+import { Journal, JournalCreate, JournalUpdate, createJournalSchema, updateJournalSchema } from "@/types/journals";
 import {
   collection,
   doc,
@@ -9,6 +9,7 @@ import {
   deleteDoc,
   getDoc,
   setDoc,
+  runTransaction,
 } from "firebase/firestore";
 import { DEFAULT_CHAPTER_ID } from "../constants";
 
@@ -53,11 +54,17 @@ export const addJournal = async (
     db,
     `users/${userId}/chapters/${chapterId}/journals`
   );
-  const docRef = await addDoc(journalsRef, {
+  const payload = {
     ...data,
-    updatedAt: new Date().toISOString(),
-  });
-  return { id: docRef.id, ...data };
+    chapterId,
+    createdAt: data.createdAt || new Date().toISOString(),
+    updatedAt: data.updatedAt || new Date().toISOString(),
+  };
+
+  // Validate the journal payload before addDoc
+  const validated = createJournalSchema.parse(payload);
+  const docRef = await addDoc(journalsRef, validated);
+  return { id: docRef.id, ...validated };
 };
 
 // Update an existing journal
@@ -67,7 +74,6 @@ export const updateJournal = async (
   journalId: string,
   data: JournalUpdate
 ) => {
-  console.log("🚀 ~ chapterId:", chapterId);
   const newChapterId = data.chapterId;
   if (newChapterId && newChapterId !== chapterId) {
     await moveJournal(userId, journalId, chapterId, newChapterId);
@@ -78,8 +84,14 @@ export const updateJournal = async (
     db,
     `users/${userId}/chapters/${editingChapterId}/journals/${journalId}`
   );
-  await updateDoc(journalRef, { ...data, updatedAt: new Date().toISOString() });
-  return { id: journalId, ...data };
+
+  // Validate the journal update payload before updateDoc
+  const validated = updateJournalSchema.parse({
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+  await updateDoc(journalRef, validated);
+  return { id: journalId, ...validated };
 };
 
 export const moveJournal = async (
@@ -88,8 +100,6 @@ export const moveJournal = async (
   oldChapterId: string,
   newChapterId: string
 ) => {
-  console.log("Moving journal from", oldChapterId, "to", newChapterId);
-
   if (newChapterId === oldChapterId) {
     return;
   }
@@ -103,20 +113,25 @@ export const moveJournal = async (
     `users/${userId}/chapters/${newChapterId}/journals/${journalId}`
   );
 
-  const snapshot = await getDoc(oldRef);
-  if (!snapshot.exists()) {
-    throw new Error("Journal not found");
-  }
-
+  // Check and create the destination chapter first (outside the transaction)
   await checkAndCreateNewChapter(userId, newChapterId);
 
-  const journalData = snapshot.data();
-  await setDoc(newRef, {
-    ...journalData,
-    chapterId: newChapterId,
-    updatedAt: new Date(),
+  // Perform the copy-delete atomically using a Firestore Transaction
+  await runTransaction(db, async (transaction) => {
+    const oldSnap = await transaction.get(oldRef);
+    if (!oldSnap.exists()) {
+      throw new Error("Journal not found");
+    }
+
+    const journalData = oldSnap.data();
+    transaction.set(newRef, {
+      ...journalData,
+      chapterId: newChapterId,
+      updatedAt: new Date().toISOString(),
+    });
+    transaction.delete(oldRef);
   });
-  await deleteDoc(oldRef);
+
   return newChapterId;
 };
 

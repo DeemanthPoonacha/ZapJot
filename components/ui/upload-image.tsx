@@ -14,7 +14,8 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { CloudinaryResult } from "@/types/general";
 import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/lib/context/AuthProvider";
 
 const UploadImage = ({
   form,
@@ -30,6 +31,15 @@ const UploadImage = ({
   setIsImageUploading: (isUploading: boolean) => void;
   defaultCamOpen?: boolean;
 }) => {
+  const { user } = useAuth();
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    if (user) {
+      user.getIdToken().then(setToken);
+    }
+  }, [user]);
+
   const handleImageUploadSuccess = async (result: CloudinaryResult) => {
     // Get the secure URL from the upload result
     const imageUrl = result.secure_url;
@@ -47,20 +57,14 @@ const UploadImage = ({
       setIsImageUploading(false);
     }
   };
-  const openWidgetRef = useRef<() => void>(null);
 
-  // This effect will run once the component mounts
+  const openWidgetRef = useRef<(() => void) | null>(null);
+
   useEffect(() => {
-    // Check if the open function has been stored in the ref
-    if (openWidgetRef.current && defaultCamOpen) {
-      // Small delay to ensure the widget is properly initialized
-      const timer = setTimeout(() => {
-        openWidgetRef.current?.();
-      }, 100);
-
-      return () => clearTimeout(timer);
+    if (defaultCamOpen && openWidgetRef.current) {
+      openWidgetRef.current();
     }
-  }, []);
+  }, [defaultCamOpen]);
 
   return (
     <FormField
@@ -114,7 +118,7 @@ const UploadImage = ({
                     setIsImageUploading(true);
                   }}
                   onClose={() => setIsImageUploading(false)}
-                  signatureEndpoint="/api/sign-image"
+                  signatureEndpoint={token ? `/api/sign-image?token=${token}` : undefined}
                 >
                   {({ open }) => {
                     // Store the open function in ref for use in useEffect

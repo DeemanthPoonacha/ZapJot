@@ -12,26 +12,14 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import { Character, CharacterCreate } from "@/types/characters";
+import { Character, CharacterCreate, createCharacterSchema, updateCharacterSchema } from "@/types/characters";
 
 /**
  * Get all characters for a user.
  */
 export const getCharacters = async (
   userId: string,
-  // filter?: CharactersFilter,
-  // fields?: string[]
 ): Promise<Character[]> => {
-  // let q = query(collection(db, `users/${userId}/characters`));
-
-  // if (filter && filter.characterIds) {
-  //   q = query(q, where("id", "in", filter.characterIds));
-  // }
-
-  // if (!!fields?.length) {
-  //   q = query(q, (q as any).select(...fields)); // `.select()` is a method, not an import
-  // }
-
   const charactersRef = collection(db, `users/${userId}/characters`);
   const snapshot = await getDocs(charactersRef);
   return snapshot.docs.map(
@@ -80,8 +68,17 @@ export const addCharacter = async (
   character: CharacterCreate,
 ) => {
   const charactersRef = collection(db, `users/${userId}/characters`);
-  const docRef = await addDoc(charactersRef, character);
-  return { id: docRef.id, ...character };
+  const payload = {
+    ...character,
+    lowercaseName: character.name.toLowerCase(),
+    createdAt: character.createdAt || new Date().toISOString(),
+    updatedAt: character.updatedAt || new Date().toISOString(),
+  };
+
+  // Validate character before write
+  const validated = createCharacterSchema.parse(payload);
+  const docRef = await addDoc(charactersRef, validated);
+  return { id: docRef.id, ...validated };
 };
 
 /**
@@ -92,9 +89,22 @@ export const updateCharacter = async (
   characterId: string,
   character: Partial<Character>,
 ) => {
-  console.log("🚀 ~ character:", character);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  await updateDoc(docRef, character);
+  
+  // Extract id if passed so it's not written back as part of properties
+  const { id, ...updateData } = character;
+  
+  if (updateData.name) {
+    updateData.lowercaseName = updateData.name.toLowerCase();
+  }
+
+  // Validate the update payload before write
+  const validated = updateCharacterSchema.parse({
+    ...updateData,
+    updatedAt: new Date().toISOString(),
+  });
+  
+  await updateDoc(docRef, validated);
   return characterId;
 };
 
@@ -114,7 +124,6 @@ export const addReminder = async (
   characterId: string,
   reminderId: string,
 ) => {
-  console.log("🚀 Adding reminder:", characterId, reminderId);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
   await updateDoc(docRef, {
     reminders: arrayUnion(reminderId),
@@ -129,7 +138,6 @@ export const removeReminder = async (
   characterId: string,
   reminderId: string,
 ) => {
-  console.log("🚀 Removing reminder:", characterId, reminderId);
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
   await updateDoc(docRef, {
     reminders: arrayRemove(reminderId),

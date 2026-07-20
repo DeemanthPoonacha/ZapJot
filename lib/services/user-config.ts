@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, collection, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "./firebase/db";
 import { generateEncryptedUserKey } from "../utils/encryption";
 import { UserInDb } from "@/types/user";
@@ -46,7 +46,55 @@ export async function setUpUser(userId: string, email: string) {
   }
 }
 
+/** Helper to delete all documents in a collection/subcollection in chunked batches of 400 */
+async function deleteCollection(collectionRef: any) {
+  const snapshot = await getDocs(collectionRef);
+  const docs = snapshot.docs;
+  const chunkSize = 400;
+  for (let i = 0; i < docs.length; i += chunkSize) {
+    const chunk = docs.slice(i, i + chunkSize);
+    const batch = writeBatch(db);
+    chunk.forEach((docSnap) => {
+      batch.delete(docSnap.ref);
+    });
+    await batch.commit();
+  }
+}
+
 export const deleteUserData = async (uid: string) => {
-  console.log("🚀 ~ deleteUserData ~ uid:", uid);
-  // await deleteDoc(doc(db, "users", uid)); // Change path if your user data is elsewhere
+  try {
+    console.log(`Starting cascade deletion for user: ${uid}`);
+
+    // 1. Delete tasks
+    await deleteCollection(collection(db, `users/${uid}/tasks`));
+
+    // 2. Delete events
+    await deleteCollection(collection(db, `users/${uid}/events`));
+
+    // 3. Delete goals
+    await deleteCollection(collection(db, `users/${uid}/goals`));
+
+    // 4. Delete characters
+    await deleteCollection(collection(db, `users/${uid}/characters`));
+
+    // 5. Cascade delete chapters and nested journals
+    const chaptersRef = collection(db, `users/${uid}/chapters`);
+    const chaptersSnapshot = await getDocs(chaptersRef);
+    for (const chapterDoc of chaptersSnapshot.docs) {
+      const journalsRef = collection(db, `users/${uid}/chapters/${chapterDoc.id}/journals`);
+      await deleteCollection(journalsRef);
+    }
+    await deleteCollection(chaptersRef);
+
+    // 6. Delete itineraries
+    await deleteCollection(collection(db, `users/${uid}/itineraries`));
+
+    // 7. Finally delete the user document itself
+    await deleteDoc(doc(db, "users", uid));
+
+    console.log(`Cascade deletion completed for user: ${uid}`);
+  } catch (error) {
+    console.error(`Error deleting user data for ${uid}:`, error);
+    throw error;
+  }
 };

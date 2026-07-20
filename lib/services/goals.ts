@@ -1,5 +1,5 @@
 import { db } from "./firebase/db";
-import { Goal, GoalCreate, GoalUpdate } from "@/types/goals";
+import { Goal, GoalCreate, GoalUpdate, createGoalSchema, updateGoalSchema } from "@/types/goals";
 import {
   collection,
   doc,
@@ -34,11 +34,15 @@ export const getGoalById = async (
 /** Add a new goal */
 export const addGoal = async (userId: string, data: GoalCreate) => {
   const newDocRef = doc(collection(db, `users/${userId}/goals`));
-  await setDoc(newDocRef, {
+  const payload = {
     ...data,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
+    createdAt: data.createdAt || new Date().toISOString(),
+    updatedAt: data.updatedAt || new Date().toISOString(),
+  };
+
+  // Validate goal payload before setDoc
+  const validated = createGoalSchema.parse(payload);
+  await setDoc(newDocRef, validated);
 };
 
 /** Update an existing goal */
@@ -48,7 +52,13 @@ export const updateGoal = async (
   data: GoalUpdate
 ) => {
   const docRef = doc(db, `users/${userId}/goals`, goalId);
-  await updateDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
+  
+  // Validate goal update payload before updateDoc
+  const validated = updateGoalSchema.parse({
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+  await updateDoc(docRef, validated);
 };
 
 /** Delete a goal */

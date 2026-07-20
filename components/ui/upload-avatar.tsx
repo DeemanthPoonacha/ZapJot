@@ -14,6 +14,8 @@ import { CldUploadWidget } from "next-cloudinary";
 import { CloudinaryResult } from "@/types/general";
 import { toast } from "./sonner";
 import { UseFormReturn } from "react-hook-form";
+import { useAuth } from "@/lib/context/AuthProvider";
+import { useState, useEffect } from "react";
 
 const UploadAvatar = ({
   form,
@@ -27,6 +29,15 @@ const UploadAvatar = ({
   isImageUploading: boolean;
   setIsImageUploading: (isUploading: boolean) => void;
 }) => {
+  const { user } = useAuth();
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    if (user) {
+      user.getIdToken().then(setToken);
+    }
+  }, [user]);
+
   const handleImageUploadSuccess = async (result: CloudinaryResult) => {
     // Get the secure URL from the upload result
     const imageUrl = result.secure_url;
@@ -94,7 +105,7 @@ const UploadAvatar = ({
                   }}
                   onOpen={() => setIsImageUploading(true)}
                   onClose={() => setIsImageUploading(false)}
-                  signatureEndpoint="/api/sign-image"
+                  signatureEndpoint={token ? `/api/sign-image?token=${token}` : undefined}
                 >
                   {({ open }) => {
                     return (

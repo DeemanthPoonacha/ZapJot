@@ -13,36 +13,16 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { EventCreate, Event, EventsFilter, EventUpdate } from "@/types/events";
+import { EventCreate, Event, EventsFilter, EventUpdate, createEventSchema, updateEventSchema } from "@/types/events";
 import { addReminder, removeReminder } from "./characters";
 
 export const getEvents = async (userId: string, filter?: EventsFilter) => {
-  console.log("🚀 ~ getEvents ~ filter:", filter);
-
   // Start with basic collection reference
   const eventsRef = collection(db, `users/${userId}/events`);
   const constraints = [];
 
   // Always add orderBy for nextOccurrence first since we're using it
   constraints.push(orderBy("nextOccurrence", "asc"));
-
-  // // Add date range filters
-  // if (filter?.dateRange) {
-  //   if (filter.dateRange.start) {
-  //     constraints.push(
-  //       where(
-  //         "nextOccurrence",
-  //         ">=",
-  //         Timestamp.fromDate(filter.dateRange.start)
-  //       )
-  //     );
-  //   }
-  //   if (filter.dateRange.end) {
-  //     constraints.push(
-  //       where("nextOccurrence", "<", Timestamp.fromDate(filter.dateRange.end))
-  //     );
-  //   }
-  // }
 
   // Add upcoming filter (note: this might be redundant with dateRange.start if both are used)
   if (filter?.onlyUpcoming) {
@@ -77,7 +57,6 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
     })) as Event[];
   } catch (error) {
     console.error("Error fetching events:", error);
-
     throw error;
   }
 };
@@ -92,11 +71,16 @@ export const getEventById = async (userId: string, eventId: string) => {
 
 export const addEvent = async (userId: string, data: EventCreate): Promise<Event> => {
   const eventRef = doc(collection(db, `users/${userId}/events`));
-  data.participants?.map(async (participant: { value: string }) => {
-    if (participant && eventRef.id) {
-      await addReminder(userId, participant.value, eventRef.id);
-    }
-  });
+  
+  if (data.participants && data.participants.length > 0) {
+    await Promise.all(
+      data.participants.map(async (participant: { value: string }) => {
+        if (participant && eventRef.id) {
+          await addReminder(userId, participant.value, eventRef.id);
+        }
+      })
+    );
+  }
   
   const newEvent: Event = {
     ...data,
@@ -113,7 +97,9 @@ export const addEvent = async (userId: string, data: EventCreate): Promise<Event
     updateEventOccurrence(newEvent);
   }
 
-  await setDoc(eventRef, newEvent);
+  // Validate the event data before setDoc
+  const validated = createEventSchema.parse(newEvent);
+  await setDoc(eventRef, validated);
   return newEvent;
 };
 
@@ -165,19 +151,25 @@ export const updateEvent = async (
       )
   );
 
-  participantsToAdd.map(async (participant: { value: string }) => {
-    if (participant && eventRef.id) {
-      await addReminder(userId, participant.value, eventRef.id);
-    }
-  });
+  await Promise.all([
+    ...participantsToAdd.map(async (participant: { value: string }) => {
+      if (participant && eventRef.id) {
+        await addReminder(userId, participant.value, eventRef.id);
+      }
+    }),
+    ...participantsToRemove.map(async (participant: { value: string }) => {
+      if (participant && eventRef.id) {
+        await removeReminder(userId, participant.value, eventRef.id);
+      }
+    })
+  ]);
 
-  participantsToRemove.map(async (participant: { value: string }) => {
-    if (participant && eventRef.id) {
-      await removeReminder(userId, participant.value, eventRef.id);
-    }
+  // Validate the update payload before write
+  const validated = updateEventSchema.parse({
+    ...data,
+    updatedAt: new Date().toISOString(),
   });
-
-  await updateDoc(eventRef, data);
+  await updateDoc(eventRef, validated);
   return { participants: [...participantsToAdd, ...participantsToRemove] };
 };
 
@@ -187,10 +179,13 @@ export const deleteEvent = async (
   participants?: string[]
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
-  if (eventRef.id)
-    participants?.map(async (participant) => {
-      await removeReminder(userId, participant, eventRef.id);
-    });
+  if (eventRef.id && participants && participants.length > 0) {
+    await Promise.all(
+      participants.map(async (participant) => {
+        await removeReminder(userId, participant, eventRef.id);
+      })
+    );
+  }
   await deleteDoc(eventRef);
 };
 
