@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import packageJson from "./package.json";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -9,4 +10,18 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+
+  org: "zapjot",
+  project: "javascript-nextjs",
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Hides source maps from visitors
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+});
