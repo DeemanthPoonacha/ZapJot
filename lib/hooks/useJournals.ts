@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import {
   getJournals,
+  getJournalsPaginated,
   getJournalById,
   addJournal,
   updateJournal,
@@ -20,6 +21,25 @@ export const useJournals = (chapterId?: string) => {
   return useQuery({
     queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
     queryFn: () => (userId && chapterId ? getJournals(userId, chapterId) : []),
+    enabled: !!userId && !!chapterId,
+  });
+};
+
+export const useInfiniteJournals = (chapterId?: string, pageSize: number = 25) => {
+  const { user } = useAuth();
+  const userId = user?.uid;
+
+  return useInfiniteQuery({
+    queryKey: [JOURNAL_QUERY_KEY, userId, chapterId, "infinite", pageSize],
+    queryFn: ({ pageParam }) =>
+      userId && chapterId
+        ? getJournalsPaginated(userId, chapterId, {
+            limit: pageSize,
+            startAfterDoc: pageParam as any,
+          })
+        : Promise.resolve({ journals: [], lastDoc: null }),
+    initialPageParam: null as any,
+    getNextPageParam: (lastPage) => lastPage.lastDoc,
     enabled: !!userId && !!chapterId,
   });
 };
