@@ -8,6 +8,7 @@ import { Calendar, Loader2, RefreshCw } from "lucide-react";
 import { useEvents } from "@/lib/hooks/useEvents";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { linkGoogleCalendar } from "@/lib/services/auth";
+import { useSettings } from "@/lib/hooks/useSettings";
 import {
   isCalendarSyncEnabled,
   setCalendarSyncEnabled,
@@ -24,6 +25,8 @@ export function GoogleCalendarSettings() {
   const { user } = useAuth();
   const userId = user?.uid;
   const { data: events } = useEvents();
+  const { settings } = useSettings();
+  const notifyMinsBefore = settings?.notifications?.notifyMinsBefore;
 
   useEffect(() => {
     setIsMounted(true);
@@ -91,7 +94,7 @@ export function GoogleCalendarSettings() {
     try {
       setIsSyncing(true);
       const eventList = events || [];
-      const result = await syncGoogleCalendar(userId, eventList);
+      const result = await syncGoogleCalendar(userId, eventList, notifyMinsBefore);
       if (result.success) {
         toast.success(result.message || "Calendar synced successfully!");
       } else {

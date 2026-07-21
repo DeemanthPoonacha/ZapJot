@@ -68,7 +68,13 @@ export const linkGoogleCalendar = async () => {
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/calendar");
 
-  const result = await linkWithPopup(user, provider);
-  const credential = GoogleAuthProvider.credentialFromResult(result);
-  return credential;
+  const hasGoogleProvider = user.providerData.some(
+    (p) => p.providerId === "google.com",
+  );
+
+  const result = hasGoogleProvider
+    ? await reauthenticateWithPopup(user, provider)
+    : await linkWithPopup(user, provider);
+
+  return GoogleAuthProvider.credentialFromResult(result);
 };

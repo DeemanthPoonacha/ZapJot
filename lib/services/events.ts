@@ -87,6 +87,7 @@ export const getEventById = async (userId: string, eventId: string) => {
 export const addEvent = async (
   userId: string,
   data: EventCreate,
+  notifyMinsBefore?: number,
 ): Promise<Event> => {
   const eventRef = doc(collection(db, `users/${userId}/events`));
 
@@ -120,7 +121,7 @@ export const addEvent = async (
     const token = getCalendarAccessToken();
     if (token) {
       try {
-        const { id } = await insertGoogleCalendarEvent(token, newEvent);
+        const { id } = await insertGoogleCalendarEvent(token, newEvent, notifyMinsBefore);
         newEvent.googleCalendarEventId = id;
       } catch (err) {
         console.error("Failed to insert Google Calendar event during addEvent:", err);
@@ -156,6 +157,7 @@ export const updateEvent = async (
   userId: string,
   eventId: string,
   data: EventUpdate,
+  notifyMinsBefore?: number,
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
   const existingEvent = await getEventById(userId, eventId);
@@ -206,9 +208,9 @@ export const updateEvent = async (
           ...data,
         };
         if (existingEvent.googleCalendarEventId) {
-          await updateGoogleCalendarEvent(token, existingEvent.googleCalendarEventId, mergedEventForSync);
+          await updateGoogleCalendarEvent(token, existingEvent.googleCalendarEventId, mergedEventForSync, notifyMinsBefore);
         } else {
-          const { id } = await insertGoogleCalendarEvent(token, mergedEventForSync);
+          const { id } = await insertGoogleCalendarEvent(token, mergedEventForSync, notifyMinsBefore);
           updatedGoogleEventId = id;
         }
       } catch (err) {
