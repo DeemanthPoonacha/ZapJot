@@ -67,7 +67,7 @@ export const useEventMutations = () => {
   const addMutation = useMutation({
     mutationFn: (data: EventCreate) => {
       updateEventOccurrence(data, minutesBefore);
-      return addEvent(userId!, data);
+      return addEvent(userId!, data, minutesBefore);
     },
     onSuccess: (event) => {
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });
@@ -82,7 +82,7 @@ export const useEventMutations = () => {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: EventUpdate }) => {
       updateEventOccurrence(data, minutesBefore);
-      return updateEvent(userId!, id, data);
+      return updateEvent(userId!, id, data, minutesBefore);
     },
     onSuccess: (event) => {
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });

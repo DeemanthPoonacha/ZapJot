@@ -9,6 +9,7 @@ import {
   reauthenticateWithPopup,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  linkWithPopup,
 } from "firebase/auth";
 import { auth } from "./firebase/auth";
 import { deleteUserData } from "./user-config";
@@ -58,4 +59,22 @@ export const deleteAccount = async (reauthData?: {
 
   await deleteUserData(user.uid);
   await deleteUser(user);
+};
+
+export const linkGoogleCalendar = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("No user is currently signed in.");
+
+  const provider = new GoogleAuthProvider();
+  provider.addScope("https://www.googleapis.com/auth/calendar");
+
+  const hasGoogleProvider = user.providerData.some(
+    (p) => p.providerId === "google.com",
+  );
+
+  const result = hasGoogleProvider
+    ? await reauthenticateWithPopup(user, provider)
+    : await linkWithPopup(user, provider);
+
+  return GoogleAuthProvider.credentialFromResult(result);
 };

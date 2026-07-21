@@ -23,6 +23,13 @@ import {
   updateEventSchema,
 } from "@/types/events";
 import { addReminder, removeReminder } from "./characters";
+import {
+  isCalendarSyncEnabled,
+  getCalendarAccessToken,
+  insertGoogleCalendarEvent,
+  updateGoogleCalendarEvent,
+  deleteGoogleCalendarEvent,
+} from "./googleCalendar";
 
 export const getEvents = async (userId: string, filter?: EventsFilter) => {
   // Start with basic collection reference
@@ -80,6 +87,7 @@ export const getEventById = async (userId: string, eventId: string) => {
 export const addEvent = async (
   userId: string,
   data: EventCreate,
+  notifyMinsBefore?: number,
 ): Promise<Event> => {
   const eventRef = doc(collection(db, `users/${userId}/events`));
 
@@ -106,6 +114,19 @@ export const addEvent = async (
   if (!newEvent.nextOccurrence) {
     const { updateEventOccurrence } = await import("@/lib/utils/events");
     updateEventOccurrence(newEvent);
+  }
+
+  // Google Calendar Integration
+  if (isCalendarSyncEnabled()) {
+    const token = getCalendarAccessToken();
+    if (token) {
+      try {
+        const { id } = await insertGoogleCalendarEvent(token, newEvent, notifyMinsBefore);
+        newEvent.googleCalendarEventId = id;
+      } catch (err) {
+        console.error("Failed to insert Google Calendar event during addEvent:", err);
+      }
+    }
   }
 
   // Validate the event data before setDoc
@@ -136,6 +157,7 @@ export const updateEvent = async (
   userId: string,
   eventId: string,
   data: EventUpdate,
+  notifyMinsBefore?: number,
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
   const existingEvent = await getEventById(userId, eventId);
@@ -175,9 +197,32 @@ export const updateEvent = async (
     }),
   ]);
 
+  // Google Calendar Integration
+  let updatedGoogleEventId = existingEvent.googleCalendarEventId;
+  if (isCalendarSyncEnabled()) {
+    const token = getCalendarAccessToken();
+    if (token) {
+      try {
+        const mergedEventForSync = {
+          ...existingEvent,
+          ...data,
+        };
+        if (existingEvent.googleCalendarEventId) {
+          await updateGoogleCalendarEvent(token, existingEvent.googleCalendarEventId, mergedEventForSync, notifyMinsBefore);
+        } else {
+          const { id } = await insertGoogleCalendarEvent(token, mergedEventForSync, notifyMinsBefore);
+          updatedGoogleEventId = id;
+        }
+      } catch (err) {
+        console.error("Failed to update Google Calendar event during updateEvent:", err);
+      }
+    }
+  }
+
   // Validate the update payload before write
   const validated = updateEventSchema.parse({
     ...data,
+    googleCalendarEventId: updatedGoogleEventId,
     updatedAt: new Date().toISOString(),
   });
   await updateDoc(eventRef, validated);
@@ -190,6 +235,22 @@ export const deleteEvent = async (
   participants?: string[],
 ) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
+
+  // Google Calendar Integration
+  if (isCalendarSyncEnabled()) {
+    try {
+      const existingEvent = await getEventById(userId, eventId);
+      if (existingEvent && existingEvent.googleCalendarEventId) {
+        const token = getCalendarAccessToken();
+        if (token) {
+          await deleteGoogleCalendarEvent(token, existingEvent.googleCalendarEventId);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to delete Google Calendar event during deleteEvent:", err);
+    }
+  }
+
   if (eventRef.id && participants && participants.length > 0) {
     await Promise.all(
       participants.map(async (participant) => {
