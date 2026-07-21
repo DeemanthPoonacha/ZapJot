@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] - 2026-07-20
+## [1.4.0] - 2026-07-21
 
 ### Added
+- **Google Calendar Real-Time Sync:** Integrated direct write-through synchronization between Firestore events (create, update, delete) and Google Calendar API. (#6)
+- **Firebase OAuth & Permissions Linking:** Added on-demand Google Calendar OAuth scope (`https://www.googleapis.com/auth/calendar`) requesting and account linking using `linkWithPopup` for Firebase email/password users. (#6)
+- **Recurrence & Reminder Sync:** Supported syncing daily, weekly, monthly, and yearly recurring events using standard iCalendar `RRULE` conversion, and dynamic notification reminder mapping with fallback to user config. (#6)
+- **Backlog Automation Workflow Skill:** Added custom project-scoped `backlog-workflow` skill under `.agents/skills/` to automate issue-to-PR processes using a multi-agent split (Orchestrator + Code Implementer).
 - **Firestore Security Rules:** Added `firestore.rules`, `firestore.indexes.json`, and `firebase.json` configs to enforce strict user-scoped tenancy isolation and configure composite/collection group indexes. (#12)
 - **GDPR Cascading User Deletion:** Implemented a recursive, chunked-batch cascade deletion in `deleteUserData()` to safely purge all collections under a user profile in chunks of 400 documents. (#14)
 - **Firebase Token Verification:** Secured `/api/sign-image` endpoint by extracting and validating Firebase ID tokens using the Admin SDK. (#15)
