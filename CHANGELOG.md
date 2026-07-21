@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Firebase Admin Centralization:** Centralized Firebase Admin SDK initialization into `lib/services/firebase/admin.ts` to reuse the instance and streamline API route authentication. (#15)
 - **Auth-Gated Loading States:** Implemented token availability checks (`!token`) and `<CustomLoader />` rendering inside `upload-avatar.tsx` and `upload-image.tsx` to handle async Firebase Auth ID Token loading state smoothly before invoking `CldUploadWidget`. (#15)
 - **Netlify Scheduled Functions:** Created `netlify/functions/check-notifications.ts` executing every minute to trigger the notifications checker securely using Netlify's serverless scheduler. (#15)
+- **Firebase App Check Integration:** Configured global client-side reCAPTCHA v3 App Check initialization in `AppProviders.tsx` to protect database and auth endpoints. (#22)
+- **Sentry Error Tracking**: Set up Sentry Next.js SDK for client, server, and edge runtime error monitoring and crash reporting. (#25)
+- **CI/CD Pipeline**: Configured GitHub Actions lint, type-checking, and build validation workflow on push and PR. (#26)
+- **Cursor-Based Pagination & Infinite Scroll**: Implemented query pagination in task and journal services, and integrated `react-intersection-observer` for automatic scroll loading in TasksList and JournalsList. (#27)
+- **Firestore Offline Caching**: Enabled persistent local caching (`persistentLocalCache` and `persistentMultipleTabManager`) in `db.ts` to allow full offline read/write support. (#29)
 
 ### Changed
 - **Service-Layer Schema Validation:** Integrated Zod schemas (`create*Schema` and `update*Schema`) inside all write endpoints of `tasks`, `events`, `goals`, `characters`, `chapters`, `journals`, and `itineraries` services to prevent database corruption. (#13)
