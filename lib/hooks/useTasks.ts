@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import {
   getTasks,
+  getTasksPaginated,
   getTaskById,
   addTask,
   updateTask,
@@ -20,6 +21,26 @@ export const useTasks = (query?: TaskFilter) => {
   return useQuery({
     queryKey: [TASK_QUERY_KEY, userId, query],
     queryFn: () => (userId ? getTasks(userId, query) : Promise.resolve([])),
+    enabled: !!userId,
+  });
+};
+
+/** Fetch tasks with infinite scroll cursor-based pagination */
+export const useInfiniteTasks = (query?: TaskFilter, pageSize: number = 25) => {
+  const { user } = useAuth();
+  const userId = user?.uid;
+  return useInfiniteQuery({
+    queryKey: [TASK_QUERY_KEY, userId, "infinite", query, pageSize],
+    queryFn: ({ pageParam }) =>
+      userId
+        ? getTasksPaginated(userId, {
+            ...query,
+            limit: pageSize,
+            startAfterDoc: pageParam as any,
+          })
+        : Promise.resolve({ tasks: [], lastDoc: null }),
+    initialPageParam: null as any,
+    getNextPageParam: (lastPage) => lastPage.lastDoc,
     enabled: !!userId,
   });
 };

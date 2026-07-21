@@ -1,4 +1,4 @@
-import { useTasks } from "@/lib/hooks/useTasks";
+import { useInfiniteTasks } from "@/lib/hooks/useTasks";
 import { ListChecks } from "lucide-react";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../../Empty";
@@ -7,6 +7,8 @@ import TaskForm from "./TaskForm";
 import { TaskCard } from "./TaskCard";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 function SectionHeader({ label, count }: { label: string; count: number }) {
   return (
@@ -22,8 +24,21 @@ function SectionHeader({ label, count }: { label: string; count: number }) {
 }
 
 const TasksList = () => {
-  const { data: tasks, isLoading } = useTasks();
+  const { 
+    data, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage, 
+    isLoading 
+  } = useInfiniteTasks(undefined, 15);
   const { selectedTaskId, setSelectedTaskId } = usePlanner();
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const isDialogOpen = (dialogId: string) => selectedTaskId === dialogId;
   const toggleDialog = (dialogId: string | null) => {
@@ -34,7 +49,9 @@ const TasksList = () => {
     setSelectedTaskId(null);
   };
 
-  const [completedTasks, pendingTasks] = tasks?.reduce(
+  const tasks = data?.pages.flatMap((page) => page.tasks) || [];
+
+  const [completedTasks, pendingTasks] = tasks.reduce(
     ([completed, pending], task) =>
       task.status === "completed"
         ? [[...completed, task], pending]
@@ -127,6 +144,17 @@ const TasksList = () => {
             )}
           </div>
         </>
+      )}
+
+      {/* Infinite Scroll loading marker */}
+      {hasNextPage && (
+        <div ref={ref} className="flex justify-center py-6">
+          {isFetchingNextPage ? (
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          ) : (
+            <span className="text-xs text-muted-foreground">Load more</span>
+          )}
+        </div>
       )}
 
       {/* Add Task Dialog */}

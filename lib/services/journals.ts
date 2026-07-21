@@ -10,6 +10,11 @@ import {
   getDoc,
   setDoc,
   runTransaction,
+  query,
+  limit,
+  orderBy,
+  startAfter,
+  DocumentSnapshot,
 } from "firebase/firestore";
 import { DEFAULT_CHAPTER_ID } from "../constants";
 
@@ -171,3 +176,41 @@ export async function checkAndCreateNewChapter(
 function generateIdByName(newChapterId: string): string {
   return newChapterId.trim().toLowerCase().replace(/ /g, "-");
 }
+
+export interface PaginatedJournals {
+  journals: Journal[];
+  lastDoc: DocumentSnapshot | null;
+}
+
+export const getJournalsPaginated = async (
+  userId: string,
+  chapterId: string,
+  options?: { limit?: number; startAfterDoc?: DocumentSnapshot | null }
+): Promise<PaginatedJournals> => {
+  const journalsRef = collection(
+    db,
+    `users/${userId}/chapters/${chapterId}/journals`
+  );
+  
+  const constraints = [];
+  constraints.push(orderBy("createdAt", "desc"));
+  
+  if (options?.limit) {
+    constraints.push(limit(options.limit));
+  }
+  
+  if (options?.startAfterDoc) {
+    constraints.push(startAfter(options.startAfterDoc));
+  }
+  
+  const q = query(journalsRef, ...constraints);
+  const snapshot = await getDocs(q);
+  
+  return {
+    journals: snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Journal[],
+    lastDoc: snapshot.docs[snapshot.docs.length - 1] || null,
+  };
+};
