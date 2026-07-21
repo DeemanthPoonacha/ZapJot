@@ -52,6 +52,7 @@ export const createEventSchema = z.object({
     .array(participants)
     .optional()
     .describe("Participants of the event"),
+  googleCalendarEventId: z.string().optional().describe("Google Calendar Event ID"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
