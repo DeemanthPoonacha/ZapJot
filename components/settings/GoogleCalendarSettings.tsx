@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
 import { Calendar, Loader2, RefreshCw } from "lucide-react";
 import { useEvents } from "@/lib/hooks/useEvents";
+import { useAuth } from "@/lib/context/AuthProvider";
+import { linkGoogleCalendar } from "@/lib/services/auth";
 import {
   isCalendarSyncEnabled,
   setCalendarSyncEnabled,
+  getCalendarAccessToken,
   syncGoogleCalendar,
 } from "@/lib/services/googleCalendar";
 
@@ -16,6 +19,10 @@ export function GoogleCalendarSettings() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isLinking, setIsLinking] = useState(false);
+
+  const { user } = useAuth();
+  const userId = user?.uid;
   const { data: events } = useEvents();
 
   useEffect(() => {
@@ -23,34 +30,76 @@ export function GoogleCalendarSettings() {
     setIsEnabled(isCalendarSyncEnabled());
   }, []);
 
-  const handleToggle = (checked: boolean) => {
-    setIsEnabled(checked);
-    setCalendarSyncEnabled(checked);
+  const handleToggle = async (checked: boolean) => {
     if (checked) {
-      toast.success("Google Calendar sync enabled.");
+      const existingToken = getCalendarAccessToken();
+      if (existingToken) {
+        setIsEnabled(true);
+        setCalendarSyncEnabled(true);
+        toast.success("Google Calendar sync enabled.");
+      } else {
+        try {
+          setIsLinking(true);
+          const credential = await linkGoogleCalendar();
+          if (credential && credential.accessToken) {
+            localStorage.setItem("google_calendar_access_token", credential.accessToken);
+            // Default Google access token duration is 1 hour
+            const expiryTime = Date.now() + 3600 * 1000;
+            localStorage.setItem("google_calendar_token_expiry", String(expiryTime));
+
+            setIsEnabled(true);
+            setCalendarSyncEnabled(true);
+            toast.success("Google Calendar connected and sync enabled.");
+          } else {
+            throw new Error("No access token returned from Google link.");
+          }
+        } catch (error) {
+          console.error("Failed to link Google Calendar:", error);
+          setIsEnabled(false);
+          setCalendarSyncEnabled(false);
+          toast.error("Failed to connect Google Calendar. Please try again.");
+        } finally {
+          setIsLinking(false);
+        }
+      }
     } else {
+      setIsEnabled(false);
+      setCalendarSyncEnabled(false);
       toast.success("Google Calendar sync disabled.");
     }
   };
 
   const handleSync = async () => {
+    if (!userId) {
+      toast.error("Authentication required.");
+      return;
+    }
+
     if (!isEnabled) {
       toast.error("Please enable Google Calendar sync first.");
+      return;
+    }
+
+    const token = getCalendarAccessToken();
+    if (!token) {
+      toast.error("Google Calendar session expired. Please re-enable sync to reconnect.");
+      setIsEnabled(false);
+      setCalendarSyncEnabled(false);
       return;
     }
 
     try {
       setIsSyncing(true);
       const eventList = events || [];
-      const result = await syncGoogleCalendar(eventList);
+      const result = await syncGoogleCalendar(userId, eventList);
       if (result.success) {
-        toast.success("Calendar synced successfully!");
+        toast.success(result.message || "Calendar synced successfully!");
       } else {
         toast.error("Failed to sync calendar.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Calendar sync error:", error);
-      toast.error("An error occurred during sync.");
+      toast.error(error?.message || "An error occurred during sync.");
     } finally {
       setIsSyncing(false);
     }
@@ -81,6 +130,7 @@ export function GoogleCalendarSettings() {
         <Switch
           checked={isEnabled}
           onCheckedChange={handleToggle}
+          disabled={isLinking}
           aria-label="Toggle Google Calendar sync"
         />
       </div>
@@ -88,15 +138,15 @@ export function GoogleCalendarSettings() {
       <div className="flex justify-end">
         <Button
           onClick={handleSync}
-          disabled={!isEnabled || isSyncing}
+          disabled={!isEnabled || isSyncing || isLinking}
           className="gap-2"
         >
-          {isSyncing ? (
+          {isSyncing || isLinking ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <RefreshCw className="h-4 w-4" />
           )}
-          {isSyncing ? "Syncing..." : "Sync Calendar"}
+          {isSyncing ? "Syncing..." : isLinking ? "Connecting..." : "Sync Calendar"}
         </Button>
       </div>
     </div>
