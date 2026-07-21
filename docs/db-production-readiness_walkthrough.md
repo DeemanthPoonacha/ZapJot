@@ -38,3 +38,7 @@ Added Zod validation check calls (`.parse()`) inside the following services befo
 - **`components/ui/upload-avatar.tsx`** & **`components/ui/upload-image.tsx`**:
   - Retrieved current user session auth token and passed it dynamically as query parameter `?token=${token}` to secure signature requests.
   - Implemented `<CustomLoader />` gating states that prevent the widgets from rendering until the Auth token has successfully loaded, eliminating unauthorized API requests.
+
+## 5. Serverless Scheduled Cron (Netlify Scheduled Functions)
+
+- **`netlify/functions/check-notifications.ts`**: Configured a Netlify Scheduled Function running on a cron schedule (`* * * * *` — every minute) to query `https://zap-jot.netlify.app/api/check-notifications` securely, passing the matching `Authorization: Bearer <NOTIF_SECRET>` token. This replaces external third-party dependency cron tools with a native serverless deployment architecture.
