@@ -24,8 +24,8 @@ export const features = [
   },
   {
     icon: <Calendar className="h-8 w-8" />,
-    title: "Planners",
-    desc: "Manage events, tasks, and itineraries with built-in calendars and checklists.",
+    title: "Planners & Google Calendar",
+    desc: "Manage events, tasks, and itineraries with built-in calendars, checklists, and real-time Google Calendar synchronization.",
     gradient: "from-blue-500 to-cyan-500",
     bgGradient: "from-blue-50 to-cyan-50",
     shadow: "shadow-blue-200",
@@ -71,9 +71,9 @@ export const features = [
     shadow: "shadow-pink-200",
   },
   {
-    icon: <MonitorSmartphone className="h-8 w-8" />,
-    title: "Cross-Device Friendly",
-    desc: "Enjoy a seamless, responsive experience across mobile, tablet, and desktop devices.",
+    icon: <Zap className="h-8 w-8" />,
+    title: "Offline & Sync Ready",
+    desc: "Work on flights or in remote areas. Your database caches locally and automatically background-syncs when you are back online.",
     gradient: "from-indigo-500 to-blue-500",
     bgGradient: "from-indigo-50 to-blue-50",
     shadow: "shadow-indigo-200",
