@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Firebase Token Verification:** Secured `/api/sign-image` endpoint by extracting and validating Firebase ID tokens using the Admin SDK. (#15)
 - **Firebase Admin Centralization:** Centralized Firebase Admin SDK initialization into `lib/services/firebase/admin.ts` to reuse the instance and streamline API route authentication. (#15)
 - **Auth-Gated Loading States:** Implemented token availability checks (`!token`) and `<CustomLoader />` rendering inside `upload-avatar.tsx` and `upload-image.tsx` to handle async Firebase Auth ID Token loading state smoothly before invoking `CldUploadWidget`. (#15)
+- **Netlify Scheduled Functions:** Created `netlify/functions/check-notifications.ts` executing every minute to trigger the notifications checker securely using Netlify's serverless scheduler. (#15)
 
 ### Changed
 - **Service-Layer Schema Validation:** Integrated Zod schemas (`create*Schema` and `update*Schema`) inside all write endpoints of `tasks`, `events`, `goals`, `characters`, `chapters`, `journals`, and `itineraries` services to prevent database corruption. (#13)

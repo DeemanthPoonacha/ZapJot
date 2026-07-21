@@ -81,6 +81,13 @@ We will integrate Zod validation (`.parse()`) at the service boundary before any
 
 ---
 
+### Serverless Scheduled Cron
+
+#### [NEW] `netlify/functions/check-notifications.ts`
+- Implement a Netlify scheduled function triggered every minute (`* * * * *`) that securely fetches `/api/check-notifications` passing the authorization Bearer token.
+
+---
+
 ## Verification Plan
 
 ### Automated Tests
