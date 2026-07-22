@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
+// const appVersion = process.env.APP_VERSION || "1.0.0";
+const tag = process.env.NEXT_PUBLIC_APP_ENV == "staging" ? " Pre-Release" : "";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ZapJot",
-    short_name: "ZapJot",
+    name: "ZapJot" + tag,
+    short_name: "ZapJot" + tag,
     description:
       "A fast and intuitive personal journaling and planning app. Turn Moments Into Memories, Ideas Into Actions.",
     start_url: "/home",
