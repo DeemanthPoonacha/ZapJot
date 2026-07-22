@@ -46,21 +46,59 @@ export const useGoalMutations = () => {
 
   const addMutation = useMutation({
     mutationFn: (data: GoalCreate) => addGoal(userId!, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [GOAL_QUERY_KEY, userId] }),
+    onSuccess: (newGoal) => {
+      queryClient.setQueriesData(
+        { queryKey: [GOAL_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [...oldData, newGoal];
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [GOAL_QUERY_KEY, userId] });
+    },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: GoalUpdate }) =>
       updateGoal(userId!, id, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [GOAL_QUERY_KEY, userId] }),
+    onSuccess: (_data, { id, data }) => {
+      queryClient.setQueriesData(
+        { queryKey: [GOAL_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((goal: any) =>
+              goal.id === id ? { ...goal, ...data } : goal
+            );
+          }
+          if (typeof oldData === "object" && oldData.id === id) {
+            return { ...oldData, ...data };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [GOAL_QUERY_KEY, userId] });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteGoal(userId!, id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [GOAL_QUERY_KEY, userId] }),
+    onSuccess: (_data, id) => {
+      queryClient.setQueriesData(
+        { queryKey: [GOAL_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((goal: any) => goal.id !== id);
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [GOAL_QUERY_KEY, userId] });
+    },
   });
 
   return { addMutation, updateMutation, deleteMutation };

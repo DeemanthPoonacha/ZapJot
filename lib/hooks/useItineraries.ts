@@ -48,27 +48,65 @@ export const useItineraryMutations = () => {
 
   const addMutation = useMutation({
     mutationFn: (data: ItineraryCreate) => addItinerary(userId!, data),
-    onSuccess: () =>
+    onSuccess: (newItinerary) => {
+      queryClient.setQueriesData(
+        { queryKey: [ITINERARY_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [...oldData, newItinerary];
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [ITINERARY_QUERY_KEY, userId],
-      }),
+      });
+    },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Itinerary> }) =>
       updateItinerary(userId!, id, data),
-    onSuccess: () =>
+    onSuccess: (_res, { id, data }) => {
+      queryClient.setQueriesData(
+        { queryKey: [ITINERARY_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((itinerary: any) =>
+              itinerary.id === id ? { ...itinerary, ...data } : itinerary
+            );
+          }
+          if (typeof oldData === "object" && oldData.id === id) {
+            return { ...oldData, ...data };
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [ITINERARY_QUERY_KEY, userId],
-      }),
+      });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteItinerary(userId!, id),
-    onSuccess: () =>
+    onSuccess: (_res, id) => {
+      queryClient.setQueriesData(
+        { queryKey: [ITINERARY_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((itinerary: any) => itinerary.id !== id);
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [ITINERARY_QUERY_KEY, userId],
-      }),
+      });
+    },
   });
 
   const updateDayMutation = useMutation({
