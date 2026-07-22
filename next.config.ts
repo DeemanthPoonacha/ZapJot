@@ -7,6 +7,58 @@ const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: false,
+  fallbacks: {
+    document: "/offline",
+  },
+  workboxOptions: {
+    skipWaiting: true,
+    runtimeCaching: [
+      {
+        urlPattern: /^https:\/\/(?:fcm\.googleapis\.com|.*\.sentry\.io|.*\.google-analytics\.com|.*\.analytics\.google\.com)/i,
+        handler: "NetworkOnly",
+      },
+      {
+        urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
+        handler: "NetworkFirst",
+        options: {
+          cacheName: "pages-cache",
+          networkTimeoutSeconds: 3,
+        },
+      },
+      {
+        urlPattern: /\/_next\/static\/.*/i,
+        handler: "StaleWhileRevalidate",
+        options: {
+          cacheName: "static-resources",
+        },
+      },
+      {
+        urlPattern: /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com)/i,
+        handler: "CacheFirst",
+        options: {
+          cacheName: "google-fonts",
+          expiration: {
+            maxEntries: 30,
+            maxAgeSeconds: 365 * 24 * 60 * 60,
+          },
+        },
+      },
+      {
+        urlPattern: /^https:\/\/(?:res\.cloudinary\.com|lh3\.googleusercontent\.com).*|\.(?:png|jpg|jpeg|svg|webp|gif|ico)$/i,
+        handler: "CacheFirst",
+        options: {
+          cacheName: "images-cache",
+          expiration: {
+            maxEntries: 200,
+            maxAgeSeconds: 60 * 24 * 60 * 60,
+          },
+        },
+      },
+    ],
+  },
 });
 
 const nextConfig: NextConfig = {

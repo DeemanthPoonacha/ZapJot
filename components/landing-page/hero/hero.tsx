@@ -1,4 +1,11 @@
-import { CheckSquare, Sparkles, ArrowRight, Shield, MegaphoneOff, Star } from "lucide-react";
+import {
+  CheckSquare,
+  Sparkles,
+  ArrowRight,
+  Shield,
+  MegaphoneOff,
+  Star,
+} from "lucide-react";
 import ZapJotAnimation from "@/components/landing-page/hero/hero-animation";
 import { CTAButton } from "../cta/cta-button";
 import { Link } from "../../layout/link/CustomLink";
@@ -13,6 +20,7 @@ function VersionBadge() {
       <span>New Release</span>
       <span className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-2 py-0.5 text-xs text-white shadow-sm">
         v{appVersion}
+        {process.env.NEXT_PUBLIC_APP_ENV == "staging" ? " Staging" : ""}
       </span>
     </div>
   );
@@ -112,15 +120,21 @@ export function Hero() {
                 <div className="text-sm text-slate-600">Memories Captured</div>
               </div> */}
               <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1"><Shield size={28} strokeWidth={2.5} /></div>
+                <div className="text-2xl font-bold text-slate-900 mb-1">
+                  <Shield size={28} strokeWidth={2.5} />
+                </div>
                 <div className="text-sm text-slate-600">Secure & Private</div>
               </div>
               <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1"><MegaphoneOff size={28} strokeWidth={2.5} /></div>
+                <div className="text-2xl font-bold text-slate-900 mb-1">
+                  <MegaphoneOff size={28} strokeWidth={2.5} />
+                </div>
                 <div className="text-sm text-slate-600">Ads Free</div>
               </div>
               <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1"><Star size={28} strokeWidth={2.5} /></div>
+                <div className="text-2xl font-bold text-slate-900 mb-1">
+                  <Star size={28} strokeWidth={2.5} />
+                </div>
                 <div className="text-sm text-slate-600">User Friendly</div>
               </div>
             </div>
