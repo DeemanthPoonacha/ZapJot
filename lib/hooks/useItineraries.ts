@@ -9,10 +9,12 @@ import {
   updateItineraryDay,
   deleteItineraryDay,
   updateItineraryCost,
+  getTodayItineraryTasks,
+  TodayItineraryTask,
 } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import { Itinerary, ItineraryCreate } from "@/types/itineraries";
+import { Itinerary, ItineraryCreate, ItineraryTask } from "@/types/itineraries";
 
 // Query Key
 const ITINERARY_QUERY_KEY = "itineraries";
@@ -24,6 +26,17 @@ export const useItineraries = () => {
   return useQuery({
     queryKey: [ITINERARY_QUERY_KEY, userId],
     queryFn: () => (userId ? getItineraries(userId) : Promise.resolve([])),
+    enabled: !!userId,
+  });
+};
+
+/** Fetch today's itinerary tasks across active trips */
+export const useTodayItineraryTasks = () => {
+  const { user } = useAuth();
+  const userId = user?.uid;
+  return useQuery({
+    queryKey: [ITINERARY_QUERY_KEY, userId, "today-tasks"],
+    queryFn: () => (userId ? getTodayItineraryTasks(userId) : Promise.resolve([])),
     enabled: !!userId,
   });
 };
@@ -144,7 +157,7 @@ export const useItineraryMutations = () => {
       id: string;
       dayId: string;
       taskId: string;
-      data: Partial<Itinerary>;
+      data: Partial<ItineraryTask>;
     }) => updateItineraryTask(userId!, id, dayId, taskId, data),
     onSuccess: () =>
       queryClient.invalidateQueries({
