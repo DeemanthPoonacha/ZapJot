@@ -8,7 +8,21 @@ import { AuthProvider } from "./AuthProvider";
 import { initAppCheck } from "@/lib/services/firebase/appCheck";
 
 export default function AppProvider({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            networkMode: "offlineFirst",
+            staleTime: 1000 * 60 * 5,
+            gcTime: 1000 * 60 * 60 * 24,
+          },
+          mutations: {
+            networkMode: "offlineFirst",
+          },
+        },
+      })
+  );
 
   useEffect(() => {
     initAppCheck();
