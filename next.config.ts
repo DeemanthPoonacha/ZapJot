@@ -66,6 +66,16 @@ const nextConfig: NextConfig = {
   env: {
     APP_VERSION: packageJson.version,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 export default withSentryConfig(withPWA(nextConfig), {

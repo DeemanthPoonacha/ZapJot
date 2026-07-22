@@ -11,6 +11,9 @@ import {
   ChevronRight,
   CopyMinus,
   CopyPlus,
+  Printer,
+  Share2,
+  Sparkles,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,6 +38,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import usePlanner from "@/lib/hooks/usePlanner";
 import { ItineraryDay } from "./ItineraryItemCard";
 import { BudgetSummary } from "./BudgetSummary";
+import { shareContent } from "@/lib/utils/share";
+import { PrintableItinerary } from "./PrintableItinerary";
+import { SocialCardModal } from "@/components/social-card/SocialCardModal";
 // import dayjs from "dayjs";
 
 interface ItineraryDetailProps {
@@ -50,6 +56,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 }) => {
   const { selectedItineraryId, setSelectedItineraryId } = usePlanner();
   const { deleteMutation } = useItineraryMutations();
+  const [isSocialCardOpen, setIsSocialCardOpen] = useState(false);
 
   const expandedMain = selectedItineraryId === itinerary.id;
 
@@ -141,6 +148,20 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
     );
   };
 
+  const handleShareItinerary = () => {
+    const summary = `${itinerary.title}${itinerary.destination ? ` (📍 ${itinerary.destination})` : ""}\nDates: ${formatDate(itinerary.startDate)} - ${formatDate(itinerary.endDate)} (${itinerary.totalDays} Days)\nTotal Activities: ${totalTasks}`;
+    shareContent({
+      title: itinerary.title,
+      text: summary,
+    });
+  };
+
+  const handlePrintItinerary = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
   return (
     <ListCard className="w-full shadow-md gap-0">
       <CardHeader onClick={toggleExpand} className="cursor-pointer px-4 py-2">
@@ -155,6 +176,33 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
           >
             {selectedItineraryId === itinerary.id && (
               <>
+                <Button
+                  className="cursor-pointer text-purple-600 dark:text-purple-400 hover:text-purple-700"
+                  variant="ghost"
+                  size="icon"
+                  title="Create Social Card"
+                  onClick={() => setIsSocialCardOpen(true)}
+                >
+                  <Sparkles className="w-4 h-4" />
+                </Button>
+                <Button
+                  className="cursor-pointer"
+                  variant="ghost"
+                  size="icon"
+                  title="Share Itinerary"
+                  onClick={handleShareItinerary}
+                >
+                  <Share2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  className="cursor-pointer"
+                  variant="ghost"
+                  size="icon"
+                  title="Print / Save PDF"
+                  onClick={handlePrintItinerary}
+                >
+                  <Printer className="w-4 h-4" />
+                </Button>
                 {onEditClick && (
                   <Button
                     className="cursor-pointer"
@@ -388,6 +436,20 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
           {itinerary.destination || "N/A"}
         </span>
       </ListCardFooter>
+
+      {/* Hidden container that displays only during window.print() */}
+      <PrintableItinerary itinerary={itinerary} />
+
+      {/* Social Card Generator Modal */}
+      <SocialCardModal
+        isOpen={isSocialCardOpen}
+        onClose={() => setIsSocialCardOpen(false)}
+        title={itinerary.title}
+        subtitle={itinerary.destination ? `📍 ${itinerary.destination}` : undefined}
+        excerpt={`Trip dates: ${formatDate(itinerary.startDate)} to ${formatDate(itinerary.endDate)} (${itinerary.totalDays} Days). Total activities planned: ${totalTasks}.`}
+        date={`${formatDate(itinerary.startDate)} - ${formatDate(itinerary.endDate)}`}
+        type="itinerary"
+      />
     </ListCard>
   );
 };
