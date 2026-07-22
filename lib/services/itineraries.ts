@@ -1,9 +1,7 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import {
   collection,
   doc,
-  getDoc,
-  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -23,7 +21,7 @@ const getItineraryCollection = (userId: string) =>
 
 /** Fetch all itineraries */
 export const getItineraries = async (userId: string) => {
-  const snapshot = await getDocs(getItineraryCollection(userId));
+  const snapshot = await fetchDocsOptimistic(getItineraryCollection(userId));
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as ItineraryCreate),
@@ -33,7 +31,7 @@ export const getItineraries = async (userId: string) => {
 /** Fetch a single itinerary by ID */
 export const getItineraryById = async (userId: string, itineraryId: string) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
-  const snapshot = await getDoc(docRef);
+  const snapshot = await fetchDocOptimistic(docRef);
   return snapshot.exists()
     ? { id: snapshot.id, ...(snapshot.data() as ItineraryCreate) }
     : null;

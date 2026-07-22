@@ -1,10 +1,8 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import { Goal, GoalCreate, GoalUpdate, createGoalSchema, updateGoalSchema } from "@/types/goals";
 import {
   collection,
   doc,
-  getDocs,
-  getDoc,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -15,7 +13,7 @@ import {
 export const getGoals = async (userId: string): Promise<Goal[]> => {
   const goalsRef = collection(db, `users/${userId}/goals`);
   const q = query(goalsRef);
-  const snapshot = await getDocs(q);
+  const snapshot = await fetchDocsOptimistic(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Goal));
 };
 
@@ -25,7 +23,7 @@ export const getGoalById = async (
   goalId: string
 ): Promise<Goal | null> => {
   const docRef = doc(db, `users/${userId}/goals`, goalId);
-  const snapshot = await getDoc(docRef);
+  const snapshot = await fetchDocOptimistic(docRef);
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Goal)
     : null;

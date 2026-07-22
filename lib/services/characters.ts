@@ -1,9 +1,7 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import {
   collection,
   doc,
-  getDocs,
-  getDoc,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -21,7 +19,7 @@ export const getCharacters = async (
   userId: string,
 ): Promise<Character[]> => {
   const charactersRef = collection(db, `users/${userId}/characters`);
-  const snapshot = await getDocs(charactersRef);
+  const snapshot = await fetchDocsOptimistic(charactersRef);
   return snapshot.docs.map(
     (doc) => ({ id: doc.id, ...doc.data() }) as Character,
   );
@@ -39,7 +37,7 @@ export async function searchByName(userId: string, searchString: string) {
     where("lowercaseName", "<", endString),
   );
 
-  const snapshot = await getDocs(q);
+  const snapshot = await fetchDocsOptimistic(q);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     name: doc.data().name,
@@ -54,7 +52,7 @@ export const getCharacterById = async (
   characterId: string,
 ): Promise<Character | null> => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  const docSnap = await getDoc(docRef);
+  const docSnap = await fetchDocOptimistic(docRef);
   return docSnap.exists()
     ? ({ id: docSnap.id, ...docSnap.data() } as Character)
     : null;
@@ -93,7 +91,8 @@ export const updateCharacter = async (
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
   
   // Extract id if passed so it's not written back as part of properties
-  const { id: _, ...updateData } = character;
+  const updateData = { ...character };
+  delete updateData.id;
   
   if (updateData.name) {
     updateData.lowercaseName = updateData.name.toLowerCase();
