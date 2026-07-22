@@ -14,6 +14,7 @@ import {
   Printer,
   Share2,
   Sparkles,
+  FileText,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -250,8 +251,9 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                   : "In Progress"}
             </Badge>
           </span>
-          <span className="flex items-center gap-1">
-            Budget: ${itinerary.budget}
+          <span className="text-[13px] text-muted-foreground flex items-center font-semibold">
+            <CalendarDays className="h-3 w-3 mr-1" />
+            {itinerary.totalDays} {itinerary.totalDays === 1 ? "day" : "days"}
           </span>
         </span>
       </CardHeader>
@@ -266,13 +268,14 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
               className="overflow-hidden w-full border-t pt-2"
             >
               <Tabs
-                tabValues={["overview", "schedule", "budget"]}
+                tabValues={["overview", "schedule", "budget", "notes"]}
                 defaultValue="overview"
               >
-                <TabsList className="mb-4 grid w-full grid-cols-3 bg-muted/50">
+                <TabsList className="mb-4 grid w-full grid-cols-4 bg-muted/50">
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="schedule">Schedule</TabsTrigger>
                   <TabsTrigger value="budget">Budget</TabsTrigger>
+                  <TabsTrigger value="notes">Notes</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-4">
@@ -419,6 +422,23 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
                 <TabsContent value="budget" className="space-y-4">
                   <BudgetSummary itinerary={itinerary} />
+                </TabsContent>
+
+                <TabsContent value="notes" className="space-y-4">
+                  <div className="bg-muted/30 p-4 rounded-xl border border-border min-h-32">
+                    <h3 className="text-sm font-semibold mb-2 flex items-center gap-1.5 text-muted-foreground">
+                      <FileText className="h-4 w-4" /> Trip Notes & Travel Info
+                    </h3>
+                    {itinerary.notes ? (
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed text-foreground">
+                        {itinerary.notes}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic py-4 text-center">
+                        No trip notes added yet. Click edit to add flight numbers, hotel details, or packing lists.
+                      </p>
+                    )}
+                  </div>
                 </TabsContent>
               </Tabs>
             </motion.div>

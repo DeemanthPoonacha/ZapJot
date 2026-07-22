@@ -45,6 +45,7 @@ export const createItinerarySchema = z.object({
     .max(60, "Maximum 60 days allowed per itinerary")
     .default([])
     .describe("Array of days of the itinerary"),
+  notes: z.string().optional().describe("General notes, flight details, or travel tips for the itinerary"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });

@@ -5,6 +5,7 @@ import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 
 // UI Components
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, Save, PlusCircle, Ban } from "lucide-react";
 import {
@@ -56,6 +57,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
       totalDays: itineraryData?.totalDays || 0,
       budget: itineraryData?.budget || 0,
       actualCost: itineraryData?.actualCost || 0,
+      notes: itineraryData?.notes || "",
       days: itineraryData?.days || [
         {
           id: Date.now().toString(),
@@ -250,6 +252,25 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Trip Notes & Travel Info</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Add flight numbers, hotel confirmation codes, packing list, or emergency contacts..."
+                  className="min-h-24 resize-y"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Days Section */}
         <div className="space-y-3 pt-2">
