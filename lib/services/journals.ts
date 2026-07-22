@@ -4,7 +4,6 @@ import {
   collection,
   doc,
   getDocs,
-  addDoc,
   updateDoc,
   deleteDoc,
   getDoc,
@@ -66,10 +65,11 @@ export const addJournal = async (
     updatedAt: data.updatedAt || new Date().toISOString(),
   };
 
-  // Validate the journal payload before addDoc
+  // Validate the journal payload before setDoc
   const validated = createJournalSchema.parse(payload);
-  const docRef = await addDoc(journalsRef, validated);
-  return { id: docRef.id, ...validated };
+  const newDocRef = doc(journalsRef);
+  await setDoc(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 // Update an existing journal

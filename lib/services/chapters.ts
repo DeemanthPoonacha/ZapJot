@@ -4,7 +4,7 @@ import {
   collection,
   doc,
   getDocs,
-  addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   getDoc,
@@ -42,10 +42,11 @@ export const addChapter = async (userId: string, data: ChapterCreate) => {
     updatedAt: data.updatedAt || new Date().toISOString(),
   };
 
-  // Validate chapter payload before addDoc
+  // Validate chapter payload before setDoc
   const validated = createChapterSchema.parse(payload);
-  const docRef = await addDoc(chaptersRef, validated);
-  return { id: docRef.id, ...validated };
+  const newDocRef = doc(chaptersRef);
+  await setDoc(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 // Update an existing chapter

@@ -22,10 +22,9 @@ const withPWA = withPWAInit({
       },
       {
         urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
-        handler: "NetworkFirst",
+        handler: "StaleWhileRevalidate",
         options: {
           cacheName: "pages-cache",
-          networkTimeoutSeconds: 3,
         },
       },
       {
