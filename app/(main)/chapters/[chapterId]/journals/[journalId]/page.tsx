@@ -5,8 +5,8 @@ import { useJournal, useJournalMutations } from "@/lib/hooks/useJournals";
 import { Journal } from "@/types/journals";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
-import { MoveRight, Share2, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { MoveRight, Sparkles, Copy } from "lucide-react";
 import JournalCard from "@/components/journals/JournalCard";
 import useOperations from "@/lib/hooks/useOperations";
 import { toast } from "@/components/ui/sonner";
@@ -26,7 +26,7 @@ const JournalPage = () => {
   const { chapterId, journalId } = useParams();
   const { data: journal, isLoading } = useJournal(
     chapterId! as string,
-    journalId! as string
+    journalId! as string,
   );
 
   const [selectedMedia, setSelectedMedia] = useState<{
@@ -76,8 +76,8 @@ const JournalPage = () => {
           }
         }}
       >
-        <Share2 size={16} />
-        Share Link / Text
+        <Copy size={16} />
+        Copy Text
       </DropdownMenuItem>
       <DropdownMenuItem
         onSelect={() => {
@@ -167,7 +167,11 @@ const JournalPage = () => {
           title={journal.title || "Journal Entry"}
           excerpt={journal.content ? stripHtml(journal.content) : undefined}
           coverImage={journal.coverImage}
-          date={journal.createdAt ? new Date(journal.createdAt).toLocaleDateString() : undefined}
+          date={
+            journal.createdAt
+              ? new Date(journal.createdAt).toLocaleDateString()
+              : undefined
+          }
           type="journal"
           itemId={journal.id}
           rawItem={journal}

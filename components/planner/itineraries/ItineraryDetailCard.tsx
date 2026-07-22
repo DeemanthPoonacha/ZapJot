@@ -12,9 +12,9 @@ import {
   CopyMinus,
   CopyPlus,
   Printer,
-  Share2,
   Sparkles,
   FileText,
+  Copy,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -190,10 +190,10 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                   className="cursor-pointer"
                   variant="ghost"
                   size="icon"
-                  title="Share Itinerary"
+                  title="Copy Summary"
                   onClick={handleShareItinerary}
                 >
-                  <Share2 className="w-4 h-4" />
+                  <Copy className="w-4 h-4" />
                 </Button>
                 <Button
                   className="cursor-pointer"
@@ -435,7 +435,8 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                       </p>
                     ) : (
                       <p className="text-xs text-muted-foreground italic py-4 text-center">
-                        No trip notes added yet. Click edit to add flight numbers, hotel details, or packing lists.
+                        No trip notes added yet. Click edit to add flight
+                        numbers, hotel details, or packing lists.
                       </p>
                     )}
                   </div>
@@ -465,8 +466,15 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
         isOpen={isSocialCardOpen}
         onClose={() => setIsSocialCardOpen(false)}
         title={itinerary.title}
-        subtitle={itinerary.destination ? `📍 ${itinerary.destination}` : undefined}
-        excerpt={`Trip dates: ${formatDate(itinerary.startDate)} to ${formatDate(itinerary.endDate)} (${itinerary.totalDays} Days). Total activities planned: ${totalTasks}.`}
+        subtitle={
+          itinerary.destination ? `${itinerary.destination} 📍` : undefined
+        }
+        excerpt={
+          itinerary.notes ||
+          `Trip dates: ${formatDate(itinerary.startDate)} to ${formatDate(
+            itinerary.endDate,
+          )} (${itinerary.totalDays} Days). Total activities planned: ${totalTasks}.`
+        }
         date={`${formatDate(itinerary.startDate)} - ${formatDate(itinerary.endDate)}`}
         type="itinerary"
         itemId={itinerary.id}

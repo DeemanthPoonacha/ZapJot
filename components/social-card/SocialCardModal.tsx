@@ -14,6 +14,8 @@ import { SocialCardCanvas, CardTheme, THEME_PRESETS } from "./SocialCardCanvas";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { createPublicShare, getShareId } from "@/lib/services/publicShares";
 
+import Image from "next/image";
+
 interface SocialCardModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -151,8 +153,14 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto p-6">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            <Sparkles className="h-5 w-5 text-purple-600" />
+          <DialogTitle className="flex items-center gap-2.5 text-xl font-extrabold">
+            <Image
+              src="/logo.webp"
+              width={26}
+              height={27}
+              alt="ZapJot Logo"
+              className="rounded-lg shadow-sm"
+            />
             Social Media Card Generator
           </DialogTitle>
           <DialogDescription>

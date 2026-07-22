@@ -63,10 +63,14 @@ export const SocialCardCanvas = React.forwardRef<HTMLDivElement, SocialCardProps
         {/* Top Header Row */}
         <div className="flex items-center justify-between z-10">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-sm">
-              <Sparkles className="h-4 w-4 text-purple-300" />
-            </div>
-            <span className="font-bold tracking-tight text-white text-base">ZapJot</span>
+            <Image
+              src="/logo.webp"
+              width={28}
+              height={29}
+              alt="ZapJot Logo"
+              className="rounded-lg shadow-sm"
+            />
+            <span className="font-extrabold tracking-tight text-white text-base">ZapJot</span>
           </div>
 
           <div
