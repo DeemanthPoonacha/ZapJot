@@ -43,6 +43,7 @@ export const addGoal = async (userId: string, data: GoalCreate) => {
   // Validate goal payload before setDoc
   const validated = createGoalSchema.parse(payload);
   await setDoc(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 /** Update an existing goal */

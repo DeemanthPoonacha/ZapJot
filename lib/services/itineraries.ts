@@ -4,7 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
-  addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
@@ -47,10 +47,11 @@ export const addItinerary = async (userId: string, data: ItineraryCreate) => {
     updatedAt: data.updatedAt || new Date().toISOString(),
   };
 
-  // Validate itinerary payload before addDoc
+  // Validate itinerary payload before setDoc
   const validated = createItinerarySchema.parse(payload);
-  const docRef = await addDoc(getItineraryCollection(userId), validated);
-  return { id: docRef.id, ...validated };
+  const newDocRef = doc(getItineraryCollection(userId));
+  await setDoc(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 /** Update an itinerary */

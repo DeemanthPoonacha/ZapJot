@@ -4,9 +4,9 @@ import {
   doc,
   getDocs,
   getDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
-  addDoc,
   query,
   where,
   arrayUnion,
@@ -77,8 +77,9 @@ export const addCharacter = async (
 
   // Validate character before write
   const validated = createCharacterSchema.parse(payload);
-  const docRef = await addDoc(charactersRef, validated);
-  return { id: docRef.id, ...validated };
+  const newDocRef = doc(charactersRef);
+  await setDoc(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 /**
@@ -92,7 +93,7 @@ export const updateCharacter = async (
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
   
   // Extract id if passed so it's not written back as part of properties
-  const { id, ...updateData } = character;
+  const { id: _, ...updateData } = character;
   
   if (updateData.name) {
     updateData.lowercaseName = updateData.name.toLowerCase();

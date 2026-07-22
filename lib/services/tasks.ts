@@ -5,7 +5,7 @@ import {
   doc,
   getDocs,
   getDoc,
-  addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   query,
@@ -60,7 +60,7 @@ const getTaskById = async (
     : null;
     };
 
-const addTask = async (userId: string, taskData: TaskCreate): Promise<void> => {
+const addTask = async (userId: string, taskData: TaskCreate) => {
   const tasksCollection = collection(db, `users/${userId}/tasks`);
   const finalizedTask = {
     ...taskData,
@@ -73,7 +73,9 @@ const addTask = async (userId: string, taskData: TaskCreate): Promise<void> => {
   
   // Validate data before write
   const validated = createTaskSchema.parse(finalizedTask);
-  await addDoc(tasksCollection, validated);
+  const newDocRef = doc(tasksCollection);
+  await setDoc(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 const updateTask = async (

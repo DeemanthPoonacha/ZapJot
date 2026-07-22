@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/services/firebase/auth"; // Adjust based on your setup
-import { decryptUserKey } from "@/lib/utils/encryption";
+import { decryptUserKey, deriveSimpleKey } from "@/lib/utils/encryption";
 import { useGlobalState } from "./global-state";
 import { getUserKey } from "../services/encryption";
+
+const keyCache = new Map<string, CryptoKey>();
 
 export function useDecryptedUserKey() {
   const [key, setKey] = useGlobalState<CryptoKey | null>(
@@ -17,6 +19,11 @@ export function useDecryptedUserKey() {
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
       setLoading(true);
       if (user && user.email) {
+        if (keyCache.has(user.uid)) {
+          setKey(keyCache.get(user.uid)!);
+          setLoading(false);
+        }
+
         try {
           const { encryptedKey, iv } = await getUserKey(user.uid);
           if (encryptedKey && iv) {
@@ -26,12 +33,25 @@ export function useDecryptedUserKey() {
               encryptedKey,
               iv
             );
+            keyCache.set(user.uid, decrypted);
             setKey(decrypted);
           } else {
-            setError(new Error("Encrypted key not found."));
+            const derived = await deriveSimpleKey(user.uid, user.email);
+            keyCache.set(user.uid, derived);
+            setKey(derived);
           }
-        } catch (err) {
-          setError(err instanceof Error ? err : new Error("Unknown error"));
+        } catch (_err) {
+          try {
+            const derived = await deriveSimpleKey(user.uid, user.email);
+            keyCache.set(user.uid, derived);
+            setKey(derived);
+          } catch (fallbackErr) {
+            setError(
+              fallbackErr instanceof Error
+                ? fallbackErr
+                : new Error("Failed to derive encryption key")
+            );
+          }
         }
       } else {
         setKey(null);
