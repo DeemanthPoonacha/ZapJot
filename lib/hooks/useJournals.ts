@@ -74,10 +74,31 @@ export const useJournalMutations = (chapterId: string) => {
       await encryptData(data, key!);
       return addJournal(userId!, data.chapterId || chapterId, data);
     },
-    onSuccess: (data) =>
+    onSuccess: (newJournal) => {
+      queryClient.setQueriesData(
+        { queryKey: [JOURNAL_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [newJournal, ...oldData];
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any, index: number) =>
+                index === 0
+                  ? { ...page, journals: [newJournal, ...(page.journals || [])] }
+                  : page
+              ),
+            };
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
-        queryKey: [JOURNAL_QUERY_KEY, userId, data.chapterId || chapterId],
-      }),
+        queryKey: [JOURNAL_QUERY_KEY, userId, newJournal.chapterId || chapterId],
+      });
+    },
   });
 
   const updateMutation = useMutation({
@@ -92,19 +113,63 @@ export const useJournalMutations = (chapterId: string) => {
       await encryptData(data, key!);
       return updateJournal(userId!, chapterId, journalId, data);
     },
-    onSuccess: (data) =>
+    onSuccess: (updatedJournal, variables) => {
+      queryClient.setQueriesData(
+        { queryKey: [JOURNAL_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((journal: any) =>
+              journal.id === variables.journalId ? { ...journal, ...updatedJournal } : journal
+            );
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                journals: page.journals?.map((journal: any) =>
+                  journal.id === variables.journalId ? { ...journal, ...updatedJournal } : journal
+                ),
+              })),
+            };
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
-        queryKey: [JOURNAL_QUERY_KEY, userId, data.chapterId || chapterId],
-      }),
+        queryKey: [JOURNAL_QUERY_KEY, userId, updatedJournal.chapterId || chapterId],
+      });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (journalId: string) =>
       deleteJournal(userId!, chapterId, journalId),
-    onSuccess: () =>
+    onSuccess: (_data, journalId) => {
+      queryClient.setQueriesData(
+        { queryKey: [JOURNAL_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((journal: any) => journal.id !== journalId);
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                journals: page.journals?.filter((journal: any) => journal.id !== journalId),
+              })),
+            };
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
-      }),
+      });
+    },
   });
 
   return { addMutation, updateMutation, deleteMutation };

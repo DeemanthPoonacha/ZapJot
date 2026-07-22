@@ -44,27 +44,65 @@ export const useCharacterMutations = () => {
 
   const addMutation = useMutation({
     mutationFn: (data: CharacterCreate) => addCharacter(userId!, data),
-    onSuccess: () =>
+    onSuccess: (newChar) => {
+      queryClient.setQueriesData(
+        { queryKey: [CHARACTER_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [...oldData, newChar];
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [CHARACTER_QUERY_KEY, userId],
-      }),
+      });
+    },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: CharacterUpdate }) =>
       updateCharacter(userId!, id, data),
-    onSuccess: () =>
+    onSuccess: (_data, { id, data }) => {
+      queryClient.setQueriesData(
+        { queryKey: [CHARACTER_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((char: any) =>
+              char.id === id ? { ...char, ...data } : char
+            );
+          }
+          if (typeof oldData === "object" && oldData.id === id) {
+            return { ...oldData, ...data };
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [CHARACTER_QUERY_KEY, userId],
-      }),
+      });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteCharacter(userId!, id),
-    onSuccess: () =>
+    onSuccess: (_data, id) => {
+      queryClient.setQueriesData(
+        { queryKey: [CHARACTER_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((char: any) => char.id !== id);
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [CHARACTER_QUERY_KEY, userId],
-      }),
+      });
+    },
   });
 
   return { addMutation, updateMutation, deleteMutation };

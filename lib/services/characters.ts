@@ -1,27 +1,32 @@
-import { db } from "./firebase/db";
+import {
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
 import {
   collection,
   doc,
-  getDocs,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  addDoc,
   query,
   where,
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import { Character, CharacterCreate, createCharacterSchema, updateCharacterSchema } from "@/types/characters";
+import {
+  Character,
+  CharacterCreate,
+  createCharacterSchema,
+  updateCharacterSchema,
+} from "@/types/characters";
 
 /**
  * Get all characters for a user.
  */
-export const getCharacters = async (
-  userId: string,
-): Promise<Character[]> => {
+export const getCharacters = async (userId: string): Promise<Character[]> => {
   const charactersRef = collection(db, `users/${userId}/characters`);
-  const snapshot = await getDocs(charactersRef);
+  const snapshot = await fetchDocsOptimistic(charactersRef);
   return snapshot.docs.map(
     (doc) => ({ id: doc.id, ...doc.data() }) as Character,
   );
@@ -39,7 +44,7 @@ export async function searchByName(userId: string, searchString: string) {
     where("lowercaseName", "<", endString),
   );
 
-  const snapshot = await getDocs(q);
+  const snapshot = await fetchDocsOptimistic(q);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     name: doc.data().name,
@@ -54,7 +59,7 @@ export const getCharacterById = async (
   characterId: string,
 ): Promise<Character | null> => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  const docSnap = await getDoc(docRef);
+  const docSnap = await fetchDocOptimistic(docRef);
   return docSnap.exists()
     ? ({ id: docSnap.id, ...docSnap.data() } as Character)
     : null;
@@ -77,8 +82,9 @@ export const addCharacter = async (
 
   // Validate character before write
   const validated = createCharacterSchema.parse(payload);
-  const docRef = await addDoc(charactersRef, validated);
-  return { id: docRef.id, ...validated };
+  const newDocRef = doc(charactersRef);
+  await setDocOptimistic(newDocRef, validated);
+  return { id: newDocRef.id, ...validated };
 };
 
 /**
@@ -90,10 +96,11 @@ export const updateCharacter = async (
   character: Partial<Character>,
 ) => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  
+
   // Extract id if passed so it's not written back as part of properties
-  const { id, ...updateData } = character;
-  
+  const updateData = { ...character };
+  delete updateData.id;
+
   if (updateData.name) {
     updateData.lowercaseName = updateData.name.toLowerCase();
   }
@@ -103,8 +110,8 @@ export const updateCharacter = async (
     ...updateData,
     updatedAt: new Date().toISOString(),
   });
-  
-  await updateDoc(docRef, validated);
+
+  await updateDocOptimistic(docRef, validated);
   return characterId;
 };
 
@@ -113,7 +120,7 @@ export const updateCharacter = async (
  */
 export const deleteCharacter = async (userId: string, characterId: string) => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  await deleteDoc(docRef);
+  await deleteDocOptimistic(docRef);
 };
 
 /**
@@ -125,7 +132,7 @@ export const addReminder = async (
   reminderId: string,
 ) => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  await updateDoc(docRef, {
+  await updateDocOptimistic(docRef, {
     reminders: arrayUnion(reminderId),
   });
 };
@@ -139,7 +146,7 @@ export const removeReminder = async (
   reminderId: string,
 ) => {
   const docRef = doc(db, `users/${userId}/characters/${characterId}`);
-  await updateDoc(docRef, {
+  await updateDocOptimistic(docRef, {
     reminders: arrayRemove(reminderId),
   });
 };

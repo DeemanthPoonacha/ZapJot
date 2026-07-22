@@ -50,8 +50,19 @@ export const useChapterMutations = () => {
 
   const addMutation = useMutation({
     mutationFn: (data: ChapterCreate) => addChapter(userId!, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
+    onSuccess: (newChapter) => {
+      queryClient.setQueriesData(
+        { queryKey: [CHAPTER_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [...oldData, newChapter];
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
+    },
   });
 
   const updateMutation = useMutation({
@@ -62,14 +73,41 @@ export const useChapterMutations = () => {
       chapterId: string;
       data: ChapterUpdate;
     }) => updateChapter(userId!, chapterId, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
+    onSuccess: (_data, { chapterId, data }) => {
+      queryClient.setQueriesData(
+        { queryKey: [CHAPTER_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((chapter: any) =>
+              chapter.id === chapterId ? { ...chapter, ...data } : chapter
+            );
+          }
+          if (typeof oldData === "object" && oldData.id === chapterId) {
+            return { ...oldData, ...data };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (chapterId: string) => deleteChapter(userId!, chapterId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] }),
+    onSuccess: (_data, chapterId) => {
+      queryClient.setQueriesData(
+        { queryKey: [CHAPTER_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((chapter: any) => chapter.id !== chapterId);
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [CHAPTER_QUERY_KEY, userId] });
+    },
   });
 
   return { addMutation, updateMutation, deleteMutation };

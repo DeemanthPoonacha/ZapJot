@@ -1,12 +1,14 @@
-import { db } from "./firebase/db";
+import {
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
 import {
   collection,
   doc,
-  getDocs,
-  getDoc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
   where,
   query,
   writeBatch,
@@ -65,7 +67,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
   const q = query(eventsRef, ...constraints);
 
   try {
-    const snapshot = await getDocs(q);
+    const snapshot = await fetchDocsOptimistic(q);
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -78,7 +80,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
 
 export const getEventById = async (userId: string, eventId: string) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
-  const snapshot = await getDoc(eventRef);
+  const snapshot = await fetchDocOptimistic(eventRef);
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Event)
     : null;
@@ -121,17 +123,24 @@ export const addEvent = async (
     const token = getCalendarAccessToken();
     if (token) {
       try {
-        const { id } = await insertGoogleCalendarEvent(token, newEvent, notifyMinsBefore);
+        const { id } = await insertGoogleCalendarEvent(
+          token,
+          newEvent,
+          notifyMinsBefore,
+        );
         newEvent.googleCalendarEventId = id;
       } catch (err) {
-        console.error("Failed to insert Google Calendar event during addEvent:", err);
+        console.error(
+          "Failed to insert Google Calendar event during addEvent:",
+          err,
+        );
       }
     }
   }
 
   // Validate the event data before setDoc
   const validated = createEventSchema.parse(newEvent);
-  await setDoc(eventRef, validated);
+  await setDocOptimistic(eventRef, validated);
   return newEvent;
 };
 
@@ -208,13 +217,25 @@ export const updateEvent = async (
           ...data,
         };
         if (existingEvent.googleCalendarEventId) {
-          await updateGoogleCalendarEvent(token, existingEvent.googleCalendarEventId, mergedEventForSync, notifyMinsBefore);
+          await updateGoogleCalendarEvent(
+            token,
+            existingEvent.googleCalendarEventId,
+            mergedEventForSync,
+            notifyMinsBefore,
+          );
         } else {
-          const { id } = await insertGoogleCalendarEvent(token, mergedEventForSync, notifyMinsBefore);
+          const { id } = await insertGoogleCalendarEvent(
+            token,
+            mergedEventForSync,
+            notifyMinsBefore,
+          );
           updatedGoogleEventId = id;
         }
       } catch (err) {
-        console.error("Failed to update Google Calendar event during updateEvent:", err);
+        console.error(
+          "Failed to update Google Calendar event during updateEvent:",
+          err,
+        );
       }
     }
   }
@@ -225,7 +246,7 @@ export const updateEvent = async (
     googleCalendarEventId: updatedGoogleEventId,
     updatedAt: new Date().toISOString(),
   });
-  await updateDoc(eventRef, validated);
+  await updateDocOptimistic(eventRef, validated);
   return { participants: [...participantsToAdd, ...participantsToRemove] };
 };
 
@@ -243,11 +264,17 @@ export const deleteEvent = async (
       if (existingEvent && existingEvent.googleCalendarEventId) {
         const token = getCalendarAccessToken();
         if (token) {
-          await deleteGoogleCalendarEvent(token, existingEvent.googleCalendarEventId);
+          await deleteGoogleCalendarEvent(
+            token,
+            existingEvent.googleCalendarEventId,
+          );
         }
       }
     } catch (err) {
-      console.error("Failed to delete Google Calendar event during deleteEvent:", err);
+      console.error(
+        "Failed to delete Google Calendar event during deleteEvent:",
+        err,
+      );
     }
   }
 
@@ -258,7 +285,7 @@ export const deleteEvent = async (
       }),
     );
   }
-  await deleteDoc(eventRef);
+  await deleteDocOptimistic(eventRef);
 };
 
 export const updateOccurrences = async (

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-07-22
+
+### Added
+- **Complete PWA Offline Compatibility:** Added comprehensive Workbox runtime caching (`StaleWhileRevalidate` page route caching, asset caching, Cloudinary image caching) and fallback routing via `@ducanh2912/next-pwa`. (#44)
+- **Offline Fallback Page:** Built a dedicated glassmorphic offline page at `app/offline/page.tsx` with connection status and quick navigation links to cached routes. (#45)
+- **Network Status & Floating Indicator:** Added `useNetworkStatus` hook and floating top `<OfflineIndicator />` banner + Sonner toasts for connectivity state transitions. (#46)
+- **Non-Blocking Firestore Writes (`setDocOptimistic`):** Implemented non-blocking optimistic Firestore write functions (`setDocOptimistic`, `updateDocOptimistic`, `deleteDocOptimistic`) that commit mutations directly to IndexedDB in 0ms without waiting for server network responses. (#47)
+- **Optimistic Firestore Cache Reads (`fetchDocsOptimistic`):** Implemented `fetchDocsOptimistic` and `fetchDocOptimistic` helpers across all services to query IndexedDB directly when offline. (#47)
+- **Instant In-Memory UI Updates (`setQueriesData`):** Added optimistic React Query memory cache updates (`queryClient.setQueriesData`) across `useTasks`, `useJournals`, `useChapters`, `useCharacters`, `useGoals`, `useItineraries`, and `useEvents` to update UI lists in 0ms offline. (#47)
+- **Deterministic Encryption Key Fallback:** Added in-memory key caching and `deriveSimpleKey` fallback in `useDecryptedUserKey` to ensure encryption keys are available 100% offline for journal CRUD. (#47)
+
 ## [1.4.0] - 2026-07-21
 
 ### Added

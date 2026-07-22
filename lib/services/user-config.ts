@@ -1,5 +1,5 @@
-import { doc, setDoc, deleteDoc, collection, getDocs, writeBatch } from "firebase/firestore";
-import { db } from "./firebase/db";
+import { doc, setDoc, deleteDoc, collection, writeBatch } from "firebase/firestore";
+import { db, fetchDocsOptimistic } from "./firebase/db";
 import { generateEncryptedUserKey } from "../utils/encryption";
 import { UserInDb } from "@/types/user";
 import { getDeviceId } from "../utils";
@@ -48,7 +48,7 @@ export async function setUpUser(userId: string, email: string) {
 
 /** Helper to delete all documents in a collection/subcollection in chunked batches of 400 */
 async function deleteCollection(collectionRef: any) {
-  const snapshot = await getDocs(collectionRef);
+  const snapshot = await fetchDocsOptimistic(collectionRef);
   const docs = snapshot.docs;
   const chunkSize = 400;
   for (let i = 0; i < docs.length; i += chunkSize) {
@@ -79,7 +79,7 @@ export const deleteUserData = async (uid: string) => {
 
     // 5. Cascade delete chapters and nested journals
     const chaptersRef = collection(db, `users/${uid}/chapters`);
-    const chaptersSnapshot = await getDocs(chaptersRef);
+    const chaptersSnapshot = await fetchDocsOptimistic(chaptersRef);
     for (const chapterDoc of chaptersSnapshot.docs) {
       const journalsRef = collection(db, `users/${uid}/chapters/${chapterDoc.id}/journals`);
       await deleteCollection(journalsRef);

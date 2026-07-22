@@ -2,7 +2,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { app } from "./base";
 
 export function initAppCheck() {
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && navigator.onLine) {
     try {
       initializeAppCheck(app, {
         provider: new ReCaptchaV3Provider(

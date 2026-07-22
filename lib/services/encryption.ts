@@ -1,19 +1,19 @@
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "./firebase/db";
+import { doc } from "firebase/firestore";
+import { db, fetchDocOptimistic, setDocOptimistic } from "./firebase/db";
 import { generateEncryptedUserKey } from "../utils/encryption";
 import { UserEncryptedKey } from "@/types/user";
 
 export async function setUserKey(userId: string, email: string) {
   try {
     const encryption = await generateEncryptedUserKey(userId, email);
-    await setDoc(
+    await setDocOptimistic(
       doc(db, "users", userId),
       {
         email,
         encryption,
         createdAt: Date.now(),
       },
-      { merge: true }
+      { merge: true },
     );
     console.log("User key setup successfully");
   } catch (error) {
@@ -23,7 +23,7 @@ export async function setUserKey(userId: string, email: string) {
 }
 
 export async function getUserKey(userId: string) {
-  const keyDoc = await getDoc(doc(db, "users", userId));
+  const keyDoc = await fetchDocOptimistic(doc(db, "users", userId));
   const { encryptedKey, iv } = keyDoc.data()?.encryption as UserEncryptedKey;
   return {
     encryptedKey,

@@ -2,6 +2,17 @@ import { Logo } from "@/components/landing-page/Logo";
 import { Link } from "../layout/link/CustomLink";
 import { CTAButton } from "./cta/cta-button";
 
+const appVersion = process.env.APP_VERSION || "1.0.0";
+
+export function FooterAppVersion() {
+  return (
+    <span>
+      {process.env.NEXT_PUBLIC_APP_ENV == "staging" ? "Pre-Release" : "Release"}{" "}
+      v{appVersion}
+    </span>
+  );
+}
+
 export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t">
@@ -167,6 +178,9 @@ export function Footer() {
             <p className="text-sm text-slate-500 dark:text-slate-400">
               © {new Date().getFullYear()} ZapJot. All rights reserved.
             </p>
+            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+              <FooterAppVersion />
+            </div>
 
             <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
               <span>Made with</span>
