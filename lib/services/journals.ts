@@ -1,11 +1,21 @@
-import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
-import { Journal, JournalCreate, JournalUpdate, createJournalSchema, updateJournalSchema } from "@/types/journals";
+import {
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
+import {
+  Journal,
+  JournalCreate,
+  JournalUpdate,
+  createJournalSchema,
+  updateJournalSchema,
+} from "@/types/journals";
 import {
   collection,
   doc,
-  updateDoc,
-  deleteDoc,
-  setDoc,
   runTransaction,
   query,
   limit,
@@ -19,7 +29,7 @@ import { DEFAULT_CHAPTER_ID } from "../constants";
 export const getJournals = async (userId: string, chapterId: string) => {
   const journalsRef = collection(
     db,
-    `users/${userId}/chapters/${chapterId}/journals`
+    `users/${userId}/chapters/${chapterId}/journals`,
   );
   const snapshot = await fetchDocsOptimistic(journalsRef);
   return snapshot.docs.map((doc) => ({
@@ -32,11 +42,11 @@ export const getJournals = async (userId: string, chapterId: string) => {
 export const getJournalById = async (
   userId: string,
   chapterId: string,
-  journalId: string
+  journalId: string,
 ): Promise<Journal | null> => {
   const docRef = doc(
     db,
-    `users/${userId}/chapters/${chapterId}/journals/${journalId}`
+    `users/${userId}/chapters/${chapterId}/journals/${journalId}`,
   );
   const snapshot = await fetchDocOptimistic(docRef);
   return snapshot.exists()
@@ -48,13 +58,13 @@ export const getJournalById = async (
 export const addJournal = async (
   userId: string,
   chapterId: string,
-  data: JournalCreate
+  data: JournalCreate,
 ) => {
   await checkAndCreateNewChapter(userId, chapterId);
 
   const journalsRef = collection(
     db,
-    `users/${userId}/chapters/${chapterId}/journals`
+    `users/${userId}/chapters/${chapterId}/journals`,
   );
   const payload = {
     ...data,
@@ -66,7 +76,7 @@ export const addJournal = async (
   // Validate the journal payload before setDoc
   const validated = createJournalSchema.parse(payload);
   const newDocRef = doc(journalsRef);
-  await setDoc(newDocRef, validated);
+  await setDocOptimistic(newDocRef, validated);
   return { id: newDocRef.id, ...validated };
 };
 
@@ -75,7 +85,7 @@ export const updateJournal = async (
   userId: string,
   chapterId: string,
   journalId: string,
-  data: JournalUpdate
+  data: JournalUpdate,
 ) => {
   const newChapterId = data.chapterId;
   if (newChapterId && newChapterId !== chapterId) {
@@ -85,7 +95,7 @@ export const updateJournal = async (
 
   const journalRef = doc(
     db,
-    `users/${userId}/chapters/${editingChapterId}/journals/${journalId}`
+    `users/${userId}/chapters/${editingChapterId}/journals/${journalId}`,
   );
 
   // Validate the journal update payload before updateDoc
@@ -93,7 +103,7 @@ export const updateJournal = async (
     ...data,
     updatedAt: new Date().toISOString(),
   });
-  await updateDoc(journalRef, validated);
+  await updateDocOptimistic(journalRef, validated);
   return { id: journalId, ...validated };
 };
 
@@ -101,7 +111,7 @@ export const moveJournal = async (
   userId: string,
   journalId: string,
   oldChapterId: string,
-  newChapterId: string
+  newChapterId: string,
 ) => {
   if (newChapterId === oldChapterId) {
     return;
@@ -109,11 +119,11 @@ export const moveJournal = async (
 
   const oldRef = doc(
     db,
-    `users/${userId}/chapters/${oldChapterId}/journals/${journalId}`
+    `users/${userId}/chapters/${oldChapterId}/journals/${journalId}`,
   );
   const newRef = doc(
     db,
-    `users/${userId}/chapters/${newChapterId}/journals/${journalId}`
+    `users/${userId}/chapters/${newChapterId}/journals/${journalId}`,
   );
 
   // Check and create the destination chapter first (outside the transaction)
@@ -142,25 +152,25 @@ export const moveJournal = async (
 export const deleteJournal = async (
   userId: string,
   chapterId: string,
-  journalId: string
+  journalId: string,
 ) => {
   const journalRef = doc(
     db,
-    `users/${userId}/chapters/${chapterId}/journals/${journalId}`
+    `users/${userId}/chapters/${chapterId}/journals/${journalId}`,
   );
-  await deleteDoc(journalRef);
+  await deleteDocOptimistic(journalRef);
 };
 
 export async function checkAndCreateNewChapter(
   userId: string,
   newChapterId: string,
-  description: string = "This chapter holds notes, thoughts, or entries that don't quite fit into any specific category or predefined chapter. It's a flexible space for miscellaneous ideas, spontaneous jottings, or anything you're unsure where to place—until you decide if it belongs elsewhere or deserves a chapter of its own."
+  description: string = "This chapter holds notes, thoughts, or entries that don't quite fit into any specific category or predefined chapter. It's a flexible space for miscellaneous ideas, spontaneous jottings, or anything you're unsure where to place—until you decide if it belongs elsewhere or deserves a chapter of its own.",
 ) {
   const chapterRef = doc(db, `users/${userId}/chapters/${newChapterId}`);
   const chapterSnapshot = await fetchDocOptimistic(chapterRef);
 
   if (!chapterSnapshot.exists()) {
-    await setDoc(chapterRef, {
+    await setDocOptimistic(chapterRef, {
       id: generateIdByName(newChapterId) || DEFAULT_CHAPTER_ID,
       title:
         `${newChapterId[0].toUpperCase()}${newChapterId.slice(1)}` || "Others",
@@ -183,27 +193,27 @@ export interface PaginatedJournals {
 export const getJournalsPaginated = async (
   userId: string,
   chapterId: string,
-  options?: { limit?: number; startAfterDoc?: DocumentSnapshot | null }
+  options?: { limit?: number; startAfterDoc?: DocumentSnapshot | null },
 ): Promise<PaginatedJournals> => {
   const journalsRef = collection(
     db,
-    `users/${userId}/chapters/${chapterId}/journals`
+    `users/${userId}/chapters/${chapterId}/journals`,
   );
-  
+
   const constraints = [];
   constraints.push(orderBy("createdAt", "desc"));
-  
+
   if (options?.limit) {
     constraints.push(limit(options.limit));
   }
-  
+
   if (options?.startAfterDoc) {
     constraints.push(startAfter(options.startAfterDoc));
   }
-  
+
   const q = query(journalsRef, ...constraints);
   const snapshot = await fetchDocsOptimistic(q);
-  
+
   return {
     journals: snapshot.docs.map((doc) => ({
       id: doc.id,

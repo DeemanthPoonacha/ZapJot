@@ -1,26 +1,32 @@
-import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
-import { Goal, GoalCreate, GoalUpdate, createGoalSchema, updateGoalSchema } from "@/types/goals";
 import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-} from "firebase/firestore";
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
+import {
+  Goal,
+  GoalCreate,
+  GoalUpdate,
+  createGoalSchema,
+  updateGoalSchema,
+} from "@/types/goals";
+import { collection, doc, query } from "firebase/firestore";
 
 /** Get all goals for a specific user */
 export const getGoals = async (userId: string): Promise<Goal[]> => {
   const goalsRef = collection(db, `users/${userId}/goals`);
   const q = query(goalsRef);
   const snapshot = await fetchDocsOptimistic(q);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Goal));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Goal);
 };
 
 /** Get a single goal by ID */
 export const getGoalById = async (
   userId: string,
-  goalId: string
+  goalId: string,
 ): Promise<Goal | null> => {
   const docRef = doc(db, `users/${userId}/goals`, goalId);
   const snapshot = await fetchDocOptimistic(docRef);
@@ -40,7 +46,7 @@ export const addGoal = async (userId: string, data: GoalCreate) => {
 
   // Validate goal payload before setDoc
   const validated = createGoalSchema.parse(payload);
-  await setDoc(newDocRef, validated);
+  await setDocOptimistic(newDocRef, validated);
   return { id: newDocRef.id, ...validated };
 };
 
@@ -48,20 +54,20 @@ export const addGoal = async (userId: string, data: GoalCreate) => {
 export const updateGoal = async (
   userId: string,
   goalId: string,
-  data: GoalUpdate
+  data: GoalUpdate,
 ) => {
   const docRef = doc(db, `users/${userId}/goals`, goalId);
-  
+
   // Validate goal update payload before updateDoc
   const validated = updateGoalSchema.parse({
     ...data,
     updatedAt: new Date().toISOString(),
   });
-  await updateDoc(docRef, validated);
+  await updateDocOptimistic(docRef, validated);
 };
 
 /** Delete a goal */
 export const deleteGoal = async (userId: string, goalId: string) => {
   const docRef = doc(db, `users/${userId}/goals`, goalId);
-  await deleteDoc(docRef);
+  await deleteDocOptimistic(docRef);
 };
