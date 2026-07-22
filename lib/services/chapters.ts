@@ -1,20 +1,18 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import { Chapter, ChapterCreate, ChapterUpdate, createChapterSchema, updateChapterSchema } from "@/types/chapters";
 import {
   collection,
   doc,
-  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
-  getDoc,
   writeBatch,
 } from "firebase/firestore";
 
 // Get all chapters for a user
 export const getChapters = async (userId: string): Promise<Chapter[]> => {
   const chaptersRef = collection(db, `users/${userId}/chapters`);
-  const snapshot = await getDocs(chaptersRef);
+  const snapshot = await fetchDocsOptimistic(chaptersRef);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -27,7 +25,7 @@ export const getChapterById = async (
   chapterId: string
 ): Promise<Chapter | null> => {
   const docRef = doc(db, `users/${userId}/chapters/${chapterId}`);
-  const snapshot = await getDoc(docRef);
+  const snapshot = await fetchDocOptimistic(docRef);
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Chapter)
     : null;
@@ -80,7 +78,7 @@ export const deleteJournalsInChapter = async (
     db,
     `users/${userId}/chapters/${chapterId}/journals`
   );
-  const snapshot = await getDocs(journalsRef);
+  const snapshot = await fetchDocsOptimistic(journalsRef);
 
   // Firestore batches are limited to 500 writes. We chunk deletions into batches of 400.
   const docs = snapshot.docs;

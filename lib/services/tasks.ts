@@ -1,10 +1,8 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import { Task, TaskCreate, TaskFilter, createTaskSchema, updateTaskSchema } from "@/types/tasks";
 import {
   collection,
   doc,
-  getDocs,
-  getDoc,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -36,7 +34,7 @@ const getTasks = async (
   const q = query(tasksRef, ...constraints);
 
   try {
-    const snapshot = await getDocs(q);
+    const snapshot = await fetchDocsOptimistic(q);
     return snapshot.docs.map(
       (doc) =>
         ({
@@ -54,11 +52,11 @@ const getTaskById = async (
   taskId: string
 ): Promise<Task | null> => {
   const taskRef = doc(db, `users/${userId}/tasks`, taskId);
-  const snapshot = await getDoc(taskRef);
+  const snapshot = await fetchDocOptimistic(taskRef);
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Task)
     : null;
-    };
+};
 
 const addTask = async (userId: string, taskData: TaskCreate) => {
   const tasksCollection = collection(db, `users/${userId}/tasks`);
@@ -127,7 +125,7 @@ const getTasksPaginated = async (
   const q = query(tasksRef, ...constraints);
 
   try {
-    const snapshot = await getDocs(q);
+    const snapshot = await fetchDocsOptimistic(q);
     return {
       tasks: snapshot.docs.map(
         (doc) =>

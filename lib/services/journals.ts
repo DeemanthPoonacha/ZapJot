@@ -1,12 +1,10 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import { Journal, JournalCreate, JournalUpdate, createJournalSchema, updateJournalSchema } from "@/types/journals";
 import {
   collection,
   doc,
-  getDocs,
   updateDoc,
   deleteDoc,
-  getDoc,
   setDoc,
   runTransaction,
   query,
@@ -23,7 +21,7 @@ export const getJournals = async (userId: string, chapterId: string) => {
     db,
     `users/${userId}/chapters/${chapterId}/journals`
   );
-  const snapshot = await getDocs(journalsRef);
+  const snapshot = await fetchDocsOptimistic(journalsRef);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -40,7 +38,7 @@ export const getJournalById = async (
     db,
     `users/${userId}/chapters/${chapterId}/journals/${journalId}`
   );
-  const snapshot = await getDoc(docRef);
+  const snapshot = await fetchDocOptimistic(docRef);
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Journal)
     : null;
@@ -159,7 +157,7 @@ export async function checkAndCreateNewChapter(
   description: string = "This chapter holds notes, thoughts, or entries that don't quite fit into any specific category or predefined chapter. It's a flexible space for miscellaneous ideas, spontaneous jottings, or anything you're unsure where to place—until you decide if it belongs elsewhere or deserves a chapter of its own."
 ) {
   const chapterRef = doc(db, `users/${userId}/chapters/${newChapterId}`);
-  const chapterSnapshot = await getDoc(chapterRef);
+  const chapterSnapshot = await fetchDocOptimistic(chapterRef);
 
   if (!chapterSnapshot.exists()) {
     await setDoc(chapterRef, {
@@ -204,7 +202,7 @@ export const getJournalsPaginated = async (
   }
   
   const q = query(journalsRef, ...constraints);
-  const snapshot = await getDocs(q);
+  const snapshot = await fetchDocsOptimistic(q);
   
   return {
     journals: snapshot.docs.map((doc) => ({

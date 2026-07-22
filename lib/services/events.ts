@@ -1,9 +1,7 @@
-import { db } from "./firebase/db";
+import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import {
   collection,
   doc,
-  getDocs,
-  getDoc,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -65,7 +63,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
   const q = query(eventsRef, ...constraints);
 
   try {
-    const snapshot = await getDocs(q);
+    const snapshot = await fetchDocsOptimistic(q);
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -78,7 +76,7 @@ export const getEvents = async (userId: string, filter?: EventsFilter) => {
 
 export const getEventById = async (userId: string, eventId: string) => {
   const eventRef = doc(db, `users/${userId}/events`, eventId);
-  const snapshot = await getDoc(eventRef);
+  const snapshot = await fetchDocOptimistic(eventRef);
   return snapshot.exists()
     ? ({ id: snapshot.id, ...snapshot.data() } as Event)
     : null;
