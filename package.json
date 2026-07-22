@@ -40,6 +40,7 @@
     "firebase-admin": "^13.2.0",
     "firebaseui": "^6.1.0",
     "framer-motion": "^12.6.3",
+    "html-to-image": "^1.11.13",
     "jodit-react": "^5.2.19",
     "lucide-react": "^0.511.0",
     "next": "16.1.6",
