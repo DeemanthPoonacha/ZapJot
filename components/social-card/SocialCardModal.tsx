@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { toPng } from "html-to-image";
-import { Download, Share2, Sparkles, Check } from "lucide-react";
+import { Download, Share2, Sparkles, Check, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/sonner";
 import { SocialCardCanvas, CardTheme, THEME_PRESETS } from "./SocialCardCanvas";
+import { useAuth } from "@/lib/context/AuthProvider";
+import { createPublicShare, getShareId } from "@/lib/services/publicShares";
 
 interface SocialCardModalProps {
   isOpen: boolean;
@@ -21,6 +23,8 @@ interface SocialCardModalProps {
   date?: string;
   coverImage?: string;
   type?: "journal" | "itinerary";
+  itemId?: string;
+  rawItem?: any;
 }
 
 export const SocialCardModal: React.FC<SocialCardModalProps> = ({
@@ -32,10 +36,53 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
   date,
   coverImage,
   type = "journal",
+  itemId,
+  rawItem,
 }) => {
+  const { user } = useAuth();
   const [selectedTheme, setSelectedTheme] = useState<CardTheme>("midnight");
   const [isGenerating, setIsGenerating] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleCreatePublicLink = async () => {
+    if (!user) {
+      toast.error("Please sign in to generate a public link");
+      return;
+    }
+    setIsGenerating(true);
+    try {
+      const shareId = getShareId(type, itemId || title.toLowerCase().replace(/[^a-z0-9]/g, ""));
+      
+      const payload: any = {
+        id: shareId,
+        type,
+        title,
+        authorName: user.displayName || user.email?.split("@")[0] || "ZapJot User",
+      };
+
+      if (subtitle) payload.subtitle = subtitle;
+      if (rawItem?.content || excerpt) payload.content = rawItem?.content || excerpt;
+      if (coverImage) payload.coverImage = coverImage;
+      if (rawItem?.destination || subtitle) payload.destination = rawItem?.destination || subtitle?.replace("📍 ", "");
+      if (rawItem?.days) payload.days = rawItem.days;
+
+      const publicDoc = await createPublicShare(user.uid, payload);
+
+      const publicUrl = `${window.location.origin}/share/${publicDoc.id}`;
+
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(publicUrl);
+        toast.success("Public Share Link copied to clipboard!");
+      } else {
+        toast.success(`Public Link: ${publicUrl}`);
+      }
+    } catch (err) {
+      console.error("Error creating public link:", err);
+      toast.error("Failed to generate public share link");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const generatePngBlob = async () => {
     if (!cardRef.current) return null;
@@ -158,18 +205,27 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
           </div>
 
           {/* Export Action Buttons */}
-          <div className="flex items-center gap-3 w-full">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full">
             <Button
-              className="flex-1 gap-2"
+              className="w-full sm:flex-1 gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+              onClick={handleCreatePublicLink}
+              disabled={isGenerating}
+            >
+              <Link2 className="h-4 w-4" />
+              Copy Public Link
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full sm:flex-1 gap-2"
               onClick={handleDownload}
               disabled={isGenerating}
             >
               <Download className="h-4 w-4" />
-              {isGenerating ? "Generating..." : "Download PNG"}
+              Download PNG
             </Button>
             <Button
               variant="outline"
-              className="flex-1 gap-2"
+              className="w-full sm:flex-1 gap-2"
               onClick={handleShareImage}
               disabled={isGenerating}
             >

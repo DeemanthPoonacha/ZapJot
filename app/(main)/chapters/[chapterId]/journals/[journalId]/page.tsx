@@ -169,6 +169,8 @@ const JournalPage = () => {
           coverImage={journal.coverImage}
           date={journal.createdAt ? new Date(journal.createdAt).toLocaleDateString() : undefined}
           type="journal"
+          itemId={journal.id}
+          rawItem={journal}
         />
       )}
     </PageLayout>

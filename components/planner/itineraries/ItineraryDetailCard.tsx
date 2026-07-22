@@ -449,6 +449,8 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
         excerpt={`Trip dates: ${formatDate(itinerary.startDate)} to ${formatDate(itinerary.endDate)} (${itinerary.totalDays} Days). Total activities planned: ${totalTasks}.`}
         date={`${formatDate(itinerary.startDate)} - ${formatDate(itinerary.endDate)}`}
         type="itinerary"
+        itemId={itinerary.id}
+        rawItem={itinerary}
       />
     </ListCard>
   );

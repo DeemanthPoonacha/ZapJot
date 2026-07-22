@@ -21,5 +21,12 @@ service cloud.firestore {
       allow create: if isAuthenticated();
       allow read, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
+
+    // Match public shares
+    match /publicShares/{shareId} {
+      allow read: if true;
+      allow create, update: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
   }
 }
