@@ -1,6 +1,6 @@
 import { useMediaQuery } from "react-responsive";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "./drawer";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./dialog";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "./drawer";
 
 function ResponsiveDialogDrawer({
   title,
@@ -19,6 +19,7 @@ function ResponsiveDialogDrawer({
         <DrawerContent className="max-h-[90vh]">
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>
+            <DrawerDescription className="sr-only">{title}</DrawerDescription>
           </DrawerHeader>
           <div className="overflow-y-auto p-4">{content}</div>
         </DrawerContent>
@@ -31,6 +32,7 @@ function ResponsiveDialogDrawer({
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription className="sr-only">{title}</DialogDescription>
         </DialogHeader>
         {content}
       </DialogContent>

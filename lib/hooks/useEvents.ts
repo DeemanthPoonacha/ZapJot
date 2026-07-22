@@ -70,6 +70,16 @@ export const useEventMutations = () => {
       return addEvent(userId!, data, minutesBefore);
     },
     onSuccess: (event) => {
+      queryClient.setQueriesData(
+        { queryKey: [EVENT_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [...oldData, event];
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });
       event.participants?.map((participant) => {
         queryClient.invalidateQueries({
@@ -84,7 +94,22 @@ export const useEventMutations = () => {
       updateEventOccurrence(data, minutesBefore);
       return updateEvent(userId!, id, data, minutesBefore);
     },
-    onSuccess: (event) => {
+    onSuccess: (event, { id, data }) => {
+      queryClient.setQueriesData(
+        { queryKey: [EVENT_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((ev: any) =>
+              ev.id === id ? { ...ev, ...data } : ev
+            );
+          }
+          if (typeof oldData === "object" && oldData.id === id) {
+            return { ...oldData, ...data };
+          }
+          return oldData;
+        }
+      );
       queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });
       event.participants?.map((participant) => {
         console.log("🚀 ~ event.participants?.map ~ participant:", participant);
@@ -103,8 +128,19 @@ export const useEventMutations = () => {
       id: string;
       participants?: string[];
     }) => deleteEvent(userId!, id, participants),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] }),
+    onSuccess: (_res, { id }) => {
+      queryClient.setQueriesData(
+        { queryKey: [EVENT_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((ev: any) => ev.id !== id);
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [EVENT_QUERY_KEY, userId] });
+    },
   });
 
   return { addMutation, updateMutation, deleteMutation };

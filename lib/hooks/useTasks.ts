@@ -65,21 +65,88 @@ export const useTaskMutations = () => {
 
   const addMutation = useMutation({
     mutationFn: (data: TaskCreate) => addTask(userId!, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+    onSuccess: (newTask) => {
+      queryClient.setQueriesData(
+        { queryKey: [TASK_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return [newTask, ...oldData];
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any, index: number) =>
+                index === 0
+                  ? { ...page, tasks: [newTask, ...(page.tasks || [])] }
+                  : page
+              ),
+            };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] });
+    },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: TaskCreate }) =>
       updateTask(userId!, id, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+    onSuccess: (_data, variables) => {
+      queryClient.setQueriesData(
+        { queryKey: [TASK_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.map((task: Task) =>
+              task.id === variables.id ? { ...task, ...variables.data } : task
+            );
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                tasks: page.tasks?.map((task: Task) =>
+                  task.id === variables.id
+                    ? { ...task, ...variables.data }
+                    : task
+                ),
+              })),
+            };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteTask(userId!, id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+    onSuccess: (_data, id) => {
+      queryClient.setQueriesData(
+        { queryKey: [TASK_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          if (Array.isArray(oldData)) {
+            return oldData.filter((task: Task) => task.id !== id);
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                tasks: page.tasks?.filter((task: Task) => task.id !== id),
+              })),
+            };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] });
+    },
   });
 
   const toggleTaskCompletion = useMutation({
@@ -91,8 +158,37 @@ export const useTaskMutations = () => {
           status: task.status === "completed" ? "pending" : "completed",
         })),
       }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+    onSuccess: (_data, task) => {
+      const newStatus = task.status === "completed" ? "pending" : "completed";
+      const updatedSubtasks = (task.subtasks || []).map((subtask) => ({
+        ...subtask,
+        status: newStatus,
+      }));
+      queryClient.setQueriesData(
+        { queryKey: [TASK_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          const updateItem = (t: Task) =>
+            t.id === task.id
+              ? { ...t, status: newStatus, subtasks: updatedSubtasks }
+              : t;
+          if (Array.isArray(oldData)) {
+            return oldData.map(updateItem);
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                tasks: page.tasks?.map(updateItem),
+              })),
+            };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] });
+    },
   });
 
   const toggleSubtaskCompletion = useMutation({
@@ -108,8 +204,43 @@ export const useTaskMutations = () => {
             : subtask
         ),
       }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] }),
+    onSuccess: (_data, { task, subtaskId }) => {
+      queryClient.setQueriesData(
+        { queryKey: [TASK_QUERY_KEY, userId] },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          const updateItem = (t: Task) => {
+            if (t.id !== task.id) return t;
+            return {
+              ...t,
+              subtasks: (t.subtasks || []).map((s) =>
+                s.id === subtaskId
+                  ? {
+                      ...s,
+                      status:
+                        s.status === "completed" ? "pending" : "completed",
+                    }
+                  : s
+              ),
+            };
+          };
+          if (Array.isArray(oldData)) {
+            return oldData.map(updateItem);
+          }
+          if (typeof oldData === "object" && "pages" in oldData) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                tasks: page.tasks?.map(updateItem),
+              })),
+            };
+          }
+          return oldData;
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: [TASK_QUERY_KEY, userId] });
+    },
   });
 
   return {
