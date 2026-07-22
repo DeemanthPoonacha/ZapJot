@@ -11,6 +11,7 @@ import { PendingTasks } from "@/components/home/pending-tasks";
 import { JotDown } from "@/components/home/jot-down";
 // import Image from "next/image";
 import { Logo } from "@/components/layout/Logo";
+import { FooterAppVersion } from "@/components/landing-page/footer";
 
 export default function HomePage() {
   return (
@@ -28,6 +29,9 @@ export default function HomePage() {
         {/* <MoodTracker /> */}
         <DateCard />
         <TodaysFocus />
+        <div className="sm:hidden flex justify-center text-xs text-muted-foreground">
+          <FooterAppVersion />
+        </div>
       </div>
     </PageLayout>
   );

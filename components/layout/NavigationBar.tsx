@@ -6,6 +6,7 @@ import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@/components/layout/link/CustomLink";
 import { Logo } from "./Logo";
+import { FooterAppVersion } from "../landing-page/footer";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/home" },
@@ -31,7 +32,7 @@ export function NavigationBar() {
               className={cn(
                 "relative flex flex-col items-center gap-1 p-2 text-muted-foreground transition-transform duration-200 hover:text-primary",
                 pathname.includes(route.href) &&
-                  "text-primary-foreground transform scale-110 transition-transform duration-200 bg-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl"
+                  "text-primary-foreground transform scale-110 transition-transform duration-200 bg-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl",
               )}
             >
               {/* {isActive && (
@@ -58,13 +59,16 @@ export function NavigationBar() {
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:text-primary hover:bg-accent",
               pathname.includes(route.href) &&
-                "text-primary-foreground bg-primary hover:bg-primary/90 hover:text-primary-foreground"
+                "text-primary-foreground bg-primary hover:bg-primary/90 hover:text-primary-foreground",
             )}
           >
             <route.icon className="h-5 w-5" />
             <span>{route.label}</span>
           </Link>
         ))}
+      </div>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-auto p-4 pb-0">
+        <FooterAppVersion />
       </div>
     </nav>
   );
