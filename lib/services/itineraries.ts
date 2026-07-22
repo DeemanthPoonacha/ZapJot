@@ -185,3 +185,57 @@ export const deleteItineraryTask = async (
   );
   await updateItinerary(userId, itineraryId, { days: updatedDays });
 };
+
+export interface TodayItineraryTask {
+  itineraryId: string;
+  itineraryTitle: string;
+  dayId: string;
+  dayTitle: string;
+  task: ItineraryTask;
+}
+
+/** Fetch all itinerary tasks scheduled for today across active itineraries */
+export const getTodayItineraryTasks = async (
+  userId: string
+): Promise<TodayItineraryTask[]> => {
+  const itineraries = await getItineraries(userId);
+  if (!itineraries || itineraries.length === 0) return [];
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const results: TodayItineraryTask[] = [];
+  console.log("itinerary", itineraries);
+
+  for (const itinerary of itineraries) {
+    if (!itinerary.startDate || !itinerary.endDate || !itinerary.days) continue;
+
+    const start = new Date(itinerary.startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(itinerary.endDate);
+    end.setHours(23, 59, 59, 999);
+
+    if (today >= start && today <= end) {
+      // Calculate day index (0-based)
+      const diffTime = today.getTime() - start.getTime();
+      const dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      const dayObj = itinerary.days[dayIndex] || itinerary.days.find((d, idx) => idx === dayIndex);
+
+      if (dayObj && dayObj.tasks) {
+        for (const task of dayObj.tasks) {
+          results.push({
+            itineraryId: itinerary.id,
+            itineraryTitle: itinerary.title,
+            dayId: dayObj.id,
+            dayTitle: dayObj.title,
+            task,
+          });
+        }
+      }
+    }
+  }
+
+  return results;
+};
+
