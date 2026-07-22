@@ -1,13 +1,19 @@
-import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
-import { Chapter, ChapterCreate, ChapterUpdate, createChapterSchema, updateChapterSchema } from "@/types/chapters";
 import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  writeBatch,
-} from "firebase/firestore";
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
+import {
+  Chapter,
+  ChapterCreate,
+  ChapterUpdate,
+  createChapterSchema,
+  updateChapterSchema,
+} from "@/types/chapters";
+import { collection, doc, writeBatch } from "firebase/firestore";
 
 // Get all chapters for a user
 export const getChapters = async (userId: string): Promise<Chapter[]> => {
@@ -22,7 +28,7 @@ export const getChapters = async (userId: string): Promise<Chapter[]> => {
 // Get a single chapter by ID
 export const getChapterById = async (
   userId: string,
-  chapterId: string
+  chapterId: string,
 ): Promise<Chapter | null> => {
   const docRef = doc(db, `users/${userId}/chapters/${chapterId}`);
   const snapshot = await fetchDocOptimistic(docRef);
@@ -43,7 +49,7 @@ export const addChapter = async (userId: string, data: ChapterCreate) => {
   // Validate chapter payload before setDoc
   const validated = createChapterSchema.parse(payload);
   const newDocRef = doc(chaptersRef);
-  await setDoc(newDocRef, validated);
+  await setDocOptimistic(newDocRef, validated);
   return { id: newDocRef.id, ...validated };
 };
 
@@ -51,32 +57,32 @@ export const addChapter = async (userId: string, data: ChapterCreate) => {
 export const updateChapter = async (
   userId: string,
   chapterId: string,
-  data: ChapterUpdate
+  data: ChapterUpdate,
 ) => {
   const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
-  
+
   // Validate chapter update payload before updateDoc
   const validated = updateChapterSchema.parse({
     ...data,
     updatedAt: new Date().toISOString(),
   });
-  await updateDoc(chapterRef, validated);
+  await updateDocOptimistic(chapterRef, validated);
 };
 
 // Delete a chapter
 export const deleteChapter = async (userId: string, chapterId: string) => {
   const chapterRef = doc(db, `users/${userId}/chapters/${chapterId}`);
-  await deleteDoc(chapterRef);
+  await deleteDocOptimistic(chapterRef);
   await deleteJournalsInChapter(userId, chapterId);
 };
 
 export const deleteJournalsInChapter = async (
   userId: string,
-  chapterId: string
+  chapterId: string,
 ) => {
   const journalsRef = collection(
     db,
-    `users/${userId}/chapters/${chapterId}/journals`
+    `users/${userId}/chapters/${chapterId}/journals`,
   );
   const snapshot = await fetchDocsOptimistic(journalsRef);
 

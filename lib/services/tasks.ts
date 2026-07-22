@@ -1,11 +1,21 @@
-import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
-import { Task, TaskCreate, TaskFilter, createTaskSchema, updateTaskSchema } from "@/types/tasks";
+import {
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
+import {
+  Task,
+  TaskCreate,
+  TaskFilter,
+  createTaskSchema,
+  updateTaskSchema,
+} from "@/types/tasks";
 import {
   collection,
   doc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
   query,
   limit,
   where,
@@ -16,7 +26,7 @@ import {
 
 const getTasks = async (
   userId: string,
-  filter?: TaskFilter
+  filter?: TaskFilter,
 ): Promise<Task[]> => {
   const tasksRef = collection(db, `users/${userId}/tasks`);
   const constraints = [];
@@ -40,7 +50,7 @@ const getTasks = async (
         ({
           id: doc.id,
           ...doc.data(),
-        } as Task)
+        }) as Task,
     );
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -49,7 +59,7 @@ const getTasks = async (
 };
 const getTaskById = async (
   userId: string,
-  taskId: string
+  taskId: string,
 ): Promise<Task | null> => {
   const taskRef = doc(db, `users/${userId}/tasks`, taskId);
   const snapshot = await fetchDocOptimistic(taskRef);
@@ -63,37 +73,38 @@ const addTask = async (userId: string, taskData: TaskCreate) => {
   const finalizedTask = {
     ...taskData,
     status: taskData.status || "pending",
-    highPriority: taskData.highPriority !== undefined ? taskData.highPriority : false,
+    highPriority:
+      taskData.highPriority !== undefined ? taskData.highPriority : false,
     subtasks: taskData.subtasks || [],
     createdAt: taskData.createdAt || new Date().toISOString(),
     updatedAt: taskData.updatedAt || new Date().toISOString(),
   };
-  
+
   // Validate data before write
   const validated = createTaskSchema.parse(finalizedTask);
   const newDocRef = doc(tasksCollection);
-  await setDoc(newDocRef, validated);
+  await setDocOptimistic(newDocRef, validated);
   return { id: newDocRef.id, ...validated };
 };
 
 const updateTask = async (
   userId: string,
   taskId: string,
-  taskData: Partial<TaskCreate>
+  taskData: Partial<TaskCreate>,
 ): Promise<void> => {
   const taskRef = doc(db, `users/${userId}/tasks`, taskId);
-  
+
   // Validate update payload
   const validated = updateTaskSchema.parse({
     ...taskData,
     updatedAt: new Date().toISOString(),
   });
-  await updateDoc(taskRef, validated);
+  await updateDocOptimistic(taskRef, validated);
 };
 
 const deleteTask = async (userId: string, taskId: string): Promise<void> => {
   const taskRef = doc(db, `users/${userId}/tasks`, taskId);
-  await deleteDoc(taskRef);
+  await deleteDocOptimistic(taskRef);
 };
 
 export interface PaginatedTasks {
@@ -103,7 +114,7 @@ export interface PaginatedTasks {
 
 const getTasksPaginated = async (
   userId: string,
-  filter?: TaskFilter & { startAfterDoc?: DocumentSnapshot | null }
+  filter?: TaskFilter & { startAfterDoc?: DocumentSnapshot | null },
 ): Promise<PaginatedTasks> => {
   const tasksRef = collection(db, `users/${userId}/tasks`);
   const constraints = [];
@@ -132,7 +143,7 @@ const getTasksPaginated = async (
           ({
             id: doc.id,
             ...doc.data(),
-          } as Task)
+          }) as Task,
       ),
       lastDoc: snapshot.docs[snapshot.docs.length - 1] || null,
     };
@@ -142,4 +153,11 @@ const getTasksPaginated = async (
   }
 };
 
-export { getTasks, getTasksPaginated, getTaskById, addTask, updateTask, deleteTask };
+export {
+  getTasks,
+  getTasksPaginated,
+  getTaskById,
+  addTask,
+  updateTask,
+  deleteTask,
+};

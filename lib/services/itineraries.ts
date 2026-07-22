@@ -1,11 +1,12 @@
-import { db, fetchDocsOptimistic, fetchDocOptimistic } from "./firebase/db";
 import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+  db,
+  fetchDocsOptimistic,
+  fetchDocOptimistic,
+  setDocOptimistic,
+  updateDocOptimistic,
+  deleteDocOptimistic,
+} from "./firebase/db";
+import { collection, doc } from "firebase/firestore";
 import {
   ItineraryCreate,
   ItineraryUpdate,
@@ -48,7 +49,7 @@ export const addItinerary = async (userId: string, data: ItineraryCreate) => {
   // Validate itinerary payload before setDoc
   const validated = createItinerarySchema.parse(payload);
   const newDocRef = doc(getItineraryCollection(userId));
-  await setDoc(newDocRef, validated);
+  await setDocOptimistic(newDocRef, validated);
   return { id: newDocRef.id, ...validated };
 };
 
@@ -56,7 +57,7 @@ export const addItinerary = async (userId: string, data: ItineraryCreate) => {
 export const updateItinerary = async (
   userId: string,
   itineraryId: string,
-  data: ItineraryUpdate
+  data: ItineraryUpdate,
 ) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
   const payload = {
@@ -66,13 +67,13 @@ export const updateItinerary = async (
 
   // Validate itinerary update payload before updateDoc
   const validated = updateItinerarySchema.parse(payload);
-  await updateDoc(docRef, validated);
+  await updateDocOptimistic(docRef, validated);
 };
 
 export const updateItineraryCost = async (
   userId: string,
   itineraryId: string,
-  cost: number
+  cost: number,
 ) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
   const payload = {
@@ -82,20 +83,20 @@ export const updateItineraryCost = async (
 
   // Validate itinerary cost update payload before updateDoc
   const validated = updateItinerarySchema.parse(payload);
-  await updateDoc(docRef, validated);
+  await updateDocOptimistic(docRef, validated);
 };
 
 /** Delete an itinerary */
 export const deleteItinerary = async (userId: string, itineraryId: string) => {
   const docRef = doc(db, `users/${userId}/itineraries/${itineraryId}`);
-  await deleteDoc(docRef);
+  await deleteDocOptimistic(docRef);
 };
 
 /** Add a day to an itinerary */
 export const addItineraryDay = async (
   userId: string,
   itineraryId: string,
-  day: ItineraryDayType
+  day: ItineraryDayType,
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
@@ -108,12 +109,12 @@ export const updateItineraryDay = async (
   userId: string,
   itineraryId: string,
   dayId: string,
-  data: Partial<ItineraryDayType>
+  data: Partial<ItineraryDayType>,
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
   const updatedDays = itinerary.days.map((day) =>
-    day.id === dayId ? { ...day, ...data } : day
+    day.id === dayId ? { ...day, ...data } : day,
   );
   await updateItinerary(userId, itineraryId, { days: updatedDays });
 };
@@ -122,7 +123,7 @@ export const updateItineraryDay = async (
 export const deleteItineraryDay = async (
   userId: string,
   itineraryId: string,
-  dayId: string
+  dayId: string,
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
@@ -135,12 +136,12 @@ export const addItineraryTask = async (
   userId: string,
   itineraryId: string,
   dayId: string,
-  task: ItineraryTask
+  task: ItineraryTask,
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
   const updatedDays = itinerary.days.map((day) =>
-    day.id === dayId ? { ...day, tasks: [...day.tasks, task] } : day
+    day.id === dayId ? { ...day, tasks: [...day.tasks, task] } : day,
   );
   await updateItinerary(userId, itineraryId, { days: updatedDays });
 };
@@ -151,7 +152,7 @@ export const updateItineraryTask = async (
   itineraryId: string,
   dayId: string,
   taskId: string,
-  data: Partial<ItineraryTask>
+  data: Partial<ItineraryTask>,
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
@@ -160,10 +161,10 @@ export const updateItineraryTask = async (
       ? {
           ...day,
           tasks: day.tasks.map((task) =>
-            task.id === taskId ? { ...task, ...data } : task
+            task.id === taskId ? { ...task, ...data } : task,
           ),
         }
-      : day
+      : day,
   );
   await updateItinerary(userId, itineraryId, { days: updatedDays });
 };
@@ -173,14 +174,14 @@ export const deleteItineraryTask = async (
   userId: string,
   itineraryId: string,
   dayId: string,
-  taskId: string
+  taskId: string,
 ) => {
   const itinerary = await getItineraryById(userId, itineraryId);
   if (!itinerary) return;
   const updatedDays = itinerary.days.map((day) =>
     day.id === dayId
       ? { ...day, tasks: day.tasks.filter((task) => task.id !== taskId) }
-      : day
+      : day,
   );
   await updateItinerary(userId, itineraryId, { days: updatedDays });
 };
