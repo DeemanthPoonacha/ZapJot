@@ -1,25 +1,39 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     // Helper function to check if the user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Helper function to check if the authenticated user matches the owner of the user document
+    // Helper function to check if the authenticated user matches the owner
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Match all documents under the users collection hierarchy
+    // Main user documents (journals, tasks, events, etc.)
     match /users/{userId}/{document=**} {
       allow read, write: if isOwner(userId);
     }
 
-    // Match push subscriptions
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Push subscriptions
     match /pushSubscriptions/{subscriptionId} {
       allow create: if isAuthenticated();
       allow read, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Public Shares (Option A Public Post Links)
+    match /publicShares/{shareId} {
+      // Anyone on the web can read public posts without logging in
+      allow read: if true;
+      // Only the logged-in owner can create, update, or delete their public share
+      allow create, update: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
   }
 }

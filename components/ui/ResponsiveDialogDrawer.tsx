@@ -13,10 +13,24 @@ function ResponsiveDialogDrawer({
 }) {
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Adjust breakpoint as needed
 
+  const preventCloudinaryInterference = (e: any) => {
+    if (
+      document.getElementById("cloudinary-overlay") ||
+      document.querySelector("iframe[src*='cloudinary']") ||
+      document.querySelector("div[id*='cloudinary']")
+    ) {
+      e.preventDefault();
+    }
+  };
+
   if (isMobile) {
     return (
       <Drawer open={true} onOpenChange={(open) => !open && handleClose()}>
-        <DrawerContent className="max-h-[90vh]">
+        <DrawerContent
+          className="max-h-[90vh]"
+          onInteractOutside={preventCloudinaryInterference}
+          onPointerDownOutside={preventCloudinaryInterference}
+        >
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>
             <DrawerDescription className="sr-only">{title}</DrawerDescription>
@@ -29,7 +43,11 @@ function ResponsiveDialogDrawer({
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="max-h-[90vh] overflow-y-auto"
+        onInteractOutside={preventCloudinaryInterference}
+        onPointerDownOutside={preventCloudinaryInterference}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="sr-only">{title}</DialogDescription>

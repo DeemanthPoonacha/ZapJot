@@ -15,21 +15,26 @@ import { useDecryptedUserKey } from "./useDecryptedUserKey";
 export const JOURNAL_QUERY_KEY = "journals";
 
 export const useJournals = (chapterId?: string) => {
-  const { user } = useAuth();
+  const { user, loading: isAuthLoading } = useAuth();
   const userId = user?.uid;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: [JOURNAL_QUERY_KEY, userId, chapterId],
     queryFn: () => (userId && chapterId ? getJournals(userId, chapterId) : []),
     enabled: !!userId && !!chapterId,
   });
+
+  return {
+    ...query,
+    isLoading: query.isLoading || isAuthLoading,
+  };
 };
 
 export const useInfiniteJournals = (chapterId?: string, pageSize: number = 25) => {
-  const { user } = useAuth();
+  const { user, loading: isAuthLoading } = useAuth();
   const userId = user?.uid;
 
-  return useInfiniteQuery({
+  const query = useInfiniteQuery({
     queryKey: [JOURNAL_QUERY_KEY, userId, chapterId, "infinite", pageSize],
     queryFn: ({ pageParam }) =>
       userId && chapterId
@@ -42,15 +47,20 @@ export const useInfiniteJournals = (chapterId?: string, pageSize: number = 25) =
     getNextPageParam: (lastPage) => lastPage.lastDoc,
     enabled: !!userId && !!chapterId,
   });
+
+  return {
+    ...query,
+    isLoading: query.isLoading || isAuthLoading,
+  };
 };
 
 export const useJournal = (chapterId?: string, journalId?: string) => {
-  const { user } = useAuth();
+  const { user, loading: isAuthLoading } = useAuth();
   const userId = user?.uid;
-  const { key } = useDecryptedUserKey();
+  const { key, loading: isKeyLoading } = useDecryptedUserKey();
 
-  return useQuery({
-    queryKey: [JOURNAL_QUERY_KEY, userId, chapterId, journalId],
+  const query = useQuery({
+    queryKey: [JOURNAL_QUERY_KEY, userId, chapterId, journalId, !!key],
     queryFn: async () => {
       if (!userId || !chapterId || !journalId) return null;
       const journal = await getJournalById(userId, chapterId, journalId);
@@ -61,6 +71,11 @@ export const useJournal = (chapterId?: string, journalId?: string) => {
     },
     enabled: !!userId && !!chapterId && !!journalId && !!key,
   });
+
+  return {
+    ...query,
+    isLoading: query.isLoading || isAuthLoading || isKeyLoading || (!!userId && !key),
+  };
 };
 
 export const useJournalMutations = (chapterId: string) => {

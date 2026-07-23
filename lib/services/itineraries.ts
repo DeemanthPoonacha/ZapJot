@@ -185,3 +185,106 @@ export const deleteItineraryTask = async (
   );
   await updateItinerary(userId, itineraryId, { days: updatedDays });
 };
+
+export interface TodayItineraryTask {
+  itineraryId: string;
+  itineraryTitle: string;
+  dayId: string;
+  dayTitle: string;
+  task: ItineraryTask;
+}
+
+/** Fetch all itinerary tasks scheduled for today across active itineraries */
+export const getTodayItineraryTasks = async (
+  userId: string
+): Promise<TodayItineraryTask[]> => {
+  const itineraries = await getItineraries(userId);
+  if (!itineraries || itineraries.length === 0) return [];
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const results: TodayItineraryTask[] = [];
+  console.log("itinerary", itineraries);
+
+  for (const itinerary of itineraries) {
+    if (!itinerary.startDate || !itinerary.endDate || !itinerary.days) continue;
+
+    const start = new Date(itinerary.startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(itinerary.endDate);
+    end.setHours(23, 59, 59, 999);
+
+    if (today >= start && today <= end) {
+      // Calculate day index (0-based)
+      const diffTime = today.getTime() - start.getTime();
+      const dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      const dayObj = itinerary.days[dayIndex] || itinerary.days.find((d, idx) => idx === dayIndex);
+
+      if (dayObj && dayObj.tasks) {
+        for (const task of dayObj.tasks) {
+          results.push({
+            itineraryId: itinerary.id,
+            itineraryTitle: itinerary.title,
+            dayId: dayObj.id,
+            dayTitle: dayObj.title,
+            task,
+          });
+        }
+      }
+    }
+  }
+
+  return results;
+};
+
+/** Import / Duplicate a publicly shared itinerary into user's profile */
+export const importPublicItinerary = async (
+  userId: string,
+  share: any
+) => {
+  if (share.type !== "itinerary") {
+    throw new Error("Only itineraries can be imported to planner");
+  }
+
+  // Calculate default start date as today and end date based on totalDays
+  const startDateObj = new Date();
+  const totalDays = share.totalDays || share.days?.length || 1;
+  const endDateObj = new Date(startDateObj);
+  endDateObj.setDate(endDateObj.getDate() + (totalDays - 1));
+
+  const startDateStr = startDateObj.toISOString().split("T")[0];
+  const endDateStr = endDateObj.toISOString().split("T")[0];
+
+  // Reset task completed state to false for all tasks in imported days
+  const cleanDays = (share.days || []).map((day: any, idx: number) => ({
+    id: `day_${Date.now()}_${idx}`,
+    title: day.title || `Day ${idx + 1}`,
+    budget: typeof day.budget === "number" ? day.budget : 0,
+    tasks: (day.tasks || []).map((task: any, tIdx: number) => ({
+      id: `task_${Date.now()}_${tIdx}`,
+      title: task.title || "Activity",
+      time: task.time || "",
+      completed: false, // Reset completed status for importer!
+    })),
+  }));
+
+  const itineraryData: ItineraryCreate = {
+    title: `${share.title} (Imported)`,
+    destination: share.destination || "",
+    coverImage: share.coverImage || "",
+    startDate: startDateStr,
+    endDate: endDateStr,
+    totalDays,
+    budget: 0,
+    actualCost: 0,
+    days: cleanDays,
+    notes: share.content || "",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  return await addItinerary(userId, itineraryData);
+};
+
