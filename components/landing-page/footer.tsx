@@ -105,7 +105,7 @@ export function Footer() {
                 { href: "/#features", label: "Features" },
                 { href: "/#pricing", label: "Pricing" },
                 { href: "/#how-it-works", label: "How It Works" },
-                { href: "/#testimonials", label: "Testimonials" },
+                { href: "/explore", label: "Explore Community" },
               ],
             },
             {

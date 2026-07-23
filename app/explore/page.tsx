@@ -57,13 +57,7 @@ export default function ExplorePage() {
     };
   }, [activeTab]);
 
-  const handleImportItinerary = async (
-    e: React.MouseEvent,
-    share: PublicShare,
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+  const handleImportItinerary = async (share: PublicShare) => {
     if (!user) {
       toast.error("Please sign in to import itineraries into your planner");
       router.push("/auth/sign-in");
@@ -193,7 +187,7 @@ export default function ExplorePage() {
             <PublicShareCard
               key={share.id}
               share={share}
-              onImport={(item) => handleImportItinerary(null as any, item)}
+              onImport={(item) => handleImportItinerary(item)}
               isImporting={importingId === share.id}
             />
           ))}

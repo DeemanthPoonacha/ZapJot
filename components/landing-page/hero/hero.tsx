@@ -2,156 +2,104 @@ import {
   CheckSquare,
   Sparkles,
   ArrowRight,
-  Shield,
-  MegaphoneOff,
-  Star,
+  ShieldCheck,
+  Zap,
+  Globe,
+  Compass,
+  Calendar,
 } from "lucide-react";
 import ZapJotAnimation from "@/components/landing-page/hero/hero-animation";
 import { CTAButton } from "../cta/cta-button";
 import { Link } from "../../layout/link/CustomLink";
 
-const appVersion = process.env.APP_VERSION || "1.0.0";
+const appVersion = process.env.APP_VERSION || "1.5.0";
 
-// Server Component - Static Badge
 function VersionBadge() {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 px-4 py-2 text-sm font-medium text-purple-700 shadow-sm">
-      <Sparkles className="h-4 w-4" />
-      <span>New Release</span>
-      <span className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-2 py-0.5 text-xs text-white shadow-sm">
+    <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 via-indigo-100 to-pink-100 dark:from-purple-950/80 dark:to-pink-950/80 px-4 py-2 text-xs sm:text-sm font-semibold text-purple-900 dark:text-purple-200 border border-purple-200/60 dark:border-purple-800/40 shadow-xs">
+      <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400 animate-spin" />
+      <span>ZapJot Release</span>
+      <span className="rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-2.5 py-0.5 text-xs font-bold text-white shadow-xs">
         v{appVersion}
-        {process.env.NEXT_PUBLIC_APP_ENV == "staging" ? " Staging" : ""}
       </span>
     </div>
   );
 }
 
-// Server Component - Static Features List
-function FeaturesList() {
+function TrustPills() {
   return (
-    <div className="flex flex-wrap gap-6 text-sm">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500">
-          <CheckSquare className="h-3 w-3 text-white" />
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-200/60 dark:border-slate-800">
+      {[
+        { icon: Zap, label: "0ms Offline Sync" },
+        { icon: Calendar, label: "Google Calendar Sync" },
+        { icon: ShieldCheck, label: "End-to-End Private" },
+        { icon: Globe, label: "Community Hub" },
+      ].map((pill, idx) => (
+        <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+          <div className="w-7 h-7 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/50 dark:border-purple-800/40 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+            <pill.icon className="h-3.5 w-3.5" />
+          </div>
+          <span className="truncate">{pill.label}</span>
         </div>
-        <span className="text-slate-600 font-medium">
-          It&apos;s free to use
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500">
-          <CheckSquare className="h-3 w-3 text-white" />
-        </div>
-        <span className="text-slate-600 font-medium">
-          No credit card required
-        </span>
-      </div>
+      ))}
     </div>
   );
 }
 
-// Client Component - Interactive Buttons
 function InteractiveButtons() {
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
-      <CTAButton className="h-15 rounded-xl w-full" />
+    <div className="flex flex-col sm:flex-row gap-4 max-w-lg">
+      <CTAButton className="h-14 rounded-2xl w-full text-base font-bold shadow-lg" />
 
-      {/* Secondary Button */}
-      <Link href="#how-it-works">
-        <button className="w-full group flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white/80 backdrop-blur-sm px-8 py-4 font-semibold text-slate-700 shadow-sm hover:shadow-md hover:border-purple-200 hover:bg-purple-50/50 transition-all duration-300">
-          <span>Learn More</span>
-          <ArrowRight className="h-4 w-4 group-hover:scale-110 transition-transform" />
+      <Link href="/explore" className="w-full sm:w-auto">
+        <button className="w-full h-14 group flex items-center justify-center gap-2 rounded-2xl border border-purple-200 dark:border-purple-900/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-6 font-bold text-slate-800 dark:text-slate-100 shadow-sm hover:shadow-md hover:border-purple-400 hover:bg-purple-50/50 dark:hover:bg-purple-950/40 transition-all duration-300">
+          <Compass className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+          <span>Explore Community</span>
+          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </Link>
     </div>
   );
 }
 
-// Main Server Component
 export function Hero() {
   return (
-    <section className="relative  py-24 md:py-32 px-4 md:px-6">
-      <article className="relative container mx-auto">
-        <div className="grid gap-16 lg:grid-cols-2 xl:gap-20 items-center">
+    <section className="relative py-16 md:py-28 px-4 md:px-6 overflow-hidden">
+      <article className="relative container mx-auto max-w-6xl">
+        <div className="grid gap-12 lg:grid-cols-2 xl:gap-16 items-center">
           {/* Content Column */}
-          <div className="space-y-8 lg:pr-8">
+          <div className="space-y-8 text-center lg:text-left">
             <VersionBadge />
 
-            <div className="space-y-6">
-              <h1 className="text-5xl xl:text-7xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            <div className="space-y-4">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight">
+                <span className="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 dark:from-white dark:via-purple-200 dark:to-white bg-clip-text text-transparent">
                   Turn Moments Into{" "}
                 </span>
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
                   Memories
                 </span>
-                <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 dark:from-white dark:via-purple-200 dark:to-white bg-clip-text text-transparent">
                   , Ideas Into{" "}
                 </span>
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
                   Actions
                 </span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-slate-600 leading-relaxed max-w-2xl">
-                Journal your life, plan events, manage tasks, and keep track of
-                important people and moments — all in one{" "}
-                <span className="font-semibold text-slate-800">beautiful</span>{" "}
-                place.
+              <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Journal your life, plan multi-day travel itineraries, sync with Google Calendar, and explore community trip guides — all in one <span className="font-bold text-slate-900 dark:text-white">beautiful</span> place.
               </p>
             </div>
 
             <InteractiveButtons />
 
-            <FeaturesList />
-
-            {/* Social proof or stats */}
-            <div className="flex items-center max-sm:justify-center gap-8 pt-4">
-              {/* <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900">10k+</div>
-                <div className="text-sm text-slate-600">Happy Users</div>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900">4.9</div>
-                <div className="text-sm text-slate-600">App Rating</div>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900">50k+</div>
-                <div className="text-sm text-slate-600">Memories Captured</div>
-              </div> */}
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1">
-                  <Shield size={28} strokeWidth={2.5} />
-                </div>
-                <div className="text-sm text-slate-600">Secure & Private</div>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1">
-                  <MegaphoneOff size={28} strokeWidth={2.5} />
-                </div>
-                <div className="text-sm text-slate-600">Ads Free</div>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1">
-                  <Star size={28} strokeWidth={2.5} />
-                </div>
-                <div className="text-sm text-slate-600">User Friendly</div>
-              </div>
-            </div>
+            <TrustPills />
           </div>
 
-          {/* Image Column */}
+          {/* Animation Column */}
           <div className="flex justify-center lg:justify-end h-full order-first lg:order-last">
             <ZapJotAnimation />
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="flex justify-center mt-16">
-          <div className="animate-bounce">
-            <div className="w-6 h-10 border-2 border-slate-300 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-slate-400 rounded-full mt-2 animate-pulse"></div>
-            </div>
           </div>
         </div>
       </article>
