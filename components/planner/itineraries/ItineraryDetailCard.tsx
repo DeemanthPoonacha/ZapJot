@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
+import Image from "next/image";
 import {
   CalendarDays,
   MapPin,
@@ -279,6 +280,16 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-4">
+                  {itinerary.coverImage && (
+                    <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-border shadow-sm">
+                      <Image
+                        src={itinerary.coverImage}
+                        alt={itinerary.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:garid-cols-2 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
@@ -466,6 +477,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
         isOpen={isSocialCardOpen}
         onClose={() => setIsSocialCardOpen(false)}
         title={itinerary.title}
+        coverImage={itinerary.coverImage}
         subtitle={
           itinerary.destination ? `${itinerary.destination} 📍` : undefined
         }

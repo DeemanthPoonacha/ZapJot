@@ -1,20 +1,48 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getPublicShare, PublicShare } from "@/lib/services/publicShares";
+import { importPublicItinerary } from "@/lib/services/itineraries";
+import { useAuth } from "@/lib/context/AuthProvider";
+import { toast } from "@/components/ui/sonner";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { WysiwygViewer } from "@/components/wysiwyg/viewer";
-import { Sparkles, Calendar, MapPin, CheckSquare, Clock } from "lucide-react";
+import { Sparkles, Calendar, MapPin, CheckSquare, Clock, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function PublicSharePage() {
   const { shareId } = useParams<{ shareId: string }>();
+  const router = useRouter();
+  const { user } = useAuth();
   const [share, setShare] = useState<PublicShare | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
+
+  const handleImportItinerary = async () => {
+    if (!share || share.type !== "itinerary") return;
+    if (!user) {
+      toast.error("Please sign in to import itineraries into your planner");
+      router.push("/auth/sign-in");
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      await importPublicItinerary(user.uid, share);
+      toast.success("Itinerary imported into your planner successfully!");
+      router.push("/planner");
+    } catch (err) {
+      console.error("Error importing itinerary:", err);
+      toast.error("Failed to import itinerary");
+    } finally {
+      setIsImporting(false);
+    }
+  };
 
   useEffect(() => {
     if (!shareId) return;
@@ -77,12 +105,26 @@ export default function PublicSharePage() {
         {/* Title & Metadata */}
         <div className="space-y-3 border-b border-slate-100 dark:border-slate-800 pb-6">
           <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm justify-between">
-            <Badge
-              variant="outline"
-              className="hidden sm:inline-flex text-xs font-semibold uppercase tracking-wider text-purple-300 border-purple-400/40 bg-purple-500/10 px-3 py-1"
-            >
-              Shared {share.type === "itinerary" ? "Itinerary" : "Journal"}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className="text-xs font-semibold uppercase tracking-wider text-purple-300 border-purple-400/40 bg-purple-500/10 px-3 py-1"
+              >
+                Shared {share.type === "itinerary" ? "Itinerary" : "Journal"}
+              </Badge>
+              {share.type === "itinerary" && (
+                <Button
+                  onClick={handleImportItinerary}
+                  disabled={isImporting}
+                  size="sm"
+                  className="gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-full shadow-md shadow-purple-600/20"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {isImporting ? "Importing..." : "Import to My Planner"}
+                </Button>
+              )}
+            </div>
+
             {share.authorName && (
               <div className="flex items-center gap-2">
                 {share.authorPhoto ? (
