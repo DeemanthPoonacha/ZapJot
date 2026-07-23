@@ -3,6 +3,7 @@ import { Hero } from "@/components/landing-page/hero/hero";
 import { Features } from "@/components/landing-page/features/features";
 // import { Testimonials } from "../components/landing-page/testimonials";
 import { HowItWorks } from "../components/landing-page/app-preview/how-it-works";
+import { CommunitySection } from "@/components/landing-page/community/community-section";
 import { Footer } from "../components/landing-page/footer";
 import { CTASection } from "@/components/landing-page/cta/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
@@ -27,8 +28,8 @@ export default function LandingPage() {
         {/* How It Works Section */}
         <HowItWorks />
 
-        {/* Testimonials Section */}
-        {/* <Testimonials /> */}
+        {/* Community Section */}
+        <CommunitySection />
 
         {/* Pricing Section */}
         <Pricing />

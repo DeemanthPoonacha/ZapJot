@@ -1,139 +1,176 @@
-import { CheckSquare, Sparkles, Zap, Star } from "lucide-react";
+import { Check, Sparkles, Zap, Shield, RefreshCw, Star } from "lucide-react";
 import { CTAButton } from "./cta/cta-button";
-import { Link } from "../layout/link/CustomLink";
+import { Link } from "@/components/layout/link/CustomLink";
 
 export function Pricing() {
+  const freeFeatures = [
+    "Unlimited Journal Entries & Chapters",
+    "Multi-Day Travel Itineraries & Checklists",
+    "Real-Time Google Calendar Synchronization",
+    "Zappy AI Assistant for Instant Capture & Briefings",
+    "100% Offline Access with Automatic PWA Sync",
+    "Social Media Card Graphic Generator & Exports",
+    "Community Explore Hub & 1-Click Itinerary Import",
+    "Client-Side Journal Encryption & Privacy",
+  ];
+
   return (
-    <section id="pricing" className="relative py-20 md:py-32 px-4 md:px-6 ">
-      <article className="container relative z-10">
+    <section id="pricing" className="relative py-20 md:py-32 px-4 md:px-6">
+      <article className="container relative z-10 mx-auto max-w-5xl">
         {/* Header */}
-        <div className="mx-auto text-center md:max-w-[58rem] animate-fade-in">
+        <div className="mx-auto text-center md:max-w-[58rem]">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-sm font-medium mb-6 shadow-sm">
             <Sparkles className="w-4 h-4" />
-            Pricing Plans
+            Flexible Pricing
           </div>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 bg-clip-text text-transparent">
-            Simple, Transparent Pricing
+            Simple, Transparent Plans
           </h2>
-          <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-            Start for free and unlock the full potential of your productivity.
+          <p className="mt-6 text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
+            Get started for free with full access to core features, with
+            powerful pro capabilities planned for the future.
           </p>
         </div>
 
-        {/* Hero Free Banner */}
-        <div className="mt-12 relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-          <div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-center py-8 sm:py-16 rounded-2xl shadow-2xl">
-            <div className="absolute top-4 left-4">
-              <div className="flex space-x-1">
-                <div className="w-3 h-3 bg-white/20 rounded-full animate-pulse"></div>
-                <div className="w-3 h-3 bg-white/20 rounded-full animate-pulse delay-100"></div>
-                <div className="w-3 h-3 bg-white/20 rounded-full animate-pulse delay-200"></div>
+        {/* Pricing Cards Grid */}
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
+          {/* Free Tier Card */}
+          <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-purple-200 flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-700 font-bold text-xs uppercase tracking-wider rounded-full">
+                    Starter
+                  </span>
+                  <h3 className="text-2xl font-extrabold text-slate-900 mt-3">
+                    Free Tier
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Everything you need to get organized today.
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-4xl font-black text-purple-600">$0</div>
+                  <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                    Free
+                  </div>
+                </div>
+              </div>
+
+              {/* Features List */}
+              <div className="space-y-3 py-4 border-t border-slate-100">
+                {freeFeatures.map((feat, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 shrink-0">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </div>
+                    <span className="text-xs font-medium text-slate-700">
+                      {feat}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 mb-4">
-                <Star className="w-6 h-6 text-yellow-300" />
-                <Star className="w-6 h-6 text-yellow-300" />
-                <Star className="w-6 h-6 text-yellow-300" />
-              </div>
-              <p className="text-xl sm:text-3xl font-bold mb-2">
-                🎉 ZapJot is{" "}
-                <span className="underline underline-offset-4 decoration-yellow-300 decoration-2 font-black">
-                  completely free
-                </span>
-              </p>
 
+            <div className="pt-6 border-t border-slate-100">
               <CTAButton
-                extraBefore={<Sparkles className="h-5 w-5" />}
-                // text="Get Started Now"
-                // textWhenLoggedIn="Jump Into My Workspace"
-                className="rounded-full h-14 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors mt-6"
+                extraBefore={<Sparkles className="h-4 w-4" />}
+                className="w-full h-12 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm shadow-md"
               />
             </div>
           </div>
-        </div>
 
-        {/* Feature Grid */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {[
-            {
-              icon: Zap,
-              title: "Instant Capture",
-              desc: "Quickly jot down thoughts without delay",
-            },
-            {
-              icon: CheckSquare,
-              title: "Everything You Need",
-              desc: "Powerful features without the clutter",
-            },
-            {
-              icon: Sparkles,
-              title: "Delightfully Minimal",
-              desc: "Simple, distraction-free design",
-            },
-          ].map((feature, index) => (
-            <div key={index} className="group relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
-              <div className="relative bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl mb-4">
-                  <feature.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Coming Soon Section */}
-        <div className="mx-auto mt-20 max-w-4xl relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
-          <div className="relative bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-10 shadow-xl">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 text-sm font-medium mb-6">
-                <Sparkles className="w-4 h-4 animate-spin" />
+          {/* Pro / Upcoming Tier Card */}
+          <div className="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 text-white rounded-3xl p-8 shadow-xl border border-white/10 flex flex-col justify-between overflow-hidden">
+            <div className="absolute top-6 right-6">
+              <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-400/30 font-bold text-[10px] uppercase tracking-wider rounded-full backdrop-blur-md">
                 Coming Soon
+              </span>
+            </div>
+
+            <div>
+              <div className="mb-6">
+                <span className="px-3 py-1 bg-white/10 text-purple-200 font-bold text-xs uppercase tracking-wider rounded-full backdrop-blur-md">
+                  Pro
+                </span>
+                <h3 className="text-2xl font-extrabold text-white mt-3 flex items-center gap-2">
+                  Advanced Pro
+                  <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+                </h3>
+                <p className="text-xs text-purple-200/80 mt-1">
+                  Enhanced capabilities for power users and collaborators.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Looking for more?
-              </h3>
-              <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-                We&apos;re constantly improving ZapJot. Premium features with
-                advanced capabilities are coming soon. Stay tuned for
-                subscription options that will take your productivity to the
-                next level.
-              </p>
-              <div className="mt-8">
-                <Link href="#contact">
-                  <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
-                    <Zap className="w-5 h-5" />
-                    Contact Us for Updates
-                  </button>
+
+              {/* Upcoming Pro Features List */}
+              <div className="relative space-y-3 py-4 border-t h-full border-white/15">
+                {[
+                  "Advanced AI Knowledge Retrieval & Multi-Model Support",
+                  "Team & Shared Family Workspaces",
+                  "Custom Domain & Portfolio Publishing for Shares",
+                  "Priority Real-Time Sync & Extended Backup Retention",
+                  "Advanced Export Formats (Markdown, PDF, HTML, JSON)",
+                ].map((feat, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-4 h-4 rounded-full bg-purple-500/30 text-purple-300 shrink-0 border border-purple-400/30">
+                      <Zap className="w-2.5 h-2.5" />
+                    </div>
+                    <span className="text-xs font-medium text-purple-100/90">
+                      {feat}
+                    </span>
+                  </div>
+                ))}
+                <Link
+                  href="/#contact"
+                  className="absolute bottom-0 left-0 w-full flex items-center justify-center h-full py-8 bg-white/5 backdrop-blur-sm rounded-xl text-purple-200 font-bold text-base"
+                >
+                  Contact for customization
                 </Link>
               </div>
             </div>
+
+            <div className="pt-6 border-t border-white/15 text-center">
+              <span className="inline-block text-xs font-semibold text-purple-200/70 italic">
+                Stay tuned for future subscription options & updates.
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="text-center mt-16">
-          <p className="text-gray-500 mb-6">
-            Join thousands of productive users today
-          </p>
-          <div className="flex justify-center items-center space-x-2">
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-sm font-bold animate-bounce"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                {i + 1}
+        {/* Feature Highlights Grid */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: Zap,
+              title: "0ms Offline Latency",
+              desc: "Instant local caching and automatic PWA background sync when back online.",
+            },
+            {
+              icon: Shield,
+              title: "Private & Encrypted",
+              desc: "Your journals are encrypted so your personal thoughts remain private.",
+            },
+            {
+              icon: RefreshCw,
+              title: "Google Calendar Sync",
+              desc: "Seamless 2-way event synchronization with your Google Calendar.",
+            },
+          ].map((feature, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md transition"
+            >
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+                <feature.icon className="w-5 h-5" />
               </div>
-            ))}
-          </div>
+              <h4 className="font-bold text-slate-900 text-base mb-1">
+                {feature.title}
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {feature.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </article>
     </section>

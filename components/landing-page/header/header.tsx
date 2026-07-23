@@ -34,10 +34,10 @@ export function Header() {
           How It Works
         </Link>
         <Link
-          href="/#testimonials"
+          href="/#community"
           className="text-sm font-medium hover:text-primary transition-colors"
         >
-          Testimonials
+          Community
         </Link>
         <Link
           href="/#pricing"
