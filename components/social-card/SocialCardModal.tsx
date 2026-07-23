@@ -53,20 +53,34 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
     }
     setIsGenerating(true);
     try {
-      const shareId = getShareId(type, itemId || title.toLowerCase().replace(/[^a-z0-9]/g, ""));
-      
+      const shareId = getShareId(
+        type,
+        itemId || title.toLowerCase().replace(/[^a-z0-9]/g, ""),
+      );
+
+      const authorName =
+        user.displayName || user.email?.split("@")[0] || "ZapJot User";
+      const authorPhoto = user.photoURL || undefined;
+
       const payload: any = {
         id: shareId,
         type,
         title,
-        authorName: user.displayName || user.email?.split("@")[0] || "ZapJot User",
+        authorName,
       };
 
+      if (authorPhoto) payload.authorPhoto = authorPhoto;
       if (subtitle) payload.subtitle = subtitle;
-      if (rawItem?.content || excerpt) payload.content = rawItem?.content || excerpt;
+      if (rawItem?.content || excerpt)
+        payload.content = rawItem?.content || excerpt;
       if (coverImage) payload.coverImage = coverImage;
-      if (rawItem?.destination || subtitle) payload.destination = rawItem?.destination || subtitle?.replace("📍 ", "");
+      if (rawItem?.destination || rawItem?.location || subtitle)
+        payload.destination =
+          rawItem?.destination ||
+          rawItem?.location ||
+          subtitle?.replace("📍 ", "");
       if (rawItem?.days) payload.days = rawItem.days;
+      payload.theme = selectedTheme;
 
       const publicDoc = await createPublicShare(user.uid, payload);
 
@@ -124,7 +138,12 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
       const filename = `${title.toLowerCase().replace(/[^a-z0-9]/g, "-")}-zapjot.png`;
       const file = new File([blob], filename, { type: "image/png" });
 
-      if (typeof navigator !== "undefined" && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      if (
+        typeof navigator !== "undefined" &&
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
         await navigator.share({
           files: [file],
           title: title,
@@ -159,12 +178,13 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
               width={26}
               height={27}
               alt="ZapJot Logo"
-              className="rounded-lg shadow-sm"
+              className="shadow-sm"
             />
             Social Media Card Generator
           </DialogTitle>
           <DialogDescription>
-            Export a graphic post card to share on Instagram, Twitter, WhatsApp, or LinkedIn.
+            Export a graphic post card to share on Instagram, Twitter, WhatsApp,
+            or LinkedIn.
           </DialogDescription>
         </DialogHeader>
 
@@ -191,7 +211,9 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
                   >
                     <span className={`w-3 h-3 rounded-full ${preset.bg}`} />
                     {preset.name}
-                    {isSelected && <Check className="h-3 w-3 text-purple-600 ml-0.5" />}
+                    {isSelected && (
+                      <Check className="h-3 w-3 text-purple-600 ml-0.5" />
+                    )}
                   </button>
                 );
               })}
@@ -209,6 +231,10 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
               coverImage={coverImage}
               theme={selectedTheme}
               type={type}
+              authorName={
+                user?.displayName || user?.email?.split("@")[0] || "ZapJot User"
+              }
+              authorPhoto={user?.photoURL || undefined}
             />
           </div>
 

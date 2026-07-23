@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Grid2X2, Users, Settings, ListTodo } from "lucide-react";
+import { Home, Grid2X2, Users, Settings, ListTodo, Share2 } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@/components/layout/link/CustomLink";
 import { Logo } from "./Logo";
@@ -13,6 +13,7 @@ export const allRoutes = [
   { label: "Planner", icon: ListTodo, href: "/planner" },
   { label: "Chapters", icon: Grid2X2, href: "/chapters" },
   { label: "Characters", icon: Users, href: "/characters" },
+  { label: "Shared", icon: Share2, href: "/shared" },
   { label: "Settings", icon: Settings, href: "/settings" },
 ];
 
@@ -24,7 +25,7 @@ export function NavigationBar() {
     // Smaller screen navigation (bottom bar)
     return (
       <nav className="fixed bottom-0 w-full border-t bg-background p-2 z-50 lg:hidden">
-        <div className="mx-auto grid grid-cols-5 container px-4">
+        <div className="mx-auto grid grid-cols-6 container px-1">
           {allRoutes.map((route) => (
             <Link
               key={route.href}

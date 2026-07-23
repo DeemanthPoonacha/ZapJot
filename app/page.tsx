@@ -3,16 +3,19 @@ import { Hero } from "@/components/landing-page/hero/hero";
 import { Features } from "@/components/landing-page/features/features";
 // import { Testimonials } from "../components/landing-page/testimonials";
 import { HowItWorks } from "../components/landing-page/app-preview/how-it-works";
+import { CommunitySection } from "@/components/landing-page/community/community-section";
 import { Footer } from "../components/landing-page/footer";
 import { CTASection } from "@/components/landing-page/cta/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
 import { Contact } from "@/components/landing-page/contact/contact";
 import { Background } from "../components/landing-page/bg/Background";
+import { PublicThemeReset } from "@/components/layout/PublicThemeReset";
 import "./landing-page.css";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center">
+      <PublicThemeReset />
       <Background />
       <Header />
       <main className="flex-1 container">
@@ -25,8 +28,8 @@ export default function LandingPage() {
         {/* How It Works Section */}
         <HowItWorks />
 
-        {/* Testimonials Section */}
-        {/* <Testimonials /> */}
+        {/* Community Section */}
+        <CommunitySection />
 
         {/* Pricing Section */}
         <Pricing />

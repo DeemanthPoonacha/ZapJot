@@ -17,11 +17,13 @@ const withPWA = withPWAInit({
     skipWaiting: true,
     runtimeCaching: [
       {
-        urlPattern: /^https:\/\/(?:fcm\.googleapis\.com|.*\.sentry\.io|.*\.google-analytics\.com|.*\.analytics\.google\.com)/i,
+        urlPattern:
+          /^https:\/\/(?:fcm\.googleapis\.com|.*\.sentry\.io|.*\.google-analytics\.com|.*\.analytics\.google\.com)/i,
         handler: "NetworkOnly",
       },
       {
-        urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
+        urlPattern: ({ request }: { request: Request }) =>
+          request.mode === "navigate",
         handler: "StaleWhileRevalidate",
         options: {
           cacheName: "pages-cache",
@@ -46,7 +48,8 @@ const withPWA = withPWAInit({
         },
       },
       {
-        urlPattern: /^https:\/\/(?:res\.cloudinary\.com|lh3\.googleusercontent\.com).*|\.(?:png|jpg|jpeg|svg|webp|gif|ico)$/i,
+        urlPattern:
+          /^https:\/\/(?:res\.cloudinary\.com|lh3\.googleusercontent\.com).*|\.(?:png|jpg|jpeg|svg|webp|gif|ico)$/i,
         handler: "CacheFirst",
         options: {
           cacheName: "images-cache",
@@ -71,6 +74,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
         port: "",
         pathname: "/**",
       },

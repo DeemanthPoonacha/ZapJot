@@ -30,6 +30,8 @@ import {
 } from "@/types/itineraries";
 import { cn } from "@/lib/utils";
 import DeleteConfirm from "../../ui/delete-confirm";
+import { useState } from "react";
+import UploadImage from "../../ui/upload-image";
 
 interface ItineraryFormProps {
   itineraryData?: Itinerary;
@@ -45,6 +47,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   const { addMutation, updateMutation, deleteMutation } =
     useItineraryMutations();
   const isEditing = !!itineraryData?.id;
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   // Form setup
   const form = useForm<ItineraryCreate>({
@@ -52,6 +55,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
     defaultValues: {
       title: itineraryData?.title || "",
       destination: itineraryData?.destination || "",
+      coverImage: itineraryData?.coverImage || "",
       startDate: itineraryData?.startDate || "",
       endDate: itineraryData?.endDate || "",
       totalDays: itineraryData?.totalDays || 0,
@@ -136,6 +140,14 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Cover Image Upload */}
+        <UploadImage
+          form={form}
+          fieldName="coverImage"
+          isImageUploading={isImageUploading}
+          setIsImageUploading={setIsImageUploading}
+        />
+
         {/* Main Itinerary Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField

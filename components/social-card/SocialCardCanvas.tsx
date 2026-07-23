@@ -12,9 +12,14 @@ export interface SocialCardProps {
   coverImage?: string;
   theme?: CardTheme;
   type?: "journal" | "itinerary";
+  authorName?: string;
+  authorPhoto?: string;
 }
 
-export const THEME_PRESETS: Record<CardTheme, { name: string; bg: string; text: string; badge: string }> = {
+export const THEME_PRESETS: Record<
+  CardTheme,
+  { name: string; bg: string; text: string; badge: string }
+> = {
   midnight: {
     name: "Midnight Sparkle",
     bg: "bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-900",
@@ -47,14 +52,30 @@ export const THEME_PRESETS: Record<CardTheme, { name: string; bg: string; text: 
   },
 };
 
-export const SocialCardCanvas = React.forwardRef<HTMLDivElement, SocialCardProps>(
-  ({ title, subtitle, excerpt, date, coverImage, theme = "midnight", type = "journal" }, ref) => {
+export const SocialCardCanvas = React.forwardRef<
+  HTMLDivElement,
+  SocialCardProps
+>(
+  (
+    {
+      title,
+      subtitle,
+      excerpt,
+      date,
+      coverImage,
+      theme = "midnight",
+      type = "journal",
+      authorName,
+      authorPhoto,
+    },
+    ref,
+  ) => {
     const selectedTheme = THEME_PRESETS[theme] || THEME_PRESETS.midnight;
 
     return (
       <div
         ref={ref}
-        className={`w-full max-w-[500px] aspect-[4/5] ${selectedTheme.bg} p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col justify-between relative overflow-hidden font-sans border border-white/10`}
+        className={`w-full max-w-full aspect-[4/5] ${selectedTheme.bg} p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col justify-between relative overflow-hidden font-sans border border-white/10`}
       >
         {/* Subtle background blur accents */}
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -68,9 +89,11 @@ export const SocialCardCanvas = React.forwardRef<HTMLDivElement, SocialCardProps
               width={28}
               height={29}
               alt="ZapJot Logo"
-              className="rounded-lg shadow-sm"
+              className="shadow-sm"
             />
-            <span className="font-extrabold tracking-tight text-white text-base">ZapJot</span>
+            <span className="font-extrabold tracking-tight text-white text-base">
+              ZapJot
+            </span>
           </div>
 
           <div
@@ -95,7 +118,9 @@ export const SocialCardCanvas = React.forwardRef<HTMLDivElement, SocialCardProps
           )}
 
           <div className="space-y-2">
-            <h2 className={`text-2xl sm:text-3xl font-extrabold leading-tight tracking-tight ${selectedTheme.text} drop-shadow-sm`}>
+            <h2
+              className={`text-2xl sm:text-3xl font-extrabold leading-tight tracking-tight ${selectedTheme.text} drop-shadow-sm line-clamp-2`}
+            >
               {title}
             </h2>
 
@@ -108,28 +133,50 @@ export const SocialCardCanvas = React.forwardRef<HTMLDivElement, SocialCardProps
           </div>
 
           {excerpt && (
-            <p className="text-sm leading-relaxed text-white/90 font-normal line-clamp-4 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 italic">
-              “{excerpt}”
-            </p>
+            <div className=" bg-white/5 rounded-2xl border border-white/10 p-4">
+              <p className="line-clamp-4 text-sm text-white/90 leading-relaxed font-normal italic">
+                “{excerpt}”
+              </p>
+            </div>
           )}
         </div>
 
         {/* Bottom Footer Row */}
-        <div className="flex items-center justify-between z-10 pt-3 border-t border-white/15 text-xs text-white/75 font-medium">
-          {date ? (
-            <div className="flex items-center gap-1.5">
-              <Calendar className="h-3.5 w-3.5 text-white/60" />
-              <span>{date}</span>
-            </div>
-          ) : (
-            <span />
-          )}
+        <div className="flex items-center justify-between z-10 pt-3 border-t border-white/15 text-xs text-white/85 font-medium">
+          <div className="flex items-center gap-3 w-full justify-between">
+            {authorName && (
+              <div className="flex items-center gap-2">
+                {authorPhoto ? (
+                  <div className="relative w-6 h-6 rounded-full overflow-hidden border border-white/30 shadow-sm shrink-0">
+                    <Image
+                      src={authorPhoto}
+                      alt={authorName}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-white/20 text-white font-extrabold text-[10px] flex items-center justify-center border border-white/30 shrink-0">
+                    {authorName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <span className="font-semibold text-white/95">
+                  {authorName}
+                </span>
+              </div>
+            )}
 
-          <span className="text-[11px] tracking-wide text-white/60 font-mono">zap-jot.netlify.app</span>
+            {date && (
+              <div className="flex items-center gap-1 text-white/70 text-[11px]">
+                <Calendar className="h-3 w-3 text-white/60" />
+                <span>{date}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
-  }
+  },
 );
 
 SocialCardCanvas.displayName = "SocialCardCanvas";

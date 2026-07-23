@@ -239,3 +239,52 @@ export const getTodayItineraryTasks = async (
   return results;
 };
 
+/** Import / Duplicate a publicly shared itinerary into user's profile */
+export const importPublicItinerary = async (
+  userId: string,
+  share: any
+) => {
+  if (share.type !== "itinerary") {
+    throw new Error("Only itineraries can be imported to planner");
+  }
+
+  // Calculate default start date as today and end date based on totalDays
+  const startDateObj = new Date();
+  const totalDays = share.totalDays || share.days?.length || 1;
+  const endDateObj = new Date(startDateObj);
+  endDateObj.setDate(endDateObj.getDate() + (totalDays - 1));
+
+  const startDateStr = startDateObj.toISOString().split("T")[0];
+  const endDateStr = endDateObj.toISOString().split("T")[0];
+
+  // Reset task completed state to false for all tasks in imported days
+  const cleanDays = (share.days || []).map((day: any, idx: number) => ({
+    id: `day_${Date.now()}_${idx}`,
+    title: day.title || `Day ${idx + 1}`,
+    budget: typeof day.budget === "number" ? day.budget : 0,
+    tasks: (day.tasks || []).map((task: any, tIdx: number) => ({
+      id: `task_${Date.now()}_${tIdx}`,
+      title: task.title || "Activity",
+      time: task.time || "",
+      completed: false, // Reset completed status for importer!
+    })),
+  }));
+
+  const itineraryData: ItineraryCreate = {
+    title: `${share.title} (Imported)`,
+    destination: share.destination || "",
+    coverImage: share.coverImage || "",
+    startDate: startDateStr,
+    endDate: endDateStr,
+    totalDays,
+    budget: 0,
+    actualCost: 0,
+    days: cleanDays,
+    notes: share.content || "",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  return await addItinerary(userId, itineraryData);
+};
+

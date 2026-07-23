@@ -12,7 +12,9 @@ const Layout = ({
     <div className="flex min-h-screen flex-col items-center">
       <PublicThemeReset />
       <Header />
-      <div className="prose">{children}</div>
+      <main className="flex-1 container pb-24 md:pb-32 px-4 md:px-6">
+        {children}
+      </main>
       <Footer />
     </div>
   );

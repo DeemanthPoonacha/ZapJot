@@ -27,6 +27,12 @@ export const PrintableItinerary: React.FC<PrintableItineraryProps> = ({ itinerar
           <span>📅 {formatDate(itinerary.startDate)} – {formatDate(itinerary.endDate)} ({itinerary.totalDays} Days)</span>
           {itinerary.budget > 0 && <span>💰 Total Budget: ${itinerary.budget.toLocaleString()}</span>}
         </div>
+        {itinerary.coverImage && (
+          <div className="mt-4 w-full h-48 rounded-lg overflow-hidden border border-slate-300">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={itinerary.coverImage} alt={itinerary.title} className="w-full h-full object-cover" />
+          </div>
+        )}
       </div>
 
       {/* Days & Tasks Breakdown */}

@@ -78,6 +78,22 @@ export const features = [
     bgGradient: "from-indigo-50 to-blue-50",
     shadow: "shadow-indigo-200",
   },
+  {
+    icon: <TrendingUp className="h-8 w-8" />,
+    title: "Social Cards & Sharing",
+    desc: "Export beautiful graphic social cards of your journals and itineraries with custom gradient themes, user avatars, and instant share links.",
+    gradient: "from-purple-600 to-indigo-600",
+    bgGradient: "from-purple-50 to-indigo-50",
+    shadow: "shadow-purple-200",
+  },
+  {
+    icon: <UserPlus className="h-8 w-8" />,
+    title: "Community Explore Hub",
+    desc: "Discover travel itineraries and public journals created by the community, or import shared trip plans into your own planner with 1 click.",
+    gradient: "from-teal-500 to-emerald-600",
+    bgGradient: "from-teal-50 to-emerald-50",
+    shadow: "shadow-teal-200",
+  },
 ];
 
 export const originalSlides = [
