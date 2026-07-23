@@ -73,11 +73,13 @@ export default function SharedPage() {
   }, [sectionMode, typeFilter, user]);
 
   const handleImportItinerary = async (
-    e: React.MouseEvent,
     share: PublicShare,
+    e?: React.MouseEvent,
   ) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     if (!user) {
       toast.error("Please sign in to import itineraries into your planner");
