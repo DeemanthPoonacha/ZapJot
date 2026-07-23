@@ -30,7 +30,7 @@ import {
   BookOpen,
   Link2,
 } from "lucide-react";
-import Link from "next/link";
+import { PublicShareCard } from "@/components/social-card/PublicShareCard";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import DeleteConfirm from "@/components/ui/delete-confirm";
@@ -248,142 +248,15 @@ export default function SharedPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredShares.map((share) => (
-              <Card
+              <PublicShareCard
                 key={share.id}
-                className="group hover:shadow-xl transition-all duration-300 border-border overflow-hidden flex flex-col justify-between rounded-2xl bg-card"
-              >
-                <div>
-                  {/* Banner / Cover Image */}
-                  <div className="relative w-full h-44 bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 overflow-hidden">
-                    {share.coverImage ? (
-                      <Image
-                        src={share.coverImage}
-                        alt={share.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition duration-500"
-                        sizes="(max-width: 768px) 100vw, 400px"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center p-6 text-center text-white/80">
-                        <Sparkles className="h-8 w-8 text-purple-300 opacity-60 mb-2" />
-                      </div>
-                    )}
-
-                    <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-10">
-                      <Badge
-                        variant="secondary"
-                        className="bg-black/60 backdrop-blur-md text-white border border-white/20 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5"
-                      >
-                        {share.type === "itinerary" ? "Itinerary" : "Journal"}
-                      </Badge>
-
-                      {share.destination && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-purple-950/80 backdrop-blur-md text-purple-200 border border-purple-400/30 text-[10px] font-semibold flex items-center gap-1 max-w-[150px] truncate"
-                        >
-                          <MapPin className="h-3 w-3 shrink-0" />
-                          <span className="truncate">{share.destination}</span>
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Body Content */}
-                  <CardContent className="p-5 space-y-3">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
-                      {share.authorName ? (
-                        <div className="flex items-center gap-2">
-                          {share.authorPhoto ? (
-                            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-border shadow-xs shrink-0">
-                              <Image
-                                src={share.authorPhoto}
-                                alt={share.authorName}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="w-6 h-6 rounded-full bg-purple-600 text-white font-extrabold text-[10px] flex items-center justify-center shrink-0">
-                              {share.authorName.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <span className="font-semibold text-foreground truncate max-w-[120px]">
-                            {share.authorName}
-                          </span>
-                        </div>
-                      ) : (
-                        <span />
-                      )}
-
-                      <div className="flex items-center gap-1 text-[11px]">
-                        <Calendar className="h-3 w-3 text-purple-600" />
-                        <span>
-                          {new Date(share.createdAt).toLocaleDateString(
-                            undefined,
-                            {
-                              dateStyle: "short",
-                            },
-                          )}
-                        </span>
-                      </div>
-                    </div>
-
-                    <h3 className="font-bold text-lg text-foreground group-hover:text-purple-600 transition-colors line-clamp-2 leading-snug">
-                      {share.title}
-                    </h3>
-
-                    {(share.subtitle || share.content) && (
-                      <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
-                        {share.subtitle ||
-                          share.content?.replace(/<[^>]*>?/gm, "")}
-                      </p>
-                    )}
-                  </CardContent>
-                </div>
-
-                {/* Footer Actions */}
-                <div className="p-4 pt-0 border-t border-border/50 mt-2 flex items-center gap-2">
-                  <Link
-                    href={`/share/${share.id}`}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-muted hover:bg-purple-100 dark:hover:bg-purple-950/40 text-foreground text-xs font-semibold transition"
-                  >
-                    <BookOpen className="h-3.5 w-3.5 text-purple-600" />
-                    View Post
-                  </Link>
-
-                  {sectionMode === "mine" ? (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleCopyLink(share.id)}
-                        className="h-9 w-9 rounded-xl"
-                        title="Copy Public Link"
-                      >
-                        <Copy className="h-4 w-4 text-purple-600" />
-                      </Button>
-
-                      <DeleteConfirm
-                        buttonVariant="ghost"
-                        handleDelete={() => handleDeletePublicShare(share.id)}
-                      />
-                    </>
-                  ) : (
-                    share.type === "itinerary" && (
-                      <Button
-                        size="sm"
-                        onClick={(e) => handleImportItinerary(e, share)}
-                        disabled={importingId === share.id}
-                        className="gap-1 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl shadow-xs"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        {importingId === share.id ? "Importing..." : "Import"}
-                      </Button>
-                    )
-                  )}
-                </div>
-              </Card>
+                share={share}
+                isOwner={sectionMode === "mine"}
+                onImport={(item) => handleImportItinerary(item)}
+                onDelete={(id) => handleDeletePublicShare(id)}
+                onCopyLink={(id) => handleCopyLink(id)}
+                isImporting={importingId === share.id}
+              />
             ))}
           </div>
         )}

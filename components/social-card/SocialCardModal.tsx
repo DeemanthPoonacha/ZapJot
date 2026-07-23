@@ -80,6 +80,7 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
           rawItem?.location ||
           subtitle?.replace("📍 ", "");
       if (rawItem?.days) payload.days = rawItem.days;
+      payload.theme = selectedTheme;
 
       const publicDoc = await createPublicShare(user.uid, payload);
 

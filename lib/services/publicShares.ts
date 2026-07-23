@@ -16,6 +16,7 @@ export interface PublicShare {
   days?: any[];
   authorName?: string;
   authorPhoto?: string;
+  theme?: string;
   createdAt: string;
   updatedAt: string;
 }
