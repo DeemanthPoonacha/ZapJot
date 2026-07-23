@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-07-23
+
+### Added
+- **Public Shared Items Hub (`/shared`):** Built a dual-tab dashboard page for logged-in users with **Public Hub** (browse & 1-click import community itineraries) and **My Public Shares** (manage, copy links, or unshare/delete public shares). (#55)
+- **Public Landing Page Navigation (`/explore`):** Added **Explore Community** link to top navigation bar on landing page for public web visitors. (#55)
+- **Social Media Card Aesthetic Grid (`PublicShareCard.tsx`):** Rendered public shares grid items as compact mini-social graphic cards using 5 preset themes (`midnight`, `sunset`, `emerald`, `rose`, `nordic`), glassmorphism badges, and author metadata. (#55)
+- **Itinerary Cover Photos:** Added Cloudinary cover image upload support to itineraries (`ItineraryForm.tsx`, `ItineraryDetailCard.tsx`, and `PrintableItinerary.tsx`). (#55)
+- **1-Click Itinerary Import / Duplication:** Implemented `importPublicItinerary()` which clones a shared itinerary into the user's planner with all activity checkboxes reset to `completed: false` for the importer. (#55)
+- **Social Media Card Generator & User Avatar Integration:** High-contrast redesign of `SocialCardCanvas.tsx` & `SocialCardModal.tsx` with user avatar integration, official `/logo.webp` branding, theme preset picker, and copy actions. (#8)
+- **Printable Itinerary Export:** Built `PrintableItinerary.tsx` component with print button in `ItineraryDetailCard.tsx` for PDF/print generation. (#9)
+
+### Fixed
+- **Cloudinary Overlay Focus Lock:** Solved Radix Dialog/Drawer focus lock when Cloudinary upload widget is active inside modals (`ResponsiveDialogDrawer.tsx` & `globals.css`). (#55)
+
 ## [1.4.1] - 2026-07-22
 
 ### Added

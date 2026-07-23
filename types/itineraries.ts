@@ -35,6 +35,7 @@ export const itineraryDaySchema = z.object({
 export const createItinerarySchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title must be under 200 characters"),
   destination: z.string().optional().describe("Destination of the itinerary"),
+  coverImage: z.string().optional().describe("Cover image URL for the itinerary"),
   startDate: z.string().describe("Start date of the itinerary"),
   endDate: z.string().describe("End date of the itinerary"),
   totalDays: z.number().max(60, "Maximum 60 days allowed per itinerary").describe("Total number of days in the itinerary"),

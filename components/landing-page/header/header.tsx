@@ -16,6 +16,12 @@ export function Header() {
       <Logo />
       <nav className="hidden md:flex gap-6 text-slate-800">
         <Link
+          href="/explore"
+          className="text-sm font-bold text-purple-600 hover:text-purple-700 transition-colors"
+        >
+          Explore Community
+        </Link>
+        <Link
           href="/#features"
           className="text-sm font-medium hover:text-primary transition-colors"
         >

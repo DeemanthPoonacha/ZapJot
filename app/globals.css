@@ -481,3 +481,12 @@ input[type="number"] {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary); /* Color when hovering over scroll thumb */
 }
+
+/* Cloudinary Upload Widget compatibility inside Radix Modals & Drawers */
+iframe[src*="cloudinary"],
+#cloudinary-overlay,
+.cloudinary-widget,
+div[id*="cloudinary"] {
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+}
