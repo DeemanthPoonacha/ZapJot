@@ -172,6 +172,7 @@ const JournalPage = () => {
               ? new Date(journal.createdAt).toLocaleDateString()
               : undefined
           }
+          subtitle={journal.location || ""}
           type="journal"
           itemId={journal.id}
           rawItem={journal}
