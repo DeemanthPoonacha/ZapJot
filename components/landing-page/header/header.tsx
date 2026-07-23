@@ -14,7 +14,7 @@ export function Header() {
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
       <Logo />
-      <nav className="hidden md:flex gap-6 text-slate-800">
+      <nav className="hidden xl:flex gap-6 text-slate-800">
         <Link
           href="/explore"
           className="text-sm font-bold text-purple-600 hover:text-purple-700 transition-colors"

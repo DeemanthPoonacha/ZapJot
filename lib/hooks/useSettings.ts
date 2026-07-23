@@ -58,6 +58,22 @@ export const useSettings = () => {
           { merge: true }
         );
       },
+      onMutate: async (data: SettingsUpdate) => {
+        // Optimistically update React Query cache immediately
+        queryClient.setQueryData(
+          [SETTINGS_QUERY_KEY, userId!],
+          (old: UserInDb | null) => {
+            if (!old) return old;
+            return {
+              ...old,
+              settings: {
+                ...old.settings,
+                ...data,
+              },
+            };
+          }
+        );
+      },
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [SETTINGS_QUERY_KEY, userId!],
@@ -124,6 +140,7 @@ export const useSettings = () => {
       handleThemeChange(userData.settings.theme);
     }
   }, [userData?.settings?.theme]);
+
 
   return {
     settings: userData?.settings,

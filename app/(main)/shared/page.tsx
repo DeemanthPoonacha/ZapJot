@@ -153,7 +153,7 @@ export default function SharedPage() {
             onClick={() => setSectionMode("mine")}
             className={`flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
               sectionMode === "mine"
-                ? "bg-purple-600 text-white shadow-md shadow-purple-600/20"
+                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -165,7 +165,7 @@ export default function SharedPage() {
             onClick={() => setSectionMode("public")}
             className={`flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
               sectionMode === "public"
-                ? "bg-purple-600 text-white shadow-md shadow-purple-600/20"
+                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -182,7 +182,7 @@ export default function SharedPage() {
               onClick={() => setTypeFilter("all")}
               className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-semibold transition ${
                 typeFilter === "all"
-                  ? "bg-background text-foreground shadow-xs"
+                  ? "bg-background text-primary shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -193,7 +193,7 @@ export default function SharedPage() {
               onClick={() => setTypeFilter("itinerary")}
               className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-semibold transition ${
                 typeFilter === "itinerary"
-                  ? "bg-background text-foreground shadow-xs"
+                  ? "bg-background text-primary shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -204,7 +204,7 @@ export default function SharedPage() {
               onClick={() => setTypeFilter("journal")}
               className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-semibold transition ${
                 typeFilter === "journal"
-                  ? "bg-background text-foreground shadow-xs"
+                  ? "bg-background text-primary shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

@@ -8,11 +8,13 @@ import { CTASection } from "@/components/landing-page/cta/cta-section";
 import { Pricing } from "../components/landing-page/pricing";
 import { Contact } from "@/components/landing-page/contact/contact";
 import { Background } from "../components/landing-page/bg/Background";
+import { PublicThemeReset } from "@/components/layout/PublicThemeReset";
 import "./landing-page.css";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center">
+      <PublicThemeReset />
       <Background />
       <Header />
       <main className="flex-1 container">
