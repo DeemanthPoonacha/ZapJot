@@ -201,7 +201,7 @@ export default function ExplorePage() {
                       src={share.coverImage}
                       alt={share.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition duration-500"
+                      className="object-cover group-hover:scale-105 transition duration-500 !m-0"
                       sizes="(max-width: 768px) 100vw, 400px"
                     />
                   ) : (
@@ -242,7 +242,7 @@ export default function ExplorePage() {
                               src={share.authorPhoto}
                               alt={share.authorName}
                               fill
-                              className="object-cover"
+                              className="object-cover !m-0"
                             />
                           </div>
                         ) : (
