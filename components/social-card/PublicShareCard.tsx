@@ -149,7 +149,7 @@ export const PublicShareCard: React.FC<PublicShareCardProps> = ({
         {!demo && (
           <div className="flex items-center justify-between gap-2 pt-1">
             <Link
-              href={`/share/${share.id}`}
+              href={`/explore/${share.id}`}
               className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition border border-white/20 backdrop-blur-md"
             >
               <BookOpen className="h-3.5 w-3.5 text-purple-200" />

@@ -113,7 +113,7 @@ export default function SharedPage() {
   };
 
   const handleCopyLink = async (shareId: string) => {
-    const url = `${window.location.origin}/share/${shareId}`;
+    const url = `${window.location.origin}/explore/${shareId}`;
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       await navigator.clipboard.writeText(url);
       toast.success("Public link copied to clipboard!");

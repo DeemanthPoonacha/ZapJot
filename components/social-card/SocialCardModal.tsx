@@ -84,7 +84,7 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
 
       const publicDoc = await createPublicShare(user.uid, payload);
 
-      const publicUrl = `${window.location.origin}/share/${publicDoc.id}`;
+      const publicUrl = `${window.location.origin}/explore/${publicDoc.id}`;
 
       if (typeof navigator !== "undefined" && navigator.clipboard) {
         await navigator.clipboard.writeText(publicUrl);
