@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Grid2X2, Users, Settings, ListTodo, Compass } from "lucide-react";
+import { Home, Grid2X2, Users, Settings, ListTodo, Share2 } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@/components/layout/link/CustomLink";
 import { Logo } from "./Logo";
@@ -10,10 +10,10 @@ import { FooterAppVersion } from "../landing-page/footer";
 
 export const allRoutes = [
   { label: "Home", icon: Home, href: "/home" },
-  { label: "Explore", icon: Compass, href: "/explore" },
   { label: "Planner", icon: ListTodo, href: "/planner" },
   { label: "Chapters", icon: Grid2X2, href: "/chapters" },
   { label: "Characters", icon: Users, href: "/characters" },
+  { label: "Shared", icon: Share2, href: "/shared" },
   { label: "Settings", icon: Settings, href: "/settings" },
 ];
 

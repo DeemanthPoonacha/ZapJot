@@ -16,7 +16,15 @@ import {
   Sparkles,
   FileText,
   Copy,
+  MoreVertical,
+  Trash2,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -43,6 +51,7 @@ import { BudgetSummary } from "./BudgetSummary";
 import { shareContent } from "@/lib/utils/share";
 import { PrintableItinerary } from "./PrintableItinerary";
 import { SocialCardModal } from "@/components/social-card/SocialCardModal";
+import { cn } from "@/lib/utils";
 // import dayjs from "dayjs";
 
 interface ItineraryDetailProps {
@@ -135,9 +144,18 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   const tripStarted = currentDate >= startDate;
   const tripEnded = currentDate > endDate;
 
-  const formatDate = (dateString: string) => {
+  // Calculate safe budget metrics
+  const safeBudget = itinerary.budget ?? 0;
+  const safeActualCost = itinerary.actualCost ?? 0;
+  const budgetUsagePercentage =
+    safeBudget > 0
+      ? Math.min(Math.round((safeActualCost / safeBudget) * 100), 100)
+      : 0;
+  const remainingBudget = safeBudget - safeActualCost;
+
+  const formatDate = (dateString: string, formatString = "MMMM d, yyyy") => {
     try {
-      return format(new Date(dateString), "MMMM d, yyyy");
+      return format(new Date(dateString), formatString);
     } catch (e) {
       console.log("🚀 ~ formatDate ~ e:", e);
       return dateString;
@@ -166,97 +184,202 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   return (
     <ListCard className="w-full shadow-md gap-0">
-      <CardHeader onClick={toggleExpand} className="cursor-pointer px-4 py-2">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-bold flex items-center gap-1">
-            {itinerary.title}
-          </CardTitle>
+      <CardHeader
+        onClick={toggleExpand}
+        className="cursor-pointer px-4 py-3 relative overflow-hidden group select-none transition-colors"
+      >
+        {itinerary.coverImage && (
+          <>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <Image
+                src={itinerary.coverImage}
+                alt={itinerary.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            {/* Scrim gradient overlay ensuring text readability in both dark and light modes */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/10 pointer-events-none" />
+          </>
+        )}
+        <div className="relative z-10 space-y-2">
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              <CardTitle className="text-lg font-bold flex items-center gap-1.5 text-foreground truncate">
+                {itinerary.title}
+              </CardTitle>
+            </div>
 
-          <div
-            className="flex items-center gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {selectedItineraryId === itinerary.id && (
-              <>
-                <Button
-                  className="cursor-pointer text-purple-600 dark:text-purple-400 hover:text-purple-700"
-                  variant="ghost"
-                  size="icon"
-                  title="Create Social Card"
-                  onClick={() => setIsSocialCardOpen(true)}
-                >
-                  <Sparkles className="w-4 h-4" />
-                </Button>
-                <Button
-                  className="cursor-pointer"
-                  variant="ghost"
-                  size="icon"
-                  title="Copy Summary"
-                  onClick={handleShareItinerary}
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
-                <Button
-                  className="cursor-pointer"
-                  variant="ghost"
-                  size="icon"
-                  title="Print / Save PDF"
-                  onClick={handlePrintItinerary}
-                >
-                  <Printer className="w-4 h-4" />
-                </Button>
-                {onEditClick && (
-                  <Button
-                    className="cursor-pointer"
-                    variant="ghost"
-                    size="icon"
-                    onClick={onEditClick}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                )}
-                <DeleteConfirm
-                  buttonVariant={"ghost"}
-                  handleDelete={handleDelete}
-                />
-              </>
-            )}
-
-            <Button
-              className="cursor-pointer"
-              variant="ghost"
-              size="icon"
-              onClick={toggleExpand}
+            <div
+              className="flex items-center gap-1 sm:gap-2 shrink-0"
+              onClick={(e) => e.stopPropagation()}
             >
-              {expandedMain ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronRight className="w-4 h-4" />
+              {selectedItineraryId === itinerary.id && (
+                <>
+                  {/* Desktop view: inline action buttons with background chips */}
+                  <div className="hidden sm:flex items-center gap-0.5 bg-background/60 dark:bg-background/40 backdrop-blur-xs p-0.5 rounded-lg border border-border/40 shadow-2xs">
+                    <Button
+                      className="cursor-pointer text-purple-600 dark:text-purple-400 hover:text-purple-700 hover:bg-purple-500/10 h-8 w-8"
+                      variant="ghost"
+                      size="icon"
+                      title="Create Social Card"
+                      onClick={() => setIsSocialCardOpen(true)}
+                    >
+                      <Sparkles className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      className="cursor-pointer h-8 w-8 hover:bg-accent"
+                      variant="ghost"
+                      size="icon"
+                      title="Copy Summary"
+                      onClick={handleShareItinerary}
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      className="cursor-pointer h-8 w-8 hover:bg-accent"
+                      variant="ghost"
+                      size="icon"
+                      title="Print / Save PDF"
+                      onClick={handlePrintItinerary}
+                    >
+                      <Printer className="w-4 h-4" />
+                    </Button>
+                    {onEditClick && (
+                      <Button
+                        className="cursor-pointer h-8 w-8 hover:bg-accent"
+                        variant="ghost"
+                        size="icon"
+                        title="Edit"
+                        onClick={onEditClick}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    )}
+                    <DeleteConfirm
+                      buttonVariant={"ghost"}
+                      buttonClassName="h-8 w-8 hover:bg-destructive/10"
+                      handleDelete={handleDelete}
+                    />
+                  </div>
+
+                  {/* Mobile view: dropdown menu */}
+                  <div className="sm:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="cursor-pointer h-8 w-8 bg-background/60 dark:bg-background/40 backdrop-blur-xs border border-border/40 shadow-2xs"
+                          title="Actions"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => setIsSocialCardOpen(true)}
+                          className="cursor-pointer gap-2"
+                        >
+                          <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                          <span>Create Social Card</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={handleShareItinerary}
+                          className="cursor-pointer gap-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                          <span>Copy Summary</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={handlePrintItinerary}
+                          className="cursor-pointer gap-2"
+                        >
+                          <Printer className="w-4 h-4" />
+                          <span>Print / Save PDF</span>
+                        </DropdownMenuItem>
+                        {onEditClick && (
+                          <DropdownMenuItem
+                            onClick={onEditClick}
+                            className="cursor-pointer gap-2"
+                          >
+                            <Edit className="w-4 h-4" />
+                            <span>Edit</span>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem
+                          onSelect={(e) => e.preventDefault()}
+                          className="cursor-pointer gap-2 text-destructive focus:text-destructive"
+                        >
+                          <DeleteConfirm
+                            handleDelete={handleDelete}
+                            trigger={
+                              <div className="flex items-center gap-2 w-full cursor-pointer">
+                                <Trash2 className="w-4 h-4" />
+                                <span>Delete</span>
+                              </div>
+                            }
+                          />
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </>
               )}
-            </Button>
+
+              <Button
+                className="cursor-pointer h-8 w-8 bg-background/60 dark:bg-background/40 backdrop-blur-xs border border-border/40 shadow-2xs hover:bg-accent"
+                variant="ghost"
+                size="icon"
+                onClick={toggleExpand}
+              >
+                {expandedMain ? (
+                  <ChevronUp className="w-4 h-4" />
+                ) : (
+                  <ChevronRight className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+          <div className="text-sm flex justify-between items-center gap-2 pt-0.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs sm:text-sm font-medium text-foreground/90 flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                {formatDate(itinerary.startDate)}
+                {itinerary.endDate &&
+                  itinerary.endDate !== itinerary.startDate && (
+                    <span className="text-muted-foreground">
+                      - {formatDate(itinerary.endDate)}
+                    </span>
+                  )}
+              </span>
+              <Badge
+                variant="outline"
+                className={cn(
+                  "flex items-center text-xs font-semibold px-2 py-0.5 shadow-2xs border",
+                  tripEnded
+                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 dark:bg-emerald-500/20 border-emerald-500/30"
+                    : tripStarted
+                      ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 dark:bg-amber-500/20 border-amber-500/30"
+                      : "bg-blue-500/15 text-blue-700 dark:text-blue-300 dark:bg-blue-500/20 border-blue-500/30",
+                )}
+              >
+                {!tripStarted
+                  ? "Upcoming"
+                  : tripEnded
+                    ? "Completed"
+                    : "In Progress"}
+              </Badge>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-background/80 dark:bg-card/90 text-foreground border border-border/60 shadow-2xs flex items-center gap-1.5 backdrop-blur-xs shrink-0">
+              <CalendarDays className="h-3.5 w-3.5 text-primary" />
+              <span>
+                {itinerary.totalDays}{" "}
+                {itinerary.totalDays === 1 ? "day" : "days"}
+              </span>
+            </span>
           </div>
         </div>
-        <span className="text-sm flex justify-between">
-          <span className="flex items-center gap-1">
-            {formatDate(itinerary.startDate)}
-            <Badge
-              variant={
-                tripStarted ? (tripEnded ? "secondary" : "default") : "outline"
-              }
-              className="flex items-center"
-            >
-              {!tripStarted
-                ? "Upcoming"
-                : tripEnded
-                  ? "Completed"
-                  : "In Progress"}
-            </Badge>
-          </span>
-          <span className="text-[13px] text-muted-foreground flex items-center font-semibold">
-            <CalendarDays className="h-3 w-3 mr-1" />
-            {itinerary.totalDays} {itinerary.totalDays === 1 ? "day" : "days"}
-          </span>
-        </span>
       </CardHeader>
       <AnimatePresence>
         {expandedMain && (
@@ -280,7 +403,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-4">
-                  {itinerary.coverImage && (
+                  {/* {itinerary.coverImage && (
                     <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-border shadow-sm">
                       <Image
                         src={itinerary.coverImage}
@@ -289,89 +412,94 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         className="object-cover"
                       />
                     </div>
-                  )}
-                  <div className="grid grid-cols-1 md:garid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5 text-muted-foreground" />
+                  )} */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-muted/20">
+                        <div className="p-2 rounded-md bg-primary/10 text-primary">
+                          <Calendar className="h-5 w-5" />
+                        </div>
                         <div>
-                          <p className="text-sm font-medium">Dates</p>
-                          <p className="text-sm">
+                          <p className="text-xs text-muted-foreground font-medium">
+                            Dates
+                          </p>
+                          <p className="text-sm font-semibold text-foreground">
                             {formatDate(itinerary.startDate)} -{" "}
                             {formatDate(itinerary.endDate)}
                           </p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2">
-                        <div className="flex items-center gap-2">
-                          <Wallet className="h-5 w-5 text-muted-foreground" />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center gap-2.5 p-3 rounded-lg border border-border/50 bg-muted/20">
+                          <div className="p-2 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                            <Wallet className="h-4 w-4" />
+                          </div>
                           <div>
-                            <p className="text-sm font-medium">Budget</p>
-                            <p className="text-sm">
-                              ${itinerary.budget?.toLocaleString()}
+                            <p className="text-xs text-muted-foreground font-medium">
+                              Budget
+                            </p>
+                            <p className="text-sm font-semibold text-foreground">
+                              ${safeBudget.toLocaleString()}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex items-center gap-2.5 p-3 rounded-lg border border-border/50 bg-muted/20">
+                          <div className="p-2 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                            <CreditCard className="h-4 w-4" />
+                          </div>
                           <div>
-                            <p className="text-sm font-medium">Actual Cost</p>
-                            <p className="text-sm">
-                              ${itinerary.actualCost?.toLocaleString()}
+                            <p className="text-xs text-muted-foreground font-medium">
+                              Actual Cost
+                            </p>
+                            <p className="text-sm font-semibold text-foreground">
+                              ${safeActualCost.toLocaleString()}
                             </p>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 p-3 rounded-lg border border-border/50 bg-muted/20">
                       <div>
                         <div className="flex justify-between mb-1">
                           <p className="text-sm font-medium">
                             Completion Progress
                           </p>
-                          <p className="text-sm">{completionPercentage}%</p>
+                          <p className="text-sm font-semibold text-primary">
+                            {completionPercentage}%
+                          </p>
                         </div>
                         <Progress
                           value={completionPercentage}
                           className="h-2"
                         />
-                        <p className="text-xs text-muted-foreground mt-1 flex justify-between">
+                        <p className="text-xs text-muted-foreground mt-1.5 flex justify-between">
                           <span>
                             {completedTasks} of {totalTasks} tasks completed
                           </span>
-                          <span>{remainingTasks} tasks remaining</span>
+                          <span>{remainingTasks} remaining</span>
                         </p>
                       </div>
 
                       <div>
                         <div className="flex justify-between mb-1">
                           <p className="text-sm font-medium">Budget Usage</p>
-                          <p className="text-sm">
-                            {Math.round(
-                              (itinerary.actualCost / itinerary.budget) * 100,
-                            )}
-                            %
+                          <p className="text-sm font-semibold text-foreground">
+                            {budgetUsagePercentage}%
                           </p>
                         </div>
                         <Progress
-                          value={
-                            (itinerary.actualCost / itinerary.budget) * 100
-                          }
+                          value={budgetUsagePercentage}
                           className="h-2"
                         />
-                        <p className="text-xs text-muted-foreground mt-1 flex justify-between">
+                        <p className="text-xs text-muted-foreground mt-1.5 flex justify-between">
                           <span>
-                            ${itinerary.actualCost?.toLocaleString()} of $
-                            {itinerary.budget?.toLocaleString()} used
+                            ${safeActualCost.toLocaleString()} of $
+                            {safeBudget.toLocaleString()} used
                           </span>
                           <span>
-                            $
-                            {(
-                              itinerary.budget - itinerary.actualCost
-                            ).toLocaleString()}{" "}
-                            remaining
+                            ${remainingBudget.toLocaleString()} remaining
                           </span>
                         </p>
                       </div>
@@ -458,13 +586,13 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
         )}
       </AnimatePresence>
       <ListCardFooter>
-        <span className="flex items-center">
-          <CalendarDays className="h-3 w-3 mr-1" />
+        <span className="flex items-center gap-1">
+          <CalendarDays className="w-3 h-3 text-primary" />
           Duration: {itinerary.totalDays}{" "}
           {itinerary.totalDays === 1 ? "day" : "days"}
         </span>
-        <span className="flex items-center">
-          <MapPin className="h-4 w-4 mr-1" />
+        <span className="flex items-center gap-1">
+          <MapPin className="w-3 h-3 text-primary" />
           {itinerary.destination || "N/A"}
         </span>
       </ListCardFooter>
@@ -487,7 +615,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
             itinerary.endDate,
           )} (${itinerary.totalDays} Days). Total activities planned: ${totalTasks}.`
         }
-        date={`${formatDate(itinerary.startDate)} - ${formatDate(itinerary.endDate)}`}
+        date={`${formatDate(itinerary.startDate, "MMM d, yyyy")} - ${formatDate(itinerary.endDate, "MMM d, yyyy")}`}
         type="itinerary"
         itemId={itinerary.id}
         rawItem={itinerary}

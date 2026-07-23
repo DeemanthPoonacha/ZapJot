@@ -119,7 +119,7 @@ export const SocialCardCanvas = React.forwardRef<
 
           <div className="space-y-2">
             <h2
-              className={`text-2xl sm:text-3xl font-extrabold leading-tight tracking-tight ${selectedTheme.text} drop-shadow-sm`}
+              className={`text-2xl sm:text-3xl font-extrabold leading-tight tracking-tight ${selectedTheme.text} drop-shadow-sm line-clamp-2`}
             >
               {title}
             </h2>
@@ -143,7 +143,7 @@ export const SocialCardCanvas = React.forwardRef<
 
         {/* Bottom Footer Row */}
         <div className="flex items-center justify-between z-10 pt-3 border-t border-white/15 text-xs text-white/85 font-medium">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full justify-between">
             {authorName && (
               <div className="flex items-center gap-2">
                 {authorPhoto ? (
@@ -160,22 +160,19 @@ export const SocialCardCanvas = React.forwardRef<
                     {authorName.charAt(0).toUpperCase()}
                   </div>
                 )}
-                <span className="font-semibold text-white/95">{authorName}</span>
+                <span className="font-semibold text-white/95">
+                  {authorName}
+                </span>
               </div>
             )}
 
             {date && (
               <div className="flex items-center gap-1 text-white/70 text-[11px]">
-                {authorName && <span>•</span>}
                 <Calendar className="h-3 w-3 text-white/60" />
                 <span>{date}</span>
               </div>
             )}
           </div>
-
-          <span className="text-[11px] tracking-wide text-white/60 font-mono hidden sm:inline">
-            zap-jot.netlify.app
-          </span>
         </div>
       </div>
     );
