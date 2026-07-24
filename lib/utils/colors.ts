@@ -44,8 +44,8 @@ export function hexToHSL(hex: string): string {
 
   return `${h} ${s}% ${l}%`;
 }
-// Invert a color for contrast
 
+// Invert a color for contrast
 export function invertColor(hex: string): string {
   hex = hex.replace("#", "");
   const r = parseInt(hex.substring(0, 2), 16);
@@ -115,6 +115,24 @@ export const addCustomCssVariables = (themeObj: Theme) => {
         --popover: hsl(${hexToHSL(themeObj.colors.background)});
         --popover-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
         --ring: hsl(${hexToHSL(themeObj.colors.primary)});
+        --primary-gradient: ${
+          themeObj.colors.gradient ||
+          `linear-gradient(135deg, hsl(${hexToHSL(
+            themeObj.colors.primary
+          )}), hsl(${hexToHSL(themeObj.colors.accent)}))`
+        };
+        --ambient-gradient: linear-gradient(135deg, color-mix(in srgb, hsl(${hexToHSL(
+          themeObj.colors.accent
+        )}) 70%, transparent), hsl(${hexToHSL(
+          themeObj.colors.background
+        )}), color-mix(in srgb, hsl(${hexToHSL(
+          themeObj.colors.secondary
+        )}) 50%, transparent));
+        --card-gradient: linear-gradient(180deg, hsl(${hexToHSL(
+          themeObj.colors.background
+        )}) 0%, color-mix(in srgb, hsl(${hexToHSL(
+          themeObj.colors.accent
+        )}) 15%, hsl(${hexToHSL(themeObj.colors.background)})) 100%);
       }
     `;
   styleEl.textContent = cssVariables;

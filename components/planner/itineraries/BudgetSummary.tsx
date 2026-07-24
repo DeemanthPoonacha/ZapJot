@@ -48,12 +48,12 @@ export function BudgetSummary({ itinerary }: { itinerary: Itinerary }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="border-muted gap-0">
+        <Card className="bg-gradient-primary text-primary-foreground border-none shadow-md gap-0">
           <CardHeader className="px-4 pt-2">
-            <CardTitle className="text-lg">Planned Budget</CardTitle>
+            <CardTitle className="text-lg text-primary-foreground/90">Planned Budget</CardTitle>
           </CardHeader>
           <CardContent className="px-4 py-2">
-            <p className="text-3xl font-bold">
+            <p className="text-3xl font-extrabold">
               ${itinerary.budget?.toLocaleString()}
             </p>
           </CardContent>

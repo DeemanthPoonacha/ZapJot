@@ -1,5 +1,16 @@
 import { db } from "./firebase/db";
-import { doc, getDoc, setDoc, deleteDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+} from "firebase/firestore";
 
 export interface PublicShare {
   id: string;
@@ -14,6 +25,7 @@ export interface PublicShare {
   endDate?: string;
   totalDays?: number;
   days?: any[];
+  budget?: number;
   authorName?: string;
   authorPhoto?: string;
   theme?: string;
@@ -24,14 +36,17 @@ export interface PublicShare {
 const PUBLIC_SHARES_COLLECTION = "publicShares";
 
 /** Generate a deterministic share ID for an item */
-export function getShareId(type: "journal" | "itinerary", itemId: string): string {
+export function getShareId(
+  type: "journal" | "itinerary",
+  itemId: string,
+): string {
   return `pub_${type}_${itemId}`;
 }
 
 /** Create or update a public share document */
 export async function createPublicShare(
   userId: string,
-  shareData: Omit<PublicShare, "userId" | "createdAt" | "updatedAt">
+  shareData: Omit<PublicShare, "userId" | "createdAt" | "updatedAt">,
 ): Promise<PublicShare> {
   const shareId = shareData.id || getShareId(shareData.type, shareData.id);
   const docRef = doc(db, PUBLIC_SHARES_COLLECTION, shareId);
@@ -46,7 +61,7 @@ export async function createPublicShare(
 
   // Strip undefined values to satisfy Firestore SDK constraints
   const cleanPayload = Object.fromEntries(
-    Object.entries(rawPayload).filter(([_, value]) => value !== undefined)
+    Object.entries(rawPayload).filter(([_, value]) => value !== undefined),
   ) as PublicShare;
 
   await setDoc(docRef, cleanPayload, { merge: true });
@@ -54,7 +69,9 @@ export async function createPublicShare(
 }
 
 /** Fetch a public share document by shareId (unauthenticated) */
-export async function getPublicShare(shareId: string): Promise<PublicShare | null> {
+export async function getPublicShare(
+  shareId: string,
+): Promise<PublicShare | null> {
   try {
     const docRef = doc(db, PUBLIC_SHARES_COLLECTION, shareId);
     const snapshot = await getDoc(docRef);
@@ -76,7 +93,7 @@ export async function deletePublicShare(shareId: string): Promise<void> {
 /** Fetch all publicly shared items for the Explore Gallery */
 export async function getPublicShares(
   typeFilter?: "journal" | "itinerary" | "all",
-  maxResults = 50
+  maxResults = 50,
 ): Promise<PublicShare[]> {
   try {
     const colRef = collection(db, PUBLIC_SHARES_COLLECTION);
@@ -87,7 +104,7 @@ export async function getPublicShares(
         colRef,
         where("type", "==", typeFilter),
         orderBy("createdAt", "desc"),
-        limit(maxResults)
+        limit(maxResults),
       );
     } else {
       q = query(colRef, orderBy("createdAt", "desc"), limit(maxResults));
@@ -102,13 +119,15 @@ export async function getPublicShares(
 }
 
 /** Fetch all public shares created by a specific user */
-export async function getUserPublicShares(userId: string): Promise<PublicShare[]> {
+export async function getUserPublicShares(
+  userId: string,
+): Promise<PublicShare[]> {
   try {
     const colRef = collection(db, PUBLIC_SHARES_COLLECTION);
     const q = query(
       colRef,
       where("userId", "==", userId),
-      orderBy("createdAt", "desc")
+      orderBy("createdAt", "desc"),
     );
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => doc.data() as PublicShare);

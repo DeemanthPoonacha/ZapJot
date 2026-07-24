@@ -25,12 +25,15 @@ export function ThemeCard({
 
   return (
     <Card
-      className={`cursor-pointer flex flex-col rounded-md border-2 ${
-        isActive ? "border-primary" : "border-muted"
+      className={`cursor-pointer flex flex-col rounded-xl border-2 transition-all duration-300 ${
+        isActive
+          ? "border-primary shadow-lg ring-2 ring-primary/30"
+          : "border-muted/70 hover:border-primary/40"
       } overflow-hidden`}
       onClick={() => onThemeSelect(theme.id)}
       style={{
         backgroundColor: colors.background,
+        backgroundImage: colors.cardGradient,
         color: colors.foreground,
       }}
     >
@@ -46,9 +49,20 @@ export function ThemeCard({
             height={44}
             alt="logo"
             color={colors.primary}
-            className={"shadow-md rounded-[18%]"}
+            className={"shadow-sm rounded-[18%]"}
           />
-          <span>{theme.name}</span>
+          <span className="font-bold text-sm">{theme.name}</span>
+          {isActive && (
+            <span
+              className="ml-1 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"
+              style={{
+                backgroundColor: colors.primary,
+                color: colors.background,
+              }}
+            >
+              Active
+            </span>
+          )}
         </div>
         {theme.type === "custom" && (
           <div className="flex gap-2">

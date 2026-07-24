@@ -12,6 +12,7 @@ export interface PageHeaderProps {
   backLink?: string;
   className?: string;
   showSearch?: boolean;
+  onBackClick?: () => void;
   onSearchClick?: () => void;
 }
 
@@ -24,13 +25,14 @@ export function PageHeader({
   className,
   showSearch = false,
   onSearchClick,
+  onBackClick,
 }: PageHeaderProps) {
   return (
     <div className={cn("flex flex-col gap-1 py-4 border-b mb-6", className)}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          {backLink && (
-            <Link href={backLink} className="mr-1">
+          {(backLink || onBackClick) && (
+            <Link href={backLink} className="mr-1" onClick={onBackClick}>
               <Button
                 variant="ghost"
                 size="icon"

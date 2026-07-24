@@ -5,9 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2026-07-24
+
+### Added
+
+- **Gradient Theme Support:** Added gradient-based themes throughout the application with customizable gradient styling across UI components and navigation. (#59)
+- **Card Gradient Theming:** Introduced dedicated card gradient theme variables for consistent styling across cards and reusable UI components. (#59)
+- **Nested Settings Navigation:** Redesigned Settings with nested navigation, built-in back button support, and breadcrumb navigation for improved usability on desktop and mobile. (#59)
+- **Itinerary Import Flow:** Added a streamlined itinerary import experience with a custom confirmation dialog. (#59)
+
+### Changed
+
+- **Public Share Routes:** Migrated public sharing routes from `/share` to `/explore` for a more consistent public experience. (#59)
+- **Header Navigation:** Refactored and modularized the application header navigation for improved maintainability and future expansion. (#59)
+- **Public Share Schema:** Extended the public share schema to include itinerary budget information. (#59)
+
+### Fixed
+
+- **Explore Page Cleanup:** Removed unused imports and performed internal cleanup following the `/explore` migration. (#59)
+- **UI Polish & Maintenance:** Various internal refactors and styling improvements to support the new theming system and navigation architecture. (#59)
+- **Settings Back Button:** Added back button to settings page for mobile view. (#59)
+
 ## [1.5.0] - 2026-07-23
 
 ### Added
+
 - **Public Shared Items Hub (`/shared`):** Built a dual-tab dashboard page for logged-in users with **Public Hub** (browse & 1-click import community itineraries) and **My Public Shares** (manage, copy links, or unshare/delete public shares). (#55)
 - **Public Landing Page Navigation (`/explore`):** Added **Explore Community** link to top navigation bar on landing page for public web visitors. (#55)
 - **Social Media Card Aesthetic Grid (`PublicShareCard.tsx`):** Rendered public shares grid items as compact mini-social graphic cards using 5 preset themes (`midnight`, `sunset`, `emerald`, `rose`, `nordic`), glassmorphism badges, and author metadata. (#55)
@@ -17,11 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Printable Itinerary Export:** Built `PrintableItinerary.tsx` component with print button in `ItineraryDetailCard.tsx` for PDF/print generation. (#9)
 
 ### Fixed
+
 - **Cloudinary Overlay Focus Lock:** Solved Radix Dialog/Drawer focus lock when Cloudinary upload widget is active inside modals (`ResponsiveDialogDrawer.tsx` & `globals.css`). (#55)
 
 ## [1.4.1] - 2026-07-22
 
 ### Added
+
 - **Complete PWA Offline Compatibility:** Added comprehensive Workbox runtime caching (`StaleWhileRevalidate` page route caching, asset caching, Cloudinary image caching) and fallback routing via `@ducanh2912/next-pwa`. (#44)
 - **Offline Fallback Page:** Built a dedicated glassmorphic offline page at `app/offline/page.tsx` with connection status and quick navigation links to cached routes. (#45)
 - **Network Status & Floating Indicator:** Added `useNetworkStatus` hook and floating top `<OfflineIndicator />` banner + Sonner toasts for connectivity state transitions. (#46)
@@ -33,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2026-07-21
 
 ### Added
+
 - **Google Calendar Real-Time Sync:** Integrated direct write-through synchronization between Firestore events (create, update, delete) and Google Calendar API. (#6)
 - **Firebase OAuth & Permissions Linking:** Added on-demand Google Calendar OAuth scope (`https://www.googleapis.com/auth/calendar`) requesting and account linking using `linkWithPopup` for Firebase email/password users. (#6)
 - **Recurrence & Reminder Sync:** Supported syncing daily, weekly, monthly, and yearly recurring events using standard iCalendar `RRULE` conversion, and dynamic notification reminder mapping with fallback to user config. (#6)
@@ -50,10 +75,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Firestore Offline Caching**: Enabled persistent local caching (`persistentLocalCache` and `persistentMultipleTabManager`) in `db.ts` to allow full offline read/write support. (#29)
 
 ### Changed
+
 - **Service-Layer Schema Validation:** Integrated Zod schemas (`create*Schema` and `update*Schema`) inside all write endpoints of `tasks`, `events`, `goals`, `characters`, `chapters`, `journals`, and `itineraries` services to prevent database corruption. (#13)
 - **Atomic Journal Moves:** Refactored `moveJournal` to run the write/delete operations atomically within a Firestore Transaction. (#13)
 
 ### Fixed
+
 - **Unawaited Participant Synchronization:** Resolved race conditions during event creation/updates by wrapping concurrent updates in `Promise.all()`. (#13)
 - **Inconsistent Timestamps:** Unified all updated/created timestamp writes to follow ISO 8601 strings. (#13)
 - **Firestore documentId Queries:** Fixed event retrieval filters in `lib/services/events.ts` to query `documentId()` instead of matching against a string property `"id"`. (#13)
@@ -62,13 +89,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.1] - 2026-07-17
 
 ### Added
+
 - **Dynamic Calendar Empty State Filtering:** Hides empty day cards when displaying month-ranges or upcoming events list, returning a clean empty state panel instead.
 - **Save/Discard AI Reaction Context:** Appends system messages (`ChatRole.SYSTEM`) to the chatbot conversational history to ensure Gemini stays fully informed of user actions while keeping these operations hidden from the message bubbles UI.
 
 ### Changed
+
 - **Default Upcoming Events View:** Shifted the calendar default listing to display events from today onwards up to the end of the month, falling back to a full-month view only when the month is changed.
 
 ### Fixed
+
 - **Firestore Query Task Omission:** Pre-populated missing default task fields (`status`, `highPriority`, `subtasks`) during direct creation to prevent Firestore `orderBy("highPriority")` queries from omitting newly added items.
 - **Yearly Event Format Matching:** Corrected the date formatter helper inside calendar date ranges from `"M-D"` to `"MM-DD"` to align with the database schema and prevent yearly repeating events from hiding.
 - **Firebase Write Batch Safety:** Handled nullable fields directly (assigning `null` instead of leaving `undefined`) during batch updates to prevent Firestore SDK validation errors.
@@ -78,16 +108,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - 2026-07-17
 
 ### Added
+
 - **AI Companion Personality (Zappy):** Implemented a warm, witty, and proactive AI companion system with relative temporal awareness and directives to check existence before creation, merge info semantically, and automatically cross-reference goals, events, itineraries, and tasks.
 - **Delete Capabilities for AI:** Equipped the AI agent with tools to permanently delete chapters (`delete_chapter`), journals (`delete_journal`), tasks (`delete_task`), events (`delete_event`), goals (`delete_goal`), characters (`delete_character`), and itineraries (`delete_itinerary`).
 - **Daily Briefing Tool:** Added `get_daily_briefing` tool which pulls today's schedule, pending tasks, active goals progress, and recent journals to offer comprehensive daily summaries when greeted.
 - **AI Settings Model Selection:** Bound the Settings AI panel dynamically to `AVAILABLE_MODELS` instead of static hardcoded lists.
 
 ### Changed
+
 - **Stable Chat Connection:** Refactored the core chat execution engine in `useAiChat.ts` to utilize the stable, non-streaming `chat.sendMessage` instead of `chat.sendMessageStream` to resolve `400 Bad Request` thought signature errors under the hood.
 - **UI Loading Indicators:** Switched typewriter text simulation to instant static responses with native pulsing loading indicators (`...`) during active backend operations, eliminating layout thrashing and markdown rendering flicker.
 
 ### Fixed
+
 - **Cache Race Conditions:** Patched `localStorage` history reload logic so that active in-memory cache queues are protected from being overwritten by stale values when routing or re-rendering.
 - **Vertex AI Schema Standardisation:** Capitalized all raw tool parameter schema types to `OBJECT` via `zodToGeminiSchema(z.object({}))` to satisfy strict Google/Vertex AI validator constraints and resolve 400 Bad Requests.
 - **Local Build Guard:** Protected `GOOGLE_SERVICE_ACCOUNT_JSON` JSON parsing in `check-notifications` endpoint to support local compilation without environment keys.

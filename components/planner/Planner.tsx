@@ -72,25 +72,25 @@ export default function PlannerPage() {
     >
       <TabsList className="grid w-full grid-cols-4 bg-muted/50 md:h-16 mb-2 gap-1 p-1">
         <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
           value="tasks"
         >
           <ListCheck className="h-4 w-4" /> Tasks
         </TabsTrigger>
         <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
           value="events"
         >
           <CalendarCheck className="h-4 w-4" /> Events
         </TabsTrigger>
         <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
           value="goals"
         >
           <Goal className="h-4 w-4" /> Goals
         </TabsTrigger>
         <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-md data-[state=active]:shadow-sm data-[state=active]:bg-card data-[state=active]:text-primary transition-colors"
+          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
           value="itineraries"
         >
           <LandPlot className="h-4 w-4" />
