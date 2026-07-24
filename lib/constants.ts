@@ -29,6 +29,23 @@ export const colorProperties = [
   { id: "accent", name: "Accent", hexColor: "#F1F5F9" },
   { id: "muted", name: "Muted", hexColor: "#F1F5F9" },
   { id: "border", name: "Border", hexColor: "#E2E8F0" },
+  {
+    id: "gradient",
+    name: "Gradient",
+    hexColor: "linear-gradient(135deg, #1E293B 0%, #F1F5F9 100%)",
+  },
+  {
+    id: "ambientGradient",
+    name: "Ambient Gradient",
+    hexColor:
+      "linear-gradient(135deg, #F1F5F9 70%, transparent), #FFFFFF, color-mix(in srgb, #F1F5F9 50%, transparent)",
+  },
+  {
+    id: "cardGradient",
+    name: "Card Gradient",
+    hexColor:
+      "linear-gradient(180deg, #FFFFFF 0%, color-mix(in srgb, #F1F5F9 15%, #FFFFFF) 100%)",
+  },
 ];
 
 // Default themes
@@ -46,8 +63,10 @@ export const defaultThemes: Theme[] = [
       muted: "#F1F5F9",
       border: "#E2E8F0",
       gradient: "linear-gradient(135deg, #1E293B 0%, #F1F5F9 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #F1F5F9 70%, transparent), #FFFFFF, color-mix(in srgb, #F1F5F9 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #FFFFFF 0%, color-mix(in srgb, #F1F5F9 15%, #FFFFFF) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #F1F5F9 70%, transparent), #FFFFFF, color-mix(in srgb, #F1F5F9 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #FFFFFF 0%, color-mix(in srgb, #F1F5F9 15%, #FFFFFF) 100%)",
     },
   },
   {
@@ -63,8 +82,10 @@ export const defaultThemes: Theme[] = [
       muted: "#1E1E2A",
       border: "#1E1E2A",
       gradient: "linear-gradient(135deg, #FAFAFA 0%, #1E1E2A 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #1E1E2A 70%, transparent), #09090B, color-mix(in srgb, #1E1E2A 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #09090B 0%, color-mix(in srgb, #1E1E2A 15%, #09090B) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #1E1E2A 70%, transparent), #09090B, color-mix(in srgb, #1E1E2A 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #09090B 0%, color-mix(in srgb, #1E1E2A 15%, #09090B) 100%)",
     },
   },
   {
@@ -80,8 +101,10 @@ export const defaultThemes: Theme[] = [
       muted: "#1E1E2A",
       border: "#1E1E2A",
       gradient: "linear-gradient(135deg, #FAFAFA 0%, #1E1E2A 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #1E1E2A 70%, transparent), #09090B, color-mix(in srgb, #1E1E2A 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #09090B 0%, color-mix(in srgb, #1E1E2A 15%, #09090B) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #1E1E2A 70%, transparent), #09090B, color-mix(in srgb, #1E1E2A 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #09090B 0%, color-mix(in srgb, #1E1E2A 15%, #09090B) 100%)",
     },
   },
   {
@@ -97,8 +120,10 @@ export const defaultThemes: Theme[] = [
       muted: "#E7DBEF",
       border: "#E1D7E9",
       gradient: "linear-gradient(135deg, #8432CC 0%, #E1D7E9 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #E1D7E9 70%, transparent), #FAF7FC, color-mix(in srgb, #E7DBEF 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #FAF7FC 0%, color-mix(in srgb, #E1D7E9 15%, #FAF7FC) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #E1D7E9 70%, transparent), #FAF7FC, color-mix(in srgb, #E7DBEF 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #FAF7FC 0%, color-mix(in srgb, #E1D7E9 15%, #FAF7FC) 100%)",
     },
   },
   {
@@ -114,8 +139,10 @@ export const defaultThemes: Theme[] = [
       muted: "#E8C9D3",
       border: "#E4CDD4",
       gradient: "linear-gradient(135deg, #D64173 0%, #E4CDD4 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #E4CDD4 70%, transparent), #FCF7F9, color-mix(in srgb, #EFDBE2 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #FCF7F9 0%, color-mix(in srgb, #E4CDD4 15%, #FCF7F9) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #E4CDD4 70%, transparent), #FCF7F9, color-mix(in srgb, #EFDBE2 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #FCF7F9 0%, color-mix(in srgb, #E4CDD4 15%, #FCF7F9) 100%)",
     },
   },
   {
@@ -131,8 +158,10 @@ export const defaultThemes: Theme[] = [
       muted: "#CDD8E4",
       border: "#CDD8E4",
       gradient: "linear-gradient(135deg, #0065CC 0%, #CDD8E4 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #CDD8E4 70%, transparent), #F7F9FC, color-mix(in srgb, #DBE5EF 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #F7F9FC 0%, color-mix(in srgb, #CDD8E4 15%, #F7F9FC) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #CDD8E4 70%, transparent), #F7F9FC, color-mix(in srgb, #DBE5EF 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #F7F9FC 0%, color-mix(in srgb, #CDD8E4 15%, #F7F9FC) 100%)",
     },
   },
   {
@@ -148,8 +177,10 @@ export const defaultThemes: Theme[] = [
       muted: "#C2D9C2",
       border: "#A8C8A8",
       gradient: "linear-gradient(135deg, #2F8F2F 0%, #AAD4AA 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #AAD4AA 70%, transparent), #EDF6ED, color-mix(in srgb, #D5EAD5 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #EDF6ED 0%, color-mix(in srgb, #AAD4AA 15%, #EDF6ED) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #AAD4AA 70%, transparent), #EDF6ED, color-mix(in srgb, #D5EAD5 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #EDF6ED 0%, color-mix(in srgb, #AAD4AA 15%, #EDF6ED) 100%)",
     },
   },
   {
@@ -165,8 +196,10 @@ export const defaultThemes: Theme[] = [
       muted: "#E8D5C9",
       border: "#DBC8BC",
       gradient: "linear-gradient(135deg, #F35524 0%, #EAC5AD 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #EAC5AD 70%, transparent), #FFF5EF, color-mix(in srgb, #F9E1D1 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #FFF5EF 0%, color-mix(in srgb, #EAC5AD 15%, #FFF5EF) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #EAC5AD 70%, transparent), #FFF5EF, color-mix(in srgb, #F9E1D1 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #FFF5EF 0%, color-mix(in srgb, #EAC5AD 15%, #FFF5EF) 100%)",
     },
   },
   {
@@ -182,8 +215,10 @@ export const defaultThemes: Theme[] = [
       muted: "#F2E8D9",
       border: "#E1CEB3",
       gradient: "linear-gradient(135deg, #D2A052 0%, #E1CEB3 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #E1CEB3 70%, transparent), #FDF8F0, color-mix(in srgb, #F2E8D9 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #FDF8F0 0%, color-mix(in srgb, #E1CEB3 15%, #FDF8F0) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #E1CEB3 70%, transparent), #FDF8F0, color-mix(in srgb, #F2E8D9 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #FDF8F0 0%, color-mix(in srgb, #E1CEB3 15%, #FDF8F0) 100%)",
     },
   },
 
@@ -201,8 +236,10 @@ export const defaultThemes: Theme[] = [
       muted: "#241B2F",
       border: "#352644",
       gradient: "linear-gradient(135deg, #B87AFF 0%, #6C40B5 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #6C40B5 70%, transparent), #17131F, color-mix(in srgb, #241B2F 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #17131F 0%, color-mix(in srgb, #6C40B5 15%, #17131F) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #6C40B5 70%, transparent), #17131F, color-mix(in srgb, #241B2F 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #17131F 0%, color-mix(in srgb, #6C40B5 15%, #17131F) 100%)",
     },
   },
   {
@@ -218,8 +255,10 @@ export const defaultThemes: Theme[] = [
       muted: "#122339",
       border: "#1D3852",
       gradient: "linear-gradient(135deg, #38C7BD 0%, #4F89C5 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #4F89C5 70%, transparent), #0A1A2F, color-mix(in srgb, #122339 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #0A1A2F 0%, color-mix(in srgb, #4F89C5 15%, #0A1A2F) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #4F89C5 70%, transparent), #0A1A2F, color-mix(in srgb, #122339 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #0A1A2F 0%, color-mix(in srgb, #4F89C5 15%, #0A1A2F) 100%)",
     },
   },
   {
@@ -235,8 +274,10 @@ export const defaultThemes: Theme[] = [
       muted: "#283547",
       border: "#48566A",
       gradient: "linear-gradient(135deg, #F7F9FB 0%, #283547 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #283547 70%, transparent), #131B29, color-mix(in srgb, #283547 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #131B29 0%, color-mix(in srgb, #283547 15%, #131B29) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #283547 70%, transparent), #131B29, color-mix(in srgb, #283547 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #131B29 0%, color-mix(in srgb, #283547 15%, #131B29) 100%)",
     },
   },
   {
@@ -252,8 +293,10 @@ export const defaultThemes: Theme[] = [
       muted: "#282C33",
       border: "#383D47",
       gradient: "linear-gradient(135deg, #5181E0 0%, #383D47 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #383D47 70%, transparent), #16181C, color-mix(in srgb, #282C33 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #16181C 0%, color-mix(in srgb, #383D47 15%, #16181C) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #383D47 70%, transparent), #16181C, color-mix(in srgb, #282C33 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #16181C 0%, color-mix(in srgb, #383D47 15%, #16181C) 100%)",
     },
   },
   {
@@ -269,8 +312,10 @@ export const defaultThemes: Theme[] = [
       muted: "#32292C",
       border: "#46393D",
       gradient: "linear-gradient(135deg, #D22C63 0%, #46393D 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #46393D 70%, transparent), #1D1518, color-mix(in srgb, #32292C 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #1D1518 0%, color-mix(in srgb, #46393D 15%, #1D1518) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #46393D 70%, transparent), #1D1518, color-mix(in srgb, #32292C 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #1D1518 0%, color-mix(in srgb, #46393D 15%, #1D1518) 100%)",
     },
   },
   {
@@ -286,8 +331,10 @@ export const defaultThemes: Theme[] = [
       muted: "#27232D",
       border: "#3D3847",
       gradient: "linear-gradient(135deg, #CF47EA 0%, #16CEAF 100%)",
-      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #16CEAF 70%, transparent), #131117, color-mix(in srgb, #27232D 50%, transparent))",
-      cardGradient: "linear-gradient(180deg, #131117 0%, color-mix(in srgb, #16CEAF 15%, #131117) 100%)",
+      ambientGradient:
+        "linear-gradient(135deg, color-mix(in srgb, #16CEAF 70%, transparent), #131117, color-mix(in srgb, #27232D 50%, transparent))",
+      cardGradient:
+        "linear-gradient(180deg, #131117 0%, color-mix(in srgb, #16CEAF 15%, #131117) 100%)",
     },
   },
 ];

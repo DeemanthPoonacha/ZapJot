@@ -101,9 +101,13 @@ export const addCustomCssVariables = (themeObj: Theme) => {
           invertColor(themeObj.colors.primary)
         )});
         --secondary: hsl(${hexToHSL(themeObj.colors.secondary)});
-        --secondary-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --secondary-foreground: hsl(${hexToHSL(
+          invertColor(themeObj.colors.secondary)
+        )});
         --accent: hsl(${hexToHSL(themeObj.colors.accent)});
-        --accent-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
+        --accent-foreground: hsl(${hexToHSL(
+          invertColor(themeObj.colors.accent)
+        )});
         --muted: hsl(${hexToHSL(themeObj.colors.muted)});
         --muted-foreground: hsl(${hexToHSL(
           adjustBrightness(themeObj.colors.foreground, 0.6)
@@ -121,18 +125,24 @@ export const addCustomCssVariables = (themeObj: Theme) => {
             themeObj.colors.primary
           )}), hsl(${hexToHSL(themeObj.colors.accent)}))`
         };
-        --ambient-gradient: linear-gradient(135deg, color-mix(in srgb, hsl(${hexToHSL(
-          themeObj.colors.accent
-        )}) 70%, transparent), hsl(${hexToHSL(
-          themeObj.colors.background
-        )}), color-mix(in srgb, hsl(${hexToHSL(
-          themeObj.colors.secondary
-        )}) 50%, transparent));
-        --card-gradient: linear-gradient(180deg, hsl(${hexToHSL(
-          themeObj.colors.background
-        )}) 0%, color-mix(in srgb, hsl(${hexToHSL(
-          themeObj.colors.accent
-        )}) 15%, hsl(${hexToHSL(themeObj.colors.background)})) 100%);
+        --ambient-gradient: ${
+          themeObj.colors.ambientGradient ||
+          `linear-gradient(135deg, color-mix(in srgb, hsl(${hexToHSL(
+            themeObj.colors.accent
+          )}) 70%, transparent), hsl(${hexToHSL(
+            themeObj.colors.background
+          )}), color-mix(in srgb, hsl(${hexToHSL(
+            themeObj.colors.secondary
+          )}) 50%, transparent))`
+        };
+        --card-gradient: ${
+          themeObj.colors.cardGradient ||
+          `linear-gradient(180deg, hsl(${hexToHSL(
+            themeObj.colors.background
+          )}) 0%, color-mix(in srgb, hsl(${hexToHSL(
+            themeObj.colors.accent
+          )}) 15%, hsl(${hexToHSL(themeObj.colors.background)})) 100%)`
+        };
       }
     `;
   styleEl.textContent = cssVariables;

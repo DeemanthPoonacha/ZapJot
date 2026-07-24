@@ -11,7 +11,7 @@ import { getPluralWord } from "@/lib/utils";
 import Image from "next/image";
 import { ListChecks, Target, CalendarDays } from "lucide-react";
 
-function StatChip({
+export function StatChip({
   icon,
   loading,
   count,
