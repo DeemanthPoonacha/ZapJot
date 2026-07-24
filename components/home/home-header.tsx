@@ -55,19 +55,19 @@ export function HomeHeader() {
   if (loading) return <Skeleton className="h-44 rounded-md" />;
 
   return (
-    <Card className="relative overflow-hidden p-6 sm:p-7 bg-gradient-to-br from-primary to-primary/70 text-primary-foreground gap-4">
-      <div className="flex items-start justify-between gap-4">
+    <Card className="relative overflow-hidden p-6 sm:p-7 bg-gradient-primary text-primary-foreground gap-4 border-none shadow-xl">
+      <div className="flex items-start justify-between gap-4 z-10 relative">
         <div>
           <h1 className="text-2xl sm:text-3xl font-serif italic font-medium tracking-tight">
             {greet()}
           </h1>
-          <p className="text-sm opacity-80 mt-1">
+          <p className="text-sm opacity-90 mt-1">
             Here&apos;s what&apos;s happening at a glance.
           </p>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 pt-1">
+      <div className="flex flex-wrap gap-2 pt-1 z-10 relative">
         <StatChip
           icon={<ListChecks className="h-3.5 w-3.5" />}
           loading={taskLoading}
@@ -89,7 +89,7 @@ export function HomeHeader() {
       </div>
 
       <Image
-        className="absolute opacity-10 right-0 sm:right-10 top-1/2 -translate-y-1/2 w-1/2 sm:w-1/3 pointer-events-none"
+        className="absolute opacity-15 right-0 sm:right-10 top-1/2 -translate-y-1/2 w-1/2 sm:w-1/3 pointer-events-none mix-blend-overlay"
         src="/z_icon.webp"
         alt="logo"
         width={300}

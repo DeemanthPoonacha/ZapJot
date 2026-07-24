@@ -7,33 +7,18 @@ import {
   deletePublicShare,
   PublicShare,
 } from "@/lib/services/publicShares";
-import { importPublicItinerary } from "@/lib/services/itineraries";
+import { duplicatePublicItineraryData } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { toast } from "@/components/ui/sonner";
 import PageLayout from "@/components/layout/PageLayout";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Share2,
-  Globe,
-  UserCheck,
-  Search,
-  MapPin,
-  Calendar,
-  Sparkles,
-  Plus,
-  Trash2,
-  Copy,
-  BookOpen,
-  Link2,
-} from "lucide-react";
+import { Share2, Globe, UserCheck, Search } from "lucide-react";
 import { PublicShareCard } from "@/components/social-card/PublicShareCard";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import DeleteConfirm from "@/components/ui/delete-confirm";
+import ResponsiveDialogDrawer from "@/components/ui/ResponsiveDialogDrawer";
+import ItineraryForm from "@/components/planner/itineraries/ItineraryForm";
+import { Itinerary } from "@/types/itineraries";
 
 export default function SharedPage() {
   const router = useRouter();
@@ -50,6 +35,8 @@ export default function SharedPage() {
   const [myShares, setMyShares] = useState<PublicShare[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [importingId, setImportingId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [itineraryData, setItineraryData] = useState<Itinerary>();
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -89,15 +76,20 @@ export default function SharedPage() {
 
     setImportingId(share.id);
     try {
-      await importPublicItinerary(user.uid, share);
-      toast.success("Itinerary imported into your planner!");
-      router.push("/planner");
+      const itinerary = duplicatePublicItineraryData(share);
+      setItineraryData(itinerary as Itinerary);
+      setIsDialogOpen(true);
     } catch (err) {
       console.error("Error importing itinerary:", err);
       toast.error("Failed to import itinerary");
     } finally {
       setImportingId(null);
     }
+  };
+
+  const handleSave = () => {
+    toast.success("Itinerary imported successfully!");
+    router.push("/planner");
   };
 
   const handleDeletePublicShare = async (shareId: string) => {
@@ -113,7 +105,7 @@ export default function SharedPage() {
   };
 
   const handleCopyLink = async (shareId: string) => {
-    const url = `${window.location.origin}/share/${shareId}`;
+    const url = `${window.location.origin}/explore/${shareId}`;
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       await navigator.clipboard.writeText(url);
       toast.success("Public link copied to clipboard!");
@@ -143,6 +135,11 @@ export default function SharedPage() {
     );
   });
 
+  const handleClose = () => {
+    setIsDialogOpen(false);
+    setItineraryData(undefined);
+  };
+
   return (
     <PageLayout headerProps={{ title: "Shared Hub" }}>
       <div className="space-y-6 max-w-6xl mx-auto pb-12">
@@ -153,7 +150,7 @@ export default function SharedPage() {
             onClick={() => setSectionMode("mine")}
             className={`flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
               sectionMode === "mine"
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                ? "bg-gradient-primary text-primary-foreground shadow-md shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -165,7 +162,7 @@ export default function SharedPage() {
             onClick={() => setSectionMode("public")}
             className={`flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
               sectionMode === "public"
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                ? "bg-gradient-primary text-primary-foreground shadow-md shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -231,8 +228,8 @@ export default function SharedPage() {
           </div>
         ) : filteredShares.length === 0 ? (
           <div className="text-center py-16 bg-card rounded-2xl border border-border p-8 space-y-3">
-            <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-950/60 flex items-center justify-center mx-auto text-purple-600">
-              <Share2 className="h-6 w-6" />
+            <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-purple-950/60 flex items-center justify-center mx-auto text-purple-600">
+              <Share2 className="h-6 w-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-foreground">
               {sectionMode === "mine"
@@ -261,6 +258,19 @@ export default function SharedPage() {
               />
             ))}
           </div>
+        )}
+        {isDialogOpen && (
+          <ResponsiveDialogDrawer
+            content={
+              <ItineraryForm
+                onClose={handleClose}
+                onSave={handleSave}
+                itineraryData={itineraryData}
+              />
+            }
+            title={itineraryData?.title || "Imported Itinerary"}
+            handleClose={handleClose}
+          />
         )}
       </div>
     </PageLayout>

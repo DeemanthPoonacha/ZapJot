@@ -42,7 +42,7 @@ export const PublicShareCard: React.FC<PublicShareCardProps> = ({
 
   return (
     <div
-      className={`group relative flex flex-col justify-between ${selectedTheme.bg} p-5 sm:p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden font-sans border border-white/15 min-h-[300px] text-white`}
+      className={`group relative flex flex-col justify-between ${selectedTheme.bg} p-4 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden font-sans border border-white/15 min-h-[300px] text-white`}
     >
       {/* Subtle background blur accents */}
       <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -149,7 +149,7 @@ export const PublicShareCard: React.FC<PublicShareCardProps> = ({
         {!demo && (
           <div className="flex items-center justify-between gap-2 pt-1">
             <Link
-              href={`/share/${share.id}`}
+              href={`/explore/${share.id}`}
               className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition border border-white/20 backdrop-blur-md"
             >
               <BookOpen className="h-3.5 w-3.5 text-purple-200" />

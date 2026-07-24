@@ -75,7 +75,7 @@ export const SocialCardCanvas = React.forwardRef<
     return (
       <div
         ref={ref}
-        className={`w-full max-w-full aspect-[4/5] ${selectedTheme.bg} p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col justify-between relative overflow-hidden font-sans border border-white/10`}
+        className={`w-full max-w-full aspect-[4/5] ${selectedTheme.bg} p-6 sm:p-8 shadow-2xl flex flex-col justify-between relative overflow-hidden font-sans border border-white/10`}
       >
         {/* Subtle background blur accents */}
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />

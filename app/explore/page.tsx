@@ -1,28 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getPublicShares, PublicShare } from "@/lib/services/publicShares";
 import { importPublicItinerary } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { toast } from "@/components/ui/sonner";
-import PageLayout from "@/components/layout/PageLayout";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Compass,
-  Search,
-  MapPin,
-  Calendar,
-  Sparkles,
-  Plus,
-  ArrowRight,
-  BookOpen,
-} from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
+import { Compass, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PublicShareCard } from "@/components/social-card/PublicShareCard";
 

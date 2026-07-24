@@ -8,7 +8,15 @@ import { useAuth } from "@/lib/context/AuthProvider";
 import { toast } from "@/components/ui/sonner";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { WysiwygViewer } from "@/components/wysiwyg/viewer";
-import { Sparkles, Calendar, MapPin, CheckSquare, Clock, Plus, ArrowRight } from "lucide-react";
+import {
+  Sparkles,
+  Calendar,
+  MapPin,
+  CheckSquare,
+  Clock,
+  Plus,
+  ArrowRight,
+} from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -108,7 +116,7 @@ export default function PublicSharePage() {
             <div className="flex items-center gap-2">
               <Badge
                 variant="outline"
-                className="text-xs font-semibold uppercase tracking-wider text-purple-300 border-purple-400/40 bg-purple-500/10 px-3 py-1"
+                className="text-xs font-semibold uppercase tracking-wider text-purple-500 border-purple-400/40 bg-purple-500/10 px-3 py-1"
               >
                 Shared {share.type === "itinerary" ? "Itinerary" : "Journal"}
               </Badge>
@@ -243,6 +251,12 @@ export default function PublicSharePage() {
                 </CardContent>
               </Card>
             ))}
+            {/* Budget */}
+            {share.budget && share.budget > 0 && (
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/40 px-2.5 py-1 rounded-full">
+                Budget: ${share.budget}
+              </span>
+            )}
           </div>
         )}
       </div>
