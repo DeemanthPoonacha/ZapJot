@@ -341,14 +341,14 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
               </Button>
             </div>
           </div>
-          <div className="text-sm flex justify-between items-center gap-2 pt-0.5">
+          <div className="text-sm flex justify-between items-end gap-2 pt-0.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs sm:text-sm font-medium text-foreground/90 flex items-center gap-1">
+              <span className="text-xs sm:text-sm font-medium text-foreground flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                 {formatDate(itinerary.startDate)}
                 {itinerary.endDate &&
                   itinerary.endDate !== itinerary.startDate && (
-                    <span className="text-muted-foreground">
+                    <span className="">
                       - {formatDate(itinerary.endDate)}
                     </span>
                   )}

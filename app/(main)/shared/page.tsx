@@ -7,33 +7,18 @@ import {
   deletePublicShare,
   PublicShare,
 } from "@/lib/services/publicShares";
-import { importPublicItinerary } from "@/lib/services/itineraries";
+import { duplicatePublicItineraryData } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { toast } from "@/components/ui/sonner";
 import PageLayout from "@/components/layout/PageLayout";
 import { CustomLoader } from "@/components/layout/CustomLoader";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Share2,
-  Globe,
-  UserCheck,
-  Search,
-  MapPin,
-  Calendar,
-  Sparkles,
-  Plus,
-  Trash2,
-  Copy,
-  BookOpen,
-  Link2,
-} from "lucide-react";
+import { Share2, Globe, UserCheck, Search } from "lucide-react";
 import { PublicShareCard } from "@/components/social-card/PublicShareCard";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import DeleteConfirm from "@/components/ui/delete-confirm";
+import ResponsiveDialogDrawer from "@/components/ui/ResponsiveDialogDrawer";
+import ItineraryForm from "@/components/planner/itineraries/ItineraryForm";
+import { Itinerary } from "@/types/itineraries";
 
 export default function SharedPage() {
   const router = useRouter();
@@ -50,6 +35,8 @@ export default function SharedPage() {
   const [myShares, setMyShares] = useState<PublicShare[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [importingId, setImportingId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [itineraryData, setItineraryData] = useState<Itinerary>();
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -89,15 +76,20 @@ export default function SharedPage() {
 
     setImportingId(share.id);
     try {
-      await importPublicItinerary(user.uid, share);
-      toast.success("Itinerary imported into your planner!");
-      router.push("/planner");
+      const itinerary = duplicatePublicItineraryData(share);
+      setItineraryData(itinerary as Itinerary);
+      setIsDialogOpen(true);
     } catch (err) {
       console.error("Error importing itinerary:", err);
       toast.error("Failed to import itinerary");
     } finally {
       setImportingId(null);
     }
+  };
+
+  const handleSave = () => {
+    toast.success("Itinerary imported successfully!");
+    router.push("/planner");
   };
 
   const handleDeletePublicShare = async (shareId: string) => {
@@ -142,6 +134,11 @@ export default function SharedPage() {
       share.content?.toLowerCase().includes(query)
     );
   });
+
+  const handleClose = () => {
+    setIsDialogOpen(false);
+    setItineraryData(undefined);
+  };
 
   return (
     <PageLayout headerProps={{ title: "Shared Hub" }}>
@@ -261,6 +258,19 @@ export default function SharedPage() {
               />
             ))}
           </div>
+        )}
+        {isDialogOpen && (
+          <ResponsiveDialogDrawer
+            content={
+              <ItineraryForm
+                onClose={handleClose}
+                onSave={handleSave}
+                itineraryData={itineraryData}
+              />
+            }
+            title={itineraryData?.title || "Imported Itinerary"}
+            handleClose={handleClose}
+          />
         )}
       </div>
     </PageLayout>

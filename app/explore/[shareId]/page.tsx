@@ -251,6 +251,12 @@ export default function PublicSharePage() {
                 </CardContent>
               </Card>
             ))}
+            {/* Budget */}
+            {share.budget && share.budget > 0 && (
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/40 px-2.5 py-1 rounded-full">
+                Budget: ${share.budget}
+              </span>
+            )}
           </div>
         )}
       </div>

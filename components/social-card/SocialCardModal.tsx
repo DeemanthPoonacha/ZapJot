@@ -12,7 +12,11 @@ import {
 import { toast } from "@/components/ui/sonner";
 import { SocialCardCanvas, CardTheme, THEME_PRESETS } from "./SocialCardCanvas";
 import { useAuth } from "@/lib/context/AuthProvider";
-import { createPublicShare, getShareId } from "@/lib/services/publicShares";
+import {
+  createPublicShare,
+  getShareId,
+  PublicShare,
+} from "@/lib/services/publicShares";
 
 import Image from "next/image";
 
@@ -62,7 +66,7 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
         user.displayName || user.email?.split("@")[0] || "ZapJot User";
       const authorPhoto = user.photoURL || undefined;
 
-      const payload: any = {
+      const payload: Omit<PublicShare, "userId" | "createdAt" | "updatedAt"> = {
         id: shareId,
         type,
         title,
@@ -80,6 +84,7 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
           rawItem?.location ||
           subtitle?.replace("📍 ", "");
       if (rawItem?.days) payload.days = rawItem.days;
+      if (rawItem?.budget) payload.budget = rawItem.budget;
       payload.theme = selectedTheme;
 
       const publicDoc = await createPublicShare(user.uid, payload);
@@ -221,7 +226,7 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
           </div>
 
           {/* Card Canvas Live Preview */}
-          <div className="w-full flex justify-center py-2 bg-muted/40 rounded-2xl p-4 border border-border">
+          <div className="w-full flex justify-center bg-muted/40 rounded-2xl p-4 border border-border">
             <SocialCardCanvas
               ref={cardRef}
               title={title}
