@@ -42,7 +42,7 @@ export const PublicShareCard: React.FC<PublicShareCardProps> = ({
 
   return (
     <div
-      className={`group relative flex flex-col justify-between ${selectedTheme.bg} p-5 sm:p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden font-sans border border-white/15 min-h-[300px] text-white`}
+      className={`group relative flex flex-col justify-between ${selectedTheme.bg} p-4 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden font-sans border border-white/15 min-h-[300px] text-white`}
     >
       {/* Subtle background blur accents */}
       <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

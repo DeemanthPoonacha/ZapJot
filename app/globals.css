@@ -36,8 +36,22 @@
   --radius: 0.6rem;
   --background: hsl(0 0% 100%);
   --foreground: hsl(240 10% 3.9%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .dark {
@@ -65,8 +79,22 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .purple {
@@ -97,8 +125,22 @@
   --border: hsl(272 30% 88%);
   --input: hsl(272 30% 88%);
   --ring: hsl(272 60% 50%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .forest {
@@ -129,8 +171,22 @@
   --border: hsl(145 30% 75%);
   --input: hsl(145 30% 75%);
   --ring: hsl(145 60% 35%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .sunset {
@@ -161,8 +217,22 @@
   --border: hsl(24 30% 80%);
   --input: hsl(24 30% 80%);
   --ring: hsl(14 90% 55%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .ocean {
@@ -193,8 +263,22 @@
   --border: hsl(210 30% 85%);
   --input: hsl(210 30% 85%);
   --ring: hsl(210 100% 40%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .rose {
@@ -225,8 +309,22 @@
   --border: hsl(340 30% 85%);
   --input: hsl(340 30% 85%);
   --ring: hsl(340 65% 55%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .dunes {
@@ -257,8 +355,22 @@
   --border: hsl(37 48% 79%);
   --input: hsl(37 48% 79%);
   --ring: hsl(37 60% 57%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .amethyst {
@@ -269,7 +381,7 @@
   --popover: hsl(260 22% 10%);
   --popover-foreground: hsl(264 100% 95%);
   --primary: hsl(272 100% 74%);
-  --primary-foreground: hsl(260 22% 10%);
+  --primary-foreground: hsl(261, 59%, 89%);
   --secondary: hsl(266 25% 15%);
   --secondary-foreground: hsl(264 100% 95%);
   --muted: hsl(266 25% 15%);
@@ -281,8 +393,22 @@
   --border: hsl(266 25% 25%);
   --input: hsl(266 25% 25%);
   --ring: hsl(272 100% 74%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .abyss {
@@ -293,7 +419,7 @@
   --popover: hsl(212 58% 12%);
   --popover-foreground: hsl(174 40% 93%);
   --primary: hsl(177 54% 50%);
-  --primary-foreground: hsl(212 58% 12%);
+  --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(212 49% 15%);
   --secondary-foreground: hsl(174 40% 93%);
   --muted: hsl(212 49% 15%);
@@ -305,8 +431,22 @@
   --border: hsl(212 40% 22%);
   --input: hsl(212 40% 22%);
   --ring: hsl(177 54% 50%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .monochrome {
@@ -329,8 +469,22 @@
   --border: hsl(215 19% 35%);
   --input: hsl(215 19% 35%);
   --ring: hsl(210 40% 98%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .midnight {
@@ -353,8 +507,22 @@
   --border: hsl(220 12% 25%);
   --input: hsl(220 12% 25%);
   --ring: hsl(220 70% 60%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .crimson {
@@ -377,8 +545,22 @@
   --border: hsl(340 10% 25%);
   --input: hsl(340 10% 25%);
   --ring: hsl(340 65% 50%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 .cyberpunk {
@@ -409,8 +591,22 @@
   --border: hsl(260 12% 25%);
   --input: hsl(260 12% 25%);
   --ring: hsl(290 80% 60%);
-  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
-  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
+  --primary-gradient: linear-gradient(
+    to bottom right,
+    var(--primary),
+    var(--accent)
+  );
+  --ambient-gradient: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    var(--background),
+    color-mix(in srgb, var(--secondary) 50%, transparent)
+  );
+  --card-gradient: linear-gradient(
+    to bottom right,
+    var(--card) 0%,
+    color-mix(in srgb, var(--primary) 10%, var(--card)) 100%
+  );
 }
 
 @theme inline {
@@ -440,6 +636,7 @@
   --color-chart-5: var(--chart-5);
   --background-image-gradient-primary: var(--primary-gradient);
   --background-image-gradient-ambient: var(--ambient-gradient);
+  --background-image-gradient-card: var(--card-gradient);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -481,7 +678,9 @@ input[type="number"] {
   }
 
   .peg {
-    box-shadow: 0 0 2px #fff000, 0 0 5px #fff !important;
+    box-shadow:
+      0 0 2px #fff000,
+      0 0 5px #fff !important;
   }
 }
 

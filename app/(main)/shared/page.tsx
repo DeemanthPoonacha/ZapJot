@@ -153,7 +153,7 @@ export default function SharedPage() {
             onClick={() => setSectionMode("mine")}
             className={`flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
               sectionMode === "mine"
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                ? "bg-gradient-primary text-primary-foreground shadow-md shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -165,7 +165,7 @@ export default function SharedPage() {
             onClick={() => setSectionMode("public")}
             className={`flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
               sectionMode === "public"
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                ? "bg-gradient-primary text-primary-foreground shadow-md shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -231,8 +231,8 @@ export default function SharedPage() {
           </div>
         ) : filteredShares.length === 0 ? (
           <div className="text-center py-16 bg-card rounded-2xl border border-border p-8 space-y-3">
-            <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-950/60 flex items-center justify-center mx-auto text-purple-600">
-              <Share2 className="h-6 w-6" />
+            <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-purple-950/60 flex items-center justify-center mx-auto text-purple-600">
+              <Share2 className="h-6 w-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-foreground">
               {sectionMode === "mine"

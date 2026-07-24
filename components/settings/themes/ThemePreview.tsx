@@ -42,18 +42,21 @@ export function ThemePreview({ colors }: ThemePreviewProps) {
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        {Object.entries(colors).map(([key, value]) => (
-          <div key={key} className="flex flex-col items-center">
-            <div
-              className="w-6 h-6 rounded-full border shadow-xs"
-              style={{
-                background: value || gradientStyle,
-                borderColor: colors.border,
-              }}
-            />
-            <span className="text-[11px] mt-1 opacity-80">{key}</span>
-          </div>
-        ))}
+        {Object.entries(colors).map(
+          ([key, value]) =>
+            key !== "cardGradient" && (
+              <div key={key} className="flex flex-col items-center">
+                <div
+                  className="w-6 h-6 rounded-full border shadow-xs"
+                  style={{
+                    background: value || gradientStyle,
+                    borderColor: colors.border,
+                  }}
+                />
+                <span className="text-[11px] mt-1 opacity-80">{key}</span>
+              </div>
+            ),
+        )}
       </div>
 
       {/* Theme Gradient Strip Banner */}

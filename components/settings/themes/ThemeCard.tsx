@@ -33,6 +33,7 @@ export function ThemeCard({
       onClick={() => onThemeSelect(theme.id)}
       style={{
         backgroundColor: colors.background,
+        backgroundImage: colors.cardGradient,
         color: colors.foreground,
       }}
     >

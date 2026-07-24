@@ -37,7 +37,7 @@ export function TaskCard({
       key={task.id}
       className={cn(
         task.highPriority
-          ? "bg-gradient-to-r from-primary/10 via-card to-card border-l-primary"
+          ? "bg-gradient-to-r from-primary/20 via-card to-card border-l-primary"
           : ""
       )}
     >

@@ -42,10 +42,12 @@ export const defaultThemes: Theme[] = [
       foreground: "#0F1729",
       primary: "#1E293B",
       secondary: "#F1F5F9",
-      gradient: "linear-gradient(135deg, #1E293B 0%, #F1F5F9 100%)",
       accent: "#F1F5F9",
       muted: "#F1F5F9",
       border: "#E2E8F0",
+      gradient: "linear-gradient(135deg, #1E293B 0%, #F1F5F9 100%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #F1F5F9 70%, transparent), #FFFFFF, color-mix(in srgb, #F1F5F9 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #FFFFFF 0%, color-mix(in srgb, #F1F5F9 15%, #FFFFFF) 100%)",
     },
   },
   {
@@ -53,14 +55,16 @@ export const defaultThemes: Theme[] = [
     name: "Dark",
     type: "basic",
     colors: {
-      background: "#09090B", // hsl(240 10% 3.9%)
-      foreground: "#FAFAFA", // hsl(0 0% 98%)
-      primary: "#FAFAFA", // hsl(0 0% 98%)
-      secondary: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      background: "#09090B",
+      foreground: "#FAFAFA",
+      primary: "#FAFAFA",
+      secondary: "#1E1E2A",
+      accent: "#1E1E2A",
+      muted: "#1E1E2A",
+      border: "#1E1E2A",
       gradient: "linear-gradient(135deg, #FAFAFA 0%, #1E1E2A 100%)",
-      accent: "#1E1E2A", // hsl(240 3.7% 15.9%)
-      muted: "#1E1E2A", // hsl(240 3.7% 15.9%)
-      border: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #1E1E2A 70%, transparent), #09090B, color-mix(in srgb, #1E1E2A 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #09090B 0%, color-mix(in srgb, #1E1E2A 15%, #09090B) 100%)",
     },
   },
   {
@@ -68,14 +72,16 @@ export const defaultThemes: Theme[] = [
     name: "System",
     type: "basic",
     colors: {
-      background: "#09090B", // hsl(240 10% 3.9%)
-      foreground: "#FAFAFA", // hsl(0 0% 98%)
-      primary: "#FAFAFA", // hsl(0 0% 98%)
-      secondary: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      background: "#09090B",
+      foreground: "#FAFAFA",
+      primary: "#FAFAFA",
+      secondary: "#1E1E2A",
+      accent: "#1E1E2A",
+      muted: "#1E1E2A",
+      border: "#1E1E2A",
       gradient: "linear-gradient(135deg, #FAFAFA 0%, #1E1E2A 100%)",
-      accent: "#1E1E2A", // hsl(240 3.7% 15.9%)
-      muted: "#1E1E2A", // hsl(240 3.7% 15.9%)
-      border: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #1E1E2A 70%, transparent), #09090B, color-mix(in srgb, #1E1E2A 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #09090B 0%, color-mix(in srgb, #1E1E2A 15%, #09090B) 100%)",
     },
   },
   {
@@ -83,14 +89,16 @@ export const defaultThemes: Theme[] = [
     name: "Purple",
     type: "light",
     colors: {
-      background: "#FAF7FC", // hsl(280 50% 98%)",
-      foreground: "#291839", // hsl(272 40% 16%)",
-      primary: "#8432CC", // hsl(272 60% 50%)",
-      secondary: "#E7DBEF", // hsl(275 40% 90%)",
+      background: "#FAF7FC",
+      foreground: "#291839",
+      primary: "#8432CC",
+      secondary: "#E7DBEF",
+      accent: "#E1D7E9",
+      muted: "#E7DBEF",
+      border: "#E1D7E9",
       gradient: "linear-gradient(135deg, #8432CC 0%, #E1D7E9 100%)",
-      accent: "#E1D7E9", // hsl(272 30% 88%)",
-      muted: "#E7DBEF", // hsl(275 40% 90%)",
-      border: "#E1D7E9", // hsl(272 30% 88%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #E1D7E9 70%, transparent), #FAF7FC, color-mix(in srgb, #E7DBEF 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #FAF7FC 0%, color-mix(in srgb, #E1D7E9 15%, #FAF7FC) 100%)",
     },
   },
   {
@@ -98,14 +106,16 @@ export const defaultThemes: Theme[] = [
     name: "Rose",
     type: "light",
     colors: {
-      background: "#FCF7F9", // hsl(340 50% 98%)",
-      foreground: "#311A22", // hsl(340 30% 15%)",
-      primary: "#D64173", // hsl(340 65% 55%)",
-      secondary: "#EFDBE2", // hsl(340 40% 90%)",
+      background: "#FCF7F9",
+      foreground: "#311A22",
+      primary: "#D64173",
+      secondary: "#EFDBE2",
+      accent: "#E4CDD4",
+      muted: "#E8C9D3",
+      border: "#E4CDD4",
       gradient: "linear-gradient(135deg, #D64173 0%, #E4CDD4 100%)",
-      accent: "#E4CDD4", // hsl(340 30% 85%)",
-      muted: "#E8C9D3", // hsl(340 40% 85%)",
-      border: "#E4CDD4", // hsl(340 30% 85%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #E4CDD4 70%, transparent), #FCF7F9, color-mix(in srgb, #EFDBE2 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #FCF7F9 0%, color-mix(in srgb, #E4CDD4 15%, #FCF7F9) 100%)",
     },
   },
   {
@@ -113,14 +123,16 @@ export const defaultThemes: Theme[] = [
     name: "Ocean",
     type: "light",
     colors: {
-      background: "#F7F9FC", // hsl(210 50% 98%)",
-      foreground: "#0E1629", // hsl(222 47% 11%)",
-      primary: "#0065CC", // hsl(210 100% 40%)",
-      secondary: "#DBE5EF", // hsl(210 40% 90%)",
+      background: "#F7F9FC",
+      foreground: "#0E1629",
+      primary: "#0065CC",
+      secondary: "#DBE5EF",
+      accent: "#CDD8E4",
+      muted: "#CDD8E4",
+      border: "#CDD8E4",
       gradient: "linear-gradient(135deg, #0065CC 0%, #CDD8E4 100%)",
-      accent: "#CDD8E4", // hsl(210 30% 85%)",
-      muted: "#CDD8E4", // hsl(210 30% 85%)",
-      border: "#CDD8E4", // hsl(210 30% 85%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #CDD8E4 70%, transparent), #F7F9FC, color-mix(in srgb, #DBE5EF 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #F7F9FC 0%, color-mix(in srgb, #CDD8E4 15%, #F7F9FC) 100%)",
     },
   },
   {
@@ -128,14 +140,16 @@ export const defaultThemes: Theme[] = [
     name: "Forest",
     type: "light",
     colors: {
-      background: "#EDF6ED", // hsl(145 30% 95%)
-      foreground: "#1F3F1F", // hsl(145 50% 10%)
-      primary: "#2F8F2F", // hsl(145 60% 35%)
-      secondary: "#D5EAD5", // hsl(145 30% 85%)
+      background: "#EDF6ED",
+      foreground: "#1F3F1F",
+      primary: "#2F8F2F",
+      secondary: "#D5EAD5",
+      accent: "#AAD4AA",
+      muted: "#C2D9C2",
+      border: "#A8C8A8",
       gradient: "linear-gradient(135deg, #2F8F2F 0%, #AAD4AA 100%)",
-      accent: "#AAD4AA", // hsl(145 40% 75%)
-      muted: "#C2D9C2", // hsl(145 20% 80%)
-      border: "#A8C8A8", // hsl(145 30% 75%)
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #AAD4AA 70%, transparent), #EDF6ED, color-mix(in srgb, #D5EAD5 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #EDF6ED 0%, color-mix(in srgb, #AAD4AA 15%, #EDF6ED) 100%)",
     },
   },
   {
@@ -143,14 +157,16 @@ export const defaultThemes: Theme[] = [
     name: "Sunset",
     type: "light",
     colors: {
-      background: "#FFF5EF", // hsl(24 100% 97%)",
-      foreground: "#352116", // hsl(20 40% 15%)",
-      primary: "#F35524", // hsl(14 90% 55%)",
-      secondary: "#F9E1D1", // hsl(24 80% 90%)",
+      background: "#FFF5EF",
+      foreground: "#352116",
+      primary: "#F35524",
+      secondary: "#F9E1D1",
+      accent: "#EAC5AD",
+      muted: "#E8D5C9",
+      border: "#DBC8BC",
       gradient: "linear-gradient(135deg, #F35524 0%, #EAC5AD 100%)",
-      accent: "#EAC5AD", // hsl(24 60% 80%)",
-      muted: "#E8D5C9", // hsl(24 40% 85%)",
-      border: "#DBC8BC", // hsl(24 30% 80%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #EAC5AD 70%, transparent), #FFF5EF, color-mix(in srgb, #F9E1D1 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #FFF5EF 0%, color-mix(in srgb, #EAC5AD 15%, #FFF5EF) 100%)",
     },
   },
   {
@@ -158,14 +174,16 @@ export const defaultThemes: Theme[] = [
     name: "Dunes",
     type: "light",
     colors: {
-      background: "#FDF8F0", // pale sand
-      foreground: "#3A2E21", // deep desert brown
-      primary: "#D2A052", // golden sand
-      secondary: "#F2E8D9", // light sand
+      background: "#FDF8F0",
+      foreground: "#3A2E21",
+      primary: "#D2A052",
+      secondary: "#F2E8D9",
+      accent: "#E1CEB3",
+      muted: "#F2E8D9",
+      border: "#E1CEB3",
       gradient: "linear-gradient(135deg, #D2A052 0%, #E1CEB3 100%)",
-      accent: "#E1CEB3", // medium sand/khaki
-      muted: "#F2E8D9", // light sand
-      border: "#E1CEB3", // medium sand/khaki
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #E1CEB3 70%, transparent), #FDF8F0, color-mix(in srgb, #F2E8D9 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #FDF8F0 0%, color-mix(in srgb, #E1CEB3 15%, #FDF8F0) 100%)",
     },
   },
 
@@ -175,46 +193,50 @@ export const defaultThemes: Theme[] = [
     name: "Amethyst",
     type: "dark",
     colors: {
-      background: "#17131F", // deep purple-black
-      foreground: "#F2EBFF", // light purple-white
-      primary: "#B87AFF", // bright purple
-      secondary: "#241B2F", // slightly lighter purple-black
+      background: "#17131F",
+      foreground: "#F2EBFF",
+      primary: "#B87AFF",
+      secondary: "#241B2F",
+      accent: "#6C40B5",
+      muted: "#241B2F",
+      border: "#352644",
       gradient: "linear-gradient(135deg, #B87AFF 0%, #6C40B5 100%)",
-      accent: "#6C40B5", // medium purple
-      muted: "#241B2F", // slightly lighter purple-black
-      border: "#352644", // medium purple
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #6C40B5 70%, transparent), #17131F, color-mix(in srgb, #241B2F 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #17131F 0%, color-mix(in srgb, #6C40B5 15%, #17131F) 100%)",
     },
   },
-
   {
     id: "abyss",
     name: "Abyss",
     type: "dark",
     colors: {
-      background: "#0A1A2F", // deep sea blue
-      foreground: "#E6F4F1", // seafoam white
-      primary: "#38C7BD", // teal
-      secondary: "#122339", // slightly lighter blue
+      background: "#0A1A2F",
+      foreground: "#E6F4F1",
+      primary: "#38C7BD",
+      secondary: "#122339",
+      accent: "#4F89C5",
+      muted: "#122339",
+      border: "#1D3852",
       gradient: "linear-gradient(135deg, #38C7BD 0%, #4F89C5 100%)",
-      accent: "#4F89C5", // medium blue
-      muted: "#122339", // slightly lighter blue
-      border: "#1D3852", // medium blue
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #4F89C5 70%, transparent), #0A1A2F, color-mix(in srgb, #122339 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #0A1A2F 0%, color-mix(in srgb, #4F89C5 15%, #0A1A2F) 100%)",
     },
   },
-
   {
     id: "monochrome",
     name: "Monochrome",
     type: "dark",
     colors: {
-      background: "#131B29", // deep blue-gray
-      foreground: "#F7F9FB", // off-white
-      primary: "#F7F9FB", // off-white
-      secondary: "#283547", // medium blue-gray
+      background: "#131B29",
+      foreground: "#F7F9FB",
+      primary: "#F7F9FB",
+      secondary: "#283547",
+      accent: "#283547",
+      muted: "#283547",
+      border: "#48566A",
       gradient: "linear-gradient(135deg, #F7F9FB 0%, #283547 100%)",
-      accent: "#283547", // medium blue-gray
-      muted: "#283547", // medium blue-gray
-      border: "#48566A", // lighter blue-gray
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #283547 70%, transparent), #131B29, color-mix(in srgb, #283547 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #131B29 0%, color-mix(in srgb, #283547 15%, #131B29) 100%)",
     },
   },
   {
@@ -222,14 +244,16 @@ export const defaultThemes: Theme[] = [
     name: "Midnight",
     type: "dark",
     colors: {
-      background: "#16181C", // hsl(220 13% 10%)",
-      foreground: "#EFF1F4", // hsl(220 20% 95%)",
-      primary: "#5181E0", // hsl(220 70% 60%)",
-      secondary: "#282C33", // hsl(220 12% 18%)",
+      background: "#16181C",
+      foreground: "#EFF1F4",
+      primary: "#5181E0",
+      secondary: "#282C33",
+      accent: "#383D47",
+      muted: "#282C33",
+      border: "#383D47",
       gradient: "linear-gradient(135deg, #5181E0 0%, #383D47 100%)",
-      accent: "#383D47", // hsl(220 12% 25%)",
-      muted: "#282C33", // hsl(220 12% 18%)",
-      border: "#383D47", // hsl(220 12% 25%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #383D47 70%, transparent), #16181C, color-mix(in srgb, #282C33 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #16181C 0%, color-mix(in srgb, #383D47 15%, #16181C) 100%)",
     },
   },
   {
@@ -237,14 +261,16 @@ export const defaultThemes: Theme[] = [
     name: "Crimson",
     type: "dark",
     colors: {
-      background: "#1D1518", // hsl(340 15% 10%)",
-      foreground: "#F6F2F4", // hsl(340 20% 96%)",
-      primary: "#D22C63", // hsl(340 65% 50%)",
-      secondary: "#32292C", // hsl(340 10% 18%)",
+      background: "#1D1518",
+      foreground: "#F6F2F4",
+      primary: "#D22C63",
+      secondary: "#32292C",
+      accent: "#46393D",
+      muted: "#32292C",
+      border: "#46393D",
       gradient: "linear-gradient(135deg, #D22C63 0%, #46393D 100%)",
-      accent: "#46393D", // hsl(340 10% 25%)",
-      muted: "#32292C", // hsl(340 10% 18%)",
-      border: "#46393D", // hsl(340 10% 25%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #46393D 70%, transparent), #1D1518, color-mix(in srgb, #32292C 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #1D1518 0%, color-mix(in srgb, #46393D 15%, #1D1518) 100%)",
     },
   },
   {
@@ -252,14 +278,16 @@ export const defaultThemes: Theme[] = [
     name: "Cyberpunk",
     type: "dark",
     colors: {
-      background: "#131117", // hsl(260 15% 8%)",
-      foreground: "#F1EFF4", // hsl(260 20% 95%)",
-      primary: "#CF47EA", // hsl(290 80% 60%)",
-      secondary: "#27232D", // hsl(260 12% 16%)",
+      background: "#131117",
+      foreground: "#F1EFF4",
+      primary: "#CF47EA",
+      secondary: "#27232D",
+      accent: "#16CEAF",
+      muted: "#27232D",
+      border: "#3D3847",
       gradient: "linear-gradient(135deg, #CF47EA 0%, #16CEAF 100%)",
-      accent: "#16CEAF", // hsl(170 80% 45%)",
-      muted: "#27232D", // hsl(260 12% 16%)",
-      border: "#3D3847", // hsl(260 12% 25%)",
+      ambientGradient: "linear-gradient(135deg, color-mix(in srgb, #16CEAF 70%, transparent), #131117, color-mix(in srgb, #27232D 50%, transparent))",
+      cardGradient: "linear-gradient(180deg, #131117 0%, color-mix(in srgb, #16CEAF 15%, #131117) 100%)",
     },
   },
 ];

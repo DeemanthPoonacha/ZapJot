@@ -30,6 +30,8 @@ export const createThemeSchema = z.object({
       .string()
       .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
     gradient: z.string().optional().describe("Optional gradient CSS string for the theme"),
+    ambientGradient: z.string().optional().describe("Optional ambient gradient CSS string for the theme"),
+    cardGradient: z.string().optional().describe("Optional card gradient CSS string for the theme"),
   }),
   type: z.enum(["basic", "light", "dark", "custom"]).default("custom"),
   createdAt: z.string().default(() => new Date().toISOString()),
@@ -63,5 +65,7 @@ export interface Theme {
     muted: string;
     border: string;
     gradient?: string;
+    ambientGradient?: string;
+    cardGradient?: string;
   };
 }
