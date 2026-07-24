@@ -115,6 +115,19 @@ export const addCustomCssVariables = (themeObj: Theme) => {
         --popover: hsl(${hexToHSL(themeObj.colors.background)});
         --popover-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
         --ring: hsl(${hexToHSL(themeObj.colors.primary)});
+        --primary-gradient: ${
+          themeObj.colors.gradient ||
+          `linear-gradient(135deg, hsl(${hexToHSL(
+            themeObj.colors.primary
+          )}), hsl(${hexToHSL(themeObj.colors.accent)}))`
+        };
+        --ambient-gradient: linear-gradient(135deg, color-mix(in srgb, hsl(${hexToHSL(
+          themeObj.colors.accent
+        )}) 70%, transparent), hsl(${hexToHSL(
+          themeObj.colors.background
+        )}), color-mix(in srgb, hsl(${hexToHSL(
+          themeObj.colors.secondary
+        )}) 50%, transparent));
       }
     `;
   styleEl.textContent = cssVariables;

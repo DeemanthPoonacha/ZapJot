@@ -33,7 +33,14 @@ export function TaskCard({
   };
 
   return (
-    <ListCard key={task.id}>
+    <ListCard
+      key={task.id}
+      className={cn(
+        task.highPriority
+          ? "bg-gradient-to-r from-primary/10 via-card to-card border-l-primary"
+          : ""
+      )}
+    >
       <CardContent className="px-4 py-2 gap-1">
         <div className="w-full flex justify-between items-center space-x-2">
           <span className="flex items-center space-x-2">

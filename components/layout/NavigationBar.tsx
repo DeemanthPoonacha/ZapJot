@@ -33,11 +33,11 @@ export function NavigationBar() {
               className={cn(
                 "relative flex flex-col items-center gap-1 p-2 text-muted-foreground transition-transform duration-200 hover:text-primary",
                 pathname.includes(route.href) &&
-                  "text-primary-foreground transform scale-110 transition-transform duration-200 bg-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl",
+                  "text-primary-foreground transform scale-110 transition-transform duration-200 bg-gradient-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl",
               )}
             >
               {/* {isActive && (
-          <div className="absolute w-16 h-16 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary rounded-full -z-10 transition-transform duration-200 scale-110" />
+          <div className="absolute w-16 h-16 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-primary rounded-full -z-10 transition-transform duration-200 scale-110" />
         )} */}
               <route.icon className="h-5 w-5" />
               <span className="text-xs">{route.label}</span>
@@ -60,7 +60,7 @@ export function NavigationBar() {
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:text-primary hover:bg-accent",
               pathname.includes(route.href) &&
-                "text-primary-foreground bg-primary hover:bg-primary/90 hover:text-primary-foreground",
+                "text-primary-foreground bg-gradient-primary hover:bg-primary/90 hover:text-primary-foreground",
             )}
           >
             <route.icon className="h-5 w-5" />

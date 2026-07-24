@@ -22,7 +22,7 @@ export async function TodaysFocus() {
   const data = await getTodaysQuote();
 
   return (
-    <Card className="relative overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-accent/60 to-accent/20 items-center text-center">
+    <Card className="relative overflow-hidden p-6 sm:p-8 bg-gradient-ambient border border-primary/10 shadow-sm items-center text-center">
       <span
         aria-hidden
         className="absolute -top-2 left-4 font-serif text-7xl text-primary/15 select-none"

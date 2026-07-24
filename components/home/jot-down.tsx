@@ -105,7 +105,7 @@ export function JotDown() {
             <Button
               disabled={isPending}
               type="submit"
-              className="max-sm:w-full"
+              className="max-sm:w-full bg-gradient-primary text-primary-foreground shadow-md hover:opacity-90 transition-opacity"
             >
               Submit
             </Button>

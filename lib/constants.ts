@@ -42,6 +42,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#0F1729",
       primary: "#1E293B",
       secondary: "#F1F5F9",
+      gradient: "linear-gradient(135deg, #1E293B 0%, #F1F5F9 100%)",
       accent: "#F1F5F9",
       muted: "#F1F5F9",
       border: "#E2E8F0",
@@ -56,6 +57,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#FAFAFA", // hsl(0 0% 98%)
       primary: "#FAFAFA", // hsl(0 0% 98%)
       secondary: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      gradient: "linear-gradient(135deg, #FAFAFA 0%, #1E1E2A 100%)",
       accent: "#1E1E2A", // hsl(240 3.7% 15.9%)
       muted: "#1E1E2A", // hsl(240 3.7% 15.9%)
       border: "#1E1E2A", // hsl(240 3.7% 15.9%)
@@ -70,6 +72,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#FAFAFA", // hsl(0 0% 98%)
       primary: "#FAFAFA", // hsl(0 0% 98%)
       secondary: "#1E1E2A", // hsl(240 3.7% 15.9%)
+      gradient: "linear-gradient(135deg, #FAFAFA 0%, #1E1E2A 100%)",
       accent: "#1E1E2A", // hsl(240 3.7% 15.9%)
       muted: "#1E1E2A", // hsl(240 3.7% 15.9%)
       border: "#1E1E2A", // hsl(240 3.7% 15.9%)
@@ -84,6 +87,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#291839", // hsl(272 40% 16%)",
       primary: "#8432CC", // hsl(272 60% 50%)",
       secondary: "#E7DBEF", // hsl(275 40% 90%)",
+      gradient: "linear-gradient(135deg, #8432CC 0%, #E1D7E9 100%)",
       accent: "#E1D7E9", // hsl(272 30% 88%)",
       muted: "#E7DBEF", // hsl(275 40% 90%)",
       border: "#E1D7E9", // hsl(272 30% 88%)",
@@ -98,6 +102,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#311A22", // hsl(340 30% 15%)",
       primary: "#D64173", // hsl(340 65% 55%)",
       secondary: "#EFDBE2", // hsl(340 40% 90%)",
+      gradient: "linear-gradient(135deg, #D64173 0%, #E4CDD4 100%)",
       accent: "#E4CDD4", // hsl(340 30% 85%)",
       muted: "#E8C9D3", // hsl(340 40% 85%)",
       border: "#E4CDD4", // hsl(340 30% 85%)",
@@ -112,6 +117,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#0E1629", // hsl(222 47% 11%)",
       primary: "#0065CC", // hsl(210 100% 40%)",
       secondary: "#DBE5EF", // hsl(210 40% 90%)",
+      gradient: "linear-gradient(135deg, #0065CC 0%, #CDD8E4 100%)",
       accent: "#CDD8E4", // hsl(210 30% 85%)",
       muted: "#CDD8E4", // hsl(210 30% 85%)",
       border: "#CDD8E4", // hsl(210 30% 85%)",
@@ -126,6 +132,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#1F3F1F", // hsl(145 50% 10%)
       primary: "#2F8F2F", // hsl(145 60% 35%)
       secondary: "#D5EAD5", // hsl(145 30% 85%)
+      gradient: "linear-gradient(135deg, #2F8F2F 0%, #AAD4AA 100%)",
       accent: "#AAD4AA", // hsl(145 40% 75%)
       muted: "#C2D9C2", // hsl(145 20% 80%)
       border: "#A8C8A8", // hsl(145 30% 75%)
@@ -140,6 +147,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#352116", // hsl(20 40% 15%)",
       primary: "#F35524", // hsl(14 90% 55%)",
       secondary: "#F9E1D1", // hsl(24 80% 90%)",
+      gradient: "linear-gradient(135deg, #F35524 0%, #EAC5AD 100%)",
       accent: "#EAC5AD", // hsl(24 60% 80%)",
       muted: "#E8D5C9", // hsl(24 40% 85%)",
       border: "#DBC8BC", // hsl(24 30% 80%)",
@@ -154,6 +162,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#3A2E21", // deep desert brown
       primary: "#D2A052", // golden sand
       secondary: "#F2E8D9", // light sand
+      gradient: "linear-gradient(135deg, #D2A052 0%, #E1CEB3 100%)",
       accent: "#E1CEB3", // medium sand/khaki
       muted: "#F2E8D9", // light sand
       border: "#E1CEB3", // medium sand/khaki
@@ -170,6 +179,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#F2EBFF", // light purple-white
       primary: "#B87AFF", // bright purple
       secondary: "#241B2F", // slightly lighter purple-black
+      gradient: "linear-gradient(135deg, #B87AFF 0%, #6C40B5 100%)",
       accent: "#6C40B5", // medium purple
       muted: "#241B2F", // slightly lighter purple-black
       border: "#352644", // medium purple
@@ -185,6 +195,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#E6F4F1", // seafoam white
       primary: "#38C7BD", // teal
       secondary: "#122339", // slightly lighter blue
+      gradient: "linear-gradient(135deg, #38C7BD 0%, #4F89C5 100%)",
       accent: "#4F89C5", // medium blue
       muted: "#122339", // slightly lighter blue
       border: "#1D3852", // medium blue
@@ -200,6 +211,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#F7F9FB", // off-white
       primary: "#F7F9FB", // off-white
       secondary: "#283547", // medium blue-gray
+      gradient: "linear-gradient(135deg, #F7F9FB 0%, #283547 100%)",
       accent: "#283547", // medium blue-gray
       muted: "#283547", // medium blue-gray
       border: "#48566A", // lighter blue-gray
@@ -214,6 +226,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#EFF1F4", // hsl(220 20% 95%)",
       primary: "#5181E0", // hsl(220 70% 60%)",
       secondary: "#282C33", // hsl(220 12% 18%)",
+      gradient: "linear-gradient(135deg, #5181E0 0%, #383D47 100%)",
       accent: "#383D47", // hsl(220 12% 25%)",
       muted: "#282C33", // hsl(220 12% 18%)",
       border: "#383D47", // hsl(220 12% 25%)",
@@ -228,6 +241,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#F6F2F4", // hsl(340 20% 96%)",
       primary: "#D22C63", // hsl(340 65% 50%)",
       secondary: "#32292C", // hsl(340 10% 18%)",
+      gradient: "linear-gradient(135deg, #D22C63 0%, #46393D 100%)",
       accent: "#46393D", // hsl(340 10% 25%)",
       muted: "#32292C", // hsl(340 10% 18%)",
       border: "#46393D", // hsl(340 10% 25%)",
@@ -242,6 +256,7 @@ export const defaultThemes: Theme[] = [
       foreground: "#F1EFF4", // hsl(260 20% 95%)",
       primary: "#CF47EA", // hsl(290 80% 60%)",
       secondary: "#27232D", // hsl(260 12% 16%)",
+      gradient: "linear-gradient(135deg, #CF47EA 0%, #16CEAF 100%)",
       accent: "#16CEAF", // hsl(170 80% 45%)",
       muted: "#27232D", // hsl(260 12% 16%)",
       border: "#3D3847", // hsl(260 12% 25%)",

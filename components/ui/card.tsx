@@ -82,8 +82,9 @@ function ListCard({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-2 rounded-xl border shadow-sm",
-        "h-full overflow-hidden hover:shadow-md transition-all border-l-4 border-l-primary/20 hover:border-l-primary",
+        "bg-card text-card-foreground flex flex-col gap-2 rounded-xl border border-border/80 shadow-xs",
+        "h-full overflow-hidden hover:shadow-md transition-all duration-300",
+        "border-l-4 border-l-primary/40 hover:border-l-primary hover:bg-gradient-to-r hover:from-primary/5 hover:via-card hover:to-card",
         className
       )}
       {...props}

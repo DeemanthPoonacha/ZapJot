@@ -36,7 +36,10 @@
   --radius: 0.6rem;
   --background: hsl(0 0% 100%);
   --foreground: hsl(240 10% 3.9%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
+
 .dark {
   --background: hsl(240 10% 3.9%);
   --foreground: hsl(0 0% 98%);
@@ -62,6 +65,8 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .purple {
@@ -92,6 +97,8 @@
   --border: hsl(272 30% 88%);
   --input: hsl(272 30% 88%);
   --ring: hsl(272 60% 50%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .forest {
@@ -122,6 +129,8 @@
   --border: hsl(145 30% 75%);
   --input: hsl(145 30% 75%);
   --ring: hsl(145 60% 35%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .sunset {
@@ -152,6 +161,8 @@
   --border: hsl(24 30% 80%);
   --input: hsl(24 30% 80%);
   --ring: hsl(14 90% 55%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .ocean {
@@ -182,6 +193,8 @@
   --border: hsl(210 30% 85%);
   --input: hsl(210 30% 85%);
   --ring: hsl(210 100% 40%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .rose {
@@ -212,6 +225,8 @@
   --border: hsl(340 30% 85%);
   --input: hsl(340 30% 85%);
   --ring: hsl(340 65% 55%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .dunes {
@@ -242,6 +257,8 @@
   --border: hsl(37 48% 79%);
   --input: hsl(37 48% 79%);
   --ring: hsl(37 60% 57%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .amethyst {
@@ -264,6 +281,8 @@
   --border: hsl(266 25% 25%);
   --input: hsl(266 25% 25%);
   --ring: hsl(272 100% 74%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .abyss {
@@ -286,6 +305,8 @@
   --border: hsl(212 40% 22%);
   --input: hsl(212 40% 22%);
   --ring: hsl(177 54% 50%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .monochrome {
@@ -308,6 +329,8 @@
   --border: hsl(215 19% 35%);
   --input: hsl(215 19% 35%);
   --ring: hsl(210 40% 98%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .midnight {
@@ -330,6 +353,8 @@
   --border: hsl(220 12% 25%);
   --input: hsl(220 12% 25%);
   --ring: hsl(220 70% 60%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .crimson {
@@ -352,6 +377,8 @@
   --border: hsl(340 10% 25%);
   --input: hsl(340 10% 25%);
   --ring: hsl(340 65% 50%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 .cyberpunk {
@@ -382,6 +409,8 @@
   --border: hsl(260 12% 25%);
   --input: hsl(260 12% 25%);
   --ring: hsl(290 80% 60%);
+  --primary-gradient: linear-gradient(to bottom right, var(--primary), var(--accent));
+  --ambient-gradient: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 70%, transparent), var(--background), color-mix(in srgb, var(--secondary) 50%, transparent));
 }
 
 @theme inline {
@@ -409,6 +438,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --background-image-gradient-primary: var(--primary-gradient);
+  --background-image-gradient-ambient: var(--ambient-gradient);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -463,23 +494,23 @@ input[type="number"] {
 
 /* Webkit (Chrome, Safari, newer versions of Opera) */
 ::-webkit-scrollbar {
-  width: 4px; /* Width of the entire scrollbar */
+  width: 4px;
   height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-muted); /* Color of the tracking area */
+  background: var(--color-muted);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-muted-foreground); /* Color of the scroll thumb */
+  background: var(--color-muted-foreground);
   border-radius: 10px;
   transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary); /* Color when hovering over scroll thumb */
+  background: var(--color-primary);
 }
 
 /* Cloudinary Upload Widget compatibility inside Radix Modals & Drawers */
