@@ -25,24 +25,27 @@ export function NavigationBar() {
     // Smaller screen navigation (bottom bar)
     return (
       <nav className="fixed bottom-0 w-full border-t bg-background p-2 z-50 lg:hidden">
-        <div className="mx-auto grid grid-cols-6 container px-1">
-          {allRoutes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                "relative flex flex-col items-center gap-1 p-2 text-muted-foreground transition-transform duration-200 hover:text-primary",
-                pathname.includes(route.href) &&
-                  "text-primary-foreground transform scale-110 transition-transform duration-200 bg-gradient-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl",
-              )}
-            >
-              {/* {isActive && (
+        <div className="mx-auto grid grid-cols-5 container px-1">
+          {allRoutes.map(
+            (route) =>
+              route.label !== "Settings" && (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  className={cn(
+                    "relative flex flex-col items-center gap-1 p-2 text-muted-foreground transition-transform duration-200 hover:text-primary",
+                    pathname.includes(route.href) &&
+                      "text-primary-foreground transform scale-110 transition-transform duration-200 bg-gradient-primary hover:bg-primary/90 hover:text-primary-foreground rounded-2xl",
+                  )}
+                >
+                  {/* {isActive && (
           <div className="absolute w-16 h-16 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-primary rounded-full -z-10 transition-transform duration-200 scale-110" />
         )} */}
-              <route.icon className="h-5 w-5" />
-              <span className="text-xs">{route.label}</span>
-            </Link>
-          ))}
+                  <route.icon className="h-5 w-5" />
+                  <span className="text-xs">{route.label}</span>
+                </Link>
+              ),
+          )}
         </div>
       </nav>
     );
