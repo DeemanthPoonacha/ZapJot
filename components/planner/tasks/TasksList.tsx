@@ -142,11 +142,11 @@ const TasksList = () => {
                         </div>
                       )}
                     </CardContent>
-                    <ListCardFooter>
-                      <span className="font-semibold text-primary dark:text-primary">
+                    <ListCardFooter className="gap-2">
+                      <span className="font-semibold text-primary dark:text-primary truncate">
                         {item.itineraryTitle}
                       </span>
-                      <span>{item.dayTitle}</span>
+                      <span className="truncate">{item.dayTitle}</span>
                     </ListCardFooter>
                   </ListCard>
                 ))}
