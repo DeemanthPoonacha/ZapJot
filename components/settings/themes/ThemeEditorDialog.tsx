@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/form";
 import { createThemeSchema, ThemeCreate, Theme } from "@/types/themes";
 import { colorProperties } from "@/lib/constants";
-import { ThemePreview } from "./ThemePreview";
+import { ThemePreviewCard } from "./ThemePreviewCard";
 import { useCustomThemes } from "@/lib/hooks/useCustomThemes";
 
 interface ThemeFormDialogProps {
@@ -629,7 +629,7 @@ export function ThemeFormDialog({
                   {form.watch("name") || "New Theme"}
                 </div>
 
-                <ThemePreview
+                <ThemePreviewCard
                   colors={{
                     ...form.watch("colors"),
                     gradient: isCustomPrimary

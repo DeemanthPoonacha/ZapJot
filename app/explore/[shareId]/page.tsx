@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getPublicShare, PublicShare } from "@/lib/services/publicShares";
 import { importPublicItinerary } from "@/lib/services/itineraries";
+import { importPublicTheme } from "@/lib/services/themes";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { toast } from "@/components/ui/sonner";
 import { CustomLoader } from "@/components/layout/CustomLoader";
@@ -15,38 +16,46 @@ import {
   CheckSquare,
   Clock,
   Plus,
-  ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useTheme } from "next-themes";
+import { ThemePreview } from "@/components/settings/themes/ThemePreview";
 
 export default function PublicSharePage() {
   const { shareId } = useParams<{ shareId: string }>();
   const router = useRouter();
   const { user } = useAuth();
+  const { setTheme } = useTheme();
   const [share, setShare] = useState<PublicShare | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isImporting, setIsImporting] = useState(false);
 
-  const handleImportItinerary = async () => {
-    if (!share || share.type !== "itinerary") return;
+  const handleImportShare = async () => {
+    if (!share) return;
     if (!user) {
-      toast.error("Please sign in to import itineraries into your planner");
+      toast.error("Please sign in to import items into your account");
       router.push("/auth/sign-in");
       return;
     }
 
     setIsImporting(true);
     try {
-      await importPublicItinerary(user.uid, share);
-      toast.success("Itinerary imported into your planner successfully!");
-      router.push("/planner");
+      if (share.type === "theme") {
+        const importedTheme = await importPublicTheme(user.uid, share);
+        setTheme(importedTheme.id);
+        toast.success(`Theme "${importedTheme.name}" installed & applied!`);
+      } else if (share.type === "itinerary") {
+        await importPublicItinerary(user.uid, share);
+        toast.success("Itinerary imported into your planner successfully!");
+        router.push("/planner");
+      }
     } catch (err) {
-      console.error("Error importing itinerary:", err);
-      toast.error("Failed to import itinerary");
+      console.error("Error importing item:", err);
+      toast.error("Failed to import item");
     } finally {
       setIsImporting(false);
     }
@@ -118,17 +127,30 @@ export default function PublicSharePage() {
                 variant="outline"
                 className="text-xs font-semibold uppercase tracking-wider text-purple-500 border-purple-400/40 bg-purple-500/10 px-3 py-1"
               >
-                Shared {share.type === "itinerary" ? "Itinerary" : "Journal"}
+                Shared{" "}
+                {share.type === "itinerary"
+                  ? "Itinerary"
+                  : share.type === "theme"
+                    ? "Theme"
+                    : "Journal"}
               </Badge>
-              {share.type === "itinerary" && (
+              {(share.type === "itinerary" || share.type === "theme") && (
                 <Button
-                  onClick={handleImportItinerary}
+                  onClick={handleImportShare}
                   disabled={isImporting}
                   size="sm"
                   className="gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-full shadow-md shadow-purple-600/20"
                 >
-                  <Plus className="h-3.5 w-3.5" />
-                  {isImporting ? "Importing..." : "Import to My Planner"}
+                  {share.type === "theme" ? (
+                    <Sparkles className="h-3.5 w-3.5" />
+                  ) : (
+                    <Plus className="h-3.5 w-3.5" />
+                  )}
+                  {isImporting
+                    ? "Installing..."
+                    : share.type === "theme"
+                      ? "Install & Apply Theme"
+                      : "Import to My Planner"}
                 </Button>
               )}
             </div>
@@ -167,7 +189,7 @@ export default function PublicSharePage() {
               </span>
             )}
 
-            <div className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300 font-semibold">
+            <div className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300 font-semibold text-xs">
               <Calendar className="h-4 w-4 text-purple-600" />
               <span>
                 {new Date(share.createdAt).toLocaleDateString(undefined, {
@@ -177,6 +199,34 @@ export default function PublicSharePage() {
             </div>
           </div>
         </div>
+
+        {/* Shared Theme Detail Preview using ThemePreview component */}
+        {share.type === "theme" && share.themeColors && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between bg-purple-50 dark:bg-purple-950/40 p-4 rounded-2xl border border-purple-200 dark:border-purple-900">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base">
+                  Theme Preview & Component Showcase
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Explore how &ldquo;{share.title}&rdquo; renders across ZapJot
+                  components and color swatches.
+                </p>
+              </div>
+              <Button
+                onClick={handleImportShare}
+                disabled={isImporting}
+                size="sm"
+                className="gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs rounded-xl shadow-md shrink-0"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                {isImporting ? "Installing..." : "Install & Apply"}
+              </Button>
+            </div>
+
+            <ThemePreview colors={share.themeColors} />
+          </div>
+        )}
 
         {/* Cover Image */}
         {share.coverImage && (
