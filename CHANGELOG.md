@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-07-27
+
+### Added
+
+- **Theme Publishing & Explore Hub Integration:** Extended `PublicShare` schema and services to allow users to publish custom themes to the community Explore Hub (`/explore`). (#62, #63, #64)
+- **Publish Theme Modal:** Added dedicated `PublishThemeModal` with custom display title, tagline description, live card preview, and link copy/unpublish controls. (#63)
+- **Theme Preview Modal:** Added eye preview button on theme cards that opens an interactive component showcase and color palette inspector modal. (#63)
+- **1-Click Theme Installation:** Implemented `importPublicTheme()` service to allow 1-click theme cloning and instant CSS variable injection from the Explore Hub. (#62)
+- **Curated Example Community Themes:** Added 5 built-in community theme presets (`Midnight Sparkle`, `Sunset Glow`, `Deep Emerald`, `Rose Quartz`, `Nordic Slate`) to `EXAMPLE_COMMUNITY_THEMES`. (#64)
+
+### Changed
+
+- **Theme Gradient & Contrast Standardization:** Standardized primary, ambient, and card gradients across built-in themes and color utilities with WCAG YIQ automatic contrast foreground calculation. (#62)
+- **Theme Preview Refactor:** Refactored `ThemePreview` to dynamically adapt to theme props or CSS variable fallbacks with scoped container styling. (#64)
+
 ## [1.5.1] - 2026-07-24
 
 ### Added
