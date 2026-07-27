@@ -62,145 +62,138 @@ export function ThemeCard({
 
   return (
     <>
-      <Card
-        className={`cursor-pointer flex flex-col rounded-xl border-2 transition-all duration-300 ${
-          isActive
-            ? "border-primary shadow-lg ring-2 ring-primary/30"
-            : "border-muted/70 hover:border-primary/40"
-        } overflow-hidden`}
-        onClick={() => onThemeSelect(theme.id)}
+      <div
+        className={`relative rounded-xl p-[2px]  ${isActive ? "bg-[length:300%_300%] animate-[gradient-border_4s_linear_infinite]" : ""}`}
         style={{
-          backgroundColor: colors.background,
-          backgroundImage: colors.cardGradient,
-          color: colors.foreground,
+          backgroundImage: isActive
+            ? `linear-gradient(90deg,${colors.primary},${colors.secondary},${colors.accent},${colors.primary})`
+            : "",
         }}
       >
-        {/* Header */}
-        <div
-          className="p-3 font-medium text-center border-b flex justify-between items-center"
-          style={{ borderColor: colors.border }}
+        <Card
+          className={`cursor-pointer flex flex-col rounded-xl border-0 transition-all duration-300  overflow-hidden hover:ring hover:ring-inset hover:ring-[${colors.accent}]`}
+          onClick={() => onThemeSelect(theme.id)}
+          style={{
+            backgroundColor: colors.background,
+            backgroundImage: colors.cardGradient,
+            color: colors.foreground,
+          }}
         >
-          <div className="flex items-center gap-2">
-            <ThemedCanvasImage
-              src="/greyed_out_logo_md.svg"
-              width={42}
-              height={44}
-              alt="logo"
-              color={colors.primary}
-              className={"shadow-sm rounded-[18%]"}
-            />
-            <span className="font-bold text-sm">{theme.name}</span>
-            {isActive && (
-              <span
-                className="ml-1 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"
+          {/* Header */}
+          <div
+            className="p-3 font-medium text-center border-b flex justify-between items-center"
+            style={{ borderColor: colors.border }}
+          >
+            <div className="flex items-center gap-2">
+              <ThemedCanvasImage
+                src="/greyed_out_logo_md.svg"
+                width={42}
+                height={44}
+                alt="logo"
+                color={colors.primary}
+                className={"shadow-sm rounded-[18%]"}
+              />
+              <span className="font-bold text-sm line-clamp-1">
+                {theme.name}
+              </span>
+
+              {isPublished && <Globe className="w-4 h-4" />}
+            </div>
+
+            <div
+              className="flex gap-1 items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Eye Preview Modal Button */}
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPreviewModalOpen(true);
+                }}
+                title="Preview Theme UI Components"
+                className="h-8 w-8 text-xs"
                 style={{
-                  backgroundColor: colors.primary,
-                  color: colors.background,
+                  backgroundColor: colors.background,
+                  color: colors.primary,
+                  borderColor: colors.primary,
                 }}
               >
-                Active
-              </span>
-            )}
-            {isPublished && (
-              <span className="ml-1 flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30">
-                <Globe className="w-2.5 h-2.5" /> Hub
-              </span>
-            )}
-          </div>
+                <Eye className="w-3.5 h-3.5" />
+              </Button>
 
-          <div
-            className="flex gap-1 items-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Eye Preview Modal Button */}
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsPreviewModalOpen(true);
-              }}
-              title="Preview Theme UI Components"
-              className="h-8 w-8 text-xs"
-              style={{
-                backgroundColor: colors.background,
-                color: colors.primary,
-                borderColor: colors.primary,
-              }}
-            >
-              <Eye className="w-3.5 h-3.5" />
-            </Button>
-
-            {theme.type === "custom" && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={(e) => e.stopPropagation()}
-                    className="h-8 w-8 text-xs rounded-lg"
-                    style={{
-                      color: colors.foreground,
-                    }}
-                    title="Theme Options"
-                  >
-                    <EllipsisVertical className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-44">
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditTheme(theme.id);
-                    }}
-                    className="cursor-pointer flex items-center gap-2 text-xs font-semibold"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                    <span>Edit Theme</span>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsPublishModalOpen(true);
-                    }}
-                    className="cursor-pointer flex items-center gap-2 text-xs font-semibold"
-                  >
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>
-                      {isPublished ? "Manage Hub Share" : "Publish to Hub"}
-                    </span>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <DeleteConfirm
-                      itemName="theme"
-                      handleDelete={(e) => {
-                        e.stopPropagation();
-                        onDeleteTheme(theme.id);
+              {theme.type === "custom" && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-8 w-8 text-xs rounded-lg"
+                      style={{
+                        color: colors.foreground,
                       }}
-                      trigger={
-                        <span className="w-full flex items-center gap-2 text-xs font-semibold text-red-500 hover:text-red-600">
-                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                          <span>Delete Theme</span>
-                        </span>
-                      }
-                    />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-        </div>
+                      title="Theme Options"
+                    >
+                      <EllipsisVertical className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEditTheme(theme.id);
+                      }}
+                      className="cursor-pointer flex items-center gap-2 text-xs font-semibold"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>Edit Theme</span>
+                    </DropdownMenuItem>
 
-        {/* Content preview */}
-        <ThemePreviewCard colors={colors} />
-      </Card>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsPublishModalOpen(true);
+                      }}
+                      className="cursor-pointer flex items-center gap-2 text-xs font-semibold"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>
+                        {isPublished ? "Manage Hub Share" : "Publish to Hub"}
+                      </span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="cursor-pointer text-destructive focus:text-destructive"
+                    >
+                      <DeleteConfirm
+                        itemName="theme"
+                        handleDelete={(e) => {
+                          e.stopPropagation();
+                          onDeleteTheme(theme.id);
+                        }}
+                        trigger={
+                          <span className="w-full flex items-center gap-2 text-xs font-semibold text-red-500 hover:text-red-600">
+                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                            <span>Delete Theme</span>
+                          </span>
+                        }
+                      />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </div>
+
+          {/* Content preview */}
+          <ThemePreviewCard colors={colors} />
+        </Card>
+      </div>
 
       {/* Theme Preview Eye Modal */}
       {isPreviewModalOpen && (

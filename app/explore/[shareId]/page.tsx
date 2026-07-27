@@ -276,10 +276,10 @@ export default function PublicSharePage() {
                         >
                           <div className="flex items-center gap-2.5">
                             <CheckSquare
-                              className={`h-4 w-4 ${task.completed ? "text-emerald-500" : "text-slate-400"}`}
+                              className={`h-4 w-4 ${"text-slate-400"}`}
                             />
                             <span
-                              className={`font-medium ${task.completed ? "line-through text-slate-400" : "text-slate-800 dark:text-slate-200"}`}
+                              className={`font-medium ${"text-slate-800 dark:text-slate-200"}`}
                             >
                               {task.title}
                             </span>

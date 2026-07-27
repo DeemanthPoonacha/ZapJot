@@ -45,7 +45,7 @@ export function ThemePreviewCard({ colors }: ThemePreviewProps) {
           className="px-3 py-1 rounded-md text-xs font-medium shadow-xs"
           style={{
             background: colors.ambientGradient,
-            color: invertColor(colors.accent),
+            color: colors.foreground,
           }}
         >
           ambient
@@ -76,7 +76,7 @@ export function ThemePreviewCard({ colors }: ThemePreviewProps) {
         style={{ borderColor: colors.border }}
       >
         <Card
-          className="w-full p-4 border-none shadow-xl text-center"
+          className="w-full p-2 border-none shadow-xl text-center"
           style={{
             background: gradientStyle,
             borderColor: colors.border,
@@ -86,7 +86,7 @@ export function ThemePreviewCard({ colors }: ThemePreviewProps) {
           <span className="font-semibold text-xs">Primary Gradient</span>
         </Card>
         <ListCard
-          className={`w-full p-4 cursor-pointer text-center`}
+          className={`w-full p-2 cursor-pointer text-center`}
           style={{
             background: colors.ambientGradient,
             borderColor: colors.primary,
@@ -96,7 +96,7 @@ export function ThemePreviewCard({ colors }: ThemePreviewProps) {
           <span className="font-semibold text-xs">List Card Gradient</span>
         </ListCard>
         <Card
-          className="w-full p-4 text-center"
+          className="w-full p-2 text-center"
           style={{
             background: colors.cardGradient,
             borderColor: colors.border,
