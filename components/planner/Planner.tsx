@@ -9,7 +9,13 @@ import { Calendar } from "../ui/calendar";
 import usePlanner from "@/lib/hooks/usePlanner";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { CalendarCheck, Goal, LandPlot, ListCheck, Calendar as CalendarIcon } from "lucide-react";
+import {
+  CalendarCheck,
+  Goal,
+  LandPlot,
+  ListCheck,
+  Calendar as CalendarIcon,
+} from "lucide-react";
 import { useEvents } from "@/lib/hooks/useEvents";
 import { groupEventsByDate } from "@/lib/utils/events";
 import {
@@ -22,8 +28,18 @@ import {
 import { Button } from "@/components/ui/button";
 
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 export default function PlannerPage() {
@@ -52,14 +68,14 @@ export default function PlannerPage() {
     ? groupEventsByDate(
         monthEvents,
         dayjs(currentMonth).startOf("month").toDate(),
-        dayjs(currentMonth).endOf("month").toDate()
+        dayjs(currentMonth).endOf("month").toDate(),
       )
     : {};
 
   const datesWithEvents = new Set(
     Object.entries(groupedMonthEvents)
       .filter(([_, evs]) => evs.length > 0)
-      .map(([dateStr]) => dateStr)
+      .map(([dateStr]) => dateStr),
   );
 
   const isCurrentMonth = dayjs(currentMonth).isSame(dayjs(), "month");
@@ -71,14 +87,14 @@ export default function PlannerPage() {
         end: dayjs(selectedDate).endOf("day").toDate(),
       }
     : isCurrentMonth
-    ? {
-        start: dayjs().startOf("day").toDate(),
-        end: dayjs(currentMonth).endOf("month").toDate(),
-      }
-    : {
-        start: dayjs(currentMonth).startOf("month").toDate(),
-        end: dayjs(currentMonth).endOf("month").toDate(),
-      };
+      ? {
+          start: dayjs().startOf("day").toDate(),
+          end: dayjs(currentMonth).endOf("month").toDate(),
+        }
+      : {
+          start: dayjs(currentMonth).startOf("month").toDate(),
+          end: dayjs(currentMonth).endOf("month").toDate(),
+        };
 
   return (
     <Tabs
@@ -87,42 +103,52 @@ export default function PlannerPage() {
       onValueChange={onTabChange}
       className="w-full"
     >
-      <TabsList className="grid w-full grid-cols-4 bg-muted/50 md:h-16 mb-2 gap-1 p-1">
-        <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
-          value="tasks"
-        >
-          <ListCheck className="h-4 w-4" /> Tasks
-        </TabsTrigger>
-        <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
-          value="events"
-        >
-          <CalendarCheck className="h-4 w-4" /> Events
-        </TabsTrigger>
-        <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
-          value="goals"
-        >
-          <Goal className="h-4 w-4" /> Goals
-        </TabsTrigger>
-        <TabsTrigger
-          className="md:flex-col md:h-12 md:gap-1 rounded-lg data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold transition-all duration-200"
-          value="itineraries"
-        >
-          <LandPlot className="h-4 w-4" />
-          Itineraries
-        </TabsTrigger>
-      </TabsList>
+      {/* Sticky Mobile Touch Segmented Navigation Bar */}
+      <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl pb-2 pt-1 border-b border-border/40">
+        <TabsList className="grid w-full grid-cols-4 bg-muted/60 h-12 md:h-14 p-1 rounded-2xl border border-border/50">
+          <TabsTrigger
+            className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+            value="tasks"
+          >
+            <ListCheck className="h-4 w-4" />{" "}
+            <span className="hidden sm:inline">Tasks</span>
+          </TabsTrigger>
+          <TabsTrigger
+            className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+            value="events"
+          >
+            <CalendarCheck className="h-4 w-4" />{" "}
+            <span className="hidden sm:inline">Events</span>
+          </TabsTrigger>
+          <TabsTrigger
+            className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+            value="goals"
+          >
+            <Goal className="h-4 w-4" />{" "}
+            <span className="hidden sm:inline">Goals</span>
+          </TabsTrigger>
+          <TabsTrigger
+            className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+            value="itineraries"
+          >
+            <LandPlot className="h-4 w-4" />{" "}
+            <span className="hidden sm:inline">Itineraries</span>
+          </TabsTrigger>
+        </TabsList>
+      </div>
+
       <TabsContent value="tasks">
         <TasksList />
       </TabsContent>
+
       <TabsContent value="events" className="flex flex-col gap-4">
         {/* Quick Month / Year Selector Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-muted/40 rounded-2xl border border-border">
           <div className="flex items-center gap-2">
             <CalendarIcon className="w-4 h-4 text-primary shrink-0" />
-            <span className="text-xs font-bold text-foreground">Jump to Date:</span>
+            <span className="text-xs font-bold text-foreground">
+              Jump to Date:
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -140,7 +166,11 @@ export default function PlannerPage() {
               </SelectTrigger>
               <SelectContent>
                 {MONTHS.map((month, idx) => (
-                  <SelectItem key={month} value={idx.toString()} className="text-xs">
+                  <SelectItem
+                    key={month}
+                    value={idx.toString()}
+                    className="text-xs"
+                  >
                     {month}
                   </SelectItem>
                 ))}
@@ -161,7 +191,11 @@ export default function PlannerPage() {
               </SelectTrigger>
               <SelectContent>
                 {yearOptions.map((year) => (
-                  <SelectItem key={year} value={year.toString()} className="text-xs">
+                  <SelectItem
+                    key={year}
+                    value={year.toString()}
+                    className="text-xs"
+                  >
                     {year}
                   </SelectItem>
                 ))}
@@ -196,10 +230,12 @@ export default function PlannerPage() {
           month={currentMonth}
           onMonthChange={handleMonthChange}
           modifiers={{
-            hasEvent: (date) => datesWithEvents.has(dayjs(date).format("YYYY-MM-DD")),
+            hasEvent: (date) =>
+              datesWithEvents.has(dayjs(date).format("YYYY-MM-DD")),
           }}
           modifiersClassNames={{
-            hasEvent: "relative after:absolute after:bottom-0.5 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full aria-selected:after:bg-primary-foreground",
+            hasEvent:
+              "relative after:absolute after:bottom-0.5 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full aria-selected:after:bg-primary-foreground",
           }}
         />
         <EventsList

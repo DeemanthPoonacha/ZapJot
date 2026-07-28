@@ -348,9 +348,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 {formatDate(itinerary.startDate)}
                 {itinerary.endDate &&
                   itinerary.endDate !== itinerary.startDate && (
-                    <span className="">
-                      - {formatDate(itinerary.endDate)}
-                    </span>
+                    <span className="">- {formatDate(itinerary.endDate)}</span>
                   )}
               </span>
               <Badge
@@ -521,7 +519,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 </TabsContent>
 
                 <TabsContent value="schedule" className="space-y-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold">
                       Itinerary Schedule
                     </h3>
@@ -532,7 +530,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         onClick={expandAllDays}
                       >
                         <CopyPlus className="h-4 w-4 mr-1" />
-                        Expand All
+                        <span className="hidden sm:inline">Expand All</span>
                       </Button>
                       <Button
                         variant="outline"
@@ -540,7 +538,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         onClick={collapseAllDays}
                       >
                         <CopyMinus className="h-4 w-4 mr-1" />
-                        Collapse All
+                        <span className="hidden sm:inline">Collapse All</span>
                       </Button>
                     </div>
                   </div>

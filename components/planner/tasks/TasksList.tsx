@@ -1,10 +1,19 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useInfiniteTasks } from "@/lib/hooks/useTasks";
 import {
   useTodayItineraryTasks,
   useItineraryMutations,
 } from "@/lib/hooks/useItineraries";
-import { ListChecks, MapPin, CheckSquare, Clock } from "lucide-react";
+import {
+  ListChecks,
+  MapPin,
+  CheckSquare,
+  Clock,
+  Star,
+  Calendar,
+  CheckCircle,
+  ListFilter,
+} from "lucide-react";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../../Empty";
 import { Skeleton } from "../../ui/skeleton";
@@ -13,13 +22,18 @@ import { TaskCard } from "./TaskCard";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
 import { useInView } from "react-intersection-observer";
-import {
-  CardContent,
-  ListCard,
-  ListCardFooter,
-} from "@/components/ui/card";
+import { CardContent, ListCard, ListCardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Task } from "@/types/tasks";
+import dayjs from "dayjs";
+
+type FilterType =
+  | "all"
+  | "high-priority"
+  | "due-today"
+  | "pending"
+  | "completed";
 
 function SectionHeader({
   label,
@@ -48,11 +62,9 @@ function SectionHeader({
 // Automatic Task Sorting: High Priority -> Earliest Due Date -> Created At / Updated At
 const sortTasks = (tasksList: Task[]): Task[] => {
   return [...tasksList].sort((a, b) => {
-    // 1. High Priority first
     if (a.highPriority && !b.highPriority) return -1;
     if (!a.highPriority && b.highPriority) return 1;
 
-    // 2. Earliest Due Date
     if (a.dueDate && b.dueDate) {
       if (a.dueDate !== b.dueDate) return a.dueDate.localeCompare(b.dueDate);
     } else if (a.dueDate && !b.dueDate) {
@@ -61,7 +73,6 @@ const sortTasks = (tasksList: Task[]): Task[] => {
       return 1;
     }
 
-    // 3. Newest Created At
     const dateA = a.createdAt || "";
     const dateB = b.createdAt || "";
     return dateB.localeCompare(dateA);
@@ -69,8 +80,10 @@ const sortTasks = (tasksList: Task[]): Task[] => {
 };
 
 const TasksList = () => {
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteTasks(undefined, 15);
+    useInfiniteTasks(undefined, 25);
   const { data: todayItineraryTasks } = useTodayItineraryTasks();
   const { editTaskMutation } = useItineraryMutations();
   const { selectedTaskId, setSelectedTaskId } = usePlanner();
@@ -92,8 +105,44 @@ const TasksList = () => {
   };
 
   const fetchedTasks = data?.pages.flatMap((page) => page.tasks) || [];
+  const itineraryTasks = todayItineraryTasks || [];
 
-  const [completedTasksRaw, pendingTasksRaw] = fetchedTasks.reduce(
+  // Total Counts including Itinerary Tasks
+  const totalAllCount = fetchedTasks.length + itineraryTasks.length;
+  const totalHighPriorityCount = fetchedTasks.filter(
+    (t) => t.highPriority,
+  ).length;
+  const totalDueTodayCount =
+    fetchedTasks.filter(
+      (t) => t.dueDate && dayjs(t.dueDate).isSame(dayjs(), "day"),
+    ).length + itineraryTasks.length; // All itinerary tasks for today are due today
+  const totalPendingCount =
+    fetchedTasks.filter((t) => t.status !== "completed").length +
+    itineraryTasks.filter((item) => !item.task.completed).length;
+  const totalCompletedCount =
+    fetchedTasks.filter((t) => t.status === "completed").length +
+    itineraryTasks.filter((item) => item.task.completed).length;
+
+  // Filter main tasks based on activeFilter
+  const filteredTasks = fetchedTasks.filter((task) => {
+    if (activeFilter === "high-priority") return task.highPriority;
+    if (activeFilter === "due-today") {
+      return task.dueDate && dayjs(task.dueDate).isSame(dayjs(), "day");
+    }
+    if (activeFilter === "pending") return task.status !== "completed";
+    if (activeFilter === "completed") return task.status === "completed";
+    return true;
+  });
+
+  // Filter itinerary tasks based on activeFilter
+  const filteredItineraryTasks = itineraryTasks.filter((item) => {
+    if (activeFilter === "high-priority") return false; // Itinerary tasks don't have high priority flag
+    if (activeFilter === "pending") return !item.task.completed;
+    if (activeFilter === "completed") return item.task.completed;
+    return true; // "all" or "due-today"
+  });
+
+  const [completedTasksRaw, pendingTasksRaw] = filteredTasks.reduce(
     ([completed, pending], task) =>
       task.status === "completed"
         ? [[...completed, task], pending]
@@ -106,13 +155,59 @@ const TasksList = () => {
 
   return (
     <div className="space-y-4 mb-8">
+      {/* 1-Tap Mobile Quick Filter Chips with Combined Counts */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 pt-1 no-scrollbar text-xs font-semibold">
+        <Badge
+          variant={activeFilter === "all" ? "default" : "outline"}
+          onClick={() => setActiveFilter("all")}
+          className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
+        >
+          <span>All</span>({totalAllCount})
+        </Badge>
+        <Badge
+          variant={activeFilter === "high-priority" ? "default" : "outline"}
+          onClick={() => setActiveFilter("high-priority")}
+          className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
+        >
+          <Star className="h-3.5 w-3.5 fill-current" />
+          <span className="hidden sm:block">High Priority</span>(
+          {totalHighPriorityCount})
+        </Badge>
+        <Badge
+          variant={activeFilter === "due-today" ? "default" : "outline"}
+          onClick={() => setActiveFilter("due-today")}
+          className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
+        >
+          <Calendar className="h-3.5 w-3.5" />
+          <span className="hidden sm:block">Due Today</span>(
+          {totalDueTodayCount})
+        </Badge>
+        <Badge
+          variant={activeFilter === "pending" ? "default" : "outline"}
+          onClick={() => setActiveFilter("pending")}
+          className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
+        >
+          <Clock className="h-3.5 w-3.5" />
+          <span className="hidden sm:block">Pending</span>({totalPendingCount})
+        </Badge>
+        <Badge
+          variant={activeFilter === "completed" ? "default" : "outline"}
+          onClick={() => setActiveFilter("completed")}
+          className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
+        >
+          <CheckCircle className="h-3.5 w-3.5" />
+          <span className="hidden sm:block">Completed</span>(
+          {totalCompletedCount})
+        </Badge>
+      </div>
+
       {isLoading ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-20 w-full" />
           ))}
         </div>
-      ) : !fetchedTasks?.length ? (
+      ) : !fetchedTasks?.length && !itineraryTasks?.length ? (
         <Empty
           title="No tasks yet"
           subtitle="Add tasks to keep track of important things to do"
@@ -122,19 +217,19 @@ const TasksList = () => {
         />
       ) : (
         <>
-          {/* Today's Itinerary Activities */}
-          {todayItineraryTasks && todayItineraryTasks.length > 0 && (
+          {/* Today's Itinerary Activities (Filtered & Counted) */}
+          {filteredItineraryTasks.length > 0 && (
             <div className="pb-8">
               <SectionHeader
                 icon={
                   <MapPin className="h-4 w-4 text-primary dark:text-primary" />
                 }
                 label="Trip Activities Today"
-                count={todayItineraryTasks.length}
+                count={filteredItineraryTasks.length}
               />
 
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 items-start">
-                {todayItineraryTasks.map((item) => (
+                {filteredItineraryTasks.map((item) => (
                   <ListCard
                     key={`${item.itineraryId}-${item.dayId}-${item.task.id}`}
                   >
@@ -180,80 +275,94 @@ const TasksList = () => {
           )}
 
           {/* Pending Tasks */}
-          <div className="pb-8">
-            <SectionHeader
-              icon={
-                <ListChecks className="h-4 w-4 text-primary dark:text-primary" />
-              }
-              label="Pending"
-              count={pendingTasks?.length ?? 0}
-            />
-            {pendingTasks?.length === 0 ? (
-              <Empty
-                title="No tasks in progress"
-                subtitle="Add tasks to keep track of important things to do"
-                buttonTitle="Create New Task"
-                handleCreateClick={() => toggleDialog("new")}
-                icon={<ListChecks className="emptyIcon" />}
+          {activeFilter !== "completed" && (
+            <div className="pb-8">
+              <SectionHeader
+                icon={
+                  <ListChecks className="h-4 w-4 text-primary dark:text-primary" />
+                }
+                label="Pending"
+                count={pendingTasks?.length ?? 0}
               />
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
-                {pendingTasks?.map((task) => (
-                  <div key={task.id}>
-                    <TaskCard
-                      task={task}
-                      onEditClick={() => toggleDialog(task.id)}
-                    />
-                    {isDialogOpen(task.id) && (
-                      <ResponsiveDialogDrawer
-                        content={
-                          <TaskForm onClose={handleClose} taskData={task} />
-                        }
-                        title={task.title}
-                        handleClose={handleClose}
+              {pendingTasks?.length === 0 ? (
+                activeFilter === "all" ? (
+                  <Empty
+                    title="No tasks in progress"
+                    subtitle="Add tasks to keep track of important things to do"
+                    buttonTitle="Create New Task"
+                    handleCreateClick={() => toggleDialog("new")}
+                    icon={<ListChecks className="emptyIcon" />}
+                  />
+                ) : (
+                  <p className="text-muted-foreground mb-6 text-center py-4 text-sm italic">
+                    {activeFilter === "high-priority"
+                      ? "No pending high priority tasks"
+                      : activeFilter === "due-today"
+                        ? "No tasks due today"
+                        : "No pending tasks"}
+                  </p>
+                )
+              ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                  {pendingTasks?.map((task) => (
+                    <div key={task.id}>
+                      <TaskCard
+                        task={task}
+                        onEditClick={() => toggleDialog(task.id)}
                       />
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                      {isDialogOpen(task.id) && (
+                        <ResponsiveDialogDrawer
+                          content={
+                            <TaskForm onClose={handleClose} taskData={task} />
+                          }
+                          title={task.title}
+                          handleClose={handleClose}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Completed Tasks */}
-          <div className="pb-8">
-            <SectionHeader
-              icon={
-                <CheckSquare className="h-4 w-4 text-primary dark:text-primary" />
-              }
-              label="Completed"
-              count={completedTasks?.length ?? 0}
-            />
-            {completedTasks?.length === 0 ? (
-              <p className="text-muted-foreground mb-6 text-center py-4 md:py-12 text-sm">
-                No tasks completed yet
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
-                {completedTasks?.map((task) => (
-                  <div key={task.id}>
-                    <TaskCard
-                      task={task}
-                      onEditClick={() => toggleDialog(task.id)}
-                    />
-                    {isDialogOpen(task.id) && (
-                      <ResponsiveDialogDrawer
-                        content={
-                          <TaskForm onClose={handleClose} taskData={task} />
-                        }
-                        title={task.title}
-                        handleClose={handleClose}
+          {activeFilter !== "pending" && (
+            <div className="pb-8">
+              <SectionHeader
+                icon={
+                  <CheckSquare className="h-4 w-4 text-primary dark:text-primary" />
+                }
+                label="Completed"
+                count={completedTasks?.length ?? 0}
+              />
+              {completedTasks?.length === 0 ? (
+                <p className="text-muted-foreground mb-6 text-center py-4 text-sm italic">
+                  No completed tasks
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                  {completedTasks?.map((task) => (
+                    <div key={task.id}>
+                      <TaskCard
+                        task={task}
+                        onEditClick={() => toggleDialog(task.id)}
                       />
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                      {isDialogOpen(task.id) && (
+                        <ResponsiveDialogDrawer
+                          content={
+                            <TaskForm onClose={handleClose} taskData={task} />
+                          }
+                          title={task.title}
+                          handleClose={handleClose}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </>
       )}
 
