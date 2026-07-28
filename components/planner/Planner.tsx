@@ -108,17 +108,17 @@ export default function PlannerPage() {
         <TabsList className="grid w-full grid-cols-4 bg-muted/60 h-12 md:h-14 p-1 rounded-2xl border border-border/50">
           <TabsTrigger
             className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
-            value="tasks"
-          >
-            <ListCheck className="h-4 w-4" />{" "}
-            <span className="hidden sm:inline">Tasks</span>
-          </TabsTrigger>
-          <TabsTrigger
-            className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
             value="events"
           >
             <CalendarCheck className="h-4 w-4" />{" "}
             <span className="hidden sm:inline">Events</span>
+          </TabsTrigger>
+          <TabsTrigger
+            className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+            value="tasks"
+          >
+            <ListCheck className="h-4 w-4" />{" "}
+            <span className="hidden sm:inline">Tasks</span>
           </TabsTrigger>
           <TabsTrigger
             className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
@@ -143,7 +143,7 @@ export default function PlannerPage() {
 
       <TabsContent value="events" className="flex flex-col gap-4">
         {/* Quick Month / Year Selector Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-muted/40 rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-muted/40 rounded-2xl border border-border mb-2">
           <div className="flex items-center gap-2">
             <CalendarIcon className="w-4 h-4 text-primary shrink-0" />
             <span className="text-xs font-bold text-foreground">
@@ -219,7 +219,7 @@ export default function PlannerPage() {
 
         <Calendar
           mode="single"
-          className="rounded-md border w-full flex justify-center"
+          // className="rounded-md border w-full flex justify-center"
           selected={selectedDate}
           onSelect={(date) => {
             setSelectedDate(date);

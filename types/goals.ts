@@ -23,9 +23,7 @@ export const createGoalSchema = z.object({
 });
 
 // Update schema (allows partial updates)
-export const updateGoalSchema = createGoalSchema.partial().extend({
-  updatedAt: z.string().default(() => new Date().toISOString()),
-});
+export const updateGoalSchema = createGoalSchema.partial();
 
 // Full goal schema (includes Firestore ID)
 export const goalSchema = createGoalSchema.extend({

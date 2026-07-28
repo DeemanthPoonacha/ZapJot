@@ -25,7 +25,7 @@ import { useInView } from "react-intersection-observer";
 import { CardContent, ListCard, ListCardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Task } from "@/types/tasks";
+import { Task, TaskCreate } from "@/types/tasks";
 import dayjs from "dayjs";
 
 type FilterType =
@@ -81,6 +81,7 @@ const sortTasks = (tasksList: Task[]): Task[] => {
 
 const TasksList = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [tempTask, setTempTask] = useState<TaskCreate>();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteTasks(undefined, 25);
@@ -102,6 +103,7 @@ const TasksList = () => {
 
   const handleClose = () => {
     setSelectedTaskId(null);
+    setTempTask(undefined);
   };
 
   const fetchedTasks = data?.pages.flatMap((page) => page.tasks) || [];
@@ -214,6 +216,62 @@ const TasksList = () => {
           buttonTitle="Create First Task"
           handleCreateClick={() => toggleDialog("new")}
           icon={<ListChecks className="emptyIcon" />}
+          templates={[
+            {
+              label: "Buy Groceries",
+              action: () => {
+                setTempTask({
+                  title: "Buy Groceries",
+                  description: "",
+                  highPriority: false,
+                  status: "pending",
+                  subtasks: [
+                    { id: "1", title: "Milk", status: "pending" },
+                    { id: "2", title: "Eggs", status: "pending" },
+                    { id: "3", title: "Bread", status: "pending" },
+                  ],
+                  createdAt: dayjs().toISOString(),
+                  updatedAt: dayjs().toISOString(),
+                });
+                toggleDialog("new");
+              },
+            },
+            {
+              label: "Pay Rent",
+              action: () => {
+                setTempTask({
+                  title: "Pay Rent",
+                  description: "Pay monthly rent",
+                  highPriority: true,
+                  dueDate: dayjs().date(30).format("YYYY-MM-DD"),
+                  status: "pending",
+                  subtasks: [],
+                  createdAt: dayjs().toISOString(),
+                  updatedAt: dayjs().toISOString(),
+                });
+                toggleDialog("new");
+              },
+            },
+            {
+              label: "Prepare Presentation",
+              action: () => {
+                setTempTask({
+                  title: "Prepare Presentation",
+                  description: "Prepare presentation",
+                  highPriority: true,
+                  status: "pending",
+                  subtasks: [
+                    { id: "1", title: "Outline", status: "pending" },
+                    { id: "2", title: "Design Slides", status: "pending" },
+                    { id: "3", title: "Practice", status: "pending" },
+                  ],
+                  createdAt: dayjs().toISOString(),
+                  updatedAt: dayjs().toISOString(),
+                });
+                toggleDialog("new");
+              },
+            },
+          ]}
         />
       ) : (
         <>
@@ -380,7 +438,9 @@ const TasksList = () => {
       {/* Add Task Dialog */}
       {isDialogOpen("new") && (
         <ResponsiveDialogDrawer
-          content={<TaskForm onClose={handleClose} />}
+          content={
+            <TaskForm onClose={handleClose} taskData={tempTask as Task} />
+          }
           title="New Task"
           handleClose={handleClose}
         />

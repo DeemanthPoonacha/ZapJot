@@ -7,6 +7,9 @@ import GoalCard from "./GoalCard";
 import { Skeleton } from "../../ui/skeleton";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
+import { useState } from "react";
+import { GoalCreate } from "@/types/goals";
+import dayjs from "dayjs";
 
 function SectionHeader({ label, count }: { label: string; count: number }) {
   return (
@@ -22,6 +25,7 @@ function SectionHeader({ label, count }: { label: string; count: number }) {
 }
 
 const GoalsList = () => {
+  const [tempGoal, setTempGoal] = useState<GoalCreate>();
   const { data: goals, isLoading } = useGoals();
   const { selectedGoalId, setSelectedGoalId } = usePlanner();
 
@@ -32,6 +36,7 @@ const GoalsList = () => {
 
   const handleClose = () => {
     setSelectedGoalId(null);
+    setTempGoal(undefined);
   };
 
   const [completedGoals, inProgressGoals] = goals?.reduce(
@@ -57,6 +62,56 @@ const GoalsList = () => {
           subtitle="Add goals to keep track of important things to achieve"
           buttonTitle="Create First Goal"
           handleCreateClick={() => toggleDialog("new")}
+          templates={[
+            {
+              label: "Run 50 km",
+              action: () => {
+                setTempGoal({
+                  title: "Monthly Fitness Goal",
+                  objective: 50,
+                  unit: "km",
+                  priority: "low",
+                  progress: 0,
+                  createdAt: new Date().toISOString(),
+                  deadline: dayjs().add(30, "day").format("YYYY-MM-DD"),
+                  updatedAt: new Date().toISOString(),
+                });
+                toggleDialog("new");
+              },
+            },
+            {
+              label: "Read 20 Books",
+              action: () => {
+                setTempGoal({
+                  title: "Annual Reading Goal",
+                  objective: 20,
+                  unit: "books",
+                  priority: "low",
+                  progress: 0,
+                  createdAt: new Date().toISOString(),
+                  deadline: dayjs().add(1, "year").format("YYYY-MM-DD"),
+                  updatedAt: new Date().toISOString(),
+                });
+                toggleDialog("new");
+              },
+            },
+            {
+              label: "Save $500",
+              action: () => {
+                setTempGoal({
+                  title: "Monthly Savings Goal",
+                  objective: 500,
+                  unit: "$",
+                  priority: "low",
+                  progress: 0,
+                  createdAt: new Date().toISOString(),
+                  deadline: dayjs().add(30, "day").format("YYYY-MM-DD"),
+                  updatedAt: new Date().toISOString(),
+                });
+                toggleDialog("new");
+              },
+            },
+          ]}
         />
       ) : (
         <>
@@ -135,7 +190,9 @@ const GoalsList = () => {
       {/* Add Goal Dialog */}
       {isDialogOpen("new") && (
         <ResponsiveDialogDrawer
-          content={<GoalForm onClose={handleClose} />}
+          content={
+            <GoalForm onClose={handleClose} goalData={tempGoal as undefined} />
+          }
           title="New Goal"
           handleClose={handleClose}
         />
