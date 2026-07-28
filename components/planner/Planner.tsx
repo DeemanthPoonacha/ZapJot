@@ -639,61 +639,6 @@ export default function PlannerPage() {
         </TabsContent>
       </Tabs>
 
-      {/* Sticky Mobile Floating Action Button (FAB) */}
-      <div className="fixed bottom-6 right-6 z-40">
-        <Button
-          size="icon"
-          onClick={() => setActiveFabModal(activeTab)}
-          className="h-14 w-14 rounded-full bg-gradient-primary text-primary-foreground shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center"
-          title={`Create ${activeTab}`}
-        >
-          <Plus className="h-7 w-7" />
-        </Button>
-      </div>
-
-      {/* FAB Modals for Mobile Quick Creation */}
-      {activeFabModal === "tasks" && (
-        <ResponsiveDialogDrawer
-          title="New Task"
-          handleClose={() => setActiveFabModal(null)}
-          content={<TaskForm onClose={() => setActiveFabModal(null)} />}
-        />
-      )}
-
-      {activeFabModal === "events" && (
-        <ResponsiveDialogDrawer
-          title="New Event"
-          handleClose={() => setActiveFabModal(null)}
-          content={
-            <EventForm
-              onClose={() => setActiveFabModal(null)}
-              eventData={
-                {
-                  date: dayjs(selectedDayDate || currentDate).format(
-                    "YYYY-MM-DD",
-                  ),
-                } as any
-              }
-            />
-          }
-        />
-      )}
-
-      {activeFabModal === "goals" && (
-        <ResponsiveDialogDrawer
-          title="New Goal"
-          handleClose={() => setActiveFabModal(null)}
-          content={<GoalForm onClose={() => setActiveFabModal(null)} />}
-        />
-      )}
-
-      {activeFabModal === "itineraries" && (
-        <ResponsiveDialogDrawer
-          title="New Itinerary"
-          handleClose={() => setActiveFabModal(null)}
-          content={<ItineraryForm onClose={() => setActiveFabModal(null)} />}
-        />
-      )}
     </div>
   );
 }

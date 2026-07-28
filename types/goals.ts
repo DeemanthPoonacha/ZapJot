@@ -1,9 +1,24 @@
 import { z } from "zod";
 
+export const GOAL_CATEGORIES = [
+  { id: "personal", label: "Personal 🎯" },
+  { id: "fitness", label: "Fitness 🏃" },
+  { id: "finance", label: "Finance 💰" },
+  { id: "career", label: "Career 🚀" },
+  { id: "learning", label: "Learning 📚" },
+  { id: "health", label: "Health ❤️" },
+] as const;
+
+export type GoalCategory = (typeof GOAL_CATEGORIES)[number]["id"];
+
 // Goal creation schema
 export const createGoalSchema = z.object({
   title: z.string().min(1, "Title is required").describe("Title of the goal"),
   description: z.string().optional().describe("Description of the goal"),
+  category: z
+    .string()
+    .default("personal")
+    .describe("Category of the goal (fitness, finance, career, learning, health, personal)"),
   deadline: z
     .string()
     .optional()
