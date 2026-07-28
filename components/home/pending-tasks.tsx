@@ -14,6 +14,9 @@ import {
   Check,
   Sparkles,
   Clock,
+  Plus,
+  LoaderCircle,
+  Calendar,
 } from "lucide-react";
 import { Link } from "@/components/layout/link/CustomLink";
 import { useTasks, useTaskMutations } from "@/lib/hooks/useTasks";
@@ -25,18 +28,129 @@ import ResponsiveDialogDrawer from "@/components/ui/ResponsiveDialogDrawer";
 import TaskForm from "../planner/tasks/TaskForm";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Task } from "@/types/tasks";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Task, TaskCreate } from "@/types/tasks";
+import { cn } from "@/lib/utils";
+
+// Inline Quick-Add Task Input Bar for Home Dashboard
+function HomeQuickAddTaskBar() {
+  const [title, setTitle] = useState("");
+  const [highPriority, setHighPriority] = useState(false);
+  const [dueDate, setDueDate] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const { addMutation } = useTaskMutations();
+
+  const handleQuickAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    try {
+      const payload: TaskCreate = {
+        title: title.trim(),
+        highPriority,
+        status: "pending",
+        subtasks: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        ...(dueDate ? { dueDate } : {}),
+      };
+      await addMutation.mutateAsync(payload);
+      toast.success(`Task "${title.trim()}" added!`);
+      setTitle("");
+      setHighPriority(false);
+      setDueDate("");
+      setShowDatePicker(false);
+    } catch (error) {
+      console.error("Failed to add task", error);
+      toast.error("Failed to add task");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleQuickAdd}
+      className="flex items-center gap-2 p-1.5 bg-muted/40 border border-border/80 rounded-xl focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/20 transition-all mb-4"
+    >
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Quick add a task..."
+        className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-xs sm:text-sm h-8 flex-1 px-2.5"
+      />
+
+      {showDatePicker && (
+        <Input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          className="h-7 w-28 text-xs bg-background border-border px-1.5"
+        />
+      )}
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => setShowDatePicker(!showDatePicker)}
+        title={dueDate ? `Due: ${dueDate}` : "Set due date"}
+        className={cn(
+          "h-7 w-7 rounded-lg shrink-0 transition-colors",
+          dueDate
+            ? "text-primary bg-primary/10"
+            : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        <Calendar className="h-3.5 w-3.5" />
+      </Button>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => setHighPriority(!highPriority)}
+        title={highPriority ? "High Priority enabled" : "Mark High Priority"}
+        className={cn(
+          "h-7 w-7 rounded-lg shrink-0 transition-colors",
+          highPriority
+            ? "text-primary bg-primary/10"
+            : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        <Star
+          className={cn("h-3.5 w-3.5", highPriority ? "fill-primary" : "")}
+        />
+      </Button>
+
+      <Button
+        type="submit"
+        disabled={!title.trim() || addMutation.isPending}
+        size="sm"
+        className="h-7 px-2.5 rounded-lg bg-gradient-primary text-primary-foreground font-semibold text-xs shrink-0 gap-1 shadow-sm"
+      >
+        {addMutation.isPending ? (
+          <LoaderCircle className="h-3 w-3 animate-spin" />
+        ) : (
+          <Plus className="h-3 w-3" />
+        )}
+        <span className="hidden sm:inline">Add</span>
+      </Button>
+    </form>
+  );
+}
 
 export function PendingTasks() {
   const { data: tasks, isLoading } = useTasks({
     limit: 5,
     status: "pending",
   });
-  const { updateMutation } = useTaskMutations();
+  const { updateMutation, toggleSubtaskCompletion } = useTaskMutations();
   const { setSelectedTab } = usePlanner();
 
   const [previewTask, setPreviewTask] = useState<Task | null>(null);
   const [isEditingTask, setIsEditingTask] = useState(false);
+  const { mutateAsync: toggleSubtask, isPending: isSubtaskPending } =
+    toggleSubtaskCompletion;
 
   const handleToggleComplete = (task: Task) => {
     const newStatus = task.status === "completed" ? "pending" : "completed";
@@ -53,15 +167,38 @@ export function PendingTasks() {
           toast.success(
             newStatus === "completed"
               ? `Task "${task.title}" completed!`
-              : `Task "${task.title}" marked pending`
+              : `Task "${task.title}" marked pending`,
           );
           setPreviewTask(null);
         },
         onError: () => {
           toast.error("Failed to update task");
         },
-      }
+      },
     );
+  };
+
+  const handleSubtaskComplete = (subtaskId: string) => {
+    try {
+      if (previewTask && subtaskId) {
+        toggleSubtask({ task: previewTask, subtaskId });
+        setPreviewTask({
+          ...previewTask,
+          subtasks: previewTask.subtasks?.map((subtask) =>
+            subtask.id === subtaskId
+              ? {
+                  ...subtask,
+                  status:
+                    subtask.status === "completed" ? "pending" : "completed",
+                }
+              : subtask,
+          ),
+        });
+      } else throw new Error("Task or subtask not found");
+    } catch (error) {
+      console.error("Error toggling task completion:", error);
+      toast.error("Failed to update task");
+    }
   };
 
   if (isLoading) {
@@ -79,7 +216,7 @@ export function PendingTasks() {
   return (
     <>
       <Card className="p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-sm sm:text-base flex items-center gap-2">
             <ListChecks className="h-4 w-4 text-primary" /> Pending Tasks
           </h2>
@@ -93,6 +230,10 @@ export function PendingTasks() {
             </Link>
           </Button>
         </div>
+
+        {/* Quick Add Bar on Home Screen */}
+        <HomeQuickAddTaskBar />
+
         {!tasks?.length ? (
           <div className="flex flex-col items-center justify-center py-6 text-center gap-2">
             <ListChecks className="h-8 w-8 text-muted-foreground/50" />
@@ -152,7 +293,8 @@ export function PendingTasks() {
                           variant="outline"
                           className="bg-primary/20 text-primary border-primary/40 font-bold text-[10px] px-2.5 py-0.5 flex items-center gap-1"
                         >
-                          <Star className="w-3 h-3 fill-primary" /> High Priority
+                          <Star className="w-3 h-3 fill-primary" /> High
+                          Priority
                         </Badge>
                       )}
                     </div>
@@ -183,7 +325,8 @@ export function PendingTasks() {
               {previewTask.description && (
                 <div className="space-y-2">
                   <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" /> Description
+                    <Sparkles className="w-3.5 h-3.5 text-primary" />{" "}
+                    Description
                   </span>
                   <div className="text-sm text-foreground bg-card p-4 rounded-xl border border-border leading-relaxed whitespace-pre-wrap">
                     {previewTask.description}
@@ -199,11 +342,15 @@ export function PendingTasks() {
                       Subtasks Checklist
                     </span>
                     <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
-                      {completedSubtasksCount} of {totalSubtasksCount} completed ({subtasksPercent}%)
+                      {completedSubtasksCount} of {totalSubtasksCount} completed
+                      ({subtasksPercent}%)
                     </span>
                   </div>
 
-                  <Progress value={subtasksPercent} className="h-2 rounded-full bg-muted" />
+                  <Progress
+                    value={subtasksPercent}
+                    className="h-2 rounded-full bg-muted"
+                  />
 
                   <div className="space-y-2 pt-1 max-h-52 overflow-y-auto pr-1">
                     {previewTask.subtasks.map((subtask) => (
@@ -211,20 +358,25 @@ export function PendingTasks() {
                         key={subtask.id}
                         className="flex items-center gap-3 text-sm bg-muted/40 p-3 rounded-xl border border-border/50"
                       >
-                        {subtask.status === "completed" ? (
-                          <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                        ) : (
-                          <Circle className="h-4 w-4 text-muted-foreground/40 shrink-0" />
-                        )}
-                        <span
+                        <Checkbox
+                          disabled={isSubtaskPending}
+                          id={subtask.id + "-checkbox"}
+                          className="cursor-pointer"
+                          checked={subtask.status === "completed"}
+                          onCheckedChange={() =>
+                            handleSubtaskComplete(subtask.id)
+                          }
+                        />
+                        <label
+                          htmlFor={subtask.id + "-checkbox"}
                           className={
                             subtask.status === "completed"
-                              ? "line-through text-muted-foreground font-normal"
-                              : "text-foreground font-medium"
+                              ? "line-through text-muted-foreground font-normal cursor-pointer"
+                              : "text-foreground font-medium cursor-pointer"
                           }
                         >
                           {subtask.title}
-                        </span>
+                        </label>
                       </div>
                     ))}
                   </div>

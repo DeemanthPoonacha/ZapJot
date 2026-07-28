@@ -24,6 +24,15 @@ import {
   DocumentSnapshot,
 } from "firebase/firestore";
 
+// Helper utility to remove undefined properties from Firestore payloads
+const sanitizeFirestorePayload = <T extends Record<string, any>>(
+  obj: T,
+): Partial<T> => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, v]) => v !== undefined),
+  ) as Partial<T>;
+};
+
 const getTasks = async (
   userId: string,
   filter?: TaskFilter,
@@ -57,6 +66,7 @@ const getTasks = async (
     throw error;
   }
 };
+
 const getTaskById = async (
   userId: string,
   taskId: string,
@@ -80,11 +90,13 @@ const addTask = async (userId: string, taskData: TaskCreate) => {
     updatedAt: taskData.updatedAt || new Date().toISOString(),
   };
 
-  // Validate data before write
+  // Validate and sanitize payload before Firestore write
   const validated = createTaskSchema.parse(finalizedTask);
+  const sanitized = sanitizeFirestorePayload(validated);
+
   const newDocRef = doc(tasksCollection);
-  await setDocOptimistic(newDocRef, validated);
-  return { id: newDocRef.id, ...validated };
+  await setDocOptimistic(newDocRef, sanitized);
+  return { id: newDocRef.id, ...sanitized } as Task;
 };
 
 const updateTask = async (
@@ -99,7 +111,9 @@ const updateTask = async (
     ...taskData,
     updatedAt: new Date().toISOString(),
   });
-  await updateDocOptimistic(taskRef, validated);
+  const sanitized = sanitizeFirestorePayload(validated);
+
+  await updateDocOptimistic(taskRef, sanitized);
 };
 
 const deleteTask = async (userId: string, taskId: string): Promise<void> => {
