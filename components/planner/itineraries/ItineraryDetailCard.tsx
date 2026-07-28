@@ -68,6 +68,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   const { selectedItineraryId, setSelectedItineraryId } = usePlanner();
   const { deleteMutation } = useItineraryMutations();
   const [isSocialCardOpen, setIsSocialCardOpen] = useState(false);
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
 
   const expandedMain = selectedItineraryId === itinerary.id;
 
@@ -178,7 +179,11 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   const handlePrintItinerary = () => {
     if (typeof window !== "undefined") {
-      window.print();
+      setIsPrintPreviewOpen(true);
+      setTimeout(() => {
+        window.print();
+        setIsPrintPreviewOpen(false);
+      }, 150);
     }
   };
 
@@ -596,7 +601,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
       </ListCardFooter>
 
       {/* Hidden container that displays only during window.print() */}
-      <PrintableItinerary itinerary={itinerary} />
+      {isPrintPreviewOpen && <PrintableItinerary itinerary={itinerary} />}
 
       {/* Social Card Generator Modal */}
       <SocialCardModal
