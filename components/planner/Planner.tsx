@@ -9,9 +9,22 @@ import { Calendar } from "../ui/calendar";
 import usePlanner from "@/lib/hooks/usePlanner";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { CalendarCheck, Goal, LandPlot, ListCheck } from "lucide-react";
+import { CalendarCheck, Goal, LandPlot, ListCheck, Calendar as CalendarIcon } from "lucide-react";
 import { useEvents } from "@/lib/hooks/useEvents";
 import { groupEventsByDate } from "@/lib/utils/events";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 
 export default function PlannerPage() {
   const { selectedTab: activeTab, setSelectedTab: onTabChange } = usePlanner();
@@ -22,6 +35,10 @@ export default function PlannerPage() {
     setCurrentMonth(newMonth);
     setSelectedDate(undefined);
   };
+
+  // Generate Year options dynamically (Current Year - 5 to Current Year + 10)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 16 }, (_, i) => currentYear - 5 + i);
 
   // Fetch events for the visible month to show calendar markers/dots
   const { data: monthEvents } = useEvents({
@@ -101,6 +118,71 @@ export default function PlannerPage() {
         <TasksList />
       </TabsContent>
       <TabsContent value="events" className="flex flex-col gap-4">
+        {/* Quick Month / Year Selector Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-muted/40 rounded-2xl border border-border">
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="w-4 h-4 text-primary shrink-0" />
+            <span className="text-xs font-bold text-foreground">Jump to Date:</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Month Select */}
+            <Select
+              value={currentMonth.getMonth().toString()}
+              onValueChange={(val) => {
+                const newD = new Date(currentMonth);
+                newD.setMonth(parseInt(val));
+                handleMonthChange(newD);
+              }}
+            >
+              <SelectTrigger className="h-8 w-32 text-xs font-medium bg-background">
+                <SelectValue placeholder="Select Month" />
+              </SelectTrigger>
+              <SelectContent>
+                {MONTHS.map((month, idx) => (
+                  <SelectItem key={month} value={idx.toString()} className="text-xs">
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Year Select */}
+            <Select
+              value={currentMonth.getFullYear().toString()}
+              onValueChange={(val) => {
+                const newD = new Date(currentMonth);
+                newD.setFullYear(parseInt(val));
+                handleMonthChange(newD);
+              }}
+            >
+              <SelectTrigger className="h-8 w-24 text-xs font-medium bg-background">
+                <SelectValue placeholder="Select Year" />
+              </SelectTrigger>
+              <SelectContent>
+                {yearOptions.map((year) => (
+                  <SelectItem key={year} value={year.toString()} className="text-xs">
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const today = new Date();
+                handleMonthChange(today);
+                setSelectedDate(today);
+              }}
+              className="h-8 text-xs font-bold px-2.5"
+            >
+              Today
+            </Button>
+          </div>
+        </div>
+
         <Calendar
           mode="single"
           className="rounded-md border w-full flex justify-center"

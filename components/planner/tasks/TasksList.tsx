@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { useInfiniteTasks } from "@/lib/hooks/useTasks";
 import {
   useTodayItineraryTasks,
   useItineraryMutations,
 } from "@/lib/hooks/useItineraries";
-import { ListChecks, MapPin, CheckSquare, Square, Clock } from "lucide-react";
+import { ListChecks, MapPin, CheckSquare, Clock } from "lucide-react";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../../Empty";
 import { Skeleton } from "../../ui/skeleton";
@@ -12,14 +13,13 @@ import { TaskCard } from "./TaskCard";
 import ResponsiveDialogDrawer from "../../ui/ResponsiveDialogDrawer";
 import { getPluralWord } from "@/lib/utils";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
 import {
-  Card,
   CardContent,
   ListCard,
   ListCardFooter,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Task } from "@/types/tasks";
 
 function SectionHeader({
   label,
@@ -45,11 +45,33 @@ function SectionHeader({
   );
 }
 
+// Automatic Task Sorting: High Priority -> Earliest Due Date -> Created At / Updated At
+const sortTasks = (tasksList: Task[]): Task[] => {
+  return [...tasksList].sort((a, b) => {
+    // 1. High Priority first
+    if (a.highPriority && !b.highPriority) return -1;
+    if (!a.highPriority && b.highPriority) return 1;
+
+    // 2. Earliest Due Date
+    if (a.dueDate && b.dueDate) {
+      if (a.dueDate !== b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+    } else if (a.dueDate && !b.dueDate) {
+      return -1;
+    } else if (!a.dueDate && b.dueDate) {
+      return 1;
+    }
+
+    // 3. Newest Created At
+    const dateA = a.createdAt || "";
+    const dateB = b.createdAt || "";
+    return dateB.localeCompare(dateA);
+  });
+};
+
 const TasksList = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteTasks(undefined, 15);
-  const { data: todayItineraryTasks, isLoading: isItineraryLoading } =
-    useTodayItineraryTasks();
+  const { data: todayItineraryTasks } = useTodayItineraryTasks();
   const { editTaskMutation } = useItineraryMutations();
   const { selectedTaskId, setSelectedTaskId } = usePlanner();
   const { ref, inView } = useInView();
@@ -69,15 +91,18 @@ const TasksList = () => {
     setSelectedTaskId(null);
   };
 
-  const tasks = data?.pages.flatMap((page) => page.tasks) || [];
+  const fetchedTasks = data?.pages.flatMap((page) => page.tasks) || [];
 
-  const [completedTasks, pendingTasks] = tasks.reduce(
+  const [completedTasksRaw, pendingTasksRaw] = fetchedTasks.reduce(
     ([completed, pending], task) =>
       task.status === "completed"
         ? [[...completed, task], pending]
         : [completed, [...pending, task]],
-    [[], []] as [typeof tasks, typeof tasks],
+    [[], []] as [Task[], Task[]],
   ) || [[], []];
+
+  const pendingTasks = sortTasks(pendingTasksRaw);
+  const completedTasks = sortTasks(completedTasksRaw);
 
   return (
     <div className="space-y-4 mb-8">
@@ -87,7 +112,7 @@ const TasksList = () => {
             <Skeleton key={i} className="h-20 w-full" />
           ))}
         </div>
-      ) : !tasks?.length ? (
+      ) : !fetchedTasks?.length ? (
         <Empty
           title="No tasks yet"
           subtitle="Add tasks to keep track of important things to do"

@@ -9,6 +9,7 @@ import {
   X,
   Trash2,
   PlusCircle,
+  GripVertical,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,11 +31,11 @@ import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import DeleteConfirm from "../../ui/delete-confirm";
+import { Reorder } from "framer-motion";
 
 export const ItineraryDay = ({
   itineraryId,
@@ -49,66 +50,59 @@ export const ItineraryDay = ({
   isExpanded: boolean;
   toggleExpandDay: (dayId: string, value?: boolean) => void;
 }) => {
-  const { editTaskMutation, updateDayMutation, deleteDayMutation } =
-    useItineraryMutations();
-  const { mutateAsync: deleteDayMutate, isPending: deletePending } =
-    deleteDayMutation;
-  const { mutateAsync: dayMutate, isPending: dayPending } = updateDayMutation;
-  const { mutateAsync: taskMutate, isPending: taskPending } = editTaskMutation;
   const [isEditing, setIsEditing] = useState(false);
+  const { updateDayMutation, deleteDayMutation } = useItineraryMutations();
 
-  // Combined loading state
-  const isLoading = taskPending || dayPending || deletePending;
+  const isDayComplete =
+    day.tasks.length > 0 && day.tasks.every((task) => task.completed);
+  const completedTasksCount = day.tasks.filter((t) => t.completed).length;
 
-  // Calculate task completion stats
-  const dayTasksCompleted = day.tasks.filter((task) => task.completed).length;
-  const dayTasksTotal = day.tasks.length;
-  const dayCompletionPercent =
-    dayTasksTotal > 0
-      ? Math.round((dayTasksCompleted / dayTasksTotal) * 100)
-      : 0;
-  const isDayComplete = dayCompletionPercent === 100;
-
-  // Create a key for the form to force re-rendering when day changes
-  const formKey = `day-form-${day.id}-${dayTasksCompleted}`;
-  const defaultValues = {
-    id: day.id,
+  const defaultValues: ItineraryDayUpdate = {
     title: day.title,
     budget: day.budget,
     tasks: day.tasks,
   };
 
-  // Initialize form with day data
-  const form = useForm({
-    resolver: zodResolver(itineraryDaySchema),
+  const formKey = `${day.id}-${JSON.stringify(day)}`;
+
+  const form = useForm<ItineraryDayUpdate>({
+    resolver: zodResolver(itineraryDaySchema.partial()),
     defaultValues,
   });
 
-  // Set up field array for tasks
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "tasks",
   });
 
-  // Handle task update
   const updateTask = async (
     dayId: string,
     taskId: string,
     data: Partial<ItineraryTask>,
   ) => {
     try {
-      await taskMutate({ id: itineraryId, dayId, taskId, data });
-      toast.success("Task updated successfully");
+      const updatedTasks = day.tasks.map((task) =>
+        task.id === taskId ? { ...task, ...data } : task,
+      );
+      await updateDayMutation.mutateAsync({
+        id: itineraryId,
+        dayId,
+        data: { tasks: updatedTasks },
+      });
     } catch (error) {
       console.error("Error updating task:", error);
       toast.error("Failed to update task");
     }
   };
 
-  // Handle day update
-  const updateDay = async (dayId: string, data: Partial<ItineraryDayType>) => {
+  const onSubmit = async (data: ItineraryDayUpdate) => {
     try {
-      await dayMutate({ id: itineraryId, dayId, data });
+      await updateDayMutation.mutateAsync({
+        id: itineraryId,
+        dayId: day.id,
+        data,
+      });
+      setIsEditing(false);
       toast.success("Day updated successfully");
     } catch (error) {
       console.error("Error updating day:", error);
@@ -118,7 +112,10 @@ export const ItineraryDay = ({
 
   const handleDeleteDay = async () => {
     try {
-      await deleteDayMutate({ id: itineraryId, dayId: day.id });
+      await deleteDayMutation.mutateAsync({
+        id: itineraryId,
+        dayId: day.id,
+      });
       toast.success("Day deleted successfully");
     } catch (error) {
       console.error("Error deleting day:", error);
@@ -126,51 +123,29 @@ export const ItineraryDay = ({
     }
   };
 
-  // Form submission handler
-  const onSubmit = async (data: ItineraryDayUpdate) => {
-    try {
-      await updateDay(day.id, data);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating day or tasks:", error);
-      toast.error("Failed to update day or tasks");
-    }
-  };
+  const isLoading =
+    updateDayMutation.isPending || deleteDayMutation.isPending;
 
-  // HANDLERS WITH PROPER EVENT PREVENTION
-
-  // Card header click handler (toggles expanded state)
   const handleHeaderClick = () => {
     if (!isEditing) {
       toggleExpandDay(day.id);
     }
   };
 
-  // Edit button click handler
   const handleEditClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Reset form with current day data before entering edit mode
     form.reset(defaultValues);
     setIsEditing(true);
     toggleExpandDay(day.id, true);
   };
 
-  // Cancel edit click handler
   const handleCancelEdit = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsEditing(false);
   };
 
-  // Toggle expand/collapse click handler
-  const handleToggleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleExpandDay(day.id);
-  };
-
-  // Add task handler
   const handleAddTask = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -182,18 +157,24 @@ export const ItineraryDay = ({
     });
   };
 
-  // Delete task handler
   const handleDeleteTask = (e: React.MouseEvent, taskIndex: number) => {
     e.preventDefault();
     e.stopPropagation();
     remove(taskIndex);
   };
 
-  // Toggle task completion handler
   const handleTaskCompletion = async (task: ItineraryTask) => {
     await updateTask(day.id, task.id, {
       ...task,
       completed: !task.completed,
+    });
+  };
+
+  const handleReorderViewMode = async (newTasks: ItineraryTask[]) => {
+    await updateDayMutation.mutateAsync({
+      id: itineraryId,
+      dayId: day.id,
+      data: { tasks: newTasks },
     });
   };
 
@@ -219,20 +200,23 @@ export const ItineraryDay = ({
                     : "bg-muted text-foreground",
                 )}
               >
-                <span className="font-semibold text-sm">{index + 1}</span>
+                {isDayComplete ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <span className="text-sm font-semibold">{index + 1}</span>
+                )}
               </div>
               <div>
                 {isEditing ? (
                   <FormField
+                    control={form.control}
                     name="title"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="sr-only">Title</FormLabel>
+                      <FormItem className="mb-0">
                         <FormControl>
                           <Input
-                            className="p-1"
-                            disabled={isLoading}
                             {...field}
+                            className="h-8 text-base font-semibold"
                             placeholder="Day Title"
                             onClick={(e) => e.stopPropagation()}
                           />
@@ -242,70 +226,51 @@ export const ItineraryDay = ({
                     )}
                   />
                 ) : (
-                  <>
-                    <h4 className="font-medium">{day.title}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {dayTasksCompleted} of {dayTasksTotal} tasks completed
-                    </p>
-                  </>
+                  <h3 className="font-semibold text-base">{day.title}</h3>
                 )}
+                <div className="flex items-center text-xs text-muted-foreground mt-1 space-x-2">
+                  <span>
+                    {completedTasksCount}/{day.tasks.length} tasks completed
+                  </span>
+                  {day.budget > 0 && (
+                    <>
+                      <span>•</span>
+                      <span className="flex items-center gap-0.5">
+                        <Banknote className="h-3 w-3" />${day.budget}
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-2">
               {isEditing ? (
-                <FormField
-                  name="budget"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="sr-only">Budget</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isLoading}
-                          {...field}
-                          type="number"
-                          placeholder="Budget"
-                          className="w-12 p-1 text-center"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ) : (
-                <Badge variant="outline" className="mr-2 hidden md:flex">
-                  <Banknote className="h-3 w-3 mr-1" />${day.budget}
-                </Badge>
-              )}
-              {isEditing ? (
-                <div className="flex">
-                  <DeleteConfirm
-                    buttonVariant={"ghost"}
-                    itemName="day"
-                    handleDelete={handleDeleteDay}
-                  />
+                <>
                   <Button
+                    type="submit"
+                    size="sm"
                     disabled={isLoading}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Save
+                  </Button>
+
+                  <Button
                     type="button"
                     variant="ghost"
+                    size="sm"
                     onClick={handleCancelEdit}
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                  <Button
-                    disabled={isLoading}
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Check className="h-4 w-4" />
-                  </Button>
-                </div>
+                  <DeleteConfirm
+                    itemName="Day"
+                    handleDelete={handleDeleteDay}
+                  />
+                </>
               ) : (
-                <div className="flex">
+                <div className="flex gap-1 items-center">
                   <Button
-                    disabled={isLoading}
                     type="button"
                     variant="ghost"
                     size="sm"
@@ -315,8 +280,6 @@ export const ItineraryDay = ({
                   </Button>
                   <Button
                     type="button"
-                    onClick={handleToggleClick}
-                    disabled={isLoading}
                     variant="ghost"
                     size="sm"
                   >
@@ -342,9 +305,19 @@ export const ItineraryDay = ({
                         No tasks added yet
                       </div>
                     ) : (
-                      <div className="space-y-2">
+                      <Reorder.Group
+                        axis="y"
+                        values={fields}
+                        onReorder={(newFields) => replace(newFields)}
+                        className="space-y-2"
+                      >
                         {fields.map((task, taskIndex) => (
-                          <div key={task.id} className="flex items-start gap-1">
+                          <Reorder.Item
+                            key={task.id}
+                            value={task}
+                            className="flex items-start gap-1 bg-muted/20 hover:bg-muted/40 p-2 rounded-lg group cursor-grab active:cursor-grabbing border border-transparent hover:border-border transition-all"
+                          >
+                            <GripVertical className="h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground mt-2 shrink-0 cursor-grab" />
                             <FormField
                               control={form.control}
                               name={`tasks.${taskIndex}.completed`}
@@ -360,8 +333,8 @@ export const ItineraryDay = ({
                                 </FormItem>
                               )}
                             />
-                            <div className="flex gap-1">
-                              <div className="md:col-span-3">
+                            <div className="flex gap-1 flex-1">
+                              <div className="md:col-span-3 flex-1">
                                 <FormField
                                   control={form.control}
                                   name={`tasks.${taskIndex}.title`}
@@ -410,16 +383,16 @@ export const ItineraryDay = ({
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>
-                          </div>
+                          </Reorder.Item>
                         ))}
-                      </div>
+                      </Reorder.Group>
                     )}
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={handleAddTask}
-                      className="w-full"
+                      className="w-full mt-2"
                     >
                       <PlusCircle className="h-4 w-4 mr-1" />
                       Add Task
@@ -431,42 +404,53 @@ export const ItineraryDay = ({
                     No tasks scheduled for this day
                   </p>
                 ) : (
-                  day.tasks.map((task: ItineraryTask) => (
-                    <div
-                      key={task.id}
-                      className="flex rounded-md justify-between items-center px-2 py-1.5 hover:bg-muted/40 transition-colors"
-                    >
-                      <span className="flex items-center space-x-2">
-                        <Checkbox
-                          disabled={isLoading}
-                          id={task.id + "-checkbox"}
-                          className="cursor-pointer"
-                          checked={task.completed}
-                          onCheckedChange={() => handleTaskCompletion(task)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <label
-                          htmlFor={task.id + "-checkbox"}
-                          className={cn(
-                            "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer max-w-72 line-clamp-2",
-                            task.completed
-                              ? "line-through text-muted-foreground"
-                              : "",
-                          )}
-                        >
-                          {task.title}
-                        </label>
-                      </span>
-                      {task.time && (
-                        <div className="flex items-center">
-                          <Clock className="h-3 w-3 mr-1 text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground">
+                  <Reorder.Group
+                    axis="y"
+                    values={day.tasks}
+                    onReorder={handleReorderViewMode}
+                    className="space-y-1"
+                  >
+                    {day.tasks.map((task: ItineraryTask) => (
+                      <Reorder.Item
+                        key={task.id}
+                        value={task}
+                        className="flex rounded-md justify-between items-center px-2 py-1.5 hover:bg-muted/40 transition-colors group cursor-grab active:cursor-grabbing"
+                      >
+                        <span className="flex items-center space-x-2 flex-1">
+                          <GripVertical className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground/80 shrink-0 cursor-grab" />
+                          <Checkbox
+                            disabled={isLoading}
+                            id={task.id + "-checkbox"}
+                            className="cursor-pointer"
+                            checked={task.completed}
+                            onCheckedChange={() => handleTaskCompletion(task)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <label
+                            htmlFor={task.id + "-checkbox"}
+                            className={cn(
+                              "text-sm cursor-pointer",
+                              task.completed
+                                ? "line-through text-muted-foreground"
+                                : "text-foreground font-medium",
+                            )}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {task.title}
+                          </label>
+                        </span>
+                        {task.time && (
+                          <Badge
+                            variant="secondary"
+                            className="text-xs font-normal"
+                          >
+                            <Clock className="h-3 w-3 mr-1" />
                             {task.time}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))
+                          </Badge>
+                        )}
+                      </Reorder.Item>
+                    ))}
+                  </Reorder.Group>
                 )}
               </div>
             </CardContent>

@@ -12,8 +12,8 @@ export const createGoalSchema = z.object({
     .enum(["low", "medium", "high"])
     .default("medium")
     .describe("Priority of the goal"),
-  progress: z.number().default(0).describe("Progress of the goal"),
-  objective: z.number().default(100).describe("Objective of the goal"),
+  progress: z.coerce.number().default(0).describe("Progress of the goal"),
+  objective: z.coerce.number().default(100).describe("Objective of the goal"),
   unit: z
     .string()
     .default("%")
