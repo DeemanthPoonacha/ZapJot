@@ -23,7 +23,7 @@ export const itineraryDaySchema = z.object({
     .min(1, "Day title is required")
     .max(200, "Day title must be under 200 characters")
     .describe("Title of the day. e.g., Arrival, Day 3, Beach day, etc."),
-  budget: z.number().default(0).describe("Budget for the day"),
+  budget: z.coerce.number().default(0).describe("Budget for the day"),
   tasks: z
     .array(itineraryTaskSchema)
     .max(50, "Maximum 50 tasks allowed per day")
@@ -38,9 +38,9 @@ export const createItinerarySchema = z.object({
   coverImage: z.string().optional().describe("Cover image URL for the itinerary"),
   startDate: z.string().describe("Start date of the itinerary"),
   endDate: z.string().describe("End date of the itinerary"),
-  totalDays: z.number().max(60, "Maximum 60 days allowed per itinerary").describe("Total number of days in the itinerary"),
-  budget: z.number().default(0).describe("Budget for the itinerary"),
-  actualCost: z.number().default(0).describe("Actual cost of the itinerary"),
+  totalDays: z.coerce.number().min(1, "Total days must be at least 1").max(60, "Maximum 60 days allowed per itinerary").describe("Total number of days in the itinerary"),
+  budget: z.coerce.number().default(0).describe("Budget for the itinerary"),
+  actualCost: z.coerce.number().default(0).describe("Actual cost of the itinerary"),
   days: z
     .array(itineraryDaySchema)
     .max(60, "Maximum 60 days allowed per itinerary")
@@ -60,9 +60,9 @@ export const itinerarySchema = createItinerarySchema.extend({
 });
 
 // Type inference
-export type Itinerary = z.infer<typeof itinerarySchema>;
-export type ItineraryCreate = z.infer<typeof createItinerarySchema>;
-export type ItineraryUpdate = z.infer<typeof updateItinerarySchema>;
 export type ItineraryDayType = z.infer<typeof itineraryDaySchema>;
 export type ItineraryDayUpdate = Partial<ItineraryDayType>;
 export type ItineraryTask = z.infer<typeof itineraryTaskSchema>;
+export type Itinerary = z.infer<typeof itinerarySchema>;
+export type ItineraryCreate = z.infer<typeof createItinerarySchema>;
+export type ItineraryUpdate = z.infer<typeof updateItinerarySchema>;

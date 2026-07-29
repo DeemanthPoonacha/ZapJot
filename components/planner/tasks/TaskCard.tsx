@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import { Task } from "@/types/tasks";
 import { CardContent, ListCard, ListCardFooter } from "../../ui/card";
-import { Calendar1, Edit, Star } from "lucide-react";
+import { Calendar1, Edit, Star, GripVertical } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/utils/date-time";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import dayjs from "dayjs";
+import { Reorder } from "framer-motion";
 
 export function TaskCard({
   task,
@@ -16,11 +18,18 @@ export function TaskCard({
   task: Task;
   onEditClick: () => void;
 }) {
-  const { toggleTaskCompletion, toggleSubtaskCompletion } = useTaskMutations();
+  const { toggleTaskCompletion, toggleSubtaskCompletion, updateMutation } =
+    useTaskMutations();
 
   const { mutateAsync: toggleTask, isPending } = toggleTaskCompletion;
   const { mutateAsync: toggleSubtask, isPending: isSubtaskPending } =
     toggleSubtaskCompletion;
+
+  const [subtasks, setSubtasks] = useState(task.subtasks || []);
+
+  useEffect(() => {
+    setSubtasks(task.subtasks || []);
+  }, [task.subtasks]);
 
   const toggleCompletion = (subtaskId?: string) => {
     try {
@@ -30,6 +39,18 @@ export function TaskCard({
     } catch (error) {
       console.error("Error toggling task completion:", error);
     }
+  };
+
+  const handleSubtasksReorder = (newSubtasks: typeof subtasks) => {
+    setSubtasks(newSubtasks);
+    const { id, ...taskData } = task;
+    updateMutation.mutate({
+      id: task.id,
+      data: {
+        ...taskData,
+        subtasks: newSubtasks,
+      },
+    });
   };
 
   return (
@@ -64,7 +85,8 @@ export function TaskCard({
               {task.title}
             </label>
           </span>
-          <span className="flex gap-2 items-center">
+
+          <span className="flex items-center gap-1">
             {task.highPriority && (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -75,20 +97,33 @@ export function TaskCard({
                 </TooltipContent>
               </Tooltip>
             )}
+
             <Button
-              className="cursor-pointer"
-              variant={"ghost"}
-              size={"icon"}
+              className="cursor-pointer h-7 w-7"
+              variant="ghost"
+              size="icon"
               onClick={onEditClick}
             >
-              <Edit className="w-5 h-5" />
+              <Edit className="w-4 h-4" />
             </Button>
           </span>
         </div>
-        {!!task.subtasks?.length && (
-          <div className="ml-6 mt-2 space-y-2">
-            {task.subtasks?.map((subtask) => (
-              <div key={subtask.id} className="flex items-center space-x-2">
+
+        {/* Drag & Drop Reorderable Subtasks List */}
+        {!!subtasks?.length && (
+          <Reorder.Group
+            axis="y"
+            values={subtasks}
+            onReorder={handleSubtasksReorder}
+            className="ml-2 mt-2 space-y-1.5"
+          >
+            {subtasks.map((subtask) => (
+              <Reorder.Item
+                key={subtask.id}
+                value={subtask}
+                className="flex items-center space-x-2 bg-muted/20 hover:bg-muted/40 p-1.5 rounded-lg transition-colors group cursor-grab active:cursor-grabbing"
+              >
+                <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0" />
                 <Checkbox
                   disabled={isSubtaskPending}
                   id={subtask.id + "-checkbox"}
@@ -100,7 +135,7 @@ export function TaskCard({
                 <label
                   htmlFor={subtask.id + "-checkbox"}
                   className={cn(
-                    "peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer max-w-72 line-clamp-2 text-sm",
+                    "peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer max-w-72 line-clamp-2 text-sm flex-1",
                     subtask.status === "completed"
                       ? "line-through text-muted-foreground"
                       : ""
@@ -108,11 +143,12 @@ export function TaskCard({
                 >
                   {subtask.title}
                 </label>
-              </div>
+              </Reorder.Item>
             ))}
-          </div>
+          </Reorder.Group>
         )}
       </CardContent>
+
       {(task.description || task.dueDate) && (
         <ListCardFooter>
           <div className="flex items-center justify-between w-full">

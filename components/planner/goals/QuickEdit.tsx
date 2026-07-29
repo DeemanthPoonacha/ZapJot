@@ -24,7 +24,7 @@ export default function QuickEdit({ goal }: { goal: Goal }) {
       },
     });
   };
-  const delta = Math.floor(goal.objective / 20);
+  const delta = Math.ceil(goal.objective / 20);
   const remaining = objective - progress;
 
   const handleObjectiveChange = (e: React.ChangeEvent<HTMLInputElement>) => {

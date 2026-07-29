@@ -14,7 +14,7 @@ import {
 } from "@/lib/services/itineraries";
 import { useAuth } from "@/lib/context/AuthProvider";
 
-import { Itinerary, ItineraryCreate, ItineraryTask } from "@/types/itineraries";
+import { Itinerary, ItineraryCreate, ItineraryTask, ItineraryDayType } from "@/types/itineraries";
 
 // Query Key
 const ITINERARY_QUERY_KEY = "itineraries";
@@ -130,7 +130,7 @@ export const useItineraryMutations = () => {
     }: {
       id: string;
       dayId: string;
-      data: Partial<Itinerary>;
+      data: Partial<ItineraryDayType>;
     }) => updateItineraryDay(userId!, id, dayId, data),
     onSuccess: () =>
       queryClient.invalidateQueries({

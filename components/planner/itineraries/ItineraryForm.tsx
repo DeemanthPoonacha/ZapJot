@@ -7,7 +7,14 @@ import { useItineraryMutations } from "@/lib/hooks/useItineraries";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Save, PlusCircle, Ban } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Save,
+  PlusCircle,
+  Ban,
+  GripVertical,
+} from "lucide-react";
 import {
   Form,
   FormControl,
@@ -32,6 +39,7 @@ import { cn } from "@/lib/utils";
 import DeleteConfirm from "../../ui/delete-confirm";
 import { useState } from "react";
 import UploadImage from "../../ui/upload-image";
+import { Reorder } from "framer-motion";
 
 interface ItineraryFormProps {
   itineraryData?: Itinerary;
@@ -49,135 +57,126 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   const isEditing = !!itineraryData?.id;
   const [isImageUploading, setIsImageUploading] = useState(false);
 
-  // Form setup
   const form = useForm<ItineraryCreate>({
     resolver: zodResolver(createItinerarySchema),
-    defaultValues: {
-      title: itineraryData?.title || "",
-      destination: itineraryData?.destination || "",
-      coverImage: itineraryData?.coverImage || "",
-      startDate: itineraryData?.startDate || "",
-      endDate: itineraryData?.endDate || "",
-      totalDays: itineraryData?.totalDays || 0,
-      budget: itineraryData?.budget || 0,
-      actualCost: itineraryData?.actualCost || 0,
-      notes: itineraryData?.notes || "",
-      days: itineraryData?.days || [
-        {
-          id: Date.now().toString(),
-          title: "Day 1",
+    defaultValues: itineraryData
+      ? {
+          title: itineraryData.title || "",
+          destination: itineraryData.destination || "",
+          coverImage: itineraryData.coverImage || "",
+          startDate: itineraryData.startDate || "",
+          endDate: itineraryData.endDate || "",
+          totalDays: itineraryData.totalDays || 0,
+          budget: itineraryData.budget || 0,
+          actualCost: itineraryData.actualCost || 0,
+          days: itineraryData.days || [],
+          notes: itineraryData.notes || "",
+        }
+      : {
+          title: "",
+          destination: "",
+          coverImage: "",
+          startDate: "",
+          endDate: "",
+          totalDays: 0,
           budget: 0,
-          tasks: [],
+          actualCost: 0,
+          days: [],
+          notes: "",
         },
-      ],
-    },
   });
 
   const {
     fields: dayFields,
-    append: addDay,
+    append: appendDay,
     remove: removeDay,
   } = useFieldArray({
     control: form.control,
     name: "days",
   });
 
-  // Form handlers
-  const handleAddDay = () => {
-    addDay({
-      id: Date.now().toString(),
-      title: `Day ${dayFields.length + 1}`,
-      budget: 0,
-      tasks: [],
-    });
-  };
-
-  const handleDelete = async () => {
-    if (!isEditing) return;
-
-    try {
-      await deleteMutation.mutateAsync(itineraryData.id);
-      toast.success("Itinerary deleted successfully");
-      onClose?.();
-    } catch (error) {
-      toast.error("Error deleting itinerary");
-      console.error(error);
-    }
-  };
-
   const onSubmit = async (data: ItineraryCreate) => {
     try {
-      if (isEditing && itineraryData) {
+      if (isEditing && itineraryData?.id) {
         await updateMutation.mutateAsync({ id: itineraryData.id, data });
-        toast.success("Itinerary updated successfully");
+        toast.success("Itinerary updated successfully!");
       } else {
         await addMutation.mutateAsync(data);
-        toast.success("Itinerary created successfully");
-        form.reset();
+        toast.success("Itinerary created successfully!");
       }
       onSave?.();
       onClose?.();
     } catch (error) {
-      console.error("Error saving itinerary", error);
-      toast.error("Failed to save itinerary");
+      console.error("Failed to save itinerary:", error);
+      toast.error("Failed to save itinerary.");
     }
   };
 
-  // Calculate date range and update totalDays
-  const updateTotalDays = () => {
-    const startDate = form.getValues("startDate");
-    const endDate = form.getValues("endDate");
-
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const diffTime = Math.abs(end.getTime() - start.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      form.setValue("totalDays", diffDays);
+  const handleDelete = async () => {
+    if (!itineraryData?.id) return;
+    try {
+      await deleteMutation.mutateAsync(itineraryData.id);
+      toast.success("Itinerary deleted successfully!");
+      onSave?.();
+      onClose?.();
+    } catch (error) {
+      console.error("Failed to delete itinerary:", error);
+      toast.error("Failed to delete itinerary.");
     }
+  };
+
+  const handleAddDay = () => {
+    const dayNumber = dayFields.length + 1;
+    appendDay({
+      id: Date.now().toString(),
+      title: `Day ${dayNumber}`,
+      budget: 0,
+      tasks: [],
+    });
+
+    form.setValue("totalDays", dayFields.length + 1);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Cover Image Upload */}
-        <UploadImage
-          form={form}
-          fieldName="coverImage"
-          isImageUploading={isImageUploading}
-          setIsImageUploading={setIsImageUploading}
-        />
-
-        {/* Main Itinerary Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Itinerary Title" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="destination"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Destination</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Destination" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        <div className="space-y-2">
+          <UploadImage
+            form={form}
+            fieldName="coverImage"
+            isImageUploading={isImageUploading}
+            setIsImageUploading={setIsImageUploading}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. Summer in Tokyo 2026" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="destination"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Destination</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. Tokyo, Japan" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
@@ -187,19 +186,13 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
               <FormItem>
                 <FormLabel>Start Date</FormLabel>
                 <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      updateTotalDays();
-                    }}
-                  />
+                  <Input type="date" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="endDate"
@@ -207,14 +200,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
               <FormItem>
                 <FormLabel>End Date</FormLabel>
                 <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      updateTotalDays();
-                    }}
-                  />
+                  <Input type="date" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -222,13 +208,34 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="totalDays"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Total Days</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(parseInt(e.target.value) || 0)
+                    }
+                    value={field.value}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="budget"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Budget</FormLabel>
+                <FormLabel>Estimated Budget</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -243,6 +250,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="actualCost"
@@ -270,7 +278,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Trip Notes & Travel Info</FormLabel>
+              <FormLabel>Notes</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Add flight numbers, hotel confirmation codes, packing list, or emergency contacts..."
@@ -308,7 +316,6 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
           ) : (
             <Accordion
               type="multiple"
-              // defaultValue={dayFields.map((day) => day.id)}
               className="w-full overflow-auto max-h-[500px]"
             >
               {dayFields.map((day, dayIndex) => (
@@ -379,7 +386,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
                         />
                       </div>
 
-                      {/* Day Tasks */}
+                      {/* Day Tasks with Drag & Drop Reordering */}
                       <TasksList dayIndex={dayIndex} form={form} />
                     </div>
                   </AccordionContent>
@@ -403,7 +410,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
               <Ban />
               Cancel
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={isImageUploading}>
               <Save />
               Save
             </Button>
@@ -414,7 +421,7 @@ const ItineraryForm: React.FC<ItineraryFormProps> = ({
   );
 };
 
-// Tasks subcomponent for better organization
+// Tasks subcomponent with drag-and-drop sortability for itinerary day activities
 const TasksList = ({
   dayIndex,
   form,
@@ -422,7 +429,7 @@ const TasksList = ({
   dayIndex: number;
   form: UseFormReturn<ItineraryCreate>;
 }) => {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: `days.${dayIndex}.tasks`,
   });
@@ -436,10 +443,14 @@ const TasksList = ({
     });
   };
 
+  const handleReorderTasks = (newTasks: typeof fields) => {
+    replace(newTasks);
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <FormLabel>Tasks</FormLabel>
+        <FormLabel>Activities / Tasks</FormLabel>
         <Button
           type="button"
           variant="outline"
@@ -456,12 +467,21 @@ const TasksList = ({
           No tasks added yet
         </div>
       ) : (
-        <div className="space-y-2">
+        <Reorder.Group
+          axis="y"
+          values={fields}
+          onReorder={handleReorderTasks}
+          className="space-y-2"
+        >
           {fields.map((task, taskIndex) => (
-            <div
+            <Reorder.Item
               key={task.id}
-              className="flex items-start gap-2 bg-muted/30 p-3 rounded-lg"
+              value={task}
+              className="flex items-start gap-2 bg-muted/30 p-3 rounded-lg group cursor-grab active:cursor-grabbing border border-transparent hover:border-border transition-all"
             >
+              <div className="mt-2 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0 cursor-grab">
+                <GripVertical className="h-4 w-4" />
+              </div>
               <FormField
                 control={form.control}
                 name={`days.${dayIndex}.tasks.${taskIndex}.completed`}
@@ -519,9 +539,9 @@ const TasksList = ({
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
-            </div>
+            </Reorder.Item>
           ))}
-        </div>
+        </Reorder.Group>
       )}
     </div>
   );

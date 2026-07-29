@@ -4,6 +4,7 @@ import { toast } from "../../ui/sonner";
 import { cn } from "@/lib/utils";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
 import { createTaskSchema, Task, TaskCreate } from "@/types/tasks";
+import { Reorder } from "framer-motion";
 
 // UI Components
 import { Input } from "@/components/ui/input";
@@ -26,7 +27,7 @@ import {
   SelectItem,
   SelectContent,
 } from "@/components/ui/select";
-import { Trash2, Plus, Save, Ban } from "lucide-react";
+import { Trash2, Plus, Save, Ban, GripVertical } from "lucide-react";
 
 const TaskForm = ({
   taskData,
@@ -57,6 +58,7 @@ const TaskForm = ({
     fields: subtaskFields,
     append: addSubtask,
     remove: removeSubtask,
+    replace: replaceSubtasks,
   } = useFieldArray({
     control: form.control,
     name: "subtasks",
@@ -101,111 +103,112 @@ const TaskForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Main Task Information */}
-        <div className="space-y-4">
+        {/* Title */}
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Task Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter task title..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Description */}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Add details about this task..."
+                  className="resize-none"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Due Date */}
           <FormField
             control={form.control}
-            name="title"
+            name="dueDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>Due Date</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Task Title" />
+                  <Input type="date" {...field} value={field.value || ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          {/* Status */}
           <FormField
             control={form.control}
-            name="description"
+            name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Task Description"
-                    rows={3}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="dueDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Due Date</FormLabel>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <SelectTrigger className="cursor-pointer">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      {/* <SelectItem value="in-progress">In Progress</SelectItem> */}
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="highPriority"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                <div className="space-y-0.5">
-                  <FormLabel className="cursor-pointer">
-                    High Priority
-                  </FormLabel>
-                  <div className="text-sm text-muted-foreground">
-                    Mark this task as high priority
-                  </div>
-                </div>
-                <FormControl>
-                  <Switch
-                    className="cursor-pointer"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        {/* Subtasks Section */}
+        {/* High Priority Switch */}
+        <FormField
+          control={form.control}
+          name="highPriority"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+              <div className="space-y-0.5">
+                <FormLabel className="cursor-pointer">High Priority</FormLabel>
+                <div className="text-sm text-muted-foreground">
+                  Mark this task as high priority
+                </div>
+              </div>
+              <FormControl>
+                <Switch
+                  className="cursor-pointer"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        {/* Subtasks Section with Drag & Drop Reordering */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <FormLabel>Subtasks</FormLabel>
+            <FormLabel>Subtasks (Drag to reorder)</FormLabel>
             <Button
               type="button"
               variant="outline"
@@ -223,12 +226,19 @@ const TaskForm = ({
               No subtasks added yet
             </div>
           ) : (
-            <div className="space-y-2">
+            <Reorder.Group
+              axis="y"
+              values={subtaskFields}
+              onReorder={(newFields) => replaceSubtasks(newFields)}
+              className="space-y-2"
+            >
               {subtaskFields.map((subtask, index) => (
-                <div
+                <Reorder.Item
                   key={subtask.id}
-                  className="flex items-center gap-2 bg-muted/30 p-2 rounded-lg"
+                  value={subtask}
+                  className="flex items-center gap-2 bg-muted/30 p-2 rounded-lg group cursor-grab active:cursor-grabbing border border-transparent hover:border-border transition-all"
                 >
+                  <GripVertical className="h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0 cursor-grab" />
                   <FormField
                     control={form.control}
                     name={`subtasks.${index}.title`}
@@ -249,9 +259,9 @@ const TaskForm = ({
                   >
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
-                </div>
+                </Reorder.Item>
               ))}
-            </div>
+            </Reorder.Group>
           )}
         </div>
 
