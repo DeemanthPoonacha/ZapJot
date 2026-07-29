@@ -7,10 +7,12 @@ import PageLayout from "@/components/layout/PageLayout";
 import MenuDropdown from "@/components/MenuDropdown";
 import EventsList from "@/components/planner/events/EventsList";
 import { toast } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
 import { useCharacter, useCharacterMutations } from "@/lib/hooks/useCharacters";
-import { Plus } from "lucide-react";
+import { Plus, UserPlus } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import { InviteDialog } from "@/components/characters/InviteDialog";
 
 const Character = () => {
   const { characterId } = useParams();
@@ -20,6 +22,7 @@ const Character = () => {
 
   const isNewCharacter = characterId === "new";
   const [isEditing, setIsEditing] = useState(isNewCharacter);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
 
   const { deleteMutation } = useCharacterMutations();
   const handleDelete = async () => {
@@ -62,6 +65,20 @@ const Character = () => {
       ) : character ? (
         <>
           <CharacterCard character={character} vertical />
+
+          {/* Invite to App Action Bar */}
+          <div className="flex justify-center my-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsInviteOpen(true)}
+              className="gap-2 border-primary/30 text-primary hover:bg-primary/10 font-medium"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Invite {character.name} to ZapJot</span>
+            </Button>
+          </div>
+
           {!!character?.reminders && (
             <EventsList
               key={character.reminders.length}
@@ -77,6 +94,12 @@ const Character = () => {
               groupByDate={false}
             />
           )}
+
+          <InviteDialog
+            character={character}
+            open={isInviteOpen}
+            onOpenChange={setIsInviteOpen}
+          />
         </>
       ) : (
         <div className="flex h-[80vh] items-center justify-center">

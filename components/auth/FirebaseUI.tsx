@@ -16,7 +16,10 @@ export default function FirebaseAuthUI() {
     signInOptions: [
       {
         provider: GoogleAuthProvider.PROVIDER_ID,
-        scopes: ["https://www.googleapis.com/auth/calendar"],
+        scopes: [
+          "https://www.googleapis.com/auth/calendar",
+          "https://www.googleapis.com/auth/contacts.readonly",
+        ],
         customParameters: { prompt: "select_account" },
       },
       EmailAuthProvider.PROVIDER_ID,
@@ -32,12 +35,15 @@ export default function FirebaseAuthUI() {
         console.log("🚀 ~ FirebaseAuthUI ~ redirectUrl:", redirectUrl);
         let eventName = "login";
 
-        // Save Google Calendar access token and expiry to localStorage
+        // Save Google Calendar & Contacts access token and expiry to localStorage
         const credential = authResult.credential;
         if (credential && "accessToken" in credential) {
-          localStorage.setItem("google_calendar_access_token", (credential as any).accessToken);
+          const accessToken = (credential as any).accessToken;
           const expiryTime = Date.now() + 3600 * 1000; // 1 hour expiry
+          localStorage.setItem("google_calendar_access_token", accessToken);
           localStorage.setItem("google_calendar_token_expiry", String(expiryTime));
+          localStorage.setItem("google_contacts_access_token", accessToken);
+          localStorage.setItem("google_contacts_token_expiry", String(expiryTime));
         }
 
         // Check if the user is new

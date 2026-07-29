@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "@/components/layout/link/CustomLink";
-import { User, Bell } from "lucide-react";
+import { User, Bell, Mail, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Character } from "@/types/characters";
@@ -89,10 +89,35 @@ const CharacterCard = ({
                 </p>
               )}
 
+              {(character.email || character.phone) && (
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground mt-1 items-center">
+                  {character.email && (
+                    <span className="flex items-center gap-1 truncate">
+                      <Mail className="w-3 h-3 text-primary shrink-0" />
+                      <span className="truncate">{character.email}</span>
+                    </span>
+                  )}
+                  {character.phone && (
+                    <span className="flex items-center gap-1">
+                      <Phone className="w-3 h-3 text-primary shrink-0" />
+                      <span>{character.phone}</span>
+                    </span>
+                  )}
+                </div>
+              )}
+
               {character.notes && (
-                <p className="text-sm mt-2 line-clamp-2 text-muted-foreground">
+                <p className="text-sm mt-1.5 line-clamp-2 text-muted-foreground">
                   {character.notes}
                 </p>
+              )}
+
+              {character.source && character.source !== "manual" && (
+                <div className="mt-2 flex items-center gap-1.5">
+                  <Badge variant="outline" className="text-[10px] px-2 py-0.5 bg-muted/50 border-border font-medium capitalize">
+                    {character.source === "google" ? "Google Contact" : "Phone Contact"}
+                  </Badge>
+                </div>
               )}
             </div>
           </div>

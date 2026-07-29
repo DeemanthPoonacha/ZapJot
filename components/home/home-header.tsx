@@ -202,7 +202,7 @@ export function HomeHeader() {
 
       case 1:
         return (
-          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 border-primary/45 shadow-xl rounded-3xl h-full flex flex-col justify-between">
+          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 shadow-xl rounded-3xl h-full flex flex-col justify-between">
             {/* Solid Base Fill + Accent Gradient */}
             <div className="absolute inset-0 bg-background pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-background pointer-events-none" />
@@ -266,7 +266,7 @@ export function HomeHeader() {
 
       case 2:
         return (
-          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 border-primary/45 shadow-xl rounded-3xl h-full flex flex-col justify-between">
+          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 shadow-xl rounded-3xl h-full flex flex-col justify-between">
             {/* Solid Base Fill + Accent Gradient */}
             <div className="absolute inset-0 bg-background pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-background via-primary/20 to-background pointer-events-none" />
@@ -338,7 +338,7 @@ export function HomeHeader() {
 
       case 3:
         return (
-          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 border-primary/45 shadow-xl rounded-3xl h-full flex flex-col justify-between">
+          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 shadow-xl rounded-3xl h-full flex flex-col justify-between">
             {/* Solid Base Fill + Accent Gradient */}
             <div className="absolute inset-0 bg-background pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-tl from-primary/25 via-background to-background pointer-events-none" />
@@ -394,7 +394,7 @@ export function HomeHeader() {
 
       case 4:
         return (
-          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 border-primary/45 shadow-xl rounded-3xl h-full flex flex-col justify-between">
+          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 shadow-xl rounded-3xl h-full flex flex-col justify-between">
             {/* Solid Base Fill + Accent Gradient */}
             <div className="absolute inset-0 bg-background pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-tr from-background via-background to-primary/25 pointer-events-none" />
@@ -445,7 +445,7 @@ export function HomeHeader() {
 
       case 5:
         return (
-          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 border-primary/45 shadow-xl rounded-3xl h-full flex flex-col justify-between">
+          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 shadow-xl rounded-3xl h-full flex flex-col justify-between">
             {/* Solid Base Fill + Accent Gradient */}
             <div className="absolute inset-0 bg-background pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-bl from-primary/25 via-background to-background pointer-events-none" />
@@ -500,7 +500,7 @@ export function HomeHeader() {
       case 6:
       default:
         return (
-          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 border-primary/45 shadow-xl rounded-3xl h-full flex flex-col justify-between">
+          <Card className="relative overflow-hidden p-6 sm:p-7 bg-background text-foreground border-2 shadow-xl rounded-3xl h-full flex flex-col justify-between">
             {/* Solid Base Fill + Accent Gradient */}
             <div className="absolute inset-0 bg-background pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-background via-primary/25 to-background pointer-events-none" />

@@ -78,3 +78,21 @@ export const linkGoogleCalendar = async () => {
 
   return GoogleAuthProvider.credentialFromResult(result);
 };
+
+export const linkGoogleContacts = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("No user is currently signed in.");
+
+  const provider = new GoogleAuthProvider();
+  provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+
+  const hasGoogleProvider = user.providerData.some(
+    (p) => p.providerId === "google.com",
+  );
+
+  const result = hasGoogleProvider
+    ? await reauthenticateWithPopup(user, provider)
+    : await linkWithPopup(user, provider);
+
+  return GoogleAuthProvider.credentialFromResult(result);
+};

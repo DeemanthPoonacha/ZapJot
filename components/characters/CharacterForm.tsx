@@ -50,6 +50,8 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
       image: character?.image || "",
       name: character?.name || "",
       title: character?.title || "",
+      email: character?.email || "",
+      phone: character?.phone || "",
       reminders: character?.reminders || [],
       notes: character?.notes || "",
     },
@@ -121,7 +123,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title/Relationship</FormLabel>
+                <FormLabel>Title / Relationship</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -135,6 +137,44 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
               </FormItem>
             )}
           />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="e.g. john@example.com"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="tel"
+                      placeholder="e.g. +1 (555) 000-0000"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
