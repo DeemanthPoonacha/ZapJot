@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   ChevronRight,
   CalendarDays,
@@ -12,9 +13,11 @@ import {
   Clock,
   RepeatIcon,
   Sparkles,
+  Plus,
+  LoaderCircle,
 } from "lucide-react";
 import { Link } from "@/components/layout/link/CustomLink";
-import { useEvents } from "@/lib/hooks/useEvents";
+import { useEvents, useEventMutations } from "@/lib/hooks/useEvents";
 import { Skeleton } from "../ui/skeleton";
 import { EventNextOccurance } from "../planner/events/EventCard";
 import usePlanner from "@/lib/hooks/usePlanner";
@@ -22,6 +25,79 @@ import ResponsiveDialogDrawer from "@/components/ui/ResponsiveDialogDrawer";
 import EventForm from "../planner/events/EventForm";
 import { Event } from "@/types/events";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "../ui/sonner";
+import dayjs from "dayjs";
+
+function HomeQuickAddEventBar() {
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [time, setTime] = useState(
+    dayjs().add(1, "hour").minute(0).second(0).format("HH:mm"),
+  );
+  const { addMutation } = useEventMutations();
+
+  const handleQuickAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || addMutation.isPending) return;
+
+    try {
+      await addMutation.mutateAsync({
+        title: title.trim(),
+        date,
+        time: time || "09:00",
+        repeat: "none",
+        repeatDays: [],
+        nextOccurrence: dayjs(`${date}T${time || "09:00"}`).toDate(),
+        nextNotificationAt: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      toast.success("Event added successfully");
+      setTitle("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add event");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleQuickAdd}
+      className="flex items-center gap-2 p-1.5 bg-muted/40 border border-border/80 rounded-xl focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/20 transition-all mb-4"
+    >
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Quick add event..."
+        className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-xs sm:text-sm h-8 flex-1 px-2.5"
+      />
+      <Input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="h-8 text-xs w-28 rounded-xl bg-background border-border p-1"
+      />
+      <Input
+        type="time"
+        value={time}
+        onChange={(e) => setTime(e.target.value)}
+        className="h-8 text-xs w-20 rounded-xl bg-background border-border p-1"
+      />
+      <Button
+        type="submit"
+        size="sm"
+        disabled={!title.trim() || addMutation.isPending}
+        className="h-8 text-xs font-bold rounded-xl px-3 bg-gradient-primary text-primary-foreground shrink-0"
+      >
+        {addMutation.isPending ? (
+          <LoaderCircle className="h-3 w-3 animate-spin" />
+        ) : (
+          <Plus className="h-3.5 w-3.5" />
+        )}
+      </Button>
+    </form>
+  );
+}
 
 export function UpcomingEvents() {
   const { data: events, isLoading } = useEvents({
@@ -39,7 +115,7 @@ export function UpcomingEvents() {
   return (
     <>
       <Card className="p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-sm sm:text-base flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-primary" /> Upcoming Events
           </h2>
@@ -53,6 +129,10 @@ export function UpcomingEvents() {
             </Link>
           </Button>
         </div>
+
+        {/* 1-Line Quick Add Event Bar */}
+        <HomeQuickAddEventBar />
+
         {!events?.length ? (
           <div className="flex flex-col items-center justify-center py-6 text-center gap-2">
             <CalendarDays className="h-8 w-8 text-muted-foreground/50" />
@@ -98,120 +178,95 @@ export function UpcomingEvents() {
                   <div className="flex items-center justify-between">
                     <Badge
                       variant="secondary"
-                      className="bg-primary/15 text-primary border-primary/30 uppercase tracking-widest text-[10px] font-bold px-2.5 py-0.5"
+                      className="bg-primary/20 text-primary border-primary/30 font-semibold"
                     >
-                      Event Details
+                      <RepeatIcon className="w-3 h-3 mr-1" />
+                      {previewEvent.repeat || "One-time"}
                     </Badge>
-                    {previewEvent.repeat && previewEvent.repeat !== "none" && (
-                      <Badge
-                        variant="outline"
-                        className="bg-primary/20 text-primary border-primary/40 font-bold text-[10px] px-2.5 py-0.5 flex items-center gap-1"
-                      >
-                        <RepeatIcon className="w-3 h-3" /> Repeating ({previewEvent.repeat})
-                      </Badge>
-                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setIsEditingEvent(true)}
+                      className="h-8 gap-1.5 rounded-xl bg-background/80 hover:bg-background"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                      <span>Edit</span>
+                    </Button>
                   </div>
-
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight leading-snug">
+                  <h2 className="text-xl font-bold text-foreground">
                     {previewEvent.title}
-                  </h3>
-
-                  <div className="flex items-center gap-2 pt-2 text-xs font-semibold text-primary">
-                    <Clock className="h-4 w-4 shrink-0" />
-                    <EventNextOccurance
-                      text="Next occurrence: "
-                      event={previewEvent}
-                      format="ddd, MMM D, YYYY at hh:mma"
-                    />
-                  </div>
+                  </h2>
+                  {previewEvent.notes && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {previewEvent.notes}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {/* Event Notes Card */}
-              {previewEvent.notes && (
-                <div className="space-y-2">
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" /> Notes & Information
+              {/* Event Details Grid */}
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="p-3 rounded-xl bg-muted/40 border border-border/50 space-y-1">
+                  <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <Clock className="w-3.5 h-3.5 text-primary" /> Date & Time
                   </span>
-                  <div className="text-sm text-foreground bg-card p-4 rounded-xl border border-border leading-relaxed whitespace-pre-wrap">
-                    {previewEvent.notes}
-                  </div>
+                  <p className="font-semibold text-foreground">
+                    <EventNextOccurance
+                      event={previewEvent}
+                      format="ddd, MMM D • h:mm A"
+                    />
+                  </p>
                 </div>
-              )}
 
-              {/* Location Card */}
-              {previewEvent.location && (
-                <div className="flex items-center gap-3 text-sm bg-card p-3 rounded-xl border border-border">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                    <MapPin className="h-4 w-4" />
+                {previewEvent.location && (
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/50 space-y-1">
+                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                      <MapPin className="w-3.5 h-3.5 text-primary" /> Location
+                    </span>
+                    <p className="font-semibold text-foreground truncate">
+                      {previewEvent.location}
+                    </p>
                   </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block font-medium">Location</span>
-                    <strong className="text-foreground font-semibold">{previewEvent.location}</strong>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Participants */}
-              {!!previewEvent.participants?.length && (
-                <div className="space-y-2 bg-card p-4 rounded-2xl border border-border">
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5 text-primary" /> Participants ({previewEvent.participants.length})
-                  </span>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {previewEvent.participants.map((participant) => (
-                      <Badge
-                        key={participant.value || participant.label}
-                        variant="secondary"
-                        className="bg-muted text-foreground border border-border/60 px-3 py-1 rounded-xl text-xs font-semibold"
-                      >
-                        {participant.label}
-                      </Badge>
-                    ))}
+              {previewEvent.participants &&
+                previewEvent.participants.length > 0 && (
+                  <div className="space-y-2">
+                    <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-primary" />{" "}
+                      Participants
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {previewEvent.participants.map((p, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {p.label || p.value}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex items-center justify-between gap-3 pt-3 border-t border-border">
-                <Button
-                  variant="outline"
-                  size="default"
-                  onClick={() => setIsEditingEvent(true)}
-                  className="gap-2 text-xs font-semibold rounded-xl border-border hover:bg-muted"
-                >
-                  <Pencil className="h-4 w-4" /> Edit Event
-                </Button>
-
-                <Button
-                  variant="default"
-                  size="default"
-                  onClick={() => setPreviewEvent(null)}
-                  className="text-xs font-bold rounded-xl bg-gradient-primary text-primary-foreground px-6 shadow-md"
-                >
-                  Close
-                </Button>
-              </div>
+                )}
             </div>
           }
         />
       )}
 
-      {/* Event Edit Form Dialog */}
+      {/* Edit Form Modal */}
       {previewEvent && isEditingEvent && (
         <ResponsiveDialogDrawer
-          title={`Edit Event: ${previewEvent.title}`}
+          title="Edit Event"
           handleClose={() => {
             setIsEditingEvent(false);
             setPreviewEvent(null);
           }}
           content={
             <EventForm
+              eventData={previewEvent}
               onClose={() => {
                 setIsEditingEvent(false);
                 setPreviewEvent(null);
               }}
-              eventData={previewEvent}
             />
           }
         />

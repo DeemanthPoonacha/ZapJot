@@ -162,9 +162,9 @@ const GoalsList = () => {
                 No active goals matching this category
               </p>
             ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+              <div className="columns-1 md:columns-2 gap-4 space-y-4">
                 {inProgressGoals?.map((goal) => (
-                  <div key={goal.id}>
+                  <div key={goal.id} className="break-inside-avoid">
                     <GoalCard
                       goal={goal}
                       onEditClick={() => toggleDialog(goal.id)}
@@ -191,9 +191,9 @@ const GoalsList = () => {
                 label="Achieved / Completed"
                 count={completedGoals?.length ?? 0}
               />
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+              <div className="columns-1 md:columns-2 gap-4 space-y-4">
                 {completedGoals?.map((goal) => (
-                  <div key={goal.id}>
+                  <div key={goal.id} className="break-inside-avoid">
                     <GoalCard
                       goal={goal}
                       onEditClick={() => toggleDialog(goal.id)}

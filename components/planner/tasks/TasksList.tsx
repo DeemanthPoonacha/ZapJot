@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useInfiniteTasks } from "@/lib/hooks/useTasks";
+import { useInfiniteTasks, useTaskMutations } from "@/lib/hooks/useTasks";
 import {
   useTodayItineraryTasks,
   useItineraryMutations,
@@ -12,7 +12,6 @@ import {
   Star,
   Calendar,
   CheckCircle,
-  ListFilter,
 } from "lucide-react";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../../Empty";
@@ -117,7 +116,7 @@ const TasksList = () => {
   const totalDueTodayCount =
     fetchedTasks.filter(
       (t) => t.dueDate && dayjs(t.dueDate).isSame(dayjs(), "day"),
-    ).length + itineraryTasks.length; // All itinerary tasks for today are due today
+    ).length + itineraryTasks.length;
   const totalPendingCount =
     fetchedTasks.filter((t) => t.status !== "completed").length +
     itineraryTasks.filter((item) => !item.task.completed).length;
@@ -138,10 +137,10 @@ const TasksList = () => {
 
   // Filter itinerary tasks based on activeFilter
   const filteredItineraryTasks = itineraryTasks.filter((item) => {
-    if (activeFilter === "high-priority") return false; // Itinerary tasks don't have high priority flag
+    if (activeFilter === "high-priority") return false;
     if (activeFilter === "pending") return !item.task.completed;
     if (activeFilter === "completed") return item.task.completed;
-    return true; // "all" or "due-today"
+    return true;
   });
 
   const [completedTasksRaw, pendingTasksRaw] = filteredTasks.reduce(
@@ -204,9 +203,9 @@ const TasksList = () => {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+        <div className="columns-1 md:columns-2 gap-4 space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 w-full" />
+            <Skeleton key={i} className="h-20 w-full break-inside-avoid" />
           ))}
         </div>
       ) : !fetchedTasks?.length && !itineraryTasks?.length ? (
@@ -286,53 +285,56 @@ const TasksList = () => {
                 count={filteredItineraryTasks.length}
               />
 
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 items-start">
+              <div className="columns-1 md:columns-2 gap-4 space-y-4">
                 {filteredItineraryTasks.map((item) => (
-                  <ListCard
+                  <div
                     key={`${item.itineraryId}-${item.dayId}-${item.task.id}`}
+                    className="break-inside-avoid"
                   >
-                    <CardContent className="p-4 flex items-center justify-between gap-3">
-                      <div className="flex items-start gap-3">
-                        <Checkbox
-                          checked={item.task.completed}
-                          onCheckedChange={() =>
-                            editTaskMutation.mutate({
-                              id: item.itineraryId,
-                              dayId: item.dayId,
-                              taskId: item.task.id,
-                              data: { completed: !item.task.completed },
-                            })
-                          }
-                          className="mt-1"
-                        />
-                        <div>
-                          <p
-                            className={`text-sm font-medium ${item.task.completed ? "line-through text-muted-foreground" : "text-foreground"}`}
-                          >
-                            {item.task.title}
-                          </p>
+                    <ListCard>
+                      <CardContent className="p-4 flex items-center justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <Checkbox
+                            checked={item.task.completed}
+                            onCheckedChange={() =>
+                              editTaskMutation.mutate({
+                                id: item.itineraryId,
+                                dayId: item.dayId,
+                                taskId: item.task.id,
+                                data: { completed: !item.task.completed },
+                              })
+                            }
+                            className="mt-1"
+                          />
+                          <div>
+                            <p
+                              className={`text-sm font-medium ${item.task.completed ? "line-through text-muted-foreground" : "text-foreground"}`}
+                            >
+                              {item.task.title}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      {item.task.time && (
-                        <div className="flex items-center gap-1 text-xs text-primary dark:text-primary bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded shrink-0">
-                          <Clock className="h-3 w-3" />
-                          <span>{item.task.time}</span>
-                        </div>
-                      )}
-                    </CardContent>
-                    <ListCardFooter className="gap-2">
-                      <span className="font-semibold text-primary dark:text-primary truncate">
-                        {item.itineraryTitle}
-                      </span>
-                      <span className="truncate">{item.dayTitle}</span>
-                    </ListCardFooter>
-                  </ListCard>
+                        {item.task.time && (
+                          <div className="flex items-center gap-1 text-xs text-primary dark:text-primary bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded shrink-0">
+                            <Clock className="h-3 w-3" />
+                            <span>{item.task.time}</span>
+                          </div>
+                        )}
+                      </CardContent>
+                      <ListCardFooter className="gap-2">
+                        <span className="font-semibold text-primary dark:text-primary truncate">
+                          {item.itineraryTitle}
+                        </span>
+                        <span className="truncate">{item.dayTitle}</span>
+                      </ListCardFooter>
+                    </ListCard>
+                  </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Pending Tasks */}
+          {/* Pending Tasks (Masonry Columns Layout) */}
           {activeFilter !== "completed" && (
             <div className="pb-8">
               <SectionHeader
@@ -361,9 +363,9 @@ const TasksList = () => {
                   </p>
                 )
               ) : (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                <div className="columns-1 md:columns-2 gap-4 space-y-4">
                   {pendingTasks?.map((task) => (
-                    <div key={task.id}>
+                    <div key={task.id} className="break-inside-avoid">
                       <TaskCard
                         task={task}
                         onEditClick={() => toggleDialog(task.id)}
@@ -384,7 +386,7 @@ const TasksList = () => {
             </div>
           )}
 
-          {/* Completed Tasks */}
+          {/* Completed Tasks (Masonry Columns Layout) */}
           {activeFilter !== "pending" && (
             <div className="pb-8">
               <SectionHeader
@@ -395,13 +397,13 @@ const TasksList = () => {
                 count={completedTasks?.length ?? 0}
               />
               {completedTasks?.length === 0 ? (
-                <p className="text-muted-foreground mb-6 text-center py-4 text-sm italic">
-                  No completed tasks
+                <p className="text-muted-foreground mb-6 text-center py-4 md:py-12 text-sm">
+                  No tasks completed yet
                 </p>
               ) : (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start">
+                <div className="columns-1 md:columns-2 gap-4 space-y-4">
                   {completedTasks?.map((task) => (
-                    <div key={task.id}>
+                    <div key={task.id} className="break-inside-avoid">
                       <TaskCard
                         task={task}
                         onEditClick={() => toggleDialog(task.id)}

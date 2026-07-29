@@ -226,18 +226,18 @@ function GroupedEvents({
                 No events on this day
               </p>
             ) : (
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 items-start">
-                {events
-                  ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
-                  .map((event) => (
-                    <div key={event.id}>
-                      <EventCard
-                        onClick={() => toggleDialog(event.id)}
-                        event={event}
-                      />
-                    </div>
-                  ))}
-              </div>
+            <div className="columns-1 md:columns-2 gap-4 space-y-4">
+              {events
+                ?.sort(({ time: a }, { time: b }) => a.localeCompare(b))
+                .map((event) => (
+                  <div key={event.id} className="break-inside-avoid">
+                    <EventCard
+                      onClick={() => toggleDialog(event.id)}
+                      event={event}
+                    />
+                  </div>
+                ))}
+            </div>
             )}
           </div>
         );
