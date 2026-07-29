@@ -30,6 +30,26 @@ export const useJournals = (chapterId?: string) => {
   };
 };
 
+export const useTotalJournalsCount = (chapterIds?: string[]) => {
+  const { user } = useAuth();
+  const userId = user?.uid;
+
+  return useQuery({
+    queryKey: [JOURNAL_QUERY_KEY, "totalCount", userId, chapterIds?.join(",")],
+    queryFn: async () => {
+      if (!userId || !chapterIds?.length) return 0;
+      const counts = await Promise.all(
+        chapterIds.map(async (chapterId) => {
+          const journals = await getJournals(userId, chapterId);
+          return journals.length;
+        })
+      );
+      return counts.reduce((a, b) => a + b, 0);
+    },
+    enabled: !!userId && !!chapterIds?.length,
+  });
+};
+
 export const useInfiniteJournals = (chapterId?: string, pageSize: number = 25) => {
   const { user, loading: isAuthLoading } = useAuth();
   const userId = user?.uid;
