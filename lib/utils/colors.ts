@@ -83,6 +83,93 @@ export function adjustBrightness(hex: string, factor: number): string {
     .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
 
+export function getThemeCssVariables(
+  colors?: Theme["colors"] | Record<string, string>
+): Record<string, string> {
+  const bg = colors?.background || "#FFFFFF";
+  const fg = colors?.foreground || "#000000";
+  const primary = colors?.primary || "#1E293B";
+  const secondary = colors?.secondary || "#F1F5F9";
+  const accent = colors?.accent || "#F1F5F9";
+  const muted = colors?.muted || "#F1F5F9";
+  const border = colors?.border || "#E2E8F0";
+
+  const safeHsl = (color: string) => {
+    if (!color) return "hsl(0 0% 0%)";
+    if (color.startsWith("hsl(") || color.startsWith("var(")) return color;
+    try {
+      return `hsl(${hexToHSL(color)})`;
+    } catch {
+      return color;
+    }
+  };
+
+  const safeInvertHsl = (color: string) => {
+    if (!color || color.startsWith("var(")) return "hsl(0 0% 100%)";
+    try {
+      return `hsl(${hexToHSL(invertColor(color))})`;
+    } catch {
+      return "hsl(0 0% 100%)";
+    }
+  };
+
+  const safeMutedFgHsl = (fgColor: string) => {
+    if (!fgColor || fgColor.startsWith("var(")) return "hsl(0 0% 40%)";
+    try {
+      return `hsl(${hexToHSL(adjustBrightness(fgColor, 0.6))})`;
+    } catch {
+      return safeHsl(fgColor);
+    }
+  };
+
+  const background = safeHsl(bg);
+  const foreground = safeHsl(fg);
+  const primaryHsl = safeHsl(primary);
+  const primaryForeground = safeInvertHsl(primary);
+  const secondaryHsl = safeHsl(secondary);
+  const secondaryForeground = safeInvertHsl(secondary);
+  const accentHsl = safeHsl(accent);
+  const accentForeground = safeInvertHsl(accent);
+  const mutedHsl = safeHsl(muted);
+  const mutedForeground = safeMutedFgHsl(fg);
+  const borderHsl = safeHsl(border);
+
+  const primaryGradient =
+    colors?.gradient ||
+    `linear-gradient(135deg, ${primaryHsl}, ${accentHsl})`;
+
+  const ambientGradient =
+    colors?.ambientGradient ||
+    `linear-gradient(135deg, color-mix(in srgb, ${accentHsl} 70%, transparent), ${background}, color-mix(in srgb, ${secondaryHsl} 50%, transparent))`;
+
+  const cardGradient =
+    colors?.cardGradient ||
+    `linear-gradient(180deg, ${background} 0%, color-mix(in srgb, ${accentHsl} 15%, ${background}) 100%)`;
+
+  return {
+    "--background": background,
+    "--foreground": foreground,
+    "--primary": primaryHsl,
+    "--primary-foreground": primaryForeground,
+    "--secondary": secondaryHsl,
+    "--secondary-foreground": secondaryForeground,
+    "--accent": accentHsl,
+    "--accent-foreground": accentForeground,
+    "--muted": mutedHsl,
+    "--muted-foreground": mutedForeground,
+    "--border": borderHsl,
+    "--input": borderHsl,
+    "--card": background,
+    "--card-foreground": foreground,
+    "--popover": background,
+    "--popover-foreground": foreground,
+    "--ring": primaryHsl,
+    "--primary-gradient": primaryGradient,
+    "--ambient-gradient": ambientGradient,
+    "--card-gradient": cardGradient,
+  };
+}
+
 export const addCustomCssVariables = (themeObj: Theme) => {
   let styleEl = document.getElementById(`theme-${themeObj.id}`);
   if (!styleEl) {
@@ -91,48 +178,13 @@ export const addCustomCssVariables = (themeObj: Theme) => {
     document.head.appendChild(styleEl);
   }
 
+  const vars = getThemeCssVariables(themeObj.colors);
   const cssVariables = `
       [data-theme="${themeObj.id}"],
       .${themeObj.id} {
-        --background: hsl(${hexToHSL(themeObj.colors.background)});
-        --foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
-        --primary: hsl(${hexToHSL(themeObj.colors.primary)});
-        --primary-foreground: hsl(${hexToHSL(
-          invertColor(themeObj.colors.primary)
-        )});
-        --secondary: hsl(${hexToHSL(themeObj.colors.secondary)});
-        --secondary-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
-        --accent: hsl(${hexToHSL(themeObj.colors.accent)});
-        --accent-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
-        --muted: hsl(${hexToHSL(themeObj.colors.muted)});
-        --muted-foreground: hsl(${hexToHSL(
-          adjustBrightness(themeObj.colors.foreground, 0.6)
-        )});
-        --border: hsl(${hexToHSL(themeObj.colors.border)});
-        --input: hsl(${hexToHSL(themeObj.colors.border)});
-        --card: hsl(${hexToHSL(themeObj.colors.background)});
-        --card-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
-        --popover: hsl(${hexToHSL(themeObj.colors.background)});
-        --popover-foreground: hsl(${hexToHSL(themeObj.colors.foreground)});
-        --ring: hsl(${hexToHSL(themeObj.colors.primary)});
-        --primary-gradient: ${
-          themeObj.colors.gradient ||
-          `linear-gradient(135deg, hsl(${hexToHSL(
-            themeObj.colors.primary
-          )}), hsl(${hexToHSL(themeObj.colors.accent)}))`
-        };
-        --ambient-gradient: linear-gradient(135deg, color-mix(in srgb, hsl(${hexToHSL(
-          themeObj.colors.accent
-        )}) 70%, transparent), hsl(${hexToHSL(
-          themeObj.colors.background
-        )}), color-mix(in srgb, hsl(${hexToHSL(
-          themeObj.colors.secondary
-        )}) 50%, transparent));
-        --card-gradient: linear-gradient(180deg, hsl(${hexToHSL(
-          themeObj.colors.background
-        )}) 0%, color-mix(in srgb, hsl(${hexToHSL(
-          themeObj.colors.accent
-        )}) 15%, hsl(${hexToHSL(themeObj.colors.background)})) 100%);
+${Object.entries(vars)
+  .map(([key, val]) => `        ${key}: ${val};`)
+  .join("\n")}
       }
     `;
   styleEl.textContent = cssVariables;

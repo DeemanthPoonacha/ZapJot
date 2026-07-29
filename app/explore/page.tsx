@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getPublicShares, PublicShare } from "@/lib/services/publicShares";
 import { importPublicItinerary } from "@/lib/services/itineraries";
+import { importPublicTheme } from "@/lib/services/themes";
 import { useAuth } from "@/lib/context/AuthProvider";
 import { toast } from "@/components/ui/sonner";
 import { CustomLoader } from "@/components/layout/CustomLoader";
@@ -11,15 +12,17 @@ import { Badge } from "@/components/ui/badge";
 import { Compass, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PublicShareCard } from "@/components/social-card/PublicShareCard";
+import { useTheme } from "next-themes";
 
 export default function ExplorePage() {
   const router = useRouter();
   const { user } = useAuth();
+  const { setTheme } = useTheme();
   const [shares, setShares] = useState<PublicShare[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"all" | "itinerary" | "journal">(
-    "all",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "all" | "itinerary" | "journal" | "theme"
+  >("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [importingId, setImportingId] = useState<string | null>(null);
 
@@ -43,21 +46,27 @@ export default function ExplorePage() {
     };
   }, [activeTab]);
 
-  const handleImportItinerary = async (share: PublicShare) => {
+  const handleImportShare = async (share: PublicShare) => {
     if (!user) {
-      toast.error("Please sign in to import itineraries into your planner");
+      toast.error("Please sign in to import items into your account");
       router.push("/auth/sign-in");
       return;
     }
 
     setImportingId(share.id);
     try {
-      await importPublicItinerary(user.uid, share);
-      toast.success("Itinerary imported into your planner!");
-      router.push("/planner");
+      if (share.type === "theme") {
+        const importedTheme = await importPublicTheme(user.uid, share);
+        setTheme(importedTheme.id);
+        toast.success(`Theme "${importedTheme.name}" installed & applied!`);
+      } else if (share.type === "itinerary") {
+        await importPublicItinerary(user.uid, share);
+        toast.success("Itinerary imported into your planner!");
+        router.push("/planner");
+      }
     } catch (err) {
-      console.error("Error importing itinerary:", err);
-      toast.error("Failed to import itinerary");
+      console.error("Error importing item:", err);
+      toast.error("Failed to import item");
     } finally {
       setImportingId(null);
     }
@@ -82,15 +91,15 @@ export default function ExplorePage() {
         <div className="relative z-10 space-y-3 max-w-2xl">
           <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/30 uppercase tracking-wider text-xs font-semibold px-3 py-1">
             <Compass className="h-3.5 w-3.5 mr-1 text-purple-300" />
-            Community Discover
+            Community Hub
           </Badge>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            Explore Shared Itineraries & Journals
+            Explore Itineraries, Journals & Themes
           </h1>
           <p className="text-purple-200/90 text-sm sm:text-base leading-relaxed">
-            Discover hand-crafted travel guides, trip itineraries, and journal
-            entries shared by the ZapJot community. Import itineraries into your
-            planner with one click!
+            Discover travel guides, trip itineraries, journal entries, and custom
+            color themes shared by the ZapJot community. Install community themes
+            or import itineraries with one click!
           </p>
         </div>
       </div>
@@ -98,7 +107,7 @@ export default function ExplorePage() {
       {/* Filter & Search Bar Controls */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-card p-4 rounded-2xl border border-border shadow-sm w-full">
         {/* Category Tabs */}
-        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-xl w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
@@ -132,6 +141,17 @@ export default function ExplorePage() {
           >
             Journals
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("theme")}
+            className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-semibold transition ${
+              activeTab === "theme"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Themes
+          </button>
         </div>
 
         {/* Keyword Search Input */}
@@ -139,7 +159,7 @@ export default function ExplorePage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search guides, destinations..."
+            placeholder="Search guides, themes, author..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 text-xs rounded-xl bg-background border-border"
@@ -163,7 +183,7 @@ export default function ExplorePage() {
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             {searchQuery
               ? `No posts matched "${searchQuery}". Try a different search term.`
-              : "No publicly shared items yet. Be the first to share your trip or journal!"}
+              : "No publicly shared items in this category yet. Be the first to share your trip, journal, or theme!"}
           </p>
         </div>
       ) : (
@@ -173,7 +193,7 @@ export default function ExplorePage() {
             <PublicShareCard
               key={share.id}
               share={share}
-              onImport={(item) => handleImportItinerary(item)}
+              onImport={(item) => handleImportShare(item)}
               isImporting={importingId === share.id}
             />
           ))}

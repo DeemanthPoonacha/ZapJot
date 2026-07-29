@@ -11,7 +11,7 @@ import { getPluralWord } from "@/lib/utils";
 import Image from "next/image";
 import { ListChecks, Target, CalendarDays } from "lucide-react";
 
-function StatChip({
+export function StatChip({
   icon,
   loading,
   count,
@@ -44,9 +44,14 @@ export function HomeHeader() {
   });
 
   const today = dayjs();
-  const todayEvents = events?.filter((event) =>
-    dayjs((event.nextOccurrence as Timestamp).toDate()).isSame(today, "day"),
-  );
+  const todayEvents = events?.filter((event) => {
+    const occ = event.nextOccurrence || event.date;
+    if (!occ) return false;
+    const occDate = typeof (occ as any)?.toDate === "function"
+      ? (occ as Timestamp).toDate()
+      : occ;
+    return dayjs(occDate as Date | string).isSame(today, "day");
+  });
   const greet = () =>
     user
       ? `Hello, ${user.displayName || user.email?.split("@")[0]}!`

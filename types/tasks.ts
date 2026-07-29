@@ -25,6 +25,7 @@ export const createTaskSchema = z.object({
     .enum(["pending", "in-progress", "completed"])
     .default("pending")
     .describe("Status of the task"),
+  order: z.coerce.number().optional().describe("Display order sequence of the task"),
   subtasks: z.array(subTasks).default([]).describe("Subtasks of the task"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),

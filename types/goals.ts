@@ -1,9 +1,24 @@
 import { z } from "zod";
 
+export const GOAL_CATEGORIES = [
+  { id: "personal", label: "Personal 🎯" },
+  { id: "fitness", label: "Fitness 🏃" },
+  { id: "finance", label: "Finance 💰" },
+  { id: "career", label: "Career 🚀" },
+  { id: "learning", label: "Learning 📚" },
+  { id: "health", label: "Health ❤️" },
+] as const;
+
+export type GoalCategory = (typeof GOAL_CATEGORIES)[number]["id"];
+
 // Goal creation schema
 export const createGoalSchema = z.object({
   title: z.string().min(1, "Title is required").describe("Title of the goal"),
   description: z.string().optional().describe("Description of the goal"),
+  category: z
+    .string()
+    .default("personal")
+    .describe("Category of the goal (fitness, finance, career, learning, health, personal)"),
   deadline: z
     .string()
     .optional()
@@ -12,8 +27,8 @@ export const createGoalSchema = z.object({
     .enum(["low", "medium", "high"])
     .default("medium")
     .describe("Priority of the goal"),
-  progress: z.number().default(0).describe("Progress of the goal"),
-  objective: z.number().default(100).describe("Objective of the goal"),
+  progress: z.coerce.number().default(0).describe("Progress of the goal"),
+  objective: z.coerce.number().default(100).describe("Objective of the goal"),
   unit: z
     .string()
     .default("%")
@@ -23,9 +38,7 @@ export const createGoalSchema = z.object({
 });
 
 // Update schema (allows partial updates)
-export const updateGoalSchema = createGoalSchema.partial().extend({
-  updatedAt: z.string().default(() => new Date().toISOString()),
-});
+export const updateGoalSchema = createGoalSchema.partial();
 
 // Full goal schema (includes Firestore ID)
 export const goalSchema = createGoalSchema.extend({

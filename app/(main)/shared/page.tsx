@@ -20,15 +20,19 @@ import ResponsiveDialogDrawer from "@/components/ui/ResponsiveDialogDrawer";
 import ItineraryForm from "@/components/planner/itineraries/ItineraryForm";
 import { Itinerary } from "@/types/itineraries";
 
+import { importPublicTheme } from "@/lib/services/themes";
+import { useTheme } from "next-themes";
+
 export default function SharedPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const { setTheme } = useTheme();
 
   // Section mode: "public" vs "mine"
   const [sectionMode, setSectionMode] = useState<"public" | "mine">("mine");
-  const [typeFilter, setTypeFilter] = useState<"all" | "itinerary" | "journal">(
-    "all",
-  );
+  const [typeFilter, setTypeFilter] = useState<
+    "all" | "itinerary" | "journal" | "theme"
+  >("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const [publicShares, setPublicShares] = useState<PublicShare[]>([]);
@@ -69,19 +73,25 @@ export default function SharedPage() {
     }
 
     if (!user) {
-      toast.error("Please sign in to import itineraries into your planner");
+      toast.error("Please sign in to apply or import items into your account");
       router.push("/auth/sign-in");
       return;
     }
 
     setImportingId(share.id);
     try {
-      const itinerary = duplicatePublicItineraryData(share);
-      setItineraryData(itinerary as Itinerary);
-      setIsDialogOpen(true);
+      if (share.type === "theme") {
+        const importedTheme = await importPublicTheme(user.uid, share);
+        setTheme(importedTheme.id);
+        toast.success(`Theme "${importedTheme.name}" applied!`);
+      } else {
+        const itinerary = duplicatePublicItineraryData(share);
+        setItineraryData(itinerary as Itinerary);
+        setIsDialogOpen(true);
+      }
     } catch (err) {
-      console.error("Error importing itinerary:", err);
-      toast.error("Failed to import itinerary");
+      console.error("Error importing share:", err);
+      toast.error("Failed to import share");
     } finally {
       setImportingId(null);
     }
@@ -207,6 +217,17 @@ export default function SharedPage() {
             >
               Journals
             </button>
+            <button
+              type="button"
+              onClick={() => setTypeFilter("theme")}
+              className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-semibold transition ${
+                typeFilter === "theme"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Themes
+            </button>
           </div>
 
           <div className="relative w-full sm:w-72">
@@ -245,7 +266,7 @@ export default function SharedPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-6">
             {filteredShares.map((share) => (
               <PublicShareCard
                 key={share.id}

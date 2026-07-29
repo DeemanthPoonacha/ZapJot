@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createGoalSchema, Goal, GoalCreate } from "@/types/goals";
+import { createGoalSchema, Goal, GoalCreate, GOAL_CATEGORIES } from "@/types/goals";
 import { useGoalMutations } from "@/lib/hooks/useGoals";
 import { toast } from "../../ui/sonner";
 
@@ -16,6 +16,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import DeleteConfirm from "../../ui/delete-confirm";
 import { Ban, Save } from "lucide-react";
@@ -37,6 +44,7 @@ const GoalForm = ({
     defaultValues: {
       title: goalData?.title || "",
       description: goalData?.description || "",
+      category: goalData?.category || "personal",
       deadline: goalData?.deadline || "",
       objective: goalData?.objective || 100,
       progress: goalData?.progress || 0,
@@ -60,7 +68,6 @@ const GoalForm = ({
   };
 
   const onSubmit = async (data: GoalCreate) => {
-    console.log("🚀 ~ onSubmit ~ data:", data);
     try {
       if (isEditing) {
         await updateMutation.mutateAsync({ id: goalData.id, data });
@@ -114,21 +121,48 @@ const GoalForm = ({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="deadline"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Deadline</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} placeholder="Deadline" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="h-9 text-xs">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {GOAL_CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id} className="text-xs">
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="deadline"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Deadline</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} placeholder="Deadline" className="h-9 text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="progress"
@@ -145,7 +179,7 @@ const GoalForm = ({
                       }
                       min={0}
                       placeholder="Progress"
-                      className="rounded-r-none"
+                      className="rounded-r-none h-9 text-xs"
                     />
                     {UnitInput}
                   </div>
@@ -171,7 +205,7 @@ const GoalForm = ({
                       }
                       min={0}
                       placeholder="Objective"
-                      className="rounded-r-none"
+                      className="rounded-r-none h-9 text-xs"
                     />
                     {UnitInput}
                   </div>
@@ -210,9 +244,9 @@ const GoalForm = ({
               <Ban />
               Cancel
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="bg-gradient-primary text-primary-foreground shadow-md">
               <Save />
-              Save
+              Save Goal
             </Button>
           </div>
         </div>
