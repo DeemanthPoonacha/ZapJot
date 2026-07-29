@@ -167,11 +167,11 @@ export function NotificationSettings() {
 
   return (
     <Form {...form}>
-      <form className="w-full space-y-6">
+      <form className="w-full space-y-5">
         {!isSupported && (
-          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg p-4 text-sm flex items-center gap-2">
-            <Bell className="h-4 w-4" />
-            <p>Push notifications are not supported in this browser.</p>
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 rounded-xl p-4 text-sm flex items-center gap-3">
+            <Bell className="h-5 w-5 shrink-0 text-amber-500" />
+            <p>Push notifications are not supported in this browser environment.</p>
           </div>
         )}
 
@@ -180,19 +180,28 @@ export function NotificationSettings() {
           control={form.control}
           name="enable_notifications"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200">
-              <div className="flex items-center gap-3">
-                <Bell className="h-5 w-5" />
+            <FormItem className="flex items-center justify-between rounded-xl border border-border/70 bg-card/60 p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md backdrop-blur-sm">
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shrink-0 mt-0.5">
+                  <Bell className="h-5 w-5" />
+                </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-base font-semibold">
-                    Enable Notifications
-                  </FormLabel>
-                  <FormDescription className="text-sm">
-                    Get event and update alerts on this device.
+                  <div className="flex items-center gap-2">
+                    <FormLabel className="text-base font-semibold cursor-pointer">
+                      Enable Push Notifications
+                    </FormLabel>
+                    {field.value && (
+                      <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        Active Device
+                      </span>
+                    )}
+                  </div>
+                  <FormDescription className="text-sm text-muted-foreground">
+                    Receive real-time push alerts for upcoming events, reminders, and updates on this browser.
                   </FormDescription>
                 </div>
               </div>
-              <FormControl>
+              <FormControl className="ml-4 shrink-0">
                 <Switch
                   disabled={!isSupported || isLoading}
                   checked={field.value}
@@ -212,20 +221,21 @@ export function NotificationSettings() {
           control={form.control}
           name="notifyMinsBefore"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200">
-              <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5" />
+            <FormItem className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-border/70 bg-card/60 p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md backdrop-blur-sm gap-4">
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shrink-0 mt-0.5">
+                  <Clock className="h-5 w-5" />
+                </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-base font-semibold">
-                    Notification Timing
+                  <FormLabel className="text-base font-semibold cursor-pointer">
+                    Notification Lead Time
                   </FormLabel>
-                  <FormDescription className="text-sm">
-                    Choose when to get event alerts on all registered and
-                    enabled devices
+                  <FormDescription className="text-sm text-muted-foreground">
+                    Specify how many minutes in advance to receive event alerts on your registered devices.
                   </FormDescription>
                 </div>
               </div>
-              <div className="min-w-32">
+              <div className="w-full sm:w-44 shrink-0">
                 <Select
                   disabled={
                     !settings?.notifications.devices?.[getDeviceId()]
@@ -245,15 +255,15 @@ export function NotificationSettings() {
                   aria-label="Select notification timing"
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full bg-background/80 border-border/80 rounded-lg">
                       <SelectValue placeholder="Select time" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="5">5 minutes</SelectItem>
-                    <SelectItem value="10">10 minutes</SelectItem>
-                    <SelectItem value="30">30 minutes</SelectItem>
-                    <SelectItem value="60">1 hour</SelectItem>
+                  <SelectContent className="rounded-xl border-border/80 shadow-lg">
+                    <SelectItem value="5" className="rounded-lg cursor-pointer">5 minutes before</SelectItem>
+                    <SelectItem value="10" className="rounded-lg cursor-pointer">10 minutes before</SelectItem>
+                    <SelectItem value="30" className="rounded-lg cursor-pointer">30 minutes before</SelectItem>
+                    <SelectItem value="60" className="rounded-lg cursor-pointer">1 hour before</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
