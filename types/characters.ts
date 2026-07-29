@@ -20,6 +20,16 @@ export const createCharacterSchema = z.object({
       "Array of IDs of reminders or special dates like birthdays, anniversaries, etc.",
     ),
   notes: z.string().optional().describe("Notes about the character"),
+  googleContactId: z
+    .string()
+    .optional()
+    .describe("Google People API resourceName for dedup"),
+  phone: z.string().optional().describe("Phone number of the character"),
+  email: z.string().optional().describe("Email address of the character"),
+  source: z
+    .enum(["manual", "google", "phone"])
+    .default("manual")
+    .describe("Import source of the character"),
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });

@@ -82,9 +82,13 @@ export const addCharacter = async (
 
   // Validate character before write
   const validated = createCharacterSchema.parse(payload);
+  const cleanData = Object.fromEntries(
+    Object.entries(validated).filter(([_, value]) => value !== undefined),
+  );
+
   const newDocRef = doc(charactersRef);
-  await setDocOptimistic(newDocRef, validated);
-  return { id: newDocRef.id, ...validated };
+  await setDocOptimistic(newDocRef, cleanData);
+  return { id: newDocRef.id, ...validated } as Character;
 };
 
 /**
@@ -111,7 +115,11 @@ export const updateCharacter = async (
     updatedAt: new Date().toISOString(),
   });
 
-  await updateDocOptimistic(docRef, validated);
+  const cleanData = Object.fromEntries(
+    Object.entries(validated).filter(([_, value]) => value !== undefined),
+  );
+
+  await updateDocOptimistic(docRef, cleanData);
   return characterId;
 };
 

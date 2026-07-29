@@ -73,33 +73,42 @@ export function AiSettings() {
   }
 
   if (isSettingsLoading) {
-    return <div className="space-y-4 animate-pulse">
-      <div className="h-20 bg-muted rounded-lg" />
-      <div className="h-20 bg-muted rounded-lg" />
-    </div>;
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="h-24 bg-muted/60 rounded-xl" />
+        <div className="h-24 bg-muted/60 rounded-xl" />
+      </div>
+    );
   }
 
   return (
     <Form {...form}>
-      <form className="w-full space-y-6">
+      <form className="w-full space-y-5">
         {/* Confirm AI Actions */}
         <FormField
           control={form.control}
           name="confirmAiActions"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200 hover:bg-muted/50">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
+            <FormItem className="flex items-center justify-between rounded-xl border border-border/70 bg-card/60 p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md backdrop-blur-sm">
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shrink-0 mt-0.5">
+                  <CheckCircle2 className="h-5 w-5" />
+                </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-base font-semibold">
-                    Confirm AI Actions
-                  </FormLabel>
-                  <FormDescription className="text-sm">
-                    Always show a confirmation form before Zappy saves or updates data.
+                  <div className="flex items-center gap-2">
+                    <FormLabel className="text-base font-semibold cursor-pointer">
+                      Confirm AI Actions
+                    </FormLabel>
+                    <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      Safety
+                    </span>
+                  </div>
+                  <FormDescription className="text-sm text-muted-foreground">
+                    Always show a confirmation prompt before Zappy creates, edits, or deletes data.
                   </FormDescription>
                 </div>
               </div>
-              <FormControl>
+              <FormControl className="ml-4 shrink-0">
                 <Switch
                   checked={field.value}
                   onCheckedChange={(checked) => {
@@ -112,25 +121,31 @@ export function AiSettings() {
           )}
         />
 
-
         {/* AI Model Selection */}
         <FormField
           control={form.control}
           name="preferredModel"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-4 transition-all duration-200 hover:bg-muted/50">
-              <div className="flex items-center gap-3">
-                <Zap className="h-5 w-5 text-primary" />
+            <FormItem className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-border/70 bg-card/60 p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md backdrop-blur-sm gap-4">
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shrink-0 mt-0.5">
+                  <Zap className="h-5 w-5" />
+                </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-base font-semibold">
-                    AI Intelligence Level
-                  </FormLabel>
-                  <FormDescription className="text-sm">
-                    Choose the model power. "Pro" is smarter but might be slower.
+                  <div className="flex items-center gap-2">
+                    <FormLabel className="text-base font-semibold cursor-pointer">
+                      AI Intelligence Level
+                    </FormLabel>
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary border border-primary/20">
+                      Gemini
+                    </span>
+                  </div>
+                  <FormDescription className="text-sm text-muted-foreground">
+                    Select your preferred AI engine. "Pro" offers advanced reasoning while "Flash" optimizes for rapid responses.
                   </FormDescription>
                 </div>
               </div>
-              <div className="min-w-40">
+              <div className="w-full sm:w-52 shrink-0">
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value);
@@ -139,19 +154,23 @@ export function AiSettings() {
                   value={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full bg-background/80 border-border/80 rounded-lg">
                       <SelectValue placeholder="Select AI model" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl border-border/80 shadow-lg">
                     {AVAILABLE_MODELS.map((model) => (
-                      <SelectItem key={model} value={model}>
-                        {model
-                          .replace("gemini-", "")
-                          .replace("-preview", "")
-                          .split("-")
-                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                          .join(" ")}
+                      <SelectItem key={model} value={model} className="rounded-lg py-2 cursor-pointer">
+                        <div className="flex items-center justify-between w-full">
+                          <span>
+                            {model
+                              .replace("gemini-", "")
+                              .replace("-preview", "")
+                              .split("-")
+                              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                              .join(" ")}
+                          </span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -164,3 +183,4 @@ export function AiSettings() {
     </Form>
   );
 }
+
