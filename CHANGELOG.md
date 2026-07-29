@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-07-29
+
+### Added
+
+- **Planner Pulse Dashboard Summary Bar:** Added global 4-card metric snapshot bar at top of Planner showing live task completion, upcoming events, average goal progress %, and active itineraries. (#50)
+- **Home Screen Quick-Add Bars:** Built 1-line quick-add input bars for Tasks (`pending-tasks.tsx`) with priority ⭐ and due date 📅 pickers, and Events (`upcoming-events.tsx`) with date 📅 and time ⏰ pickers directly on the Home dashboard. (#50)
+- **Custom Mobile-First Planner Calendar:** Built `CustomPlannerCalendar` supporting `Day`, `Week`, and `Month` view modes, toggleable 1-tap day filtering, Month/Year jump selector modal, and `Include Past Days` toggle badge. (#50)
+- **Goal Categories & Milestone Celebrations:** Added goal categories (`Personal`, `Fitness`, `Finance`, `Career`, `Learning`, `Health`), 1-tap category filter chips, and glowing 100% Milestone Achieved celebration banners. (#50)
+- **Live Trip Countdown & 1-Click Share:** Added live trip status badges (`🛫 Trip in X days!`) and 1-click share/summary copying to itinerary detail cards. (#50)
+
+### Changed
+
+- **CSS Masonry Columns Layout:** Upgraded `TasksList`, `EventsList`, and `GoalsList` from standard row-aligned grid to `columns-1 md:columns-2 gap-4 space-y-4` (`break-inside-avoid`), completely eliminating vertical dead space gaps between cards. (#50)
+
+### Fixed
+
+- **Firestore Payload Undefined Sanitization:** Added `sanitizeFirestorePayload()` helper in task service to strip `undefined` keys prior to Firestore writes. (#50)
+- **Safe Event Date Parsing:** Added safe timestamp/date conversion in `home-header.tsx` to prevent runtime `toDate is not a function` errors. (#50)
+
 ## [1.6.0] - 2026-07-27
 
 ### Added
