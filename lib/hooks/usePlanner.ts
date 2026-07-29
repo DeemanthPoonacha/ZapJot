@@ -3,19 +3,19 @@ import { useGlobalState } from "./global-state";
 const usePlanner = () => {
   const [selectedTab, setSelectedTab] = useGlobalState<string>(
     ["selectedTab"],
-    "tasks"
+    "events",
   );
   const [selectedEventId, setSelectedEventId] = useGlobalState<string | null>(
     ["selectedEvent"],
-    null
+    null,
   );
   const [selectedGoalId, setSelectedGoalId] = useGlobalState<string | null>(
     ["selectedGoal"],
-    null
+    null,
   );
   const [selectedTaskId, setSelectedTaskId] = useGlobalState<string | null>(
     ["selectedTask"],
-    null
+    null,
   );
   const [selectedItineraryId, setSelectedItineraryId] = useGlobalState<
     string | null

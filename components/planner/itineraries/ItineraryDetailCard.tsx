@@ -68,6 +68,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   const { selectedItineraryId, setSelectedItineraryId } = usePlanner();
   const { deleteMutation } = useItineraryMutations();
   const [isSocialCardOpen, setIsSocialCardOpen] = useState(false);
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
 
   const expandedMain = selectedItineraryId === itinerary.id;
 
@@ -137,12 +138,15 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
   const completionPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  // Calculate days remaining
+  // Calculate days remaining & trip countdown
   const currentDate = new Date();
   const startDate = new Date(itinerary.startDate);
   const endDate = new Date(itinerary.endDate);
   const tripStarted = currentDate >= startDate;
   const tripEnded = currentDate > endDate;
+  const daysUntilTrip = Math.ceil(
+    (startDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24),
+  );
 
   // Calculate safe budget metrics
   const safeBudget = itinerary.budget ?? 0;
@@ -178,7 +182,11 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
 
   const handlePrintItinerary = () => {
     if (typeof window !== "undefined") {
-      window.print();
+      setIsPrintPreviewOpen(true);
+      setTimeout(() => {
+        window.print();
+        setIsPrintPreviewOpen(false);
+      }, 150);
     }
   };
 
@@ -198,7 +206,6 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
-            {/* Scrim gradient overlay ensuring text readability in both dark and light modes */}
             <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/10 pointer-events-none" />
           </>
         )}
@@ -219,7 +226,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                   {/* Desktop view: inline action buttons with background chips */}
                   <div className="hidden sm:flex items-center gap-0.5 bg-background/60 dark:bg-background/40 backdrop-blur-xs p-0.5 rounded-lg border border-border/40 shadow-2xs">
                     <Button
-                      className="cursor-pointer text-purple-600 dark:text-purple-400 hover:text-purple-700 hover:bg-purple-500/10 h-8 w-8"
+                      className="cursor-pointer  h-8 w-8"
                       variant="ghost"
                       size="icon"
                       title="Create Social Card"
@@ -281,7 +288,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                           onClick={() => setIsSocialCardOpen(true)}
                           className="cursor-pointer gap-2"
                         >
-                          <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                          <Sparkles className="w-4 h-4 text-primary" />
                           <span>Create Social Card</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -348,28 +355,34 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 {formatDate(itinerary.startDate)}
                 {itinerary.endDate &&
                   itinerary.endDate !== itinerary.startDate && (
-                    <span className="">
-                      - {formatDate(itinerary.endDate)}
-                    </span>
+                    <span className="">- {formatDate(itinerary.endDate)}</span>
                   )}
               </span>
-              <Badge
-                variant="outline"
-                className={cn(
-                  "flex items-center text-xs font-semibold px-2 py-0.5 shadow-2xs border",
-                  tripEnded
-                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 dark:bg-emerald-500/20 border-emerald-500/30"
-                    : tripStarted
-                      ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 dark:bg-amber-500/20 border-amber-500/30"
-                      : "bg-blue-500/15 text-blue-700 dark:text-blue-300 dark:bg-blue-500/20 border-blue-500/30",
-                )}
-              >
-                {!tripStarted
-                  ? "Upcoming"
-                  : tripEnded
-                    ? "Completed"
-                    : "In Progress"}
-              </Badge>
+
+              {/* Trip Countdown Badge */}
+              {!tripStarted ? (
+                <Badge
+                  variant="outline"
+                  className="bg-primary/10 text-primary border-primary/30 font-bold text-[10px] px-2 py-0.5"
+                >
+                  🛫 Trip in {daysUntilTrip}{" "}
+                  {daysUntilTrip === 1 ? "day" : "days"}!
+                </Badge>
+              ) : !tripEnded ? (
+                <Badge
+                  variant="default"
+                  className="bg-gradient-primary text-primary-foreground font-bold text-[10px] px-2 py-0.5 shadow-sm"
+                >
+                  🌴 Trip in Progress!
+                </Badge>
+              ) : (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] font-semibold text-muted-foreground"
+                >
+                  ✅ Trip Completed
+                </Badge>
+              )}
             </div>
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-background/80 dark:bg-card/90 text-foreground border border-border/60 shadow-2xs flex items-center gap-1.5 backdrop-blur-xs shrink-0">
               <CalendarDays className="h-3.5 w-3.5 text-primary" />
@@ -521,7 +534,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                 </TabsContent>
 
                 <TabsContent value="schedule" className="space-y-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold">
                       Itinerary Schedule
                     </h3>
@@ -532,7 +545,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         onClick={expandAllDays}
                       >
                         <CopyPlus className="h-4 w-4 mr-1" />
-                        Expand All
+                        <span className="hidden sm:inline">Expand All</span>
                       </Button>
                       <Button
                         variant="outline"
@@ -540,7 +553,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
                         onClick={collapseAllDays}
                       >
                         <CopyMinus className="h-4 w-4 mr-1" />
-                        Collapse All
+                        <span className="hidden sm:inline">Collapse All</span>
                       </Button>
                     </div>
                   </div>
@@ -598,7 +611,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
       </ListCardFooter>
 
       {/* Hidden container that displays only during window.print() */}
-      <PrintableItinerary itinerary={itinerary} />
+      {isPrintPreviewOpen && <PrintableItinerary itinerary={itinerary} />}
 
       {/* Social Card Generator Modal */}
       <SocialCardModal
