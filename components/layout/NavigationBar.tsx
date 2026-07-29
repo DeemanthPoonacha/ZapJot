@@ -53,7 +53,7 @@ export function NavigationBar() {
 
   // Desktop navigation (sidebar)
   return (
-    <nav className="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex-col lg:border-r lg:bg-background lg:p-4">
+    <nav className="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex-col lg:border-r lg:bg-gradient-ambient lg:p-4">
       <Logo className="border-b mb-6 p-4" />
       <div className="space-y-2 px-2">
         {allRoutes.map((route) => (
