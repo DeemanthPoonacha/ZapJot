@@ -45,10 +45,16 @@ export function GoogleCalendarSettings() {
           setIsLinking(true);
           const credential = await linkGoogleCalendar();
           if (credential && credential.accessToken) {
-            localStorage.setItem("google_calendar_access_token", credential.accessToken);
+            localStorage.setItem(
+              "google_calendar_access_token",
+              credential.accessToken,
+            );
             // Default Google access token duration is 1 hour
             const expiryTime = Date.now() + 3600 * 1000;
-            localStorage.setItem("google_calendar_token_expiry", String(expiryTime));
+            localStorage.setItem(
+              "google_calendar_token_expiry",
+              String(expiryTime),
+            );
 
             setIsEnabled(true);
             setCalendarSyncEnabled(true);
@@ -85,7 +91,9 @@ export function GoogleCalendarSettings() {
 
     const token = getCalendarAccessToken();
     if (!token) {
-      toast.error("Google Calendar session expired. Please re-enable sync to reconnect.");
+      toast.error(
+        "Google Calendar session expired. Please re-enable sync to reconnect.",
+      );
       setIsEnabled(false);
       setCalendarSyncEnabled(false);
       return;
@@ -94,7 +102,11 @@ export function GoogleCalendarSettings() {
     try {
       setIsSyncing(true);
       const eventList = events || [];
-      const result = await syncGoogleCalendar(userId, eventList, notifyMinsBefore);
+      const result = await syncGoogleCalendar(
+        userId,
+        eventList,
+        notifyMinsBefore,
+      );
       if (result.success) {
         toast.success(result.message || "Calendar synced successfully!");
       } else {
@@ -125,9 +137,7 @@ export function GoogleCalendarSettings() {
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold">
-                Google Calendar Sync
-              </h3>
+              <h3 className="text-base font-semibold">Google Calendar Sync</h3>
               {isEnabled ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -140,7 +150,8 @@ export function GoogleCalendarSettings() {
               )}
             </div>
             <p className="text-sm text-muted-foreground">
-              Automatically synchronize your ZapJot events and schedules directly with Google Calendar.
+              Automatically synchronize your ZapJot events and schedules
+              directly with Google Calendar.
             </p>
           </div>
         </div>
@@ -156,7 +167,9 @@ export function GoogleCalendarSettings() {
 
       <div className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/30 p-4">
         <div className="text-xs text-muted-foreground">
-          {isEnabled ? "Sync ready. Click to force trigger manual synchronization." : "Turn on sync above to enable calendar integration."}
+          {isEnabled
+            ? "Sync ready. Click to force trigger manual synchronization."
+            : "Turn on sync above to enable calendar integration."}
         </div>
         <Button
           onClick={handleSync}

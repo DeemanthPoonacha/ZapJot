@@ -4,29 +4,21 @@ import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { Users, Loader2, RefreshCw } from "lucide-react";
-import { useAuth } from "@/lib/context/AuthProvider";
+import { Users, Loader2, Download } from "lucide-react";
 import { linkGoogleContacts } from "@/lib/services/auth";
-import { useCharacters, useCharacterMutations } from "@/lib/hooks/useCharacters";
 import {
   isContactsSyncEnabled,
   setContactsSyncEnabled,
   getContactsAccessToken,
   setContactsAccessToken,
-  fetchGoogleContacts,
-  mapGoogleContactToCharacter,
 } from "@/lib/services/googleContacts";
+import { ImportContactsDialog } from "@/components/characters/ImportContactsDialog";
 
 export function GoogleContactsSettings() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
-
-  const { user } = useAuth();
-  const userId = user?.uid;
-  const { data: existingCharacters } = useCharacters();
-  const { addMutation } = useCharacterMutations();
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -68,71 +60,31 @@ export function GoogleContactsSettings() {
     }
   };
 
-  const handleSync = async () => {
-    if (!userId) {
-      toast.error("Authentication required.");
-      return;
-    }
-
+  const handleOpenSyncDialog = async () => {
     if (!isEnabled) {
       toast.error("Please enable Google Contacts sync first.");
       return;
     }
 
-    let token = getContactsAccessToken();
+    const token = getContactsAccessToken();
     if (!token) {
-      toast.error("Google Contacts session expired. Reconnecting...");
       try {
         setIsLinking(true);
         const credential = await linkGoogleContacts();
         if (credential?.accessToken) {
-          token = credential.accessToken;
-          setContactsAccessToken(token);
+          setContactsAccessToken(credential.accessToken);
         } else {
           throw new Error("Re-auth failed.");
         }
       } catch (err) {
-        setIsEnabled(false);
-        setContactsSyncEnabled(false);
-        toast.error("Could not reconnect Google Contacts.");
-        setIsLinking(false);
+        toast.error("Could not connect to Google Contacts.");
         return;
       } finally {
         setIsLinking(false);
       }
     }
 
-    try {
-      setIsSyncing(true);
-      const rawContacts = await fetchGoogleContacts(token);
-
-      const existingGoogleIds = new Set(
-        existingCharacters?.map((c) => c.googleContactId).filter(Boolean),
-      );
-      const existingNames = new Set(
-        existingCharacters?.map((c) => c.name.toLowerCase().trim()),
-      );
-
-      let importedCount = 0;
-      for (const raw of rawContacts) {
-        const payload = mapGoogleContactToCharacter(raw, userId);
-        const isDuplicate =
-          (payload.googleContactId && existingGoogleIds.has(payload.googleContactId)) ||
-          existingNames.has(payload.name.toLowerCase().trim());
-
-        if (!isDuplicate) {
-          await addMutation.mutateAsync(payload);
-          importedCount++;
-        }
-      }
-
-      toast.success(`Sync complete! ${importedCount} new contact(s) imported.`);
-    } catch (error: any) {
-      console.error("Contacts sync error:", error);
-      toast.error(error?.message || "An error occurred during contacts sync.");
-    } finally {
-      setIsSyncing(false);
-    }
+    setIsImportDialogOpen(true);
   };
 
   if (!isMounted) {
@@ -149,11 +101,24 @@ export function GoogleContactsSettings() {
         <div className="flex items-center gap-3">
           <Users className="h-5 w-5 text-primary" />
           <div className="space-y-1">
-            <h3 className="text-base font-semibold">
-              Enable Google Contacts Sync
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-semibold">
+                Enable Google Contacts Sync
+              </h3>
+              {isEnabled ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Connected
+                </span>
+              ) : (
+                <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground border border-border/50">
+                  Disconnected
+                </span>
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">
-              Automatically import your Google Contacts into your ZapJot Characters list.
+              Automatically import your Google Contacts into your ZapJot
+              Characters list.
             </p>
           </div>
         </div>
@@ -165,20 +130,30 @@ export function GoogleContactsSettings() {
         />
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/30 p-4">
+        <div className="text-xs text-muted-foreground">
+          {isEnabled
+            ? "Sync ready. Click to preview and select contacts to import/update."
+            : "Turn on sync above to connect your Google account."}
+        </div>
         <Button
-          onClick={handleSync}
-          disabled={!isEnabled || isSyncing || isLinking}
+          onClick={handleOpenSyncDialog}
+          disabled={!isEnabled || isLinking}
           className="gap-2"
         >
-          {isSyncing || isLinking ? (
+          {isLinking ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <RefreshCw className="h-4 w-4" />
+            <Download className="h-4 w-4" />
           )}
-          {isSyncing ? "Syncing..." : isLinking ? "Connecting..." : "Sync Contacts"}
+          {isLinking ? "Connecting..." : "Sync / Import Contacts"}
         </Button>
       </div>
+
+      <ImportContactsDialog
+        open={isImportDialogOpen}
+        onOpenChange={setIsImportDialogOpen}
+      />
     </div>
   );
 }

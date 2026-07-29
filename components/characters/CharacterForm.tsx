@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -23,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import UploadAvatar from "../ui/upload-avatar";
+import { User, Briefcase, Mail, Phone, FileText } from "lucide-react";
 
 interface CharacterFormProps {
   character?: Character | null;
@@ -40,8 +43,6 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
   const { user } = useAuth();
   const userId = user?.uid;
   const [isImageUploading, setIsImageUploading] = useState(false);
-  console.log(character);
-  
 
   const form = useForm<CharacterCreate>({
     resolver: zodResolver(createCharacterSchema),
@@ -54,6 +55,8 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
       phone: character?.phone || "",
       reminders: character?.reminders || [],
       notes: character?.notes || "",
+      source: character?.source || "manual",
+      googleContactId: character?.googleContactId || undefined,
     },
   });
 
@@ -68,7 +71,12 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
       if (character?.id) {
         await updateMutation.mutateAsync({
           id: character.id,
-          data: { ...data, lowercaseName: data.name.toLowerCase() },
+          data: {
+            ...data,
+            source: character.source || data.source || "manual",
+            googleContactId: character.googleContactId || data.googleContactId,
+            lowercaseName: data.name.toLowerCase(),
+          },
         });
         toast.success("Character updated successfully");
         onUpdate?.();
@@ -86,32 +94,44 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
     }
   };
 
-  if (!user)
+  if (!user) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <UploadAvatar
-          form={form}
-          fieldName="image"
-          isImageUploading={isImageUploading}
-          setIsImageUploading={setIsImageUploading}
-        />
+        {/* Avatar Upload Container */}
+        <div className="flex justify-center pb-2">
+          <UploadAvatar
+            form={form}
+            fieldName="image"
+            isImageUploading={isImageUploading}
+            setIsImageUploading={setIsImageUploading}
+          />
+        </div>
 
+        {/* Input Fields Section */}
         <div className="space-y-4">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                  <User className="h-4 w-4 text-primary" />
+                  Full Name
+                </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Enter character name" />
+                  <Input
+                    {...field}
+                    placeholder="Enter character name..."
+                    className="bg-card/70 border-border/80 rounded-xl"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,15 +143,19 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title / Relationship</FormLabel>
+                <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                  <Briefcase className="h-4 w-4 text-primary" />
+                  Title / Relationship
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. Friend, Colleague, Family member"
+                    placeholder="e.g. Friend, Colleague, Manager, Client"
+                    className="bg-card/70 border-border/80 rounded-xl"
                   />
                 </FormControl>
-                <FormDescription>
-                  Define your relationship with this character
+                <FormDescription className="text-xs text-muted-foreground">
+                  Specify how you know or interact with this person.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -144,12 +168,16 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Address</FormLabel>
+                  <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-primary" />
+                    Email Address
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="email"
-                      placeholder="e.g. john@example.com"
+                      placeholder="e.g. name@example.com"
+                      className="bg-card/70 border-border/80 rounded-xl"
                     />
                   </FormControl>
                   <FormMessage />
@@ -162,12 +190,16 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-primary" />
+                    Phone Number
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="tel"
                       placeholder="e.g. +1 (555) 000-0000"
+                      className="bg-card/70 border-border/80 rounded-xl"
                     />
                   </FormControl>
                   <FormMessage />
@@ -181,12 +213,15 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             name="notes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Notes</FormLabel>
+                <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-primary" />
+                  Personal Notes
+                </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Add any personal notes about this character"
-                    className="min-h-32 resize-none"
+                    placeholder="Add personal notes, context, or important details about this character..."
+                    className="min-h-32 resize-none bg-card/70 border-border/80 rounded-xl"
                   />
                 </FormControl>
                 <FormMessage />
@@ -195,7 +230,8 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
           />
         </div>
 
-        <div className="flex @max-md:flex-col gap-4 pt-4">
+        {/* Actions Bar */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border/60">
           <Button
             type="button"
             onClick={() => {
@@ -204,14 +240,14 @@ const CharacterForm: React.FC<CharacterFormProps> = ({
             }}
             variant="outline"
             disabled={isSubmitting}
-            className="flex-1"
+            className="flex-1 rounded-xl"
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting} className="flex-1">
+          <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-xl font-semibold">
             {isSubmitting ? (
               <>
-                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 {character?.id ? "Updating..." : "Creating..."}
               </>
             ) : character?.id ? (
