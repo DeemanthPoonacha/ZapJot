@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-07-29
+
+### Added
+
+- **Google Contacts Sync:** Integrated Google People API (`people.connections.list`) to fetch, paginate, and import Google contacts as ZapJot Characters with token management and `contacts.readonly` scope. (#7)
+- **Web Contact Picker API Support:** Added mobile device contact selection using the browser's native Contact Picker API (`navigator.contacts.select`). (#7)
+- **Selective Contact Import & Sync Dialog:** Added an interactive import modal (`ImportContactsDialog`) with search filtering, "Select All" toggle, and deduplication detection that updates existing character fields instead of creating duplicates. (#7)
+- **Invite to ZapJot Dialog:** Added an invite dialog (`InviteDialog`) allowing users to invite characters/contacts to ZapJot via email or shareable referral link. (#7)
+- **Google Contacts Settings Panel:** Added a Google Contacts management tab in Settings with toggle switch and manual sync dialog trigger. (#7)
+- **Character Contact Info & Source Badges:** Added email address, phone number, and source badges (`Google Contact` / `Phone Contact`) to `CharacterCard` and `CharacterForm`. (#7)
+
+### Changed
+
+- **Home Banner Deck Stack Animation:** Redesigned the Home Banner header carousel into a physical stacked card deck with scale animations, solid background fills (`bg-card` / `bg-primary`), and responsive controls. (#67)
+- **Journal Count Query Fix:** Added `useTotalJournalsCount` hook to calculate accurate journal counts across chapter subcollections dynamically.
+- **Settings Page Responsive Layout:** Added a sticky mobile tab navigation bar, compact profile header, and responsive 3-column overview grid layout.
+
 ## [1.6.0] - 2026-07-27
 
 ### Added
