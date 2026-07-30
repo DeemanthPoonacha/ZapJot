@@ -39,7 +39,97 @@ import { cn } from "@/lib/utils";
 import DeleteConfirm from "../../ui/delete-confirm";
 import { useState } from "react";
 import UploadImage from "../../ui/upload-image";
-import { Reorder } from "framer-motion";
+import { Reorder, useDragControls } from "framer-motion";
+
+function ItineraryTaskItem({
+  task,
+  taskIndex,
+  dayIndex,
+  form,
+  remove,
+}: {
+  task: any;
+  taskIndex: number;
+  dayIndex: number;
+  form: any;
+  remove: (index: number) => void;
+}) {
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item
+      key={task.id}
+      value={task}
+      dragListener={false}
+      dragControls={controls}
+      className="flex items-start gap-2 bg-muted/30 p-3 rounded-lg group border border-transparent hover:border-border transition-all"
+    >
+      <div
+        onPointerDown={(e) => controls.start(e)}
+        className="mt-2 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0 cursor-grab active:cursor-grabbing p-0.5 touch-none"
+      >
+        <GripVertical className="h-4 w-4" />
+      </div>
+      <FormField
+        control={form.control}
+        name={`days.${dayIndex}.tasks.${taskIndex}.completed`}
+        render={({ field }) => (
+          <FormItem className="flex-none mt-2">
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2">
+        <div className="md:col-span-3">
+          <FormField
+            control={form.control}
+            name={`days.${dayIndex}.tasks.${taskIndex}.title`}
+            render={({ field }) => (
+              <FormItem className="flex-1 mb-0">
+                <FormControl>
+                  <Input {...field} placeholder="Task Description" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="md:col-span-1">
+          <FormField
+            control={form.control}
+            name={`days.${dayIndex}.tasks.${taskIndex}.time`}
+            render={({ field }) => (
+              <FormItem className="flex-1 mb-0">
+                <FormControl>
+                  <Input
+                    type="time"
+                    {...field}
+                    placeholder="Time (e.g. 2:00 PM)"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => remove(taskIndex)}
+        className="h-8 w-8 flex-none"
+      >
+        <Trash2 className="h-4 w-4 text-destructive" />
+      </Button>
+    </Reorder.Item>
+  );
+}
 
 interface ItineraryFormProps {
   itineraryData?: Itinerary;
@@ -474,72 +564,14 @@ const TasksList = ({
           className="space-y-2"
         >
           {fields.map((task, taskIndex) => (
-            <Reorder.Item
+            <ItineraryTaskItem
               key={task.id}
-              value={task}
-              className="flex items-start gap-2 bg-muted/30 p-3 rounded-lg group cursor-grab active:cursor-grabbing border border-transparent hover:border-border transition-all"
-            >
-              <div className="mt-2 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0 cursor-grab">
-                <GripVertical className="h-4 w-4" />
-              </div>
-              <FormField
-                control={form.control}
-                name={`days.${dayIndex}.tasks.${taskIndex}.completed`}
-                render={({ field }) => (
-                  <FormItem className="flex-none mt-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2">
-                <div className="md:col-span-3">
-                  <FormField
-                    control={form.control}
-                    name={`days.${dayIndex}.tasks.${taskIndex}.title`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1 mb-0">
-                        <FormControl>
-                          <Input {...field} placeholder="Task Description" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="md:col-span-1">
-                  <FormField
-                    control={form.control}
-                    name={`days.${dayIndex}.tasks.${taskIndex}.time`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1 mb-0">
-                        <FormControl>
-                          <Input
-                            type="time"
-                            {...field}
-                            placeholder="Time (e.g. 2:00 PM)"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => remove(taskIndex)}
-                className="h-8 w-8 flex-none"
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </Reorder.Item>
+              task={task}
+              taskIndex={taskIndex}
+              dayIndex={dayIndex}
+              form={form}
+              remove={remove}
+            />
           ))}
         </Reorder.Group>
       )}

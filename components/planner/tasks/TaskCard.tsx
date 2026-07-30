@@ -9,7 +9,55 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/utils/date-time";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import dayjs from "dayjs";
-import { Reorder } from "framer-motion";
+import { Reorder, useDragControls } from "framer-motion";
+
+function TaskSubtaskItem({
+  subtask,
+  isSubtaskPending,
+  toggleCompletion,
+}: {
+  subtask: any;
+  isSubtaskPending: boolean;
+  toggleCompletion: (id: string) => void;
+}) {
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item
+      key={subtask.id}
+      value={subtask}
+      dragListener={false}
+      dragControls={controls}
+      className="flex items-center space-x-2 bg-muted/20 hover:bg-muted/40 p-1.5 rounded-lg transition-colors group select-none"
+    >
+      <div
+        onPointerDown={(e) => controls.start(e)}
+        className="cursor-grab active:cursor-grabbing p-0.5 touch-none flex items-center justify-center shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground"
+      >
+        <GripVertical className="h-3.5 w-3.5" />
+      </div>
+      <Checkbox
+        disabled={isSubtaskPending}
+        id={subtask.id + "-checkbox"}
+        className="cursor-pointer"
+        checked={subtask.status === "completed"}
+        onCheckedChange={() => toggleCompletion(subtask.id)}
+      />
+
+      <label
+        htmlFor={subtask.id + "-checkbox"}
+        className={cn(
+          "peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer max-w-72 line-clamp-2 text-sm flex-1",
+          subtask.status === "completed"
+            ? "line-through text-muted-foreground"
+            : ""
+        )}
+      >
+        {subtask.title}
+      </label>
+    </Reorder.Item>
+  );
+}
 
 export function TaskCard({
   task,
@@ -118,32 +166,12 @@ export function TaskCard({
             className="ml-2 mt-2 space-y-1.5"
           >
             {subtasks.map((subtask) => (
-              <Reorder.Item
+              <TaskSubtaskItem
                 key={subtask.id}
-                value={subtask}
-                className="flex items-center space-x-2 bg-muted/20 hover:bg-muted/40 p-1.5 rounded-lg transition-colors group cursor-grab active:cursor-grabbing"
-              >
-                <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0" />
-                <Checkbox
-                  disabled={isSubtaskPending}
-                  id={subtask.id + "-checkbox"}
-                  className="cursor-pointer"
-                  checked={subtask.status === "completed"}
-                  onCheckedChange={() => toggleCompletion(subtask.id)}
-                />
-
-                <label
-                  htmlFor={subtask.id + "-checkbox"}
-                  className={cn(
-                    "peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer max-w-72 line-clamp-2 text-sm flex-1",
-                    subtask.status === "completed"
-                      ? "line-through text-muted-foreground"
-                      : ""
-                  )}
-                >
-                  {subtask.title}
-                </label>
-              </Reorder.Item>
+                subtask={subtask}
+                isSubtaskPending={isSubtaskPending}
+                toggleCompletion={toggleCompletion}
+              />
             ))}
           </Reorder.Group>
         )}

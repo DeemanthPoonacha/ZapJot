@@ -624,7 +624,7 @@ export default function PlannerPage() {
       <PlannerPulseSummary />
 
       <Tabs
-        tabValues={["tasks", "events", "goals", "itineraries"]}
+        tabValues={["events", "tasks", "goals", "itineraries"]}
         value={activeTab}
         onValueChange={onTabChange}
         className="w-full"
