@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface TabsProps extends React.ComponentProps<typeof TabsPrimitive.Root> {
   tabValues: string[];
+  isSwipeEnabled?: boolean;
   children: React.ReactNode;
 }
 
@@ -17,11 +18,12 @@ function Tabs({
   onValueChange: controlledOnChange,
   defaultValue,
   children,
+  isSwipeEnabled = true,
   ...props
 }: TabsProps) {
   const isControlled = controlledValue !== undefined;
   const [internalValue, setInternalValue] = React.useState(
-    defaultValue ?? tabValues[0]
+    defaultValue ?? tabValues[0],
   );
   const value = isControlled ? controlledValue : internalValue;
   const setValue = (v: string) => {
@@ -40,6 +42,7 @@ function Tabs({
       const prev = tabValues[index - 1];
       if (prev) setValue(prev);
     },
+    delta: 100,
     trackTouch: true,
     trackMouse: false,
   });
@@ -60,7 +63,7 @@ function Tabs({
         ) {
           return React.cloneElement(
             child as React.ReactElement<{ swipeHandlers?: SwipeableHandlers }>,
-            { swipeHandlers }
+            { swipeHandlers: isSwipeEnabled ? swipeHandlers : undefined },
           );
         }
         return child;
@@ -78,7 +81,7 @@ function TabsList({
       data-slot="tabs-list"
       className={cn(
         "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-1",
-        className
+        className,
       )}
       {...props}
     />
@@ -94,7 +97,7 @@ function TabsTrigger({
       data-slot="tabs-trigger"
       className={cn(
         "cursor-pointer data-[state=active]:bg-background data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring inline-flex items-center justify-center gap-2 rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
+        className,
       )}
       {...props}
     />
@@ -115,7 +118,7 @@ function TabsContent({
       className={cn("flex-1 outline-none", className)}
       {...props}
     >
-      <div {...(swipeHandlers ?? {})} className="h-full w-full">
+      <div {...(swipeHandlers ?? {})} className="flex-1">
         {children}
       </div>
     </TabsPrimitive.Content>

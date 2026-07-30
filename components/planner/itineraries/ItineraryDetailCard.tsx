@@ -405,6 +405,7 @@ const ItineraryDetailCard: React.FC<ItineraryDetailProps> = ({
               className="overflow-hidden w-full border-t pt-2"
             >
               <Tabs
+                isSwipeEnabled={false}
                 tabValues={["overview", "schedule", "budget", "notes"]}
                 defaultValue="overview"
               >
