@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2026-07-30
+
+### Changed
+
+- **Quick-Add Event Popover:** Replaced inline date/time inputs in the home quick-add bar with a compact `Popover` featuring Today/Tomorrow/Next Week quick-select buttons, a collapsible date-time picker, and auto-reset after submission.
+- **Goal Category Emoji Placement:** Moved emoji icons from suffix to prefix in `GOAL_CATEGORIES` labels for consistent alignment in filter chips.
+- **Task Filter "All" Icon:** Added `Filter` icon to the "All" filter chip in TasksList for parity with other filter badges.
+- **EventNextOccurance Element:** Changed `<p>` to `<span>` in `EventCard` for better inline layout.
+
 ## [1.7.2] - 2026-07-30
 
 ### Changed

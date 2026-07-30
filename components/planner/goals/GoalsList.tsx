@@ -42,10 +42,11 @@ const GoalsList = () => {
   };
 
   // Filter goals by selectedCategory
-  const filteredGoals = goals?.filter((goal) => {
-    if (selectedCategory === "all") return true;
-    return goal.category === selectedCategory;
-  }) || [];
+  const filteredGoals =
+    goals?.filter((goal) => {
+      if (selectedCategory === "all") return true;
+      return goal.category === selectedCategory;
+    }) || [];
 
   const [completedGoals, inProgressGoals] = filteredGoals.reduce(
     ([completed, inProgress], goal) =>
@@ -67,7 +68,9 @@ const GoalsList = () => {
           <Filter className="h-3.5 w-3.5" /> All ({goals?.length || 0})
         </Badge>
         {GOAL_CATEGORIES.map((cat) => {
-          const count = goals?.filter((g) => (g.category || "personal") === cat.id).length || 0;
+          const count =
+            goals?.filter((g) => (g.category || "personal") === cat.id)
+              .length || 0;
           return (
             <Badge
               key={cat.id}

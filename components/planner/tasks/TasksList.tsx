@@ -12,6 +12,7 @@ import {
   Star,
   Calendar,
   CheckCircle,
+  Filter,
 } from "lucide-react";
 import usePlanner from "@/lib/hooks/usePlanner";
 import Empty from "../../Empty";
@@ -163,6 +164,7 @@ const TasksList = () => {
           onClick={() => setActiveFilter("all")}
           className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
         >
+          <Filter className="h-3.5 w-3.5" />
           <span>All</span>({totalAllCount})
         </Badge>
         <Badge
