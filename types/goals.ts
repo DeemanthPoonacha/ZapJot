@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const GOAL_CATEGORIES = [
-  { id: "personal", label: "Personal 🎯" },
-  { id: "fitness", label: "Fitness 🏃" },
-  { id: "finance", label: "Finance 💰" },
-  { id: "career", label: "Career 🚀" },
-  { id: "learning", label: "Learning 📚" },
-  { id: "health", label: "Health ❤️" },
+  { id: "personal", label: "🎯 Personal" },
+  { id: "fitness", label: "🏃 Fitness" },
+  { id: "finance", label: "💰 Finance" },
+  { id: "career", label: "🚀 Career" },
+  { id: "learning", label: "📚 Learning" },
+  { id: "health", label: "❤️ Health" },
 ] as const;
 
 export type GoalCategory = (typeof GOAL_CATEGORIES)[number]["id"];
@@ -18,7 +18,9 @@ export const createGoalSchema = z.object({
   category: z
     .string()
     .default("personal")
-    .describe("Category of the goal (fitness, finance, career, learning, health, personal)"),
+    .describe(
+      "Category of the goal (fitness, finance, career, learning, health, personal)",
+    ),
   deadline: z
     .string()
     .optional()

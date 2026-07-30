@@ -27,6 +27,13 @@ import { Event } from "@/types/events";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "../ui/sonner";
 import dayjs from "dayjs";
+import { cn } from "@/lib/utils";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 function HomeQuickAddEventBar() {
   const [title, setTitle] = useState("");
@@ -34,6 +41,7 @@ function HomeQuickAddEventBar() {
   const [time, setTime] = useState(
     dayjs().add(1, "hour").minute(0).second(0).format("HH:mm"),
   );
+  const [openPopover, setOpenPopover] = useState(false);
   const { addMutation } = useEventMutations();
 
   const handleQuickAdd = async (e: React.FormEvent) => {
@@ -41,23 +49,37 @@ function HomeQuickAddEventBar() {
     if (!title.trim() || addMutation.isPending) return;
 
     try {
+      const nextOcc = dayjs(`${date}T${time || "09:00"}`).toDate();
       await addMutation.mutateAsync({
         title: title.trim(),
         date,
         time: time || "09:00",
         repeat: "none",
         repeatDays: [],
-        nextOccurrence: dayjs(`${date}T${time || "09:00"}`).toDate(),
+        nextOccurrence: nextOcc,
         nextNotificationAt: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
       toast.success("Event added successfully");
       setTitle("");
+      setDate(dayjs().format("YYYY-MM-DD"));
+      setTime(dayjs().add(1, "hour").minute(0).second(0).format("HH:mm"));
+      setOpenPopover(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to add event");
     }
+  };
+
+  const getFormattedLabel = () => {
+    const isToday = date === dayjs().format("YYYY-MM-DD");
+    const isTomorrow = date === dayjs().add(1, "day").format("YYYY-MM-DD");
+    const formattedTime = dayjs(`2000-01-01T${time}`).format("h:mm A");
+
+    if (isToday) return `Today, ${formattedTime}`;
+    if (isTomorrow) return `Tomorrow, ${formattedTime}`;
+    return `${dayjs(date).format("MMM D")}, ${formattedTime}`;
   };
 
   return (
@@ -71,23 +93,101 @@ function HomeQuickAddEventBar() {
         placeholder="Quick add event..."
         className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-xs sm:text-sm h-8 flex-1 px-2.5"
       />
-      <Input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="h-8 text-xs w-28 rounded-xl bg-background border-border p-1"
-      />
-      <Input
-        type="time"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-        className="h-8 text-xs w-20 rounded-xl bg-background border-border p-1"
-      />
+
+      <Popover open={openPopover} onOpenChange={setOpenPopover}>
+        <PopoverTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "h-8 text-xs gap-1.5 px-2.5 rounded-lg shrink-0 transition-colors font-medium",
+              date
+                ? "text-primary bg-primary/10 hover:bg-primary/15"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+            title="Set date and time"
+          >
+            <Clock className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden sm:inline">{getFormattedLabel()}</span>
+            <span className="sm:hidden">{dayjs(`2000-01-01T${time}`).format("h:mm A")}</span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-72 p-3 space-y-3">
+          <div className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5 text-primary" /> Select Date &amp; Time
+          </div>
+
+          <div className="flex gap-1.5">
+            <Button
+              type="button"
+              variant={date === dayjs().format("YYYY-MM-DD") ? "default" : "outline"}
+              size="sm"
+              className="h-7 text-xs flex-1 rounded-md px-2"
+              onClick={() => setDate(dayjs().format("YYYY-MM-DD"))}
+            >
+              Today
+            </Button>
+            <Button
+              type="button"
+              variant={
+                date === dayjs().add(1, "day").format("YYYY-MM-DD")
+                  ? "default"
+                  : "outline"
+              }
+              size="sm"
+              className="h-7 text-xs flex-1 rounded-md px-2"
+              onClick={() => setDate(dayjs().add(1, "day").format("YYYY-MM-DD"))}
+            >
+              Tomorrow
+            </Button>
+            <Button
+              type="button"
+              variant={
+                date === dayjs().add(1, "week").format("YYYY-MM-DD")
+                  ? "default"
+                  : "outline"
+              }
+              size="sm"
+              className="h-7 text-xs flex-1 rounded-md px-2"
+              onClick={() => setDate(dayjs().add(1, "week").format("YYYY-MM-DD"))}
+            >
+              Next Week
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 pt-1 border-t border-border/60">
+            <div className="space-y-1">
+              <span className="text-[11px] text-muted-foreground font-medium">
+                Date
+              </span>
+              <Input
+                type="date"
+                value={date}
+                onChange={(e) => e.target.value && setDate(e.target.value)}
+                className="h-8 text-xs rounded-md bg-background"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[11px] text-muted-foreground font-medium">
+                Time
+              </span>
+              <Input
+                type="time"
+                value={time}
+                onChange={(e) => e.target.value && setTime(e.target.value)}
+                className="h-8 text-xs rounded-md bg-background"
+              />
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
       <Button
         type="submit"
         size="sm"
         disabled={!title.trim() || addMutation.isPending}
-        className="h-8 text-xs font-bold rounded-xl px-3 bg-gradient-primary text-primary-foreground shrink-0"
+        className="h-8 text-xs font-bold rounded-xl px-3 bg-gradient-primary text-primary-foreground shrink-0 shadow-sm"
       >
         {addMutation.isPending ? (
           <LoaderCircle className="h-3 w-3 animate-spin" />
@@ -210,12 +310,12 @@ export function UpcomingEvents() {
                   <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
                     <Clock className="w-3.5 h-3.5 text-primary" /> Date & Time
                   </span>
-                  <p className="font-semibold text-foreground">
+                  <div className="font-semibold text-foreground">
                     <EventNextOccurance
                       event={previewEvent}
                       format="ddd, MMM D • h:mm A"
                     />
-                  </p>
+                  </div>
                 </div>
 
                 {previewEvent.location && (

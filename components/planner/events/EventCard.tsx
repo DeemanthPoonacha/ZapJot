@@ -126,8 +126,8 @@ export const EventNextOccurance = ({
     ? dayjs(event.nextOccurrence as Date)
     : getNextOccurrence(event);
   return (
-    <p
-      className="text-sm text-muted-foreground text-Bold flex gap-1 items-center"
+    <span
+      className="text-sm text-muted-foreground font-semibold inline-flex gap-1 items-center"
       title={nextOccurance?.format("ddd, MMM D, YYYY HH:mm")}
     >
       <Calendar1 className="h-4 w-4" />
@@ -140,7 +140,7 @@ export const EventNextOccurance = ({
       >
         {nextOccurance?.format(format)}
       </span>
-    </p>
+    </span>
   );
 };
 
