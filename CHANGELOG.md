@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-07-30
+
+### Changed
+
+- **Tabs Rewrite with Framer Motion:** Reimplemented `Tabs` component with Framer Motion `AnimatePresence`, spring-based slide transitions, and context-based state management for smoother tab navigation.
+- **Calendar Swipe Carousel:** Replaced single-view calendar body with a 3-panel carousel (prev/current/next) using framer-motion `drag="x"` with spring physics, giving a physical swipe-to-navigate feel between day/week/month periods.
+
+### Fixed
+
+- **Tab Swipe Conflict on Events Tab:** Tab swipe is now disabled when on the Events tab (`isSwipeEnabled={activeTab !== "events"}`), preventing conflicts with the calendar's own swipe gestures.
+
 ## [1.7.1] - 2026-07-30
 
 ### Changed
