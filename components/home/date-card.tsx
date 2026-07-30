@@ -1,9 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { Link } from "../layout/link/CustomLink";
+import usePlanner from "@/lib/hooks/usePlanner";
 
 export function DateCard() {
   const [now, setNow] = useState(dayjs());
+  const { setSelectedTab } = usePlanner();
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -29,7 +32,11 @@ export function DateCard() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center gap-4 rounded-xl border border-border/60 bg-card/5 px-5 py-3 shadow-md">
+    <Link
+      href="/planner"
+      onClick={() => setSelectedTab("events")}
+      className="flex items-center justify-center gap-4 rounded-xl border border-border/60 bg-card/5 px-5 py-3 shadow-md"
+    >
       <div className="flex flex-col items-center border-r border-border/40 pr-4">
         <span className="text-lg font-semibold tracking-[0.2em] text-muted-foreground">
           {now.format("YYYY")}
@@ -55,6 +62,6 @@ export function DateCard() {
           {now.format("HH:mm")}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }

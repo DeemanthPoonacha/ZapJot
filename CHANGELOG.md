@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-07-30
+
+### Changed
+
+- **Tabs Rewrite with Framer Motion:** Reimplemented `Tabs` component with Framer Motion `AnimatePresence`, spring-based slide transitions, and context-based state management for smoother tab navigation.
+- **Calendar Swipe Carousel:** Replaced single-view calendar body with a 3-panel carousel (prev/current/next) using framer-motion `drag="x"` with spring physics, giving a physical swipe-to-navigate feel between day/week/month periods.
+
+### Fixed
+
+- **Tab Swipe Conflict on Events Tab:** Tab swipe is now disabled when on the Events tab (`isSwipeEnabled={activeTab !== "events"}`), preventing conflicts with the calendar's own swipe gestures.
+
+## [1.7.1] - 2026-07-30
+
+### Changed
+
+- **Tab Swipe Toggle:** Added `isSwipeEnabled` prop to Tabs component with `delta` threshold configuration, allowing swipe gesture to be disabled per-instance.
+- **Dedicated Drag-Handle Controls:** Replaced implicit drag zones with explicit drag handles on reorderable task lists for clearer affordance and fewer accidental reorders.
+- **Planner Tab Extraction:** Refactored Events content into a standalone `EventsTab` component and reordered planner tab sequence for consistency.
+- **Task Filter Labels Always Visible:** Removed responsive hiding (`hidden sm:block`) on task filter chip labels so filter names are visible at all screen sizes.
+
+### Fixed
+
+- **Swipe Gesture Conflict on Scrollable Containers:** Fixed Tabs swipe handler triggering tab switches when swiping on horizontally scrollable elements (e.g., goal category filter chips, task filter chips). Swipes on elements with `overflow-x-auto` or `overflow-x-scroll` are now ignored, preserving native scroll behavior.
+
 ## [1.7.0] - 2026-07-29
 
 ### Added

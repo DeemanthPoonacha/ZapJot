@@ -4,7 +4,58 @@ import { toast } from "../../ui/sonner";
 import { cn } from "@/lib/utils";
 import { useTaskMutations } from "@/lib/hooks/useTasks";
 import { createTaskSchema, Task, TaskCreate } from "@/types/tasks";
-import { Reorder } from "framer-motion";
+import { Reorder, useDragControls } from "framer-motion";
+
+function TaskFormSubtaskItem({
+  subtask,
+  index,
+  form,
+  removeSubtask,
+}: {
+  subtask: any;
+  index: number;
+  form: any;
+  removeSubtask: (index: number) => void;
+}) {
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item
+      key={subtask.id}
+      value={subtask}
+      dragListener={false}
+      dragControls={controls}
+      className="flex items-center gap-2 bg-muted/30 p-2 rounded-lg group border border-transparent hover:border-border transition-all"
+    >
+      <div
+        onPointerDown={(e) => controls.start(e)}
+        className="cursor-grab active:cursor-grabbing p-1 touch-none flex items-center justify-center text-muted-foreground/40 group-hover:text-muted-foreground shrink-0"
+      >
+        <GripVertical className="h-4 w-4" />
+      </div>
+      <FormField
+        control={form.control}
+        name={`subtasks.${index}.title`}
+        render={({ field }) => (
+          <FormItem className="flex-1 mb-0">
+            <FormControl>
+              <Input {...field} placeholder="Subtask Title" />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => removeSubtask(index)}
+        className="h-8 w-8"
+      >
+        <Trash2 className="h-4 w-4 text-destructive" />
+      </Button>
+    </Reorder.Item>
+  );
+}
 
 // UI Components
 import { Input } from "@/components/ui/input";
@@ -233,33 +284,13 @@ const TaskForm = ({
               className="space-y-2"
             >
               {subtaskFields.map((subtask, index) => (
-                <Reorder.Item
+                <TaskFormSubtaskItem
                   key={subtask.id}
-                  value={subtask}
-                  className="flex items-center gap-2 bg-muted/30 p-2 rounded-lg group cursor-grab active:cursor-grabbing border border-transparent hover:border-border transition-all"
-                >
-                  <GripVertical className="h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground shrink-0 cursor-grab" />
-                  <FormField
-                    control={form.control}
-                    name={`subtasks.${index}.title`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1 mb-0">
-                        <FormControl>
-                          <Input {...field} placeholder="Subtask Title" />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeSubtask(index)}
-                    className="h-8 w-8"
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </Reorder.Item>
+                  subtask={subtask}
+                  index={index}
+                  form={form}
+                  removeSubtask={removeSubtask}
+                />
               ))}
             </Reorder.Group>
           )}

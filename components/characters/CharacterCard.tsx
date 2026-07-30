@@ -55,7 +55,7 @@ const CharacterCard = ({ character, vertical }: CharacterCardProps) => {
               </AvatarFallback>
             </Avatar>
             {character.source && character.source !== "manual" && (
-              <span className="absolute flex gap-1 bottom-0 right-0 bg-background text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-primary shadow">
+              <span className="absolute flex gap-1 bottom-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-primary shadow">
                 {character.source === "google" ? (
                   <>
                     <Google className="w-3 h-3 shrink-0" />
