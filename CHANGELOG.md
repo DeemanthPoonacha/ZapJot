@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tab Swipe Toggle:** Added `isSwipeEnabled` prop to Tabs component with `delta` threshold configuration, allowing swipe gesture to be disabled per-instance.
 - **Dedicated Drag-Handle Controls:** Replaced implicit drag zones with explicit drag handles on reorderable task lists for clearer affordance and fewer accidental reorders.
 - **Planner Tab Extraction:** Refactored Events content into a standalone `EventsTab` component and reordered planner tab sequence for consistency.
+- **Task Filter Labels Always Visible:** Removed responsive hiding (`hidden sm:block`) on task filter chip labels so filter names are visible at all screen sizes.
+
+### Fixed
+
+- **Swipe Gesture Conflict on Scrollable Containers:** Fixed Tabs swipe handler triggering tab switches when swiping on horizontally scrollable elements (e.g., goal category filter chips, task filter chips). Swipes on elements with `overflow-x-auto` or `overflow-x-scroll` are now ignored, preserving native scroll behavior.
 
 ## [1.7.0] - 2026-07-29
 
