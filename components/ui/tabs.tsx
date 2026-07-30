@@ -34,11 +34,19 @@ function Tabs({
   const index = tabValues?.indexOf(value ?? "");
 
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => {
+    onSwipedLeft: (eventData) => {
+      const el = (eventData.event.target as HTMLElement | null)?.closest(
+        '[class*="overflow-x-auto"], [class*="overflow-x-scroll"], [class*="overflow-auto"]',
+      );
+      if (el) return;
       const next = tabValues[index + 1];
       if (next) setValue(next);
     },
-    onSwipedRight: () => {
+    onSwipedRight: (eventData) => {
+      const el = (eventData.event.target as HTMLElement | null)?.closest(
+        '[class*="overflow-x-auto"], [class*="overflow-x-scroll"], [class*="overflow-auto"]',
+      );
+      if (el) return;
       const prev = tabValues[index - 1];
       if (prev) setValue(prev);
     },

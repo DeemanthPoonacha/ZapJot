@@ -171,8 +171,7 @@ const TasksList = () => {
           className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
         >
           <Star className="h-3.5 w-3.5 fill-current" />
-          <span className="hidden sm:block">High Priority</span>(
-          {totalHighPriorityCount})
+          <span>High Priority</span>({totalHighPriorityCount})
         </Badge>
         <Badge
           variant={activeFilter === "due-today" ? "default" : "outline"}
@@ -180,8 +179,7 @@ const TasksList = () => {
           className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
         >
           <Calendar className="h-3.5 w-3.5" />
-          <span className="hidden sm:block">Due Today</span>(
-          {totalDueTodayCount})
+          <span>Due Today</span>({totalDueTodayCount})
         </Badge>
         <Badge
           variant={activeFilter === "pending" ? "default" : "outline"}
@@ -189,7 +187,7 @@ const TasksList = () => {
           className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
         >
           <Clock className="h-3.5 w-3.5" />
-          <span className="hidden sm:block">Pending</span>({totalPendingCount})
+          <span>Pending</span>({totalPendingCount})
         </Badge>
         <Badge
           variant={activeFilter === "completed" ? "default" : "outline"}
@@ -197,8 +195,7 @@ const TasksList = () => {
           className="cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-full shadow-sm gap-1 flex items-center transition-all"
         >
           <CheckCircle className="h-3.5 w-3.5" />
-          <span className="hidden sm:block">Completed</span>(
-          {totalCompletedCount})
+          <span>Completed</span>({totalCompletedCount})
         </Badge>
       </div>
 
