@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import EventsList from "@/components/planner/events/EventsList";
 import dayjs from "dayjs";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
@@ -164,10 +165,12 @@ function CustomPlannerCalendar({
   datesWithEvents: Set<string>;
 }) {
   const [showJumpModal, setShowJumpModal] = useState(false);
+  const [swipeDirection, setSwipeDirection] = useState<1 | -1>(1);
   const currentDayjs = dayjs(currentDate);
 
   // Navigation handlers for Day, Week, and Month modes
   const handleNavigate = (direction: "prev" | "next") => {
+    setSwipeDirection(direction === "next" ? 1 : -1);
     if (viewMode === "day") {
       onNavigateDate(
         direction === "prev"
@@ -188,6 +191,23 @@ function CustomPlannerCalendar({
       );
     }
   };
+
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? "100%" : "-100%",
+      opacity: 1,
+    }),
+    center: {
+      x: "0%",
+      opacity: 1,
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? "-100%" : "100%",
+      opacity: 1,
+    }),
+  };
+
+  const bodyKey = `${viewMode}-${currentDayjs.format("YYYY-MM")}-${viewMode === "day" ? currentDayjs.format("DD") : viewMode === "week" ? currentDayjs.startOf("week").format("DD") : ""}`;
 
   // Header Title based on active View Mode
   const headerTitle = useMemo(() => {
@@ -309,118 +329,159 @@ function CustomPlannerCalendar({
         </div>
 
         {/* CALENDAR BODY */}
-        {/* 1. DAY VIEW */}
-        {viewMode === "day" && (
-          <div className="flex items-center justify-center p-3 bg-muted/20 rounded-xl border border-border/40 text-xs text-muted-foreground font-medium">
-            <CalendarIcon className="h-4 w-4 text-primary mr-2" />
-            Showing events for{" "}
-            <strong className="text-foreground ml-1">
-              {currentDayjs.format("dddd, MMMM D")}
-            </strong>
-          </div>
-        )}
+        <div className="relative overflow-hidden rounded-xl swipe-stop">
+          <AnimatePresence
+            mode="popLayout"
+            custom={swipeDirection}
+            initial={false}
+          >
+            <motion.div
+              key={bodyKey}
+              custom={swipeDirection}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 32, mass: 0.8 },
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.12}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -60 || info.velocity.x < -200)
+                  handleNavigate("next");
+                else if (info.offset.x > 60 || info.velocity.x > 200)
+                  handleNavigate("prev");
+              }}
+              onDragStart={(event) => {
+                event.stopPropagation();
+              }}
+              style={{ touchAction: "pan-y" }}
+              className="select-none w-full"
+            >
+              {/* 1. DAY VIEW */}
+              {viewMode === "day" && (
+                <div className="flex items-center justify-center p-3 bg-muted/20 rounded-xl border border-border/40 text-xs text-muted-foreground font-medium">
+                  <CalendarIcon className="h-4 w-4 text-primary mr-2" />
+                  Showing events for{" "}
+                  <strong className="text-foreground ml-1">
+                    {currentDayjs.format("dddd, MMMM D")}
+                  </strong>
+                </div>
+              )}
 
-        {/* 2. WEEK VIEW */}
-        {viewMode === "week" && (
-          <div className="grid grid-cols-7 gap-1 text-center">
-            {weekDays.map((day) => {
-              const isSelected =
-                selectedDayDate && day.isSame(dayjs(selectedDayDate), "day");
-              const isToday = day.isSame(dayjs(), "day");
-              const dateStr = day.format("YYYY-MM-DD");
-              const hasEvent = datesWithEvents.has(dateStr);
+              {/* 2. WEEK VIEW */}
+              {viewMode === "week" && (
+                <div className="grid grid-cols-7 gap-1 text-center">
+                  {weekDays.map((day) => {
+                    const isSelected =
+                      selectedDayDate &&
+                      day.isSame(dayjs(selectedDayDate), "day");
+                    const isToday = day.isSame(dayjs(), "day");
+                    const dateStr = day.format("YYYY-MM-DD");
+                    const hasEvent = datesWithEvents.has(dateStr);
 
-              return (
-                <button
-                  key={dateStr}
-                  type="button"
-                  onClick={() => onDayClick(day.toDate())}
-                  title={
-                    isSelected
-                      ? "Tap again to show full week"
-                      : `Filter ${day.format("MMM D")}`
-                  }
-                  className={cn(
-                    "flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all relative cursor-pointer",
-                    isSelected
-                      ? "bg-gradient-primary text-primary-foreground font-bold shadow-md ring-2 ring-primary/40"
-                      : isToday
-                        ? "bg-primary/15 text-primary font-bold border border-primary/30"
-                        : "hover:bg-muted/50 text-foreground font-medium",
-                  )}
-                >
-                  <span className="text-[10px] uppercase opacity-75">
-                    {day.format("ddd")}
-                  </span>
-                  <span className="text-sm font-bold mt-0.5">
-                    {day.format("D")}
-                  </span>
-                  {hasEvent && (
-                    <span
-                      className={cn(
-                        "w-1.5 h-1.5 rounded-full mt-1",
-                        isSelected ? "bg-primary-foreground" : "bg-primary",
-                      )}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* 3. MONTH VIEW */}
-        {viewMode === "month" && (
-          <div className="space-y-1">
-            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-muted-foreground uppercase pb-1">
-              {WEEKDAYS.map((wd) => (
-                <span key={wd}>{wd}</span>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-1 text-center">
-              {monthGridDays.map((day) => {
-                const isCurrentMonth = day.isSame(currentDayjs, "month");
-                const isSelected =
-                  selectedDayDate && day.isSame(dayjs(selectedDayDate), "day");
-                const isToday = day.isSame(dayjs(), "day");
-                const dateStr = day.format("YYYY-MM-DD");
-                const hasEvent = datesWithEvents.has(dateStr);
-
-                return (
-                  <button
-                    key={dateStr}
-                    type="button"
-                    onClick={() => onDayClick(day.toDate())}
-                    title={
-                      isSelected
-                        ? "Tap again to show full month"
-                        : `Filter ${day.format("MMM D")}`
-                    }
-                    className={cn(
-                      "flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all relative cursor-pointer text-xs min-h-9",
-                      !isCurrentMonth && "opacity-35 hover:opacity-75",
-                      isSelected
-                        ? "bg-gradient-primary text-primary-foreground font-bold shadow-md ring-2 ring-primary/40"
-                        : isToday
-                          ? "bg-primary/15 text-primary font-bold border border-primary/30"
-                          : "hover:bg-muted/50 text-foreground font-medium",
-                    )}
-                  >
-                    <span>{day.format("D")}</span>
-                    {hasEvent && (
-                      <span
+                    return (
+                      <button
+                        key={dateStr}
+                        type="button"
+                        onClick={() => onDayClick(day.toDate())}
+                        title={
+                          isSelected
+                            ? "Tap again to show full week"
+                            : `Filter ${day.format("MMM D")}`
+                        }
                         className={cn(
-                          "absolute w-1.5 h-1.5 rounded-full top-2 right-2 sm:mr-2",
-                          isSelected ? "bg-primary-foreground" : "bg-primary",
+                          "flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all relative cursor-pointer",
+                          isSelected
+                            ? "bg-gradient-primary text-primary-foreground font-bold shadow-md ring-2 ring-primary/40"
+                            : isToday
+                              ? "bg-primary/15 text-primary font-bold border border-primary/30"
+                              : "hover:bg-muted/50 text-foreground font-medium",
                         )}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                      >
+                        <span className="text-[10px] uppercase opacity-75">
+                          {day.format("ddd")}
+                        </span>
+                        <span className="text-sm font-bold mt-0.5">
+                          {day.format("D")}
+                        </span>
+                        {hasEvent && (
+                          <span
+                            className={cn(
+                              "w-1.5 h-1.5 rounded-full mt-1",
+                              isSelected
+                                ? "bg-primary-foreground"
+                                : "bg-primary",
+                            )}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* 3. MONTH VIEW */}
+              {viewMode === "month" && (
+                <div className="space-y-1">
+                  <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-muted-foreground uppercase pb-1">
+                    {WEEKDAYS.map((wd) => (
+                      <span key={wd}>{wd}</span>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1 text-center">
+                    {monthGridDays.map((day) => {
+                      const isCurrentMonth = day.isSame(currentDayjs, "month");
+                      const isSelected =
+                        selectedDayDate &&
+                        day.isSame(dayjs(selectedDayDate), "day");
+                      const isToday = day.isSame(dayjs(), "day");
+                      const dateStr = day.format("YYYY-MM-DD");
+                      const hasEvent = datesWithEvents.has(dateStr);
+
+                      return (
+                        <button
+                          key={dateStr}
+                          type="button"
+                          onClick={() => onDayClick(day.toDate())}
+                          title={
+                            isSelected
+                              ? "Tap again to show full month"
+                              : `Filter ${day.format("MMM D")}`
+                          }
+                          className={cn(
+                            "flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all relative cursor-pointer text-xs min-h-9",
+                            !isCurrentMonth
+                              ? "text-muted-foreground/60 bg-muted/15 hover:bg-muted/40 font-normal border border-dashed border-border/30"
+                              : isSelected
+                                ? "bg-gradient-primary text-primary-foreground font-bold shadow-md ring-2 ring-primary/40"
+                                : isToday
+                                  ? "bg-primary/15 text-primary font-bold border border-primary/30"
+                                  : "hover:bg-muted/50 text-foreground font-medium",
+                          )}
+                        >
+                          <span>{day.format("D")}</span>
+                          {hasEvent && (
+                            <span
+                              className={cn(
+                                "absolute w-1.5 h-1.5 rounded-full top-2 right-2 sm:mr-2",
+                                isSelected
+                                  ? "bg-primary-foreground"
+                                  : "bg-primary",
+                              )}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Month & Year Jump Dialog */}

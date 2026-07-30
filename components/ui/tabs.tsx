@@ -36,7 +36,7 @@ function Tabs({
   const swipeHandlers = useSwipeable({
     onSwipedLeft: (eventData) => {
       const el = (eventData.event.target as HTMLElement | null)?.closest(
-        '[class*="overflow-x-auto"], [class*="overflow-x-scroll"], [class*="overflow-auto"]',
+        '[class*="overflow-x-auto"], [class*="overflow-x-scroll"], [class*="overflow-auto"], [class*="swipe-stop"]',
       );
       if (el) return;
       const next = tabValues[index + 1];
@@ -44,11 +44,14 @@ function Tabs({
     },
     onSwipedRight: (eventData) => {
       const el = (eventData.event.target as HTMLElement | null)?.closest(
-        '[class*="overflow-x-auto"], [class*="overflow-x-scroll"], [class*="overflow-auto"]',
+        '[class*="overflow-x-auto"], [class*="overflow-x-scroll"], [class*="overflow-auto"], [class*="swipe-stop"]',
       );
       if (el) return;
       const prev = tabValues[index - 1];
       if (prev) setValue(prev);
+    },
+    onTouchStartOrOnMouseDown: ({ event }) => {
+      event.stopPropagation();
     },
     delta: 100,
     trackTouch: true,
