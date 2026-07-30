@@ -123,28 +123,28 @@ export default function PlannerPage() {
         <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl pb-2 pt-1 border-b border-border/40 shrink-0">
           <TabsList className="grid w-full grid-cols-4 bg-muted/60 h-12 md:h-14 p-1 rounded-2xl border border-border/50">
             <TabsTrigger
-              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md  font-semibold text-xs sm:text-sm transition-all duration-200"
               value="events"
             >
               <CalendarCheck className="h-4 w-4" />{" "}
               <span className="hidden sm:inline">Events</span>
             </TabsTrigger>
             <TabsTrigger
-              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md  font-semibold text-xs sm:text-sm transition-all duration-200"
               value="tasks"
             >
               <ListCheck className="h-4 w-4" />{" "}
               <span className="hidden sm:inline">Tasks</span>
             </TabsTrigger>
             <TabsTrigger
-              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md  font-semibold text-xs sm:text-sm transition-all duration-200"
               value="goals"
             >
               <Goal className="h-4 w-4" />{" "}
               <span className="hidden sm:inline">Goals</span>
             </TabsTrigger>
             <TabsTrigger
-              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground font-semibold text-xs sm:text-sm transition-all duration-200"
+              className="h-10 md:h-12 flex items-center justify-center gap-1.5 rounded-xl data-[state=active]:shadow-md  font-semibold text-xs sm:text-sm transition-all duration-200"
               value="itineraries"
             >
               <LandPlot className="h-4 w-4" />{" "}
